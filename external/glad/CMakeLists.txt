@@ -6,9 +6,8 @@ endif()
 
 project (glad VERSION 0.1.33 LANGUAGES C)
 
-add_library(glad STATIC
-	src/glad_debug.c
-	src/glad_release.c
-)
+add_library(glad_debug STATIC src/glad_debug.c)
+target_include_directories(glad_debug PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
-target_include_directories(glad PUBLIC ${PROJECT_SOURCE_DIR}/include)
+add_library(glad_release STATIC src/glad_release.c)
+target_include_directories(glad_release PUBLIC ${PROJECT_SOURCE_DIR}/include)

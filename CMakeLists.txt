@@ -31,7 +31,8 @@ set(InjectorEngine_SOURCE
 
 set(InjectorEngine_LIBRARIES
 	EnTT::EnTT
-	glad
+	glad_debug
+	glad_release
 	glfw
 	glm::glm
 )
