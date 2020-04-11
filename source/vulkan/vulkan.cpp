@@ -25,6 +25,10 @@ namespace Injector
 {
 	bool Vulkan::isInitialized = false;
 
+	uint32_t Vulkan::apiVersion = VK_API_VERSION_1_0;
+	uint32_t Vulkan::apiMajorVersion = 1;
+	uint32_t Vulkan::apiMinorVersion = 0;
+
 	vk::Instance Vulkan::instance = {};
 	vk::DebugUtilsMessengerEXT Vulkan::debugMessenger = {};
 
@@ -46,8 +50,6 @@ namespace Injector
 	}
 	void Vulkan::Initialize(const std::string& appName, uint32_t appVersion, const std::vector<const char*>& _instanceLayers)
 	{
-		if (!Engine::IsInitialized())
-			throw std::runtime_error("Failed to initialize Vulkan: Engine is not initialized.");
 		if (isInitialized)
 			throw std::runtime_error("Failed to initialize Vulkan: Vulkan is not terminated.");
 		if (!glfwVulkanSupported())
@@ -55,12 +57,15 @@ namespace Injector
 
 		auto debugLevel = Engine::GetDebugLevel();
 		auto isDebugEnabled = Engine::IsDebugEnabled();
-		auto apiVersion = vk::enumerateInstanceVersion();
+
+		apiVersion = vk::enumerateInstanceVersion();
+		apiMajorVersion = VK_VERSION_MAJOR(apiVersion);
+		apiMinorVersion = VK_VERSION_MINOR(apiVersion);
 
 		if (debugLevel <= Engine::DebugLevelType::Info)
 			std::cout << "Supported Vulkan version: " << VersionToString(apiVersion) << std::endl;
 
-		vk::ApplicationInfo applicationInfo(appName.c_str(), appVersion, Engine::Name.c_str(), VK_MAKE_VERSION(Engine::MajorVersion, Engine::MinorVersion, Engine::PatchVersion), VK_MAKE_VERSION(VK_VERSION_MAJOR(apiVersion), VK_VERSION_MINOR(apiVersion), 0));
+		vk::ApplicationInfo applicationInfo(appName.c_str(), appVersion, Engine::Name.c_str(), VK_MAKE_VERSION(INJECTOR_ENGINE_VERSION_MAJOR, INJECTOR_ENGINE_VERSION_MINOR, INJECTOR_ENGINE_VERSION_PATCH), VK_MAKE_VERSION(apiMajorVersion, apiMinorVersion, 0));
 
 		auto instanceLayers = std::vector<const char*>();
 		if (isDebugEnabled)
@@ -79,7 +84,6 @@ namespace Injector
 		}
 
 		auto instanceExtensions = GetGlfwRequiredExtensions();
-
 		if (isDebugEnabled)
 			instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
@@ -137,8 +141,6 @@ namespace Injector
 	}
 	void Vulkan::Terminate()
 	{
-		if (!Engine::IsInitialized())
-			throw std::runtime_error("Failed to terminate Vulkan: Engine is not initialized.");
 		if (!isInitialized)
 			throw std::runtime_error("Failed to terminate Vulkan: Vulkan is not initialized.");
 
@@ -163,34 +165,53 @@ namespace Injector
 		auto glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 		return std::vector<const char*>(glfwExtensions, glfwExtensions + glfwExtensionCount);
 	}
-	vk::PhysicalDevice Vulkan::GetBestPhysicalDevice(const std::vector<vk::PhysicalDevice>& devices)
+
+	vk::PhysicalDevice Vulkan::GetBestPhysicalDevice(const std::vector<vk::PhysicalDevice>& physicalDevices)
 	{
 		std::multimap<int, vk::PhysicalDevice> candidates;
 
-		for (auto device : devices)
+		for (auto physicalDevice : physicalDevices)
 		{
 			auto score = 0;
-			auto properties = device.getProperties();
+			auto properties = physicalDevice.getProperties();
+
+			if (properties.apiVersion < apiVersion)
+				continue;
 
 			if (properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu)
 				score += 1000;
 
 			score += properties.limits.maxImageDimension2D;
-			candidates.emplace(score, device);
+			candidates.emplace(score, physicalDevice);
 		}
+
+		if (candidates.size() == 0)
+			throw std::runtime_error("Failed to find Vulkan suitable GPU.");
 
 		return candidates.rbegin()->second;
 	}
-	vk::SurfaceFormatKHR Vulkan::GetBestSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& formats)
+	vk::PhysicalDevice Vulkan::GetBestPhysicalDevice()
 	{
-		for (auto format : formats)
+		auto devices = instance.enumeratePhysicalDevices();
+		return GetBestPhysicalDevice(devices);
+	}
+
+	vk::SurfaceFormatKHR Vulkan::GetBestSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& surfaceFormats)
+	{
+		for (auto surfaceFormat : surfaceFormats)
 		{
-			if (format.format == vk::Format::eB8G8R8A8Srgb && format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear)
-				return format;
+			if (surfaceFormat.format == vk::Format::eB8G8R8A8Srgb && surfaceFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear)
+				return surfaceFormat;
 		}
 
-		return formats[0];
+		return surfaceFormats[0];
 	}
+	vk::SurfaceFormatKHR Vulkan::GetBestSurfaceFormat(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface)
+	{
+		auto surfaceFormats = physicalDevice.getSurfaceFormatsKHR(surface);
+		return GetBestSurfaceFormat(surfaceFormats);
+	}
+
 	vk::PresentModeKHR Vulkan::GetBestPresentMode(const std::vector<vk::PresentModeKHR>& presentModes)
 	{
 		for (const auto& presentMode : presentModes)
@@ -211,27 +232,137 @@ namespace Injector
 
 		return vk::PresentModeKHR::eFifo;
 	}
-	vk::Extent2D Vulkan::GetBestSurfaceImageExtent(const vk::SurfaceCapabilitiesKHR& capabilities, const vk::Extent2D& customExtent)
+	vk::PresentModeKHR Vulkan::GetBestPresentMode(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface)
 	{
-		if (capabilities.currentExtent.width == UINT32_MAX) {
+		auto presentModes = physicalDevice.getSurfacePresentModesKHR(surface);
+		return GetBestPresentMode(presentModes);
+	}
 
-			auto actualExtent = vk::Extent2D();
+	vk::Extent2D Vulkan::GetBestSurfaceImageExtent(const vk::SurfaceCapabilitiesKHR& capabilities, GLFWwindow* window)
+	{
+		if (capabilities.currentExtent.width == UINT32_MAX)
+		{
+			int width, height;
+			glfwGetFramebufferSize(window, &width, &height);
 
-			actualExtent.width = std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, actualExtent.width));
-			actualExtent.height = std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, actualExtent.height));
-
-			return actualExtent;
+			return vk::Extent2D(
+				std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, static_cast<uint32_t>(width))),
+				std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, static_cast<uint32_t>(height))));
 		}
 		else
 		{
 			return capabilities.currentExtent;
 		}
 	}
+	vk::Extent2D Vulkan::GetBestSurfaceImageExtent(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, GLFWwindow* window)
+	{
+		auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+		return GetBestSurfaceImageExtent(surfaceCapabilities, window);
+	}
+
 	uint32_t Vulkan::GetBestSurfaceImageCount(const vk::SurfaceCapabilitiesKHR& capabilities)
 	{
 		auto imageCount = capabilities.minImageCount + 1;
 		if (capabilities.maxImageCount > 0 && imageCount > capabilities.maxImageCount)
 			imageCount = capabilities.maxImageCount;
 		return imageCount;
+	}
+	uint32_t Vulkan::GetBestSurfaceImageCount(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface)
+	{
+		auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+		return GetBestSurfaceImageCount(surfaceCapabilities);
+	}
+
+	void Vulkan::GetSurfaceQueueFamilyIndices(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, uint32_t& graphicsQueueIndex, uint32_t& presentQueueIndex)
+	{
+		graphicsQueueIndex = UINT32_MAX;
+		presentQueueIndex = UINT32_MAX;
+
+		auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+
+		for (size_t i = 0; i < queueFamilyProperties.size(); i++)
+		{
+			if (queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics)
+			{
+				graphicsQueueIndex = static_cast<uint32_t>(i);
+				if (physicalDevice.getSurfaceSupportKHR(static_cast<uint32_t>(i), surface))
+					presentQueueIndex = (uint32_t)i;
+				break;
+			}
+		}
+
+		if (presentQueueIndex == UINT32_MAX)
+		{
+			for (size_t i = 0; i < queueFamilyProperties.size(); i++)
+			{
+				if (physicalDevice.getSurfaceSupportKHR(static_cast<uint32_t>(i), surface))
+				{
+					presentQueueIndex = static_cast<uint32_t>(i);
+					break;
+				}
+			}
+		}
+
+		if (graphicsQueueIndex == UINT32_MAX || presentQueueIndex == UINT32_MAX)
+			throw std::runtime_error("Failed to find Vulkan graphics or present queue family.");
+	}
+
+	vk::SurfaceKHR Vulkan::CreateSurface(GLFWwindow* window, const VkAllocationCallbacks* allocator)
+	{
+		VkSurfaceKHR surface = VK_NULL_HANDLE;
+		if (glfwCreateWindowSurface(instance, window, allocator, &surface) != VK_SUCCESS)
+			throw std::runtime_error("Failed to create Vulkan window surface.");
+		return vk::SurfaceKHR(surface);
+	}
+	void Vulkan::DestroySurface(vk::SurfaceKHR surface)
+	{
+		instance.destroySurfaceKHR(surface);
+	}
+
+	vk::Device Vulkan::CreateSurfaceDevice(vk::PhysicalDevice physicalDevice, uint32_t graphicsQueueIndex, uint32_t presentQueueIndex, const std::vector<const char*>& deviceLayers, const std::vector<const char*>& deviceExtensions, const std::vector<vk::PhysicalDeviceFeatures>& features)
+	{
+		uint32_t queueCount = graphicsQueueIndex == presentQueueIndex ? 1 : 2;
+
+		const float queuePriority = 1.0f;
+		vk::DeviceQueueCreateInfo deviceQueueCreateInfos[] =
+		{
+			vk::DeviceQueueCreateInfo({}, graphicsQueueIndex, 1, &queuePriority),
+			vk::DeviceQueueCreateInfo({}, presentQueueIndex, 1, &queuePriority),
+		};
+
+		vk::DeviceCreateInfo deviceCreateInfo({}, queueCount, deviceQueueCreateInfos, static_cast<uint32_t>(deviceLayers.size()), deviceLayers.data(), static_cast<uint32_t>(deviceExtensions.size()), deviceExtensions.data(), features.size() == 0 ? VK_NULL_HANDLE : features.data());
+		return physicalDevice.createDevice(deviceCreateInfo);
+	}
+
+	std::vector<vk::Fence> Vulkan::CreateFences(vk::Device device, size_t count, vk::FenceCreateFlags flags)
+	{
+		std::vector<vk::Fence> fences(count);
+		vk::FenceCreateInfo fenceCreateInfo(flags);
+
+		for (size_t i = 0; i < count; i++)
+			fences[i] = device.createFence(fenceCreateInfo);
+
+		return fences;
+	}
+	void Vulkan::DestroyFences(vk::Device device, const std::vector<vk::Fence>& fences)
+	{
+		for (size_t i = 0; i < fences.size(); i++)
+			device.destroyFence(fences[i]);
+	}
+
+	std::vector<vk::Semaphore> Vulkan::CreateSemaphores(vk::Device device, size_t count, vk::SemaphoreCreateFlags flags)
+	{
+		std::vector<vk::Semaphore> semaphores(count);
+		vk::SemaphoreCreateInfo semaphoreCreateInfo(flags);
+		
+		for (size_t i = 0; i < count; i++)
+			semaphores[i] = device.createSemaphore(semaphoreCreateInfo);
+
+		return semaphores;
+	}
+	void Vulkan::DestroySemaphores(vk::Device device, const std::vector<vk::Semaphore>& semaphores)
+	{
+		for (size_t i = 0; i < semaphores.size(); i++)
+			device.destroySemaphore(semaphores[i]);
 	}
 }

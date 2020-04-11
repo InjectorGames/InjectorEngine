@@ -1,0 +1,8 @@
+namespace Injector
+{
+#define INJECTOR_ENGINE_VERSION_MAJOR @InjectorEngine_VERSION_MAJOR@
+#define INJECTOR_ENGINE_VERSION_MINOR @InjectorEngine_VERSION_MINOR@
+#define INJECTOR_ENGINE_VERSION_PATCH @InjectorEngine_VERSION_PATCH@
+
+#cmakedefine VULKAN_FOUND
+}

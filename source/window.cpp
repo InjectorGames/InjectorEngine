@@ -2,56 +2,57 @@
 
 namespace Injector
 {
-	const std::string Window::DefaultName = "Injector Engine - Editor";
-	const glm::ivec2 Window::DefaultSize = glm::ivec2(800, 600);
-
-	Window::Window(const std::function<void()>& setupWindow, std::string _title, glm::ivec2 _size, GLFWmonitor* monitor, GLFWwindow* share)
+	Window::Window(std::string _title, glm::ivec2 _size)
 	{
-		if(!Engine::IsInitialized())
-			throw std::runtime_error("Failed to create GLFW window: Engine is not initialized.");
-
-		size = _size;
+		instance = nullptr;
 		title = _title;
-
-		if(setupWindow)
-			setupWindow();
-
-		instance = glfwCreateWindow(_size.x, _size.y, _title.c_str(), monitor, share);
-
-		if (!instance)
-			throw std::runtime_error("Failed to create GLFW window instance.");
+		windowSize = _size;
+		framebufferSize = glm::ivec2(0);
 	}
 	Window::~Window()
 	{
-		glfwDestroyWindow(instance);
+		if (instance)
+		{
+			glfwDestroyWindow(instance);
+			instance = nullptr;
+		}
 	}
 
-	GLFWwindow* Window::GetInstance()
+	GLFWwindow* Window::GetInstance() const
 	{
 		return instance;
 	}
 
-	const std::string& Window::GetTitle()
+	const std::string& Window::GetTitle() const
 	{
 		return title;
 	}
-	void Window::SetTitle(std::string value)
+	void Window::SetTitle(std::string _title)
 	{
-		title = value;
-		glfwSetWindowTitle(instance, value.c_str());
+		title = _title;
+		glfwSetWindowTitle(instance, _title.c_str());
 	}
 
-	const glm::ivec2& Window::GetSize()
+	const glm::ivec2& Window::GetWindowSize() const
 	{
-		return size;
+		return windowSize;
 	}
-	void Window::SetSize(glm::ivec2 value)
+	void Window::SetWindowSize(glm::ivec2 size)
 	{
-		size = value;
-		glfwSetWindowSize(instance, value.x, value.y);
+		windowSize = size;
+		glfwSetWindowSize(instance, size.x, size.y);
 	}
-	void Window::OnResize(glm::ivec2 value)
+	void Window::OnWindowResize(glm::ivec2 size)
 	{
-		size = value;
+		windowSize = size;
+	}
+
+	const glm::ivec2& Window::GetFramebufferSize() const
+	{
+		return framebufferSize;
+	}
+	void Window::OnFramebufferResize(glm::ivec2 size)
+	{
+		framebufferSize = size;
 	}
 }

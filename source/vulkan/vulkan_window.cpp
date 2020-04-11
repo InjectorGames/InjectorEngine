@@ -2,101 +2,47 @@
 
 namespace Injector
 {
-	const std::string VulkanWindow::DefaultVulkanName =
-		"Injector Engine - Editor (Vulkan)";
-	const vk::Extent2D VulkanWindow::DefaultVulkanExtent = vk::Extent2D(static_cast<uint32_t>(Window::DefaultSize.x), static_cast<uint32_t>(Window::DefaultSize.y));
 	const std::vector<const char*> VulkanWindow::DefaultDeviceLayers = Vulkan::DefaultInstanceLayers;
 	const std::vector<const char*> VulkanWindow::DefaultDeviceExtensions =
 	{
 		VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 	};
+	const size_t VulkanWindow::DefaultFrameLag = 2;
 
-	void VulkanWindow::SetupVulkanWindow()
+	VulkanWindow::VulkanWindow(const std::vector<const char*>& deviceLayers, const std::vector<const char*>& deviceExtensions, size_t frameLag, std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(title, size)
 	{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	}
+		instance = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
 
-	VulkanWindow::VulkanWindow(const std::vector<const char*>& deviceLayers, const std::vector<const char*>& deviceExtensions, std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(SetupVulkanWindow, title, size, monitor, share)
-	{
-		if (!Vulkan::IsInitialized())
-			throw std::runtime_error("Failed to create Vulkan window: Vulkan is not initialized.");
+		if (!instance)
+			throw std::runtime_error("Failed to create Vulkan window instance.");
 
-		auto vulkanIntance = Vulkan::GetInstance();
-		VkSurfaceKHR surfaceInstance = VK_NULL_HANDLE;
-		if (glfwCreateWindowSurface(vulkanIntance, instance, nullptr, &surfaceInstance) != VK_SUCCESS)
-			throw std::runtime_error("Failed to create Vulkan window surface.");
-		surface = vk::SurfaceKHR(surfaceInstance);
+		/*
+		surface = Vulkan::CreateSurface(instance);
+		physicalDevice = Vulkan::GetBestPhysicalDevice();
 
-		auto physicalDevices = vulkanIntance.enumeratePhysicalDevices();
-		physicalDevice = Vulkan::GetBestPhysicalDevice(physicalDevices);
+		Vulkan::GetSurfaceQueueFamilyIndices(physicalDevice, surface, graphicsQueueIndex, presentQueueIndex);
 
-		auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-		graphicsQueueFamilyIndex = UINT32_MAX;
-		presentQueueFamilyIndex = UINT32_MAX;
+		device = Vulkan::CreateSurfaceDevice(physicalDevice, graphicsQueueIndex, presentQueueIndex, deviceLayers, deviceExtensions, {});
 
-		for (size_t i = 0; i < queueFamilyProperties.size(); i++)
-		{
-			if (queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics)
-			{
-				graphicsQueueFamilyIndex = (uint32_t)i;
-				if (physicalDevice.getSurfaceSupportKHR((uint32_t)i, surface))
-					presentQueueFamilyIndex = (uint32_t)i;
-				break;
-			}
-		}
+		graphicsQueue = device.getQueue(graphicsQueueIndex, 0);
+		presentQueue = device.getQueue(presentQueueIndex, 0);
 
-		if (presentQueueFamilyIndex == UINT32_MAX)
-		{
-			for (size_t i = 0; i < queueFamilyProperties.size(); i++)
-			{
-				if (physicalDevice.getSurfaceSupportKHR((uint32_t)i, surface))
-				{
-					presentQueueFamilyIndex = (uint32_t)i;
-					break;
-				}
-			}
-		}
-
-		if (graphicsQueueFamilyIndex == UINT32_MAX || presentQueueFamilyIndex == UINT32_MAX)
-			throw std::runtime_error("Failed to create Vulkan window: Failed to find graphics or present queue family.");
-
-		auto queuePriority = 1.0f;
-		std::vector<vk::DeviceQueueCreateInfo> deviceQueueCreateInfos;
-
-		if (graphicsQueueFamilyIndex == presentQueueFamilyIndex)
-		{
-			deviceQueueCreateInfos.push_back(vk::DeviceQueueCreateInfo({}, graphicsQueueFamilyIndex, 1, &queuePriority));
-		}
-		else
-		{
-			deviceQueueCreateInfos.push_back(vk::DeviceQueueCreateInfo({}, graphicsQueueFamilyIndex, 1, &queuePriority));
-			deviceQueueCreateInfos.push_back(vk::DeviceQueueCreateInfo({}, presentQueueFamilyIndex, 1, &queuePriority));
-		}
-
-		vk::DeviceCreateInfo deviceCreateInfo({}, (uint32_t)deviceQueueCreateInfos.size(), deviceQueueCreateInfos.data(), (uint32_t)deviceLayers.size(), deviceLayers.data(), (uint32_t)deviceExtensions.size(), deviceExtensions.data());
-		device = physicalDevice.createDevice(deviceCreateInfo);
-
-		graphicsQueue = device.getQueue(graphicsQueueFamilyIndex, 0);
-		presentQueue = device.getQueue(presentQueueFamilyIndex, 0);
-
-		auto surafceFormats = physicalDevice.getSurfaceFormatsKHR(surface);
-		auto surfaceFormat = Vulkan::GetBestSurfaceFormat(surafceFormats);
-
-		auto presentModes = physicalDevice.getSurfacePresentModesKHR(surface);
-		auto presentMode = Vulkan::GetBestPresentMode(presentModes);
+		auto surfaceFormat = Vulkan::GetBestSurfaceFormat(physicalDevice, surface);
+		auto presentMode = Vulkan::GetBestPresentMode(physicalDevice, surface);
 
 		auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
 		auto surfaceImageCount = Vulkan::GetBestSurfaceImageCount(surfaceCapabilities);
-		auto surfaceImageExtent = Vulkan::GetBestSurfaceImageExtent(surfaceCapabilities);
+		auto surfaceImageExtent = Vulkan::GetBestSurfaceImageExtent(surfaceCapabilities, instance);
 
 		auto imageSharingMode = vk::SharingMode::eExclusive;
 		auto queueFamilyIndices = std::vector<uint32_t>();
 
-		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+		if (graphicsQueueIndex != presentQueueIndex)
 		{
 			imageSharingMode = vk::SharingMode::eConcurrent;
-			queueFamilyIndices.push_back(graphicsQueueFamilyIndex);
-			queueFamilyIndices.push_back(presentQueueFamilyIndex);
+			queueFamilyIndices.push_back(graphicsQueueIndex);
+			queueFamilyIndices.push_back(presentQueueIndex);
 		}
 
 		// imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT for post processing 
@@ -111,8 +57,8 @@ namespace Injector
 
 		std::vector<vk::PipelineShaderStageCreateInfo> pipelineShaderStageCreateInfos =
 		{
-			vertShaderModule.GetPipelineStageCreateInfo(vk::ShaderStageFlagBits::eVertex),
-			fragShaderModule.GetPipelineStageCreateInfo(vk::ShaderStageFlagBits::eFragment),
+			vertShaderModule.CreatePipelineStageCreateInfo(vk::ShaderStageFlagBits::eVertex),
+			fragShaderModule.CreatePipelineStageCreateInfo(vk::ShaderStageFlagBits::eFragment),
 		};
 
 		vk::AttachmentDescription attachmentDescription({}, surfaceFormat.format, vk::SampleCountFlagBits::e1, vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::AttachmentLoadOp::eDontCare, vk::AttachmentStoreOp::eDontCare, vk::ImageLayout::eUndefined, vk::ImageLayout::ePresentSrcKHR);
@@ -149,8 +95,8 @@ namespace Injector
 		vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo({}, static_cast<uint32_t>(pipelineShaderStageCreateInfos.size()), pipelineShaderStageCreateInfos.data(), &pipelineVertexInputStateCreateInfo, &pipelineInputAssemblyStateCreateInfo, VK_NULL_HANDLE, &pipelineViewportStateCreateInfo, &pipelineRasterizationStateCreateInfo, &pipelineMultisampleStateCreateInfo, VK_NULL_HANDLE, &pipelineColorBlendStateCreateInfo, VK_NULL_HANDLE, pipelineLayout, renderPass, 0, {}, -1);
 		pipeline = device.createGraphicsPipeline({}, graphicsPipelineCreateInfo);
 
-		vk::CommandPoolCreateInfo commandPoolCreateInfo({}, graphicsQueueFamilyIndex);
-		commandPool = device.createCommandPool(commandPoolCreateInfo);
+		vk::CommandPoolCreateInfo commandPoolCreateInfo({}, graphicsQueueIndex);
+		graphicsCommandPool = device.createCommandPool(commandPoolCreateInfo);
 
 		auto images = device.getSwapchainImagesKHR(swapchain);
 		imageViews.resize(images.size());
@@ -167,7 +113,7 @@ namespace Injector
 			framebuffers[i] = framebuffer;
 		}
 
-		vk::CommandBufferAllocateInfo commandBufferAllocateInfo(commandPool, vk::CommandBufferLevel::ePrimary, (uint32_t)surfaceImageCount);
+		vk::CommandBufferAllocateInfo commandBufferAllocateInfo(graphicsCommandPool, vk::CommandBufferLevel::ePrimary, (uint32_t)surfaceImageCount);
 		commandBuffers = device.allocateCommandBuffers(commandBufferAllocateInfo);
 
 		for (size_t i = 0; i < commandBuffers.size(); i++)
@@ -203,9 +149,11 @@ namespace Injector
 			renderFinishedSemaphores[i] = device.createSemaphore(semaphoreCreateInfo);
 			inFlightFences[i] = device.createFence(fenceCreateInfo);
 		}
+		*/
 	}
 	VulkanWindow::~VulkanWindow()
 	{
+		/*
 		device.waitIdle();
 
 		for (size_t i = 0; i < frameCount; i++)
@@ -230,10 +178,12 @@ namespace Injector
 		vulkanInstance.destroySurfaceKHR(surface);
 
 		device.destroy();
+		*/
 	}
 
 	void VulkanWindow::OnDraw()
 	{
+		/*
 		device.waitForFences(1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
 		auto imageResult = device.acquireNextImageKHR(swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame], {});
@@ -253,5 +203,6 @@ namespace Injector
 		presentQueue.waitIdle();
 
 		currentFrame = (currentFrame + 1) % frameCount;
+		*/
 	}
 }

@@ -13,7 +13,7 @@
       "variables": [
         {
           "name": "GLFW_VULKAN_STATIC",
-          "value": "True",
+          "value": "False",
           "type": "BOOL"
         }
       ]

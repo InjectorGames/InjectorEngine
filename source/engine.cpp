@@ -8,21 +8,23 @@ namespace Injector
 	std::set<std::shared_ptr<System>> Engine::systems = {};
 	std::set<std::shared_ptr<Window>> Engine::windows = {};
 
-	const int Engine::MajorVersion = 0;
-	const int Engine::MinorVersion = 1;
-	const int Engine::PatchVersion = 0;
 	const std::string Engine::Name = "Injector Engine";
 
 	void Engine::ErrorCallback(int error, const char* description)
 	{
-		std::cerr << "Engine GLFW error: " << error << ", " << description << std::endl;
+		std::cerr << "GLFW error: Code = " << error << ", Description = " << description << ".\n";
 	}
 	void Engine::WindowSizeCallback(GLFWwindow* window, int width, int height)
 	{
 		auto size = glm::ivec2(width, height);
-
 		for (const auto& window : windows)
-			window->OnResize(size);
+			window->OnWindowResize(size);
+	}
+	void Engine::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
+	{
+		auto size = glm::ivec2(width, height);
+		for (const auto& window : windows)
+			window->OnFramebufferResize(size);
 	}
 
 	bool Engine::CompareSystem(const std::shared_ptr<System>& a, const std::shared_ptr<System>& b)
@@ -36,13 +38,12 @@ namespace Injector
 	}
 	void Engine::Initialize(DebugLevelType _debugLevel)
 	{
-		if(isInitialized)
+		if (isInitialized)
 			throw std::runtime_error("Failed to initialize engine: Engine is not terminated.");
 
 		debugLevel = _debugLevel;
 
-		if (_debugLevel <= DebugLevelType::Info)
-			std::cout << "Injector Engine version: " << MajorVersion << "." << MinorVersion << "." << PatchVersion << std::endl;
+		std::cout << "Injector Engine version: " << INJECTOR_ENGINE_VERSION_MAJOR << "." << INJECTOR_ENGINE_VERSION_MINOR << "." << INJECTOR_ENGINE_VERSION_PATCH << std::endl;
 
 		glfwSetErrorCallback(ErrorCallback);
 
@@ -116,6 +117,7 @@ namespace Injector
 
 		auto windowInstance = window->GetInstance();
 		glfwSetWindowSizeCallback(windowInstance, WindowSizeCallback);
+		glfwSetFramebufferSizeCallback(windowInstance, FramebufferSizeCallback);
 	}
 	void Engine::RemoveWindow(const std::shared_ptr<Window>& window)
 	{
