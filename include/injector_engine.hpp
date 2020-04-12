@@ -134,12 +134,17 @@ namespace Injector
 
 	class OpenGLWindow : public Window
 	{
-	protected:
-		static GLFWwindow* CreateWindowInstance(const glm::ivec2& size, const std::string& title, GLFWmonitor* monitor, GLFWwindow* share);
 	public:
-		static const std::string DefaultOpenGLName;
-
 		OpenGLWindow(std::string title = "Injector Engine - Editor (OpenGL)", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
+
+		void OnFramebufferResize(glm::ivec2 size) override;
+		void OnDraw() override;
+	};
+
+	class OpenGLESWindow : public Window
+	{
+	public:
+		OpenGLESWindow(std::string title = "Injector Engine - Editor (OpenGL ES)", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
 
 		void OnFramebufferResize(glm::ivec2 size) override;
 		void OnDraw() override;

@@ -27,6 +27,7 @@ set(InjectorEngine_SOURCE
 	source/window.cpp
 
 	source/opengl/opengl_window.cpp
+	source/opengl/opengles_window.cpp
 )
 
 set(InjectorEngine_LIBRARIES

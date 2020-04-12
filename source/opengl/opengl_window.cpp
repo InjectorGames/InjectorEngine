@@ -4,6 +4,7 @@ namespace Injector
 {
 	OpenGLWindow::OpenGLWindow(std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(title, size)
 	{
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
@@ -15,7 +16,7 @@ namespace Injector
 		glfwMakeContextCurrent(instance);
 
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-			throw std::runtime_error("Failed to load OpenGL.");
+			throw std::runtime_error("Failed to load OpenGL loader.");
 	}
 
 	void OpenGLWindow::OnFramebufferResize(glm::ivec2 size)

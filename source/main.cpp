@@ -11,7 +11,16 @@ int main()
 	// Add systems here
 	
 	//Injector::Engine::AddWindow(std::make_shared<Injector::VulkanWindow>());
-	Injector::Engine::AddWindow(std::make_shared<Injector::OpenGLWindow>());
+
+	try
+	{
+		Injector::Engine::AddWindow(std::make_shared<Injector::OpenGLWindow>());
+	}
+	catch(const std::exception& e)
+	{
+		std::cout << e.what() << "\nTrying to create OpenGL ES window...\n";
+		Injector::Engine::AddWindow(std::make_shared<Injector::OpenGLESWindow>());
+	}
 
 	Injector::Engine::BeginUpdate();
 	Injector::Engine::EndUpdate();
