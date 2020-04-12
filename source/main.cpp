@@ -10,17 +10,24 @@ int main()
 
 	// Add systems here
 	
-	//Injector::Engine::AddWindow(std::make_shared<Injector::VulkanWindow>());
+	//Injector::Engine::AddWindow(std::make_shared<Injector::VkWindow>());
+	//Injector::Engine::AddWindow(std::make_shared<Injector::GlWindow>());
+	Injector::Engine::AddWindow(std::make_shared<Injector::GlesWindow>());
 
+	/*
 	try
 	{
-		Injector::Engine::AddWindow(std::make_shared<Injector::OpenGLWindow>());
+		Injector::Engine::AddWindow(std::make_shared<Injector::GlWindow>());
 	}
 	catch(const std::exception& e)
 	{
 		std::cout << e.what() << "\nTrying to create OpenGL ES window...\n";
-		Injector::Engine::AddWindow(std::make_shared<Injector::OpenGLESWindow>());
+		Injector::Engine::AddWindow(std::make_shared<Injector::GlesWindow>());
 	}
+	*/
+
+	auto shader = new Injector::GlShader("resources/shaders/color.vert", Injector::Shader::Type::Vertex);
+	delete shader;
 
 	Injector::Engine::BeginUpdate();
 	Injector::Engine::EndUpdate();

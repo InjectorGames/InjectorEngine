@@ -2,14 +2,14 @@
 
 namespace Injector
 {
-	const std::vector<const char*> VulkanWindow::DefaultDeviceLayers = Vulkan::DefaultInstanceLayers;
-	const std::vector<const char*> VulkanWindow::DefaultDeviceExtensions =
+	const std::vector<const char*> VkWindow::DefaultDeviceLayers = Vulkan::DefaultInstanceLayers;
+	const std::vector<const char*> VkWindow::DefaultDeviceExtensions =
 	{
 		VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 	};
-	const size_t VulkanWindow::DefaultFrameLag = 2;
+	const size_t VkWindow::DefaultFrameLag = 2;
 
-	VulkanWindow::VulkanWindow(const std::vector<const char*>& deviceLayers, const std::vector<const char*>& deviceExtensions, size_t frameLag, std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(title, size)
+	VkWindow::VkWindow(const std::vector<const char*>& deviceLayers, const std::vector<const char*>& deviceExtensions, size_t frameLag, std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(title, size)
 	{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		instance = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
@@ -151,7 +151,7 @@ namespace Injector
 		}
 		*/
 	}
-	VulkanWindow::~VulkanWindow()
+	VkWindow::~VkWindow()
 	{
 		/*
 		device.waitIdle();
@@ -181,7 +181,7 @@ namespace Injector
 		*/
 	}
 
-	void VulkanWindow::OnDraw()
+	void VkWindow::OnDraw()
 	{
 		/*
 		device.waitForFences(1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);

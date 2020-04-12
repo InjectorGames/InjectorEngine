@@ -2,7 +2,7 @@
 
 namespace Injector
 {
-	OpenGLESWindow::OpenGLESWindow(std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(title, size)
+	GlesWindow::GlesWindow(std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(title, size)
 	{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -19,14 +19,14 @@ namespace Injector
 			throw std::runtime_error("Failed to load OpenGL ES loader.");
 	}
 
-	void OpenGLESWindow::OnFramebufferResize(glm::ivec2 size)
+	void GlesWindow::OnFramebufferResize(glm::ivec2 size)
 	{
 		glViewport(0, 0, size.x, size.y);
 	}
-	void OpenGLESWindow::OnDraw()
+	void GlesWindow::OnDraw()
 	{
 		glfwMakeContextCurrent(instance);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		// Draw
 

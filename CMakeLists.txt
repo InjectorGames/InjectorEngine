@@ -26,8 +26,11 @@ set(InjectorEngine_SOURCE
 	source/system.cpp
 	source/window.cpp
 
-	source/opengl/opengl_window.cpp
-	source/opengl/opengles_window.cpp
+	source/opengl/gl_shader.cpp
+	source/opengl/gl_window.cpp
+
+	source/opengles/gles_shader.cpp
+	source/opengles/gles_window.cpp
 )
 
 set(InjectorEngine_LIBRARIES
@@ -47,13 +50,15 @@ set(InjectorEngine_INCLUDE_DIRS
 
 set(InjectorEngine_RESOURCES
 	LICENSE.md
+
+	shaders/color.vert
 )
 
 if(${Vulkan_FOUND})
 	list(APPEND InjectorEngine_SOURCE
 		source/vulkan/vulkan.cpp
-		source/vulkan/vulkan_shader.cpp
-		source/vulkan/vulkan_window.cpp
+		source/vulkan/vk_shader.cpp
+		source/vulkan/vk_window.cpp
 	)
 
 	list(APPEND InjectorEngine_LIBRARIES

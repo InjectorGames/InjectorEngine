@@ -51,9 +51,11 @@ namespace Injector
 			Intersection,
 			Callable,
 		};
-
-		const Type type;
+	protected:
+		Type type;
+	public:
 		Shader(Type type);
+		Type GetType();
 	};
 
 	class Window
@@ -132,26 +134,50 @@ namespace Injector
 		static std::vector<uint8_t> ReadBytesFromFile(const std::string& filePath);
 	};
 
-	class OpenGLWindow : public Window
+	class GlShader : public Shader
+	{
+	protected:
+		GLuint instance;
+
+		static GLenum TypeToEnum(Type type);
+		static void SetSource(GLuint shader, const std::vector<const GLchar*>& source);
+		static GLint GetCompileStatus(GLuint shader);
+		static std::string GetInfoLog(GLuint shader);
+	public:
+		GlShader(const std::string& filePath, Type type);
+		~GlShader();
+
+		bool operator==(GlShader const& s) const noexcept;
+		bool operator!=(GlShader const& s) const noexcept;
+		bool operator<(GlShader const& s) const noexcept;
+	};
+
+	class GlWindow : public Window
 	{
 	public:
-		OpenGLWindow(std::string title = "Injector Engine - Editor (OpenGL)", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
+		GlWindow(std::string title = "Injector Engine - Editor (OpenGL)", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
 
 		void OnFramebufferResize(glm::ivec2 size) override;
 		void OnDraw() override;
 	};
 
-	class OpenGLESWindow : public Window
+	class GlesShader : public Shader
 	{
 	public:
-		OpenGLESWindow(std::string title = "Injector Engine - Editor (OpenGL ES)", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
+
+	};
+
+	class GlesWindow : public Window
+	{
+	public:
+		GlesWindow(std::string title = "Injector Engine - Editor (OpenGL ES)", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
 
 		void OnFramebufferResize(glm::ivec2 size) override;
 		void OnDraw() override;
 	};
 
 #ifdef VULKAN_FOUND
-	class VulkanShader : public Shader
+	class VkShader : public Shader
 	{
 	protected:
 		vk::Device device;
@@ -159,11 +185,11 @@ namespace Injector
 	public:
 		static const std::string DefaultMainName;
 
-		VulkanShader(vk::Device device, const std::vector<uint32_t>& shaderCode, Type type);
-		VulkanShader(vk::Device device, const std::vector<uint8_t>& shaderCode, Type type);
-		VulkanShader(vk::Device device, const std::string& filePath, Type type);
+		VkShader(vk::Device device, const std::vector<uint32_t>& shaderCode, Type type);
+		VkShader(vk::Device device, const std::vector<uint8_t>& shaderCode, Type type);
+		VkShader(vk::Device device, const std::string& filePath, Type type);
 
-		~VulkanShader();
+		~VkShader();
 
 		vk::Device GetDevice() const;
 		vk::ShaderModule GetInstance() const;
@@ -171,7 +197,7 @@ namespace Injector
 		vk::PipelineShaderStageCreateInfo CreatePipelineStageCreateInfo(vk::ShaderStageFlagBits stage, const std::string& name = DefaultMainName, const vk::SpecializationInfo* info = VK_NULL_HANDLE) const;
 	};
 
-	class VulkanWindow : public Window
+	class VkWindow : public Window
 	{
 	protected:
 		vk::PhysicalDevice physicalDevice;
@@ -208,8 +234,8 @@ namespace Injector
 		static const std::vector<const char*> DefaultDeviceExtensions;
 		static const size_t DefaultFrameLag;
 
-		VulkanWindow(const std::vector<const char*>& deviceLayers = DefaultDeviceLayers, const std::vector<const char*>& deviceExtensions = DefaultDeviceExtensions, size_t frameLag = DefaultFrameLag, std::string title = "Injector Engine - Editor (Vulkan)", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
-		~VulkanWindow();
+		VkWindow(const std::vector<const char*>& deviceLayers = DefaultDeviceLayers, const std::vector<const char*>& deviceExtensions = DefaultDeviceExtensions, size_t frameLag = DefaultFrameLag, std::string title = "Injector Engine - Editor (Vulkan)", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
+		~VkWindow();
 
 		//void OnFramebufferResize(glm::ivec2 value) override;
 

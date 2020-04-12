@@ -2,7 +2,7 @@
 
 namespace Injector
 {
-	OpenGLWindow::OpenGLWindow(std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(title, size)
+	GlWindow::GlWindow(std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(title, size)
 	{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -19,14 +19,14 @@ namespace Injector
 			throw std::runtime_error("Failed to load OpenGL loader.");
 	}
 
-	void OpenGLWindow::OnFramebufferResize(glm::ivec2 size)
+	void GlWindow::OnFramebufferResize(glm::ivec2 size)
 	{
 		glViewport(0, 0, size.x, size.y);
 	}
-	void OpenGLWindow::OnDraw()
+	void GlWindow::OnDraw()
 	{
 		glfwMakeContextCurrent(instance);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		// Draw
 
