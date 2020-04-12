@@ -1,17 +1,12 @@
 #pragma once
 #include <injector_engine_config.hpp>
 
-#ifdef GLAD_DEBUG
-#include <glad/glad_debug.h>
-#else
-#include <glad/glad_release.h>
-#endif // GLAD_DEBUG
-
 #ifdef VULKAN_FOUND
 #define VULKAN_HPP_TYPESAFE_CONVERSION 1
 #include <vulkan/vulkan.hpp>
 #endif // VULKAN_FOUND
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>

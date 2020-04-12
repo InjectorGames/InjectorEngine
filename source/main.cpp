@@ -1,4 +1,3 @@
-#define GLAD_DEBUG
 #include <injector_engine.hpp>
 
 int main()
