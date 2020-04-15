@@ -1,35 +1,49 @@
-#include <injector_engine.hpp>
+#include <injector_engine/opengl.hpp>
 
-namespace Injector
+namespace InjectorEngine
 {
-	GlWindow::GlWindow(std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(title, size)
+	GlWindow::GlWindow(bool _isES, std::string _title, glm::ivec2 _size, GLFWmonitor* monitor, GLFWwindow* share) : Window(_title + (_isES ? " (OpenGL ES)" : " (OpenGL)"), _size)
 	{
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		if (_isES)
+		{
+			window = nullptr;
+		}
+		else
+		{
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
-		instance = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
+			window = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
+		}
+		
+		if (!window)
+		{
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-		if (!instance)
-			throw std::runtime_error("Failed to create OpenGL window instance.");
+			window = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
 
-		glfwMakeContextCurrent(instance);
+			if (!window)
+				throw std::runtime_error("Failed to create OpenGL/ES window.");
 
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-			throw std::runtime_error("Failed to load OpenGL loader.");
+			_isES = true;
+		}
+
+		isES = _isES;
+
+		glfwMakeContextCurrent(window);
+		glbinding::initialize(glfwGetProcAddress);
+	}
+
+	bool GlWindow::IsES() const
+	{
+		return isES;
 	}
 
 	void GlWindow::OnFramebufferResize(glm::ivec2 size)
 	{
-		glViewport(0, 0, size.x, size.y);
-	}
-	void GlWindow::OnDraw()
-	{
-		glfwMakeContextCurrent(instance);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-		// Draw
-
-		glfwSwapBuffers(instance);
+		gl::glViewport(0, 0, size.x, size.y);
 	}
 }

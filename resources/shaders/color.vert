@@ -1,5 +1,7 @@
-in highp vec3 v_Position;
-uniform highp mat4 u_MVP;
+#version 330
+
+in vec3 v_Position;
+uniform mat4 u_MVP;
 
 void main()
 {

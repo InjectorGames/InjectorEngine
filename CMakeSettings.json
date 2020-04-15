@@ -15,6 +15,41 @@
           "name": "GLFW_VULKAN_STATIC",
           "value": "False",
           "type": "BOOL"
+        },
+        {
+          "name": "GLFW_BUILD_DOCS",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "GLFW_INSTALL",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "OPTION_BUILD_EXAMPLES",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "OPTION_BUILD_TOOLS",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "BUILD_SHARED_LIBS",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENTITYX_BUILD_SHARED",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENTITYX_BUILD_TESTING",
+          "value": "False",
+          "type": "BOOL"
         }
       ]
     },
@@ -31,7 +66,42 @@
       "variables": [
         {
           "name": "GLFW_VULKAN_STATIC",
-          "value": "True",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "BUILD_SHARED_LIBS",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "OPTION_BUILD_EXAMPLES",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "OPTION_BUILD_TOOLS",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENTITYX_BUILD_SHARED",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENTITYX_BUILD_TESTING",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "GLFW_INSTALL",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "GLFW_BUILD_DOCS",
+          "value": "False",
           "type": "BOOL"
         }
       ]

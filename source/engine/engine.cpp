@@ -1,12 +1,10 @@
-#include <injector_engine.hpp>
+#include <injector_engine/engine.hpp>
 
-namespace Injector
+namespace InjectorEngine
 {
 	bool Engine::isInitialized = false;
 	Engine::DebugLevelType Engine::debugLevel = Engine::DebugLevelType::Full;
-
-	std::set<std::shared_ptr<System>> Engine::systems = {};
-	std::set<std::shared_ptr<Window>> Engine::windows = {};
+	std::set<Window*> Engine::windows = {};
 
 	const std::string Engine::Name = "Injector Engine";
 
@@ -25,11 +23,6 @@ namespace Injector
 		auto size = glm::ivec2(width, height);
 		for (const auto& window : windows)
 			window->OnFramebufferResize(size);
-	}
-
-	bool Engine::CompareSystem(const std::shared_ptr<System>& a, const std::shared_ptr<System>& b)
-	{
-		return a->updateQueue < b->updateQueue;
 	}
 
 	bool Engine::IsInitialized()
@@ -60,30 +53,26 @@ namespace Injector
 		glfwTerminate();
 		isInitialized = false;
 	}
-	void Engine::BeginUpdate()
+	void Engine::Update()
 	{
+		for (const auto& window : windows)
+			window->OnUpdateBegin();
+
 		int endUpdate = 0;
 
-		while (!endUpdate)
+		while (endUpdate != windows.size())
 		{
 			for (const auto& window : windows)
 			{
-				auto windowInstance = window->GetInstance();
-				endUpdate |= glfwWindowShouldClose(windowInstance);
-
-				for (const auto& system : systems)
-					system->OnUpdate();
-
-				window->OnDraw();
+				endUpdate += glfwWindowShouldClose(window->GetWindow());
+				window->OnUpdate();
 			}
 
 			glfwPollEvents();
 		}
-	}
-	void Engine::EndUpdate()
-	{
-		windows = {};
-		systems = {};
+
+		for (const auto& window : windows)
+			window->OnUpdateEnd();
 	}
 
 	Engine::DebugLevelType Engine::GetDebugLevel()
@@ -95,38 +84,19 @@ namespace Injector
 		return debugLevel != DebugLevelType::Off;
 	}
 
-	void Engine::AddSystem(std::shared_ptr<System> system)
-	{
-		if (!systems.emplace(system).second)
-			throw std::runtime_error("Failed to add engine system.");
-	}
-	void Engine::RemoveSystem(const std::shared_ptr<System>& system)
-	{
-		if (!systems.erase(system))
-			throw std::runtime_error("Failed to remove engine system.");
-	}
-	const std::set<std::shared_ptr<System>>& Engine::GetSystems()
-	{
-		return systems;
-	}
-
-	void Engine::AddWindow(std::shared_ptr<Window> window)
+	void Engine::AddWindow(Window* window)
 	{
 		if (!windows.emplace(window).second)
 			throw std::runtime_error("Failed to add engine window.");
 
-		auto windowInstance = window->GetInstance();
-		glfwSetWindowSizeCallback(windowInstance, WindowSizeCallback);
-		glfwSetFramebufferSizeCallback(windowInstance, FramebufferSizeCallback);
+		auto _window = window->GetWindow();
+		glfwSetWindowSizeCallback(_window, WindowSizeCallback);
+		glfwSetFramebufferSizeCallback(_window, FramebufferSizeCallback);
 	}
-	void Engine::RemoveWindow(const std::shared_ptr<Window>& window)
+	void Engine::RemoveWindow(Window* window)
 	{
 		if (!windows.erase(window))
 			throw std::runtime_error("Failed to remove engine window.");
-	}
-	const std::set<std::shared_ptr<Window>>& Engine::GetWindows()
-	{
-		return windows;
 	}
 
 	std::string Engine::ReadTextFromFile(const std::string& filePath)

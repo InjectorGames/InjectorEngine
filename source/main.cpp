@@ -1,41 +1,34 @@
-#include <injector_engine.hpp>
+#include <injector_engine/engine.hpp>
+#include <injector_engine/opengl.hpp>
+#include <injector_engine/vulkan.hpp>
+
+#undef VULKAN_FOUND
 
 int main()
 {
-	Injector::Engine::Initialize();
+	InjectorEngine::Engine::Initialize();
 
-#ifdef  VULKAN_FOUND
-	Injector::Vulkan::Initialize();
-#endif // VULKAN_FOUND
-
-	// Add systems here
-	
+#ifdef VULKAN_FOUND
+	InjectorEngine::Vulkan::Initialize();
 	//Injector::Engine::AddWindow(std::make_shared<Injector::VkWindow>());
-	//Injector::Engine::AddWindow(std::make_shared<Injector::GlWindow>());
-	Injector::Engine::AddWindow(std::make_shared<Injector::GlesWindow>());
+	InjectorEngine::Engine::BeginUpdate();
+	InjectorEngine::Vulkan::Terminate();
+#else
+	auto window = new InjectorEngine::GlWindow(true);
+	InjectorEngine::Engine::AddWindow(window);
 
-	/*
-	try
-	{
-		Injector::Engine::AddWindow(std::make_shared<Injector::GlWindow>());
-	}
-	catch(const std::exception& e)
-	{
-		std::cout << e.what() << "\nTrying to create OpenGL ES window...\n";
-		Injector::Engine::AddWindow(std::make_shared<Injector::GlesWindow>());
-	}
-	*/
+	auto graphics = new InjectorEngine::GlGraphics(window);
+	window->AddSystem(graphics);
 
-	auto shader = new Injector::GlShader("resources/shaders/color.vert", Injector::Shader::Type::Vertex);
-	delete shader;
+	InjectorEngine::Engine::Update();
 
-	Injector::Engine::BeginUpdate();
-	Injector::Engine::EndUpdate();
+	window->RemoveSystem(graphics);
+	delete graphics;
 
-#ifdef  VULKAN_FOUND
-	Injector::Vulkan::Terminate();
+	InjectorEngine::Engine::RemoveWindow(window);
+	delete window;
 #endif // VULKAN_FOUND
 
-	Injector::Engine::Terminate();
+	InjectorEngine::Engine::Terminate();
 	return 0;
 }

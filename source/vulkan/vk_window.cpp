@@ -1,6 +1,6 @@
-#include <injector_engine.hpp>
+#include <injector_engine/vulkan.hpp>
 
-namespace Injector
+namespace InjectorEngine
 {
 	const std::vector<const char*> VkWindow::DefaultDeviceLayers = Vulkan::DefaultInstanceLayers;
 	const std::vector<const char*> VkWindow::DefaultDeviceExtensions =
@@ -12,9 +12,9 @@ namespace Injector
 	VkWindow::VkWindow(const std::vector<const char*>& deviceLayers, const std::vector<const char*>& deviceExtensions, size_t frameLag, std::string title, glm::ivec2 size, GLFWmonitor* monitor, GLFWwindow* share) : Window(title, size)
 	{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		instance = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
+		window = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
 
-		if (!instance)
+		if (!window)
 			throw std::runtime_error("Failed to create Vulkan window instance.");
 
 		/*
@@ -181,7 +181,7 @@ namespace Injector
 		*/
 	}
 
-	void VkWindow::OnDraw()
+	void OnDraw()
 	{
 		/*
 		device.waitForFences(1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);

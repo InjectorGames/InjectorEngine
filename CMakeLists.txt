@@ -9,8 +9,8 @@ project(InjectorEngine VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_subdirectory(external/entt)
-add_subdirectory(external/glad)
+add_subdirectory(external/entityx)
+add_subdirectory(external/glbinding)
 add_subdirectory(external/glfw)
 add_subdirectory(external/glm)
 
@@ -20,22 +20,23 @@ find_package(Vulkan)
 # TODO: FindLua, FindLibLZMA, FindGLUT
 
 set(InjectorEngine_SOURCE
-	source/engine.cpp
 	source/main.cpp 
-    source/shader.cpp
-	source/system.cpp
-	source/window.cpp
 
+	source/engine/engine.cpp
+	source/engine/shader.cpp
+	source/engine/system.cpp
+	source/engine/window.cpp
+
+	source/opengl/gl_graphics.cpp
+	source/opengl/gl_material.cpp
+	source/opengl/gl_material_color.cpp
 	source/opengl/gl_shader.cpp
 	source/opengl/gl_window.cpp
-
-	source/opengles/gles_shader.cpp
-	source/opengles/gles_window.cpp
 )
 
 set(InjectorEngine_LIBRARIES
-	EnTT::EnTT
-	glad
+	entityx
+	glbinding::glbinding
 	glfw
 	glm::glm
 )
@@ -43,22 +44,25 @@ set(InjectorEngine_LIBRARIES
 set(InjectorEngine_INCLUDE_DIRS
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
-	${ENTT_SOURCE_DIR}/single_include
-	${GLAD_SOURCE_DIR}/include
+	${ENTITYX_SOURCE_DIR}/entityx
+	${GLBINDING_SOURCE_DIR}source/glbinding/include
 	${GLFW_SOURCE_DIR}/include
 )
 
 set(InjectorEngine_RESOURCES
 	LICENSE.md
 
+	shaders/color.frag
 	shaders/color.vert
+	shaders/es_color.frag
+	shaders/es_color.vert
 )
 
 if(${Vulkan_FOUND})
 	list(APPEND InjectorEngine_SOURCE
-		source/vulkan/vulkan.cpp
 		source/vulkan/vk_shader.cpp
 		source/vulkan/vk_window.cpp
+		source/vulkan/vulkan.cpp
 	)
 
 	list(APPEND InjectorEngine_LIBRARIES
@@ -75,7 +79,7 @@ if(${Vulkan_FOUND})
 	)
 endif()
 
-configure_file(cmake/injector_engine_config.hpp.in injector_engine_config.hpp)
+configure_file(cmake/config.hpp.in injector_engine/config.hpp)
 
 add_library(InjectorEngine STATIC ${InjectorEngine_SOURCE})
 target_link_libraries(InjectorEngine PUBLIC ${InjectorEngine_LIBRARIES})

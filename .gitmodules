@@ -1,12 +1,12 @@
-[submodule "external/glfw"]
-	path = external/glfw
-	url = https://github.com/glfw/glfw
-[submodule "external/entt"]
-	path = external/entt
-	url = https://github.com/skypjack/entt
-[submodule "external/glm"]
-	path = external/glm
-	url = https://github.com/g-truc/glm
+[submodule "external/entityx"]
+	path = external/entityx
+	url = https://github.com/alecthomas/entityx
 [submodule "external/glad"]
 	path = external/glad
 	url = https://github.com/InjectorGames/glad
+[submodule "external/glfw"]
+	path = external/glfw
+	url = https://github.com/glfw/glfw
+[submodule "external/glm"]
+	path = external/glm
+	url = https://github.com/g-truc/glm

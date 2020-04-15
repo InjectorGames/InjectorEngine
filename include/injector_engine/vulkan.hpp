@@ -1,183 +1,10 @@
 #pragma once
-#include <injector_engine_config.hpp>
+#include <injector_engine/engine.hpp>
 
 #ifdef VULKAN_FOUND
-#define VULKAN_HPP_TYPESAFE_CONVERSION 1
-#include <vulkan/vulkan.hpp>
-#endif // VULKAN_FOUND
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <entt/entt.hpp>
-#include <glm/glm.hpp>
-
-#include <set>
-#include <map>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <iostream>
-#include <stdexcept>
-#include <algorithm>
-#include <functional>
-
-namespace Injector
+namespace InjectorEngine
 {
-	class System
-	{
-	public:
-		const int updateQueue;
-		System(int updateQueue);
-
-		virtual void OnUpdate() = 0;
-	};
-
-	class Shader
-	{
-	public:
-		enum class Type
-		{
-			Vertex,
-			TessellationControl,
-			TessellationEvaluation,
-			Geometry,
-			Fragment,
-			Compute,
-
-			Raygen,
-			AnyHit,
-			ClosestHit,
-			Miss,
-			Intersection,
-			Callable,
-		};
-	protected:
-		Type type;
-	public:
-		Shader(Type type);
-		Type GetType();
-	};
-
-	class Window
-	{
-	protected:
-		GLFWwindow* instance;
-
-		std::string title;
-		glm::ivec2 windowSize;
-		glm::ivec2 framebufferSize;
-	public:
-		Window(std::string title = "Injector Engine - Editor", glm::ivec2 size = glm::ivec2(800, 600));
-		~Window();
-
-		GLFWwindow* GetInstance() const;
-
-		const std::string& GetTitle() const;
-		virtual void SetTitle(std::string title);
-
-		const glm::ivec2& GetWindowSize() const;
-		virtual void SetWindowSize(glm::ivec2 size);
-		virtual void OnWindowResize(glm::ivec2 size);
-
-		const glm::ivec2& GetFramebufferSize() const;
-		virtual void OnFramebufferResize(glm::ivec2 size);
-
-		virtual void OnDraw() = 0;
-	};
-
-	class Engine final
-	{
-	public:
-		enum class DebugLevelType
-		{
-			Full,
-			Trace,
-			Info,
-			Warn,
-			Error,
-			Fatal,
-			Off,
-		};
-	private:
-		static bool isInitialized;
-		static DebugLevelType debugLevel;
-
-		static std::set<std::shared_ptr<System>> systems;
-		static std::set<std::shared_ptr<Window>> windows;
-
-		static void ErrorCallback(int error, const char* description);
-		static void WindowSizeCallback(GLFWwindow* window, int width, int height);
-		static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
-
-		static bool CompareSystem(const std::shared_ptr<System>& a, const std::shared_ptr<System>& b);
-	public:
-		static const std::string Name;
-
-		static bool IsInitialized();
-		static void Initialize(DebugLevelType debugLevel = DebugLevelType::Warn);
-		static void Terminate();
-		static void BeginUpdate();
-		static void EndUpdate();
-
-		static DebugLevelType GetDebugLevel();
-		static bool IsDebugEnabled();
-
-		static void AddSystem(std::shared_ptr<System> system);
-		static void RemoveSystem(const std::shared_ptr<System>& system);
-		static const std::set<std::shared_ptr<System>>& GetSystems();
-
-		static void AddWindow(std::shared_ptr<Window> window);
-		static void RemoveWindow(const std::shared_ptr<Window>& window);
-		static const std::set<std::shared_ptr<Window>>& GetWindows();
-
-		static std::string ReadTextFromFile(const std::string& filePath);
-		static std::vector<uint8_t> ReadBytesFromFile(const std::string& filePath);
-	};
-
-	class GlShader : public Shader
-	{
-	protected:
-		GLuint instance;
-
-		static GLenum TypeToEnum(Type type);
-		static void SetSource(GLuint shader, const std::vector<const GLchar*>& source);
-		static GLint GetCompileStatus(GLuint shader);
-		static std::string GetInfoLog(GLuint shader);
-	public:
-		GlShader(const std::string& filePath, Type type);
-		~GlShader();
-
-		bool operator==(GlShader const& s) const noexcept;
-		bool operator!=(GlShader const& s) const noexcept;
-		bool operator<(GlShader const& s) const noexcept;
-	};
-
-	class GlWindow : public Window
-	{
-	public:
-		GlWindow(std::string title = "Injector Engine - Editor (OpenGL)", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
-
-		void OnFramebufferResize(glm::ivec2 size) override;
-		void OnDraw() override;
-	};
-
-	class GlesShader : public Shader
-	{
-	public:
-
-	};
-
-	class GlesWindow : public Window
-	{
-	public:
-		GlesWindow(std::string title = "Injector Engine - Editor (OpenGL ES)", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr);
-
-		void OnFramebufferResize(glm::ivec2 size) override;
-		void OnDraw() override;
-	};
-
-#ifdef VULKAN_FOUND
-	class VkShader : public Shader
+	class VkShader
 	{
 	protected:
 		vk::Device device;
@@ -185,9 +12,9 @@ namespace Injector
 	public:
 		static const std::string DefaultMainName;
 
-		VkShader(vk::Device device, const std::vector<uint32_t>& shaderCode, Type type);
-		VkShader(vk::Device device, const std::vector<uint8_t>& shaderCode, Type type);
-		VkShader(vk::Device device, const std::string& filePath, Type type);
+		VkShader(vk::Device device, const std::vector<uint32_t>& shaderCode);
+		VkShader(vk::Device device, const std::vector<uint8_t>& shaderCode);
+		VkShader(vk::Device device, const std::string& filePath);
 
 		~VkShader();
 
@@ -238,8 +65,6 @@ namespace Injector
 		~VkWindow();
 
 		//void OnFramebufferResize(glm::ivec2 value) override;
-
-		void OnDraw() override;
 	};
 
 	class Vulkan

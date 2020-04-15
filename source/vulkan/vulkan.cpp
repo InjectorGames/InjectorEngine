@@ -1,4 +1,4 @@
-#include <injector_engine.hpp>
+#include <injector_engine/vulkan.hpp>
 
 PFN_vkCreateDebugUtilsMessengerEXT pfnVkCreateDebugUtilsMessengerEXT;
 PFN_vkDestroyDebugUtilsMessengerEXT pfnVkDestroyDebugUtilsMessengerEXT;
@@ -21,7 +21,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc(VkDebugUtilsMessageSeverityFlagB
 	return VK_FALSE;
 }
 
-namespace Injector
+namespace InjectorEngine
 {
 	bool Vulkan::isInitialized = false;
 

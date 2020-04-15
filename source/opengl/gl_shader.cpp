@@ -1,79 +1,101 @@
-#include <injector_engine.hpp>
+#include <injector_engine/opengl.hpp>
 
-namespace Injector
+namespace InjectorEngine
 {
-	GLenum GlShader::TypeToEnum(Type type)
+	gl::GLenum GlShader::TypeToEnum(ShaderType type)
 	{
 		switch (type)
 		{
 		default:
-			throw std::runtime_error("Unsupported shader type for OpenGL.");
-		case Injector::Shader::Type::Vertex:
-			return GL_VERTEX_SHADER;
-		case Injector::Shader::Type::TessellationControl:
-			return GL_TESS_CONTROL_SHADER;
-		case Injector::Shader::Type::TessellationEvaluation:
-			return GL_TESS_EVALUATION_SHADER;
-		case Injector::Shader::Type::Geometry:
-			return GL_GEOMETRY_SHADER;
-		case Injector::Shader::Type::Fragment:
-			return GL_FRAGMENT_SHADER;
-		case Injector::Shader::Type::Compute:
-			return GL_COMPUTE_SHADER;
+			throw std::runtime_error("Unsupported OpenGL shader type.");
+		case InjectorEngine::ShaderType::Vertex:
+			return gl::GL_VERTEX_SHADER;
+		case InjectorEngine::ShaderType::TessellationControl:
+			return gl::GL_TESS_CONTROL_SHADER;
+		case InjectorEngine::ShaderType::TessellationEvaluation:
+			return gl::GL_TESS_EVALUATION_SHADER;
+		case InjectorEngine::ShaderType::Geometry:
+			return gl::GL_GEOMETRY_SHADER;
+		case InjectorEngine::ShaderType::Fragment:
+			return gl::GL_FRAGMENT_SHADER;
+		case InjectorEngine::ShaderType::Compute:
+			return gl::GL_COMPUTE_SHADER;
 		}
 	}
-	void GlShader::SetSource(GLuint shader, const std::vector<const GLchar*>& source)
+
+	gl::GLuint GlShader::Create(ShaderType type)
 	{
-		glShaderSource(shader, static_cast<GLsizei>(source.size()), source.data(), nullptr);
+		return gl::glCreateShader(TypeToEnum(type));
 	}
-	GLint GlShader::GetCompileStatus(GLuint shader)
+	void GlShader::Delete(gl::GLuint shader)
 	{
-		GLint success;
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		gl::glDeleteShader(shader);
+	}
+
+	void GlShader::SetSource(gl::GLuint shader, const char* source)
+	{
+		gl::glShaderSource(shader, 1, &source, nullptr);
+	}
+	void GlShader::SetSource(gl::GLuint shader, const std::vector<const char*>& sources)
+	{
+		gl::glShaderSource(shader, static_cast<gl::GLsizei>(sources.size()), sources.data(), nullptr);
+	}
+
+	void GlShader::Compile(gl::GLuint shader)
+	{
+		gl::glCompileShader(shader);
+	}
+	bool GlShader::GetCompileStatus(gl::GLuint shader)
+	{
+		gl::GLint success;
+		gl::glGetShaderiv(shader, gl::GL_COMPILE_STATUS, &success);
 		return success;
 	}
-	std::string GlShader::GetInfoLog(GLuint shader)
+	std::string GlShader::GetInfoLog(gl::GLuint shader)
 	{
-		GLint length;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
-		std::string buffer(length, ' ');
-		glGetShaderInfoLog(shader, length, &length, &buffer[0]);
-		return buffer;
+		gl::GLint length;
+		gl::glGetShaderiv(shader, gl::GL_INFO_LOG_LENGTH, &length);
+		std::string infoLog(length, ' ');
+		gl::glGetShaderInfoLog(shader, length, &length, &infoLog[0]);
+		return infoLog;
 	}
 
-	GlShader::GlShader(const std::string& filePath, Type type) : Shader(type)
+	GlShader::GlShader(ShaderType type, const std::vector<const char*>& sources) :
+		Shader(type), shader(Create(type))
 	{
-		auto shaderSource = Engine::ReadTextFromFile(filePath);
-		shaderSource.insert(0, "#define highp\n#define mediump\n#define lowp\n");
+		SetSource(shader, sources);
+		Compile(shader);
 
-		instance = glCreateShader(TypeToEnum(type));
-
-		std::vector<const GLchar*> source;
-		SetSource(instance, source);
-
-		glCompileShader(instance);
-
-		if (GetCompileStatus(instance) == GL_FALSE)
-			throw std::runtime_error("Failed to compile OpenGL shader. " + GetInfoLog(instance));
+		if (!GetCompileStatus(shader))
+			throw std::runtime_error("Failed to compile OpenGL shader. " + GetInfoLog(shader));
 	}
+	GlShader::GlShader(ShaderType type, const std::string& string, bool readFile) :
+		Shader(type), shader(Create(type))
+	{
+		std::string sourceCode;
+
+		if (readFile)
+			sourceCode = Engine::ReadTextFromFile(string);
+		else
+			sourceCode = string;
+
+		std::vector<const char*> sources;
+		sources.push_back(sourceCode.c_str());
+
+		// TODO: parse include
+
+		SetSource(shader, sources);
+		Compile(shader);
+
+		if (!GetCompileStatus(shader))
+		{
+			auto infoLog = GetInfoLog(shader);
+			throw std::runtime_error("Failed to compile OpenGL shader. " + infoLog);
+		}	
+	}
+
 	GlShader::~GlShader()
 	{
-		glDeleteShader(instance);
-		instance = GL_ZERO;
-	}
-
-	bool GlShader::operator==(GlShader const& s) const noexcept
-	{
-		return instance == s.instance;
-	}
-
-	bool GlShader::operator!=(GlShader const& s) const noexcept
-	{
-		return instance != s.instance;
-	}
-
-	bool GlShader::operator<(GlShader const& s) const noexcept
-	{
-		return instance < s.instance;
+		Delete(shader);
 	}
 }
