@@ -14,7 +14,7 @@ int main()
 	//InjectorEngine::Engine::BeginUpdate();
 	InjectorEngine::Vulkan::Terminate();
 #else
-	auto window = new InjectorEngine::GlWindow(true);
+	auto window = new InjectorEngine::GlWindow();
 	InjectorEngine::Engine::AddWindow(window);
 
 

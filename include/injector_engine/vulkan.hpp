@@ -122,5 +122,5 @@ namespace InjectorEngine
 		static std::vector<vk::Semaphore> CreateSemaphores(vk::Device device, size_t count, vk::SemaphoreCreateFlags flags = {});
 		static void DestroySemaphores(vk::Device device, const std::vector<vk::Semaphore>& semaphores);
 	};
-#endif // VULKAN_FOUND
 }
+#endif // VULKAN_FOUND

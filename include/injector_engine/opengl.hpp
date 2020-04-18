@@ -238,7 +238,7 @@ namespace InjectorEngine
 
 		inline static void SetSource(uint32_t shader, const char* source)
 		{
-			glShaderSource(static_cast<GLuint>(shader), GL_ONE, &static_cast<const GLchar*>(source), nullptr);
+			glShaderSource(static_cast<GLuint>(shader), GL_ONE, static_cast<const GLchar* const*>(&source), nullptr);
 		}
 		inline static void SetSource(uint32_t shader, const std::vector<const char*>& sources)
 		{
@@ -521,7 +521,7 @@ namespace InjectorEngine
 		}
 		inline static void Delete(uint32_t buffer)
 		{
-			glDeleteBuffers(GL_ONE, &static_cast<GLuint>(buffer));
+			glDeleteBuffers(GL_ONE, static_cast<const GLuint*>(&buffer));
 		}
 		inline static void Bind(GlBufferType type, uint32_t buffer)
 		{
@@ -570,7 +570,7 @@ namespace InjectorEngine
 			SetData(type, data, usage);
 		}
 		template<class TData>
-		inline void SetData(const std::vector<TData>& data, GlBufferUsage usage)
+		inline void SetData(const std::vector<TData>& data, GlBufferUsage _usage)
 		{
 			size = data.size() * sizeof(TData);
 			usage = _usage;
@@ -649,7 +649,7 @@ namespace InjectorEngine
 		}
 		inline static void Delete(uint32_t vertexArray)
 		{
-			glDeleteVertexArrays(GL_ONE, &static_cast<GLuint>(vertexArray));
+			glDeleteVertexArrays(GL_ONE, static_cast<const GLuint*>(&vertexArray));
 		}
 
 		inline static void Bind(uint32_t vertexArray)
