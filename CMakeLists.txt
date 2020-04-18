@@ -60,14 +60,6 @@ endif()
 
 configure_file(cmake/config.hpp.in injector_engine/config.hpp)
 
-add_library(InjectorEngine STATIC
-	include/injector_engine/engine.hpp
-	include/injector_engine/opengl.hpp
-	include/injector_engine/vulkan.hpp
-)
-target_link_libraries(InjectorEngine PUBLIC ${InjectorEngine_LIBRARIES})
-target_include_directories(InjectorEngine PUBLIC ${InjectorEngine_INCLUDE_DIRS})
-
 add_executable(InjectorEngineEditor
 	source/main.cpp
 )

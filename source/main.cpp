@@ -17,7 +17,6 @@ int main()
 	auto window = new InjectorEngine::GlWindow();
 	InjectorEngine::Engine::AddWindow(window);
 
-
 	auto systems = window->GetSystems();
 	systems->add<InjectorEngine::TransformSystem>();
 	systems->add<InjectorEngine::CameraSystem>();

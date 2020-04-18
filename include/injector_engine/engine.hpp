@@ -63,6 +63,84 @@ namespace InjectorEngine
 		Orthographic,
 	};
 
+	struct WindowResizeEvent : public Event<WindowResizeEvent>
+	{
+		glm::ivec2 size;
+		EntityManager* entities;
+
+		WindowResizeEvent(glm::ivec2 _size, EntityManager* _entities) :
+			size(_size),
+			entities(_entities)
+		{}
+	};
+	struct FramebufferResizeEvent : public Event<FramebufferResizeEvent>
+	{
+		glm::ivec2 size;
+		EntityManager* entities;
+
+		FramebufferResizeEvent(glm::ivec2 _size, EntityManager* _entities) :
+			size(_size),
+			entities(_entities)
+		{}
+	};
+
+	struct TransformComponent : public Component<TransformComponent>
+	{
+		glm::vec3 scale;
+		glm::vec3 position;
+		glm::quat rotation;
+		glm::mat4 matrix;
+		bool isMatrixDirty;
+
+		TransformComponent(glm::vec3 _scale = glm::vec3(1.0f), glm::vec3 _position = glm::vec3(0.0f), glm::quat _rotation = glm::quat(glm::vec3(0.0f)), glm::mat4 _matrix = glm::mat4(1.0f), bool _isMatrixDirty = true) :
+			scale(_scale),
+			position(_position),
+			rotation(_rotation),
+			matrix(_matrix),
+			isMatrixDirty(_isMatrixDirty)
+		{}
+	};
+
+	struct TranslateComponent : public Component<TranslateComponent>
+	{
+		glm::vec3 translation;
+
+		TranslateComponent(glm::vec3 _translation = glm::vec3(0.0f)) :
+			translation(_translation)
+		{}
+	};
+	struct RotateComponent : public Component<RotateComponent>
+	{
+		glm::quat rotation;
+
+		RotateComponent(glm::quat _rotation = glm::quat(glm::vec3(0.0f))) :
+			rotation(_rotation)
+		{}
+	};
+
+	struct CameraComponent : public Component<CameraComponent>
+	{
+		CameraType type;
+		int renderQueue;
+		float fieldOfView;
+		float aspectRatio;
+		glm::vec4 frustum;
+		glm::vec2 clipPlane;
+		glm::mat4 matrix;
+		bool isMatrixDirty;
+
+		CameraComponent(CameraType _type = CameraType::Perspective, int _renderQueue = 0, float _fieldOfView = glm::radians(60.0f), float _aspectRatio = 4.0f / 3.0f, glm::vec4 _frustum = glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f), glm::vec2 _clipPlane = glm::vec2(0.01f, 1000.0f), glm::mat4 _matrix = glm::mat4(1.0f), bool _isMatrixDirty = true) :
+			type(_type),
+			renderQueue(_renderQueue),
+			fieldOfView(_fieldOfView),
+			aspectRatio(_aspectRatio),
+			frustum(_frustum),
+			clipPlane(_clipPlane),
+			matrix(_matrix),
+			isMatrixDirty(_isMatrixDirty)
+		{}
+	};
+
 	class Window
 	{
 	protected:
@@ -129,6 +207,7 @@ namespace InjectorEngine
 		virtual void OnWindowResize(glm::ivec2 _size)
 		{
 			size = _size;
+			events->emit<WindowResizeEvent>(_size, entities);
 		}
 
 		const glm::ivec2& GetFramebufferSize() const
@@ -137,7 +216,8 @@ namespace InjectorEngine
 		}
 		virtual void OnFramebufferResize(glm::ivec2 _size)
 		{
-			framebufferSize = size;
+			framebufferSize = _size;
+			events->emit<FramebufferResizeEvent>(_size, entities);
 		}
 
 		EventManager* GetEvents() const
@@ -179,15 +259,25 @@ namespace InjectorEngine
 		}
 		static void WindowSizeCallback(GLFWwindow* window, int width, int height)
 		{
-			auto size = glm::ivec2(width, height);
-			for (const auto& window : windows)
-				window->OnWindowResize(size);
+			for (const auto& _window : windows)
+			{
+				if (window == _window->GetWindow())
+				{
+					_window->OnWindowResize(glm::ivec2(width, height));
+					return;
+				}
+			}
 		}
 		static void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 		{
-			auto size = glm::ivec2(width, height);
-			for (const auto& window : windows)
-				window->OnFramebufferResize(size);
+			for (const auto& _window : windows)
+			{
+				if (window == _window->GetWindow())
+				{
+					_window->OnFramebufferResize(glm::ivec2(width, height));
+					return;
+				}
+			}
 		}
 	public:
 		inline static const std::string Name = "Injector Engine";
@@ -307,63 +397,6 @@ namespace InjectorEngine
 		}
 	};
 
-	struct TransformComponent : public Component<TransformComponent>
-	{
-		glm::vec3 scale;
-		glm::vec3 position;
-		glm::quat rotation;
-		glm::mat4 matrix;
-		bool isMatrixDirty;
-
-		TransformComponent(glm::vec3 _scale = glm::vec3(1.0f), glm::vec3 _position = glm::vec3(0.0f), glm::quat _rotation = glm::quat(glm::vec3(0.0f)), glm::mat4 _matrix = glm::mat4(1.0f), bool _isMatrixDirty = true) :
-			scale(_scale),
-			position(_position),
-			rotation(_rotation),
-			matrix(_matrix),
-			isMatrixDirty(_isMatrixDirty)
-		{}
-	};
-
-	struct TranslateComponent : public Component<TranslateComponent>
-	{
-		glm::vec3 translation;
-
-		TranslateComponent(glm::vec3 _translation = glm::vec3(0.0f)) :
-			translation(_translation)
-		{}
-	};
-	struct RotateComponent : public Component<RotateComponent>
-	{
-		glm::quat rotation;
-
-		RotateComponent(glm::quat _rotation = glm::quat(glm::vec3(0.0f))) :
-			rotation(_rotation)
-		{}
-	};
-
-	struct CameraComponent : public Component<CameraComponent>
-	{
-		CameraType type;
-		int renderQueue;
-		float fieldOfView;
-		float aspectRatio;
-		glm::vec4 frustum;
-		glm::vec2 clipPlane;
-		glm::mat4 matrix;
-		bool isMatrixDirty;
-
-		CameraComponent(CameraType _type = CameraType::Perspective, int _renderQueue = 0, float _fieldOfView = glm::radians(60.0f), float _aspectRatio = 4.0f / 3.0f, glm::vec4 _frustum = glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f), glm::vec2 _clipPlane = glm::vec2(0.01f, 1000.0f), glm::mat4 _matrix = glm::mat4(1.0f), bool _isMatrixDirty = true) :
-			type(_type),
-			renderQueue(_renderQueue),
-			fieldOfView(_fieldOfView),
-			aspectRatio(_aspectRatio),
-			frustum(_frustum),
-			clipPlane(_clipPlane),
-			matrix(_matrix),
-			isMatrixDirty(_isMatrixDirty)
-		{}
-	};
-
 	class TransformSystem : public System<TransformSystem>
 	{
 	public:
@@ -401,9 +434,14 @@ namespace InjectorEngine
 		}
 	};
 
-	class CameraSystem : public System<CameraSystem>
+	class CameraSystem : public System<CameraSystem>, public Receiver<CameraSystem>
 	{
 	public:
+		void configure(EntityManager& entities, EventManager& events) override
+		{
+			events.subscribe<FramebufferResizeEvent>(*this);
+		}
+
 		void update(EntityManager& entities, EventManager& events, TimeDelta deltaTime) override
 		{
 			ComponentHandle<CameraComponent> cameraComponent;
@@ -430,6 +468,21 @@ namespace InjectorEngine
 					}
 
 					cameraComponent->isMatrixDirty = false;
+				}
+			}
+		}
+
+		void receive(const FramebufferResizeEvent& event)
+		{
+			if (event.size.x > 0 && event.size.y > 0)
+			{
+				ComponentHandle<CameraComponent> cameraComponent;
+				auto aspectRation = float(event.size.x) / float(event.size.y);
+
+				for (auto entity : event.entities->entities_with_components(cameraComponent))
+				{
+					cameraComponent->aspectRatio = aspectRation;
+					cameraComponent->isMatrixDirty = true;
 				}
 			}
 		}

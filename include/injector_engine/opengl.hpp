@@ -89,9 +89,8 @@ namespace InjectorEngine
 		UnsignedInt = GL_UNSIGNED_INT,
 	};
 
-	class GlPrimitive
+	struct GlPrimitive
 	{
-	public:
 		inline static const std::vector<float_t> SquareVertices =
 		{
 			-0.5f, -0.5f, 0.0f, -0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f,
@@ -136,71 +135,6 @@ namespace InjectorEngine
 			16, 17, 18, 16, 18, 19,
 			20, 21, 22, 20, 22, 23,
 		};
-	};
-
-	class GlWindow : public Window
-	{
-	protected:
-		bool isES;
-
-		inline static void SetViewport(glm::ivec2 offset, glm::ivec2 size)
-		{
-			glViewport(static_cast<GLdouble>(offset.x), static_cast<GLdouble>(offset.y), static_cast<GLdouble>(size.x), static_cast<GLdouble>(size.y));
-		}
-	public:
-		GlWindow(bool _isES = false, std::string title = "Injector Engine - Editor", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr) :
-			Window(title + (_isES ? " (OpenGL ES)" : " (OpenGL)"), size)
-		{
-			if (_isES)
-			{
-				window = nullptr;
-			}
-			else
-			{
-				glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-				window = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
-			}
-
-			if (!window)
-			{
-				glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-
-				window = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
-
-				if (!window)
-					throw std::runtime_error("Failed to create OpenGL/ES window.");
-
-				_isES = true;
-			}
-
-			isES = _isES;
-
-			glfwMakeContextCurrent(window);
-
-			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-				throw std::runtime_error("Failed to load OpenGL/ES loader.");
-		}
-
-		inline bool IsES() const
-		{
-			return isES;
-		}
-
-		void OnUpdate(double deltaTime) override
-		{
-			glfwMakeContextCurrent(window);
-			Window::OnUpdate(deltaTime);
-			glfwSwapBuffers(window);
-		}
-		void OnFramebufferResize(glm::ivec2 size) override
-		{
-			SetViewport(glm::ivec2(0), size);
-		}
 	};
 
 	class GlShader : public Shader
@@ -719,6 +653,75 @@ namespace InjectorEngine
 		inline void Draw(GlDrawMode mode)
 		{
 			DrawElements(mode, indexCount, drawType);
+		}
+	};
+
+	class GlWindow : public Window
+	{
+	protected:
+		bool isES;
+
+		inline static void SetViewport(glm::ivec2 offset, glm::ivec2 size)
+		{
+			glViewport(static_cast<GLdouble>(offset.x), static_cast<GLdouble>(offset.y), static_cast<GLdouble>(size.x), static_cast<GLdouble>(size.y));
+		}
+	public:
+		GlWindow(bool _isES = false, std::string title = "Injector Engine - Editor", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr) :
+			Window(title, size)
+		{
+			if (_isES)
+			{
+				window = nullptr;
+			}
+			else
+			{
+				glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+				window = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
+			}
+
+			if (!window)
+			{
+				std::cout << "Failed to create OpenGL window, trying ES...\n";
+
+				glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
+				window = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
+
+				if (!window)
+					throw std::runtime_error("Failed to create OpenGL/ES window.");
+
+				_isES = true;
+			}
+
+			isES = _isES;
+
+			SetTitle(_isES ? title + " (OpenGL ES)" : title + " (OpenGL)");
+			glfwMakeContextCurrent(window);
+
+			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+				throw std::runtime_error("Failed to load OpenGL/ES loader.");
+		}
+
+		inline bool IsES() const
+		{
+			return isES;
+		}
+
+		void OnUpdate(double deltaTime) override
+		{
+			glfwMakeContextCurrent(window);
+			Window::OnUpdate(deltaTime);
+			glfwSwapBuffers(window);
+		}
+		void OnFramebufferResize(glm::ivec2 size) override
+		{
+			SetViewport(glm::ivec2(0), size);
+			Window::OnFramebufferResize(size);
 		}
 	};
 
