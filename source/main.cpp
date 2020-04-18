@@ -11,19 +11,20 @@ int main()
 #ifdef VULKAN_FOUND
 	InjectorEngine::Vulkan::Initialize();
 	//Injector::Engine::AddWindow(std::make_shared<Injector::VkWindow>());
-	InjectorEngine::Engine::BeginUpdate();
+	//InjectorEngine::Engine::BeginUpdate();
 	InjectorEngine::Vulkan::Terminate();
 #else
 	auto window = new InjectorEngine::GlWindow(true);
 	InjectorEngine::Engine::AddWindow(window);
 
-	auto graphics = new InjectorEngine::GlGraphics(window);
-	window->AddSystem(graphics);
+
+	auto systems = window->GetSystems();
+	systems->add<InjectorEngine::TransformSystem>();
+	systems->add<InjectorEngine::CameraSystem>();
+	systems->add<InjectorEngine::GlGraphicsSystem>(window);
+	systems->configure();
 
 	InjectorEngine::Engine::Update();
-
-	window->RemoveSystem(graphics);
-	delete graphics;
 
 	InjectorEngine::Engine::RemoveWindow(window);
 	delete window;

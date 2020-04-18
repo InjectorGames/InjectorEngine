@@ -62,7 +62,7 @@ namespace InjectorEngine
 		apiMajorVersion = VK_VERSION_MAJOR(apiVersion);
 		apiMinorVersion = VK_VERSION_MINOR(apiVersion);
 
-		if (debugLevel <= Engine::DebugLevelType::Info)
+		if (debugLevel <= DebugLevel::Info)
 			std::cout << "Supported Vulkan version: " << VersionToString(apiVersion) << std::endl;
 
 		vk::ApplicationInfo applicationInfo(appName.c_str(), appVersion, Engine::Name.c_str(), VK_MAKE_VERSION(INJECTOR_ENGINE_VERSION_MAJOR, INJECTOR_ENGINE_VERSION_MINOR, INJECTOR_ENGINE_VERSION_PATCH), VK_MAKE_VERSION(apiMajorVersion, apiMinorVersion, 0));
@@ -71,7 +71,7 @@ namespace InjectorEngine
 		if (isDebugEnabled)
 			instanceLayers = _instanceLayers;
 
-		if (debugLevel <= Engine::DebugLevelType::Info)
+		if (debugLevel <= DebugLevel::Info)
 		{
 			std::cout << "\nRequired Vulkan instance layers:\n";
 			for (const auto& layer : instanceLayers)
@@ -87,7 +87,7 @@ namespace InjectorEngine
 		if (isDebugEnabled)
 			instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
-		if (debugLevel <= Engine::DebugLevelType::Info)
+		if (debugLevel <= DebugLevel::Info)
 		{
 			std::cout << "\nRequired Vulkan instance extensions:\n";
 			for (const auto& extension : instanceExtensions)
@@ -116,18 +116,18 @@ namespace InjectorEngine
 
 			switch (Engine::GetDebugLevel())
 			{
-			case Engine::DebugLevelType::Full:
-			case Engine::DebugLevelType::Trace:
+			case DebugLevel::Full:
+			case DebugLevel::Trace:
 				severityFlags = vk::DebugUtilsMessageSeverityFlagsEXT(vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose | vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo | vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError);
 				break;
-			case Engine::DebugLevelType::Info:
+			case DebugLevel::Info:
 				severityFlags = vk::DebugUtilsMessageSeverityFlagsEXT(vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo | vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError);
 				break;
-			case Engine::DebugLevelType::Warn:
+			case DebugLevel::Warn:
 				severityFlags = vk::DebugUtilsMessageSeverityFlagsEXT(vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError);
 				break;
-			case Engine::DebugLevelType::Error:
-			case Engine::DebugLevelType::Fatal:
+			case DebugLevel::Error:
+			case DebugLevel::Fatal:
 				severityFlags = vk::DebugUtilsMessageSeverityFlagsEXT(vk::DebugUtilsMessageSeverityFlagBitsEXT::eError);
 				break;
 			}
