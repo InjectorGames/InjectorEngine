@@ -14,19 +14,15 @@ int main()
 	//InjectorEngine::Engine::BeginUpdate();
 	InjectorEngine::Vulkan::Terminate();
 #else
-	auto window = new InjectorEngine::GlWindow();
-	InjectorEngine::Engine::AddWindow(window);
-
+	auto window = InjectorEngine::Engine::InstantiateWindow<InjectorEngine::GlWindow>();
 	auto systems = window->GetSystems();
+	systems->add<InjectorEngine::FirstPersonSystem>();
 	systems->add<InjectorEngine::TransformSystem>();
 	systems->add<InjectorEngine::CameraSystem>();
-	systems->add<InjectorEngine::GlGraphicsSystem>(window);
+	systems->add<InjectorEngine::GlGraphicsSystem>(window->IsES());
 	systems->configure();
 
 	InjectorEngine::Engine::Update();
-
-	InjectorEngine::Engine::RemoveWindow(window);
-	delete window;
 #endif // VULKAN_FOUND
 
 	InjectorEngine::Engine::Terminate();

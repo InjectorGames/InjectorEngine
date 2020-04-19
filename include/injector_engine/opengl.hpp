@@ -20,7 +20,7 @@ namespace InjectorEngine
 		TransformFeedback = GL_TRANSFORM_FEEDBACK_BUFFER, // GL 2.0
 		Uniform = GL_UNIFORM_BUFFER, // GL 3.1
 	};
-	
+
 	enum class GlBufferUsage
 	{
 		// STREAM: The data store contents will be modified once and used at most a few times.
@@ -212,7 +212,7 @@ namespace InjectorEngine
 		}
 		GlShader(ShaderType type, const std::string& string, bool readFile) :
 			Shader(type),
-			shader(Create(type)) 
+			shader(Create(type))
 		{
 			std::string sourceCode;
 
@@ -236,7 +236,7 @@ namespace InjectorEngine
 			}
 		}
 
-		~GlShader()
+		virtual ~GlShader()
 		{
 			Delete(shader);
 		}
@@ -390,7 +390,7 @@ namespace InjectorEngine
 			}
 		}
 
-		~GlMaterial()
+		virtual ~GlMaterial()
 		{
 			Delete(program);
 		}
@@ -409,11 +409,16 @@ namespace InjectorEngine
 			Use(0);
 		}
 
-		virtual void SetModel(const glm::mat4& value) const {}
-		virtual void SetView(const glm::mat4& value) const {}
-		virtual void SetProj(const glm::mat4& value) const {}
-		virtual void SetViewProj(const glm::mat4& value) const {}
-		virtual void SetMVP(const glm::mat4& value) const {}
+		virtual void SetModel(const glm::mat4& value) const
+		{}
+		virtual void SetView(const glm::mat4& value) const
+		{}
+		virtual void SetProj(const glm::mat4& value) const
+		{}
+		virtual void SetViewProj(const glm::mat4& value) const
+		{}
+		virtual void SetMVP(const glm::mat4& value) const
+		{}
 	};
 	class GlColorMaterial : public GlMaterial
 	{
@@ -483,7 +488,7 @@ namespace InjectorEngine
 			usage(_usage),
 			size(0)
 		{}
-		~GlBuffer()
+		virtual ~GlBuffer()
 		{
 			Delete(buffer);
 		}
@@ -571,7 +576,7 @@ namespace InjectorEngine
 			SetPointer(index, size, type, normalized, stride, offset);
 		}
 	};
-	
+
 	class GlBatch
 	{
 	protected:
@@ -593,8 +598,10 @@ namespace InjectorEngine
 	public:
 		const uint32_t vertexArray;
 
-		GlBatch() : vertexArray(Generate()) {}
-		~GlBatch()
+		GlBatch() : vertexArray(Generate())
+		{}
+
+		virtual ~GlBatch()
 		{
 			Delete(vertexArray);
 		}
@@ -660,11 +667,6 @@ namespace InjectorEngine
 	{
 	protected:
 		bool isES;
-
-		inline static void SetViewport(glm::ivec2 offset, glm::ivec2 size)
-		{
-			glViewport(static_cast<GLdouble>(offset.x), static_cast<GLdouble>(offset.y), static_cast<GLdouble>(size.x), static_cast<GLdouble>(size.y));
-		}
 	public:
 		GlWindow(bool _isES = false, std::string title = "Injector Engine - Editor", glm::ivec2 size = glm::ivec2(800, 600), GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr) :
 			Window(title, size)
@@ -679,6 +681,7 @@ namespace InjectorEngine
 				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
+				title += " (OpenGL)";
 				window = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
 			}
 
@@ -690,6 +693,7 @@ namespace InjectorEngine
 				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
+				title += " (OpenGL ES)";
 				window = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, share);
 
 				if (!window)
@@ -700,7 +704,6 @@ namespace InjectorEngine
 
 			isES = _isES;
 
-			SetTitle(_isES ? title + " (OpenGL ES)" : title + " (OpenGL)");
 			glfwMakeContextCurrent(window);
 
 			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -718,14 +721,9 @@ namespace InjectorEngine
 			Window::OnUpdate(deltaTime);
 			glfwSwapBuffers(window);
 		}
-		void OnFramebufferResize(glm::ivec2 size) override
-		{
-			SetViewport(glm::ivec2(0), size);
-			Window::OnFramebufferResize(size);
-		}
 	};
 
-	struct GlRendererComponent : public Component<GlRendererComponent>
+	struct GlRendererComponent final : public ecs::Component<GlRendererComponent>
 	{
 		GlMaterial* material;
 		GlMesh* mesh;
@@ -738,19 +736,17 @@ namespace InjectorEngine
 		{}
 	};
 
-	class GlGraphicsSystem : public System<GlGraphicsSystem>
+	class GlGraphicsSystem final : public ecs::System<GlGraphicsSystem>, public ecs::Receiver<GlGraphicsSystem>
 	{
-	protected:
+	private:
 		GlColorMaterial* colorMaterial;
 
 		GlMesh* squareMesh;
 		GlMesh* cubeMesh;
-
-		Entity mainCamera;
 	public:
-		GlGraphicsSystem(GlWindow* window)
+		GlGraphicsSystem(bool isES)
 		{
-			if (!window->IsES())
+			if (!isES)
 			{
 				auto colorVert = GlShader(ShaderType::Vertex, "resources/shaders/color.vert", true);
 				auto colorFrag = GlShader(ShaderType::Fragment, "resources/shaders/color.frag", true);
@@ -786,65 +782,69 @@ namespace InjectorEngine
 			delete colorMaterial;
 		}
 
-		void configure(EntityManager& entities, EventManager& events) override
+		void configure(ecs::EntityManager& entities, ecs::EventManager& events) override
 		{
-			mainCamera = entities.create();
-			mainCamera.assign<CameraComponent>();
-			mainCamera.assign<TransformComponent>(glm::vec3(-1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			events.subscribe<FramebufferSizeEvent>(*this);
 
 			auto testSquare = entities.create();
 			testSquare.assign<GlRendererComponent>(colorMaterial, squareMesh, true);
 			testSquare.assign<TransformComponent>();
+			testSquare.assign<RotateComponent>(glm::vec3(1.0f, 0.5f, 0.25f));
 		}
-		void update(EntityManager& entities, EventManager& events, TimeDelta deltaTime) override
+		void update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta deltaTime) override
 		{
 			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
 
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			ComponentHandle<TransformComponent> transformComponent;
-			ComponentHandle<CameraComponent> cameraComponent;
-			ComponentHandle<GlRendererComponent> rendererComponent;
+			std::multimap<int, ecs::Entity> cameraEntities;
 
-			std::multimap<int, Entity> cameraEntities;
+			entities.each<CameraComponent, TransformComponent>([&](ecs::Entity entity, CameraComponent& cameraComponent, TransformComponent& transformComponent)
+				{
+					cameraEntities.emplace(cameraComponent.renderQueue, entity);
+				});
 
-			for (auto entity : entities.entities_with_components(cameraComponent, transformComponent))
-				cameraEntities.emplace(cameraComponent->renderQueue, entity);
 
 			for (auto cameraEntity : cameraEntities)
 			{
-				cameraComponent = cameraEntity.second.component<CameraComponent>();
-				transformComponent = cameraEntity.second.component<TransformComponent>();
+				const auto& cameraComponent = *cameraEntity.second.component<CameraComponent>();
+				const auto& transformComponent = *cameraEntity.second.component<TransformComponent>();
 
-				const auto& viewMatrix = transformComponent->matrix;
-				const auto& projMatrix = cameraComponent->matrix;
+				const auto& viewMatrix = transformComponent.matrix;
+				const auto& projMatrix = cameraComponent.matrix;
 				const auto viewProjMatrix = projMatrix * viewMatrix;
-				
-				for (auto rendererEntity : entities.entities_with_components(rendererComponent, transformComponent))
-				{
-					const auto material = rendererComponent->material;
-					const auto mesh = rendererComponent->mesh;
 
-					if (rendererComponent->draw && material && mesh)
+				entities.each<GlRendererComponent, TransformComponent>([&](ecs::Entity entity, GlRendererComponent& rendererComponent, TransformComponent& transformComponent)
 					{
-						const auto& modelMatrix = transformComponent->matrix;
-						const auto mvpMatrix = viewProjMatrix * modelMatrix;
+						const auto material = rendererComponent.material;
+						const auto mesh = rendererComponent.mesh;
 
-						material->Use();
-						material->SetModel(modelMatrix);
-						material->SetView(viewMatrix);
-						material->SetProj(projMatrix);
-						material->SetViewProj(viewProjMatrix);
-						material->SetMVP(mvpMatrix);
+						if (rendererComponent.draw && material && mesh)
+						{
+							const auto& modelMatrix = transformComponent.matrix;
+							const auto mvpMatrix = viewProjMatrix * modelMatrix;
 
-						mesh->Bind();
-						mesh->Draw();
-						mesh->Unbind();
+							material->Use();
 
-						material->Unuse();
-					}
-				}
+							material->SetModel(modelMatrix);
+							material->SetView(viewMatrix);
+							material->SetProj(projMatrix);
+							material->SetViewProj(viewProjMatrix);
+							material->SetMVP(mvpMatrix);
+
+							mesh->Bind();
+							mesh->Draw();
+							mesh->Unbind();
+
+							material->Unuse();
+						}
+					});
 			}
+		}
+
+		void receive(const FramebufferSizeEvent& event)
+		{
+			glViewport(0.0, 0.0, static_cast<GLdouble>(event.size.x), static_cast<GLdouble>(event.size.y));
 		}
 	};
 }
