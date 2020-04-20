@@ -4,12 +4,17 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the source code and call cmake from there.")
 endif()
 
-project(InjectorEngine VERSION 0.1.0 LANGUAGES CXX)
+project(InjectorEngine
+	VERSION 0.1.0
+	LANGUAGES CXX
+	DESCRIPTION "C++ Game/Program engine"
+)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_subdirectory(external/entityx)
+add_subdirectory(external/FastNoiseSIMD)
 add_subdirectory(external/glad)
 add_subdirectory(external/glfw)
 add_subdirectory(external/glm)
@@ -21,6 +26,7 @@ find_package(Vulkan)
 
 set(InjectorEngine_LIBRARIES
 	entityx
+	FastNoise::SIMD
 	glad
 	glfw
 	glm::glm
@@ -29,13 +35,14 @@ set(InjectorEngine_LIBRARIES
 set(InjectorEngine_INCLUDE_DIRS
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
+	${FASTNOISESIMD}/include
 	${ENTITYX_SOURCE_DIR}/entityx
 	${GLAD_SOURCE_DIR}/include
 	${GLFW_SOURCE_DIR}/include
 )
 
 set(InjectorEngine_RESOURCES
-	LICENSE.md
+	LICENSE.txt
 
 	shaders/color.frag
 	shaders/color.vert

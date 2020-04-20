@@ -1,3 +1,15 @@
+## Requirements
+* C++17 comiler
+* CMake 3.10+
+* Vulkan SDK (optional)
 
-Linux Build:
-Install doxygen and X11 xorg-dev
+### Linux
+* xorg-dev package
+* doxygen package
+
+## Third-Party
+* entityx
+* fastnoise
+* glad
+* glfw
+* glm

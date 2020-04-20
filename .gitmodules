@@ -1,3 +1,15 @@
+[submodule "external/entityx"]
+	path = external/entityx
+	url = https://github.com/InjectorGames/entityx
+[submodule "external/FastNoiseSIMD"]
+	path = external/FastNoiseSIMD
+	url = https://github.com/InjectorGames/FastNoiseSIMD
 [submodule "external/glad"]
 	path = external/glad
 	url = https://github.com/InjectorGames/glad
+[submodule "external/glfw"]
+	path = external/glfw
+	url = https://github.com/InjectorGames/glfw
+[submodule "external/glm"]
+	path = external/glm
+	url = https://github.com/InjectorGames/glm
