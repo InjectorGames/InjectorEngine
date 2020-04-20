@@ -3,6 +3,14 @@
 
 namespace InjectorEngine
 {
+	enum class GlClearType
+	{
+		Color = GL_COLOR_BUFFER_BIT,
+		Depth = GL_DEPTH_BUFFER_BIT,
+		Stencil = GL_STENCIL_BUFFER_BIT,
+		Accumulation = GL_ACCUM_BUFFER_BIT,
+	};
+
 	enum class GlBufferType
 	{
 		Array = GL_ARRAY_BUFFER, // GL 2.0
@@ -721,6 +729,27 @@ namespace InjectorEngine
 			Window::OnUpdate(deltaTime);
 			glfwSwapBuffers(window);
 		}
+
+		inline static void SetViewport(const glm::ivec2& position, const glm::ivec2& size)
+		{
+			glViewport(static_cast<GLint>(position.x), static_cast<GLint>(position.y), static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y));
+		}
+		inline static void Clear(GlClearType buffer)
+		{
+			glClear(static_cast<GLbitfield>(buffer));
+		}
+		inline static void Clear(GlClearType buffer1, GlClearType buffer2)
+		{
+			glClear(static_cast<GLbitfield>(buffer1) | static_cast<GLbitfield>(buffer2));
+		}
+		inline static void Clear(GlClearType buffer1, GlClearType buffer2, GlClearType buffer3)
+		{
+			glClear(static_cast<GLbitfield>(buffer1) | static_cast<GLbitfield>(buffer2) | static_cast<GLbitfield>(buffer3));
+		}
+		inline static void Clear(GlClearType buffer1, GlClearType buffer2, GlClearType buffer3, GlClearType buffer4)
+		{
+			glClear(static_cast<GLbitfield>(buffer1) | static_cast<GLbitfield>(buffer2) | static_cast<GLbitfield>(buffer3) | static_cast<GLbitfield>(buffer4));
+		}
 	};
 
 	struct GlRendererComponent final : public ecs::Component<GlRendererComponent>
@@ -739,14 +768,17 @@ namespace InjectorEngine
 	class GlGraphicsSystem final : public ecs::System<GlGraphicsSystem>, public ecs::Receiver<GlGraphicsSystem>
 	{
 	private:
+		GlWindow* window;
+
 		GlColorMaterial* colorMaterial;
 
 		GlMesh* squareMesh;
 		GlMesh* cubeMesh;
 	public:
-		GlGraphicsSystem(bool isES)
+		GlGraphicsSystem(GlWindow* _window) : 
+			window(_window)
 		{
-			if (!isES)
+			if (!_window->IsES())
 			{
 				auto colorVert = GlShader(ShaderType::Vertex, "resources/shaders/color.vert", true);
 				auto colorFrag = GlShader(ShaderType::Fragment, "resources/shaders/color.frag", true);
@@ -791,11 +823,10 @@ namespace InjectorEngine
 			testSquare.assign<TransformComponent>();
 			testSquare.assign<RotateComponent>(glm::vec3(1.0f, 0.5f, 0.25f));
 		}
+
 		void update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta deltaTime) override
 		{
-			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
-
-			glClear(GL_COLOR_BUFFER_BIT);
+			GlWindow::Clear(GlClearType::Color);
 
 			std::multimap<int, ecs::Entity> cameraEntities;
 
@@ -821,6 +852,8 @@ namespace InjectorEngine
 
 						if (rendererComponent.draw && material && mesh)
 						{
+							// TODO:
+							// Multiply by parents matrices
 							const auto& modelMatrix = transformComponent.matrix;
 							const auto mvpMatrix = viewProjMatrix * modelMatrix;
 
@@ -844,7 +877,7 @@ namespace InjectorEngine
 
 		void receive(const FramebufferSizeEvent& event)
 		{
-			glViewport(0.0, 0.0, static_cast<GLdouble>(event.size.x), static_cast<GLdouble>(event.size.y));
+			GlWindow::SetViewport(glm::ivec2(0), event.size);
 		}
 	};
 }

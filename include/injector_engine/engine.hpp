@@ -235,6 +235,66 @@ namespace InjectorEngine
 		Middle = GLFW_MOUSE_BUTTON_MIDDLE,
 	};
 
+	struct WindowSizeEvent final : public ecs::Event<WindowSizeEvent>
+	{
+		glm::ivec2 size;
+		glm::ivec2 deltaSize;
+
+		WindowSizeEvent(glm::ivec2 _size, glm::ivec2 _deltaSize) :
+			size(_size),
+			deltaSize(_deltaSize)
+		{}
+	};
+	struct FramebufferSizeEvent final : public ecs::Event<FramebufferSizeEvent>
+	{
+		glm::ivec2 size;
+		glm::ivec2 deltaSize;
+
+		FramebufferSizeEvent(glm::ivec2 _size, glm::ivec2 _deltaSize) :
+			size(_size),
+			deltaSize(_deltaSize)
+		{}
+	};
+	struct ContentScaleEvent final : public ecs::Event<ContentScaleEvent>
+	{
+		glm::vec2 scale;
+		glm::vec2 deltaScale;
+
+		ContentScaleEvent(glm::vec2 _scale, glm::vec2 _deltaScale) :
+			scale(_scale),
+			deltaScale(_deltaScale)
+		{}
+	};
+	struct WindowPositionEvent final : public ecs::Event<WindowPositionEvent>
+	{
+		glm::ivec2 position;
+		glm::ivec2 deltaPosition;
+
+		WindowPositionEvent(glm::ivec2 _position, glm::ivec2 _deltaPosition) :
+			position(_position),
+			deltaPosition(_deltaPosition)
+		{}
+	};
+	struct CursorPositionEvent final : public ecs::Event<CursorPositionEvent>
+	{
+		glm::dvec2 position;
+		glm::dvec2 deltaPosition;
+
+		CursorPositionEvent(const glm::dvec2& _position, const glm::dvec2& _deltaPosition) :
+			position(_position),
+			deltaPosition(_deltaPosition)
+		{}
+	};
+	struct AspectRatioEvent final : public ecs::Event<AspectRatioEvent>
+	{
+		float_t aspectRatio;
+		float_t deltaAspectRatio;
+
+		AspectRatioEvent(float_t _aspectRatio, float_t _deltaAspectRatio) :
+			aspectRatio(_aspectRatio),
+			deltaAspectRatio(_deltaAspectRatio)
+		{}
+	};
 	struct WindowCloseEvent final : public ecs::Event<WindowCloseEvent>
 	{
 		WindowCloseEvent()
@@ -319,81 +379,6 @@ namespace InjectorEngine
 			offset(_offset)
 		{}
 	};
-	
-	struct WindowSizeEvent final : public ecs::Event<WindowSizeEvent>
-	{
-		glm::ivec2 size;
-		glm::ivec2 deltaSize;
-
-		WindowSizeEvent(glm::ivec2 _size, glm::ivec2 _deltaSize) :
-			size(_size),
-			deltaSize(_deltaSize)
-		{}
-	};
-	struct FramebufferSizeEvent final : public ecs::Event<FramebufferSizeEvent>
-	{
-		glm::ivec2 size;
-		glm::ivec2 deltaSize;
-
-		FramebufferSizeEvent(glm::ivec2 _size, glm::ivec2 _deltaSize) :
-			size(_size),
-			deltaSize(_deltaSize)
-		{}
-	};
-	struct ContentScaleEvent final : public ecs::Event<ContentScaleEvent>
-	{
-		glm::vec2 scale;
-		glm::vec2 deltaScale;
-
-		ContentScaleEvent(glm::vec2 _scale, glm::vec2 _deltaScale) :
-			scale(_scale),
-			deltaScale(_deltaScale)
-		{}
-	};
-	struct WindowPositionEvent final : public ecs::Event<WindowPositionEvent>
-	{
-		glm::ivec2 position;
-		glm::ivec2 deltaPosition;
-
-		WindowPositionEvent(glm::ivec2 _position, glm::ivec2 _deltaPosition) :
-			position(_position),
-			deltaPosition(_deltaPosition)
-		{}
-	};
-	struct CursorPositionEvent final : public ecs::Event<CursorPositionEvent>
-	{
-		glm::dvec2 position;
-		glm::dvec2 deltaPosition;
-
-		CursorPositionEvent(const glm::dvec2& _position, const glm::dvec2& _deltaPosition) :
-			position(_position),
-			deltaPosition(_deltaPosition)
-		{}
-	};
-	struct AspectRatioEvent final : public ecs::Event<AspectRatioEvent>
-	{
-		float_t aspectRatio;
-
-		AspectRatioEvent(float_t _aspectRatio) :
-			aspectRatio(_aspectRatio)
-		{}
-	};
-	struct OverviewEvent final : public ecs::Event<OverviewEvent>
-	{
-		glm::vec3 overview;
-
-		OverviewEvent(glm::vec3 _overview) :
-			overview(_overview)
-		{}
-	};
-	struct MovementEvent final : public ecs::Event<MovementEvent>
-	{
-		glm::vec3 movement;
-
-		MovementEvent(glm::vec3 _movement) :
-			movement(_movement)
-		{}
-	};
 
 	struct TransformComponent final : public ecs::Component<TransformComponent>
 	{
@@ -458,11 +443,13 @@ namespace InjectorEngine
 	{
 	protected:
 		std::string title;
+		CursorMode cursorMode;
 		glm::ivec2 windowSize;
 		glm::ivec2 framebufferSize;
 		glm::vec2 contentScale;
 		glm::ivec2 windowPosition;
 		glm::dvec2 cursorPosition;
+		float_t aspectRatio;
 
 		GLFWwindow* window;
 		ecs::EventManager* events;
@@ -471,8 +458,13 @@ namespace InjectorEngine
 	public:
 		Window(std::string _title = "Injector Engine - Editor", glm::ivec2 _size = glm::ivec2(800, 600)) :
 			title(_title),
+			cursorMode(CursorMode::Normal),
 			windowSize(_size),
 			framebufferSize(glm::ivec2(0)),
+			contentScale(glm::vec2(0.0f)),
+			windowPosition(glm::ivec2(0)),
+			cursorPosition(glm::dvec2(0.0)),
+			aspectRatio(float_t(_size.x) / float_t(_size.y)),
 			window(nullptr)
 		{
 			events = new ecs::EventManager();
@@ -492,9 +484,72 @@ namespace InjectorEngine
 			}
 		}
 
-		GLFWwindow* GetWindow() const
+		inline std::string GetTitle() const
+		{
+			return title;
+		}
+		virtual void SetTitle(std::string _title)
+		{
+			glfwSetWindowTitle(window, _title.c_str());
+			title = _title;
+		}
+
+		inline CursorMode GetCursorMode() const
+		{
+			return cursorMode;
+		}
+		virtual void SetCursorMode(CursorMode _cursorMode)
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, static_cast<int>(_cursorMode));
+			cursorMode = _cursorMode;
+		}
+
+		inline glm::ivec2 GetWindowSize() const
+		{
+			return windowSize;
+		}
+		virtual void SetWindowSize(glm::ivec2 size)
+		{
+			glfwSetWindowSize(window, size.x, size.y);
+			windowSize = size;
+		}
+
+		inline glm::ivec2 GetFramebufferSize() const
+		{
+			return framebufferSize;
+		}
+		inline glm::vec2 GetContentScale() const
+		{
+			return contentScale;
+		}
+		inline glm::ivec2 GetWindowPosition() const
+		{
+			return windowPosition;
+		}
+		inline glm::dvec2 GetCursorPosition() const
+		{
+			return cursorPosition;
+		}
+		inline float_t GetAspectRatio() const
+		{
+			return aspectRatio;
+		}
+
+		inline GLFWwindow* GetWindow() const
 		{
 			return window;
+		}
+		inline ecs::EventManager* GetEvents() const
+		{
+			return events;
+		}
+		inline ecs::EntityManager* GetEntities() const
+		{
+			return entities;
+		}
+		inline ecs::SystemManager* GetSystems() const
+		{
+			return systems;
 		}
 
 		virtual void OnUpdate(double_t deltaTime)
@@ -506,45 +561,43 @@ namespace InjectorEngine
 			glfwGetWindowSize(window, &intVec2.x, &intVec2.y);
 			if (windowSize != intVec2)
 			{
-				auto deltaSize = intVec2 - windowSize;
+				events->emit<WindowSizeEvent>(intVec2, intVec2 - windowSize);
 				windowSize = intVec2;
-				events->emit<WindowSizeEvent>(intVec2, deltaSize);
 			}
 
 			glfwGetFramebufferSize(window, &intVec2.x, &intVec2.y);
 			if (framebufferSize != intVec2)
 			{
-				auto deltaSize = intVec2 - framebufferSize;
+				events->emit<FramebufferSizeEvent>(intVec2, intVec2 - framebufferSize);
 				framebufferSize = intVec2;
-				events->emit<FramebufferSizeEvent>(intVec2, deltaSize);
 
-				if (intVec2.x > 0 && intVec2.y > 0)
-					events->emit<AspectRatioEvent>(float_t(intVec2.x) / float_t(intVec2.y));
+				auto _aspecetRatio = (float_t(intVec2.x) / float_t(intVec2.y));
+				if (aspectRatio != _aspecetRatio)
+				{
+					events->emit<AspectRatioEvent>(_aspecetRatio, _aspecetRatio - aspectRatio);
+					aspectRatio = _aspecetRatio;
+				}
 			}
 
 			glfwGetWindowContentScale(window, &floatVec2.x, &floatVec2.y);
 			if (contentScale != floatVec2)
 			{
-				auto deltaScale = floatVec2 - contentScale;
+				events->emit<ContentScaleEvent>(floatVec2, floatVec2 - contentScale);
 				contentScale = floatVec2;
-				events->emit<ContentScaleEvent>(floatVec2, deltaScale);
 			}
 
 			glfwGetWindowPos(window, &intVec2.x, &intVec2.y);
 			if (windowPosition != intVec2)
 			{
-				auto deltaPosition = intVec2 - windowPosition;
+				events->emit<WindowPositionEvent>(intVec2, intVec2 - windowPosition);
 				windowPosition = intVec2;
-				events->emit<WindowPositionEvent>(intVec2, deltaPosition);
 			}
-
+			
 			glfwGetCursorPos(window, &doubleVec2.x, &doubleVec2.y);
 			if (cursorPosition != doubleVec2)
 			{
-				auto deltaPosition = doubleVec2 - cursorPosition;
+				events->emit<CursorPositionEvent>(doubleVec2, doubleVec2 - cursorPosition);
 				cursorPosition = doubleVec2;
-				events->emit<CursorPositionEvent>(intVec2, deltaPosition);
-				events->emit<OverviewEvent>(glm::vec3(static_cast<float_t>(-deltaPosition.y), static_cast<float_t>(-deltaPosition.x), 0.0f));
 			}
 
 			// TODO:
@@ -594,44 +647,6 @@ namespace InjectorEngine
 		virtual void OnScroll(glm::dvec2 offset)
 		{
 			events->emit<ScrollEvent>(offset);
-		}
-
-		const std::string& GetTitle() const
-		{
-			return title;
-		}
-		virtual void SetTitle(std::string _title)
-		{
-			glfwSetWindowTitle(window, _title.c_str());
-			title = _title;
-		}
-
-		const glm::ivec2& GetWindowSize() const
-		{
-			return windowSize;
-		}
-		virtual void SetWindowSize(glm::ivec2 size)
-		{
-			glfwSetWindowSize(window, size.x, size.y);
-			windowSize = size;
-		}
-
-		const glm::ivec2& GetFramebufferSize() const
-		{
-			return framebufferSize;
-		}
-
-		ecs::EventManager* GetEvents() const
-		{
-			return events;
-		}
-		ecs::EntityManager* GetEntities() const
-		{
-			return entities;
-		}
-		ecs::SystemManager* GetSystems() const
-		{
-			return systems;
 		}
 	};
 
@@ -924,7 +939,6 @@ namespace InjectorEngine
 
 				if (transformComponent.isMatrixChanged)
 				{
-					//matrix = glm::translate(oneMatrix, position) * glm::scale(oneMatrix, scale) * glm::mat4_cast(glm::normalize(rotation));
 					transformComponent.matrix = glm::translate(glm::scale(glm::mat4_cast(glm::normalize(transformComponent.rotation)), transformComponent.scale), transformComponent.position);
 					transformComponent.isMatrixChanged = false;
 				}
@@ -935,10 +949,10 @@ namespace InjectorEngine
 	class CameraSystem final : public ecs::System<CameraSystem>, public ecs::Receiver<CameraSystem>
 	{
 	private:
-		float_t aspectRatio;
+		Window* window;
 	public:
-		CameraSystem() :
-			aspectRatio(0.0f)
+		CameraSystem(Window* _window) :
+			window(_window)
 		{}
 
 		void configure(ecs::EntityManager& entities, ecs::EventManager& events) override
@@ -948,20 +962,6 @@ namespace InjectorEngine
 
 		void update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta deltaTime) override
 		{
-			if (aspectRatio != 0.0f)
-			{
-				entities.each<CameraComponent>([&](ecs::Entity entity, CameraComponent& cameraComponent)
-					{
-						if (cameraComponent.updateAspectRatio)
-						{
-							cameraComponent.aspectRatio = aspectRatio;
-							cameraComponent.isMatrixChanged = true;
-						}
-					});
-
-				aspectRatio = 0.0f;
-			}
-
 			entities.each<CameraComponent>([](ecs::Entity entity, CameraComponent& cameraComponent)
 				{
 					if (cameraComponent.isMatrixChanged)
@@ -988,30 +988,43 @@ namespace InjectorEngine
 
 		void receive(const AspectRatioEvent& event)
 		{
-			aspectRatio = event.aspectRatio;
+			auto entities = window->GetEntities();
+			auto aspectRatio = event.aspectRatio;
+
+			entities->each<CameraComponent>([aspectRatio](ecs::Entity entity, CameraComponent& cameraComponent)
+				{
+					if (cameraComponent.updateAspectRatio)
+					{
+						cameraComponent.aspectRatio = aspectRatio;
+						cameraComponent.isMatrixChanged = true;
+					}
+				});
 		}
 	};
 
 	class FirstPersonSystem final : public ecs::System<FirstPersonSystem>, public ecs::Receiver<CameraSystem>
 	{
 	private:
+		Window* window;
 		ecs::Entity camera;
 		bool overviewing;
+		CursorMode lastCursorMode;
 		glm::vec3 overview;
 	public:
 		float_t sensitivity;
 
-		FirstPersonSystem() :
+		FirstPersonSystem(Window* _window) :
+			window(_window),
 			camera(),
 			overviewing(false),
-			overview(glm::vec3(0.0f)),
+			lastCursorMode(CursorMode::Normal),
 			sensitivity(0.25f)
 		{}
 
 		void configure(ecs::EntityManager& entities, ecs::EventManager& events) override
 		{
 			events.subscribe<MouseButtonEvent>(*this);
-			events.subscribe<OverviewEvent>(*this);
+			events.subscribe<CursorPositionEvent>(*this);
 
 			camera = entities.create();
 			camera.assign<CameraComponent>();
@@ -1023,7 +1036,7 @@ namespace InjectorEngine
 			if (overviewing && camera.has_component<TransformComponent>())
 			{
 				auto& transformComponent = *camera.component<TransformComponent>();
-				transformComponent.rotation *= glm::quat(-overview * sensitivity * static_cast<float_t>(deltaTime));
+				transformComponent.rotation *= glm::quat(overview * sensitivity * static_cast<float_t>(deltaTime));
 				transformComponent.isMatrixChanged = true;
 			}
 
@@ -1035,14 +1048,21 @@ namespace InjectorEngine
 			if (event.button == MouseButtonType::Right)
 			{
 				if (event.action == MouseButtonAction::Press)
+				{
+					lastCursorMode = window->GetCursorMode();
+					window->SetCursorMode(CursorMode::Disabled);
 					overviewing = true;
+				}
 				else if (event.action == MouseButtonAction::Release)
+				{
+					window->SetCursorMode(lastCursorMode);
 					overviewing = false;
+				}
 			}
 		}
-		void receive(const OverviewEvent& event)
+		void receive(const CursorPositionEvent& event)
 		{
-			overview += event.overview;
+			overview += glm::vec3(static_cast<float_t>(event.deltaPosition.y), static_cast<float_t>(event.deltaPosition.x), 0.0f);
 		}
 	};
 }

@@ -16,10 +16,10 @@ int main()
 #else
 	auto window = InjectorEngine::Engine::InstantiateWindow<InjectorEngine::GlWindow>();
 	auto systems = window->GetSystems();
-	systems->add<InjectorEngine::FirstPersonSystem>();
+	systems->add<InjectorEngine::FirstPersonSystem>(window);
 	systems->add<InjectorEngine::TransformSystem>();
-	systems->add<InjectorEngine::CameraSystem>();
-	systems->add<InjectorEngine::GlGraphicsSystem>(window->IsES());
+	systems->add<InjectorEngine::CameraSystem>(window);
+	systems->add<InjectorEngine::GlGraphicsSystem>(window);
 	systems->configure();
 
 	InjectorEngine::Engine::Update();
