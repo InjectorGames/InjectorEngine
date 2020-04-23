@@ -13,6 +13,43 @@ project(InjectorEngine
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+set(BGFX_BUILD_TOOLS ON CACHE BOOL "")
+set(BGFX_BUILD_EXAMPLES OFF CACHE BOOL "")
+set(BGFX_INSTALL ON CACHE BOOL "")
+set(BGFX_INSTALL_EXAMPLES OFF CACHE BOOL "")
+set(BGFX_CUSTOM_TARGETS ON CACHE BOOL "")
+set(BGFX_USE_OVR OFF CACHE BOOL "") # wtf is this?
+set(BGFX_AMALGAMATED OFF CACHE BOOL "")
+set(BX_AMALGAMATED OFF CACHE BOOL "")
+set(BGFX_CONFIG_DEBUG OFF CACHE BOOL "")
+set(BGFX_USE_DEBUG_SUFFIX ON CACHE BOOL "")
+set(BGFX_OPENGL_VERSION "3.3" CACHE STRING "")
+
+set(ENTITYX_BUILD_TESTING OFF CACHE BOOL "")
+set(ENTITYX_RUN_BENCHMARKS OFF CACHE BOOL "")
+set(ENTITYX_MAX_COMPONENTS 64 CACHE STRING "")
+set(ENTITYX_DT_TYPE double CACHE STRING "")
+set(ENTITYX_BUILD_SHARED OFF CACHE BOOL "")
+
+set(FN_SET_c0rp3n_CXX_FLAGS OFF CACHE BOOL "")
+set(FN_COMPILE_SSE2 ON CACHE BOOL "")
+set(FN_COMPILE_SSE41 ON CACHE BOOL "")
+set(FN_COMPILE_AVX2 ON CACHE BOOL "")
+set(FN_COMPILE_AVX512 OFF CACHE BOOL "")
+set(FN_USE_FMA ON CACHE BOOL "")
+set(FN_ALIGNED_SETS ON CACHE BOOL "")
+
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
+set(GLFW_INSTALL ON CACHE BOOL "")
+set(GLFW_VULKAN_STATIC OFF CACHE BOOL "")
+
+include(GNUInstallDirs)
+include(CMakeDependentOption)
+
+add_subdirectory(external/bgfx.cmake)
 add_subdirectory(external/entityx)
 add_subdirectory(external/FastNoiseSIMD)
 add_subdirectory(external/glad)
@@ -25,8 +62,9 @@ find_package(Vulkan)
 # TODO: FindLua, FindLibLZMA, FindGLUT
 
 set(InjectorEngine_LIBRARIES
+	bgfx
 	entityx
-	FastNoise::SIMD
+	FastNoiseSIMD
 	glad
 	glfw
 	glm::glm
@@ -35,10 +73,7 @@ set(InjectorEngine_LIBRARIES
 set(InjectorEngine_INCLUDE_DIRS
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
-	${FASTNOISESIMD}/include
-	${ENTITYX_SOURCE_DIR}/entityx
 	${GLAD_SOURCE_DIR}/include
-	${GLFW_SOURCE_DIR}/include
 )
 
 set(InjectorEngine_RESOURCES

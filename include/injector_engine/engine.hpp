@@ -1,6 +1,8 @@
 #pragma once
 #include <injector_engine/config.hpp>
 
+#include <bgfx/bgfx.h>
+
 #ifdef VULKAN_FOUND
 #define VULKAN_HPP_TYPESAFE_CONVERSION 1
 #include <vulkan/vulkan.hpp>
@@ -10,6 +12,7 @@
 #include <GLFW/glfw3.h>
 
 #include <entityx/entityx.h>
+#include <FastNoiseSIMD/FastNoiseSIMD.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/quaternion.hpp>
