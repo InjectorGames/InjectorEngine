@@ -1,0 +1,11 @@
+language: cpp
+
+branches:
+  only:
+  - master
+  - develop
+
+compiler:
+  - clang
+  - gcc
+  

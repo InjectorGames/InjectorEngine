@@ -73,7 +73,7 @@ set(InjectorEngine_LIBRARIES
 set(InjectorEngine_INCLUDE_DIRS
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
-	${GLAD_SOURCE_DIR}/include
+	${BGFX_DIR}/examples
 )
 
 set(InjectorEngine_RESOURCES

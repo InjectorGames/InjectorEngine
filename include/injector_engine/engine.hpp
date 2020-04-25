@@ -2,6 +2,7 @@
 #include <injector_engine/config.hpp>
 
 #include <bgfx/bgfx.h>
+#include <common/entry/entry.h>
 
 #ifdef VULKAN_FOUND
 #define VULKAN_HPP_TYPESAFE_CONVERSION 1
