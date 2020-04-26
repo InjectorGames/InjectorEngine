@@ -1,0 +1,8 @@
+#pragma once
+
+namespace njng
+{
+#define NJNG_VERSION_MAJOR @InjectorEngine_VERSION_MAJOR@
+#define NJNG_VERSION_MINOR @InjectorEngine_VERSION_MINOR@
+#define NJNG_VERSION_PATCH @InjectorEngine_VERSION_PATCH@
+}

@@ -1,6 +1,6 @@
-[submodule "external/glfw"]
-	path = external/glfw
-	url = https://github.com/glfw/glfw
-[submodule "external/entt"]
-	path = external/entt
-	url = https://github.com/skypjack/entt
+[submodule "3rdparty/bgfx.cmake"]
+	path = 3rdparty/bgfx.cmake
+	url = https://github.com/InjectorGames/bgfx.cmake
+[submodule "3rdparty/glfw"]
+	path = 3rdparty/glfw
+	url = https://github.com/InjectorGames/glfw

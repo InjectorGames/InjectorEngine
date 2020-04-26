@@ -1,54 +1,58 @@
 cmake_minimum_required(VERSION 3.10)
 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-    message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the source code and call cmake from there.")
+    message(FATAL_ERROR "Prevented in-tree build.")
 endif()
 
-project(InjectorEngine VERSION 0.1.0 LANGUAGES CXX)
+project(InjectorEngine
+	VERSION 0.1.0
+	LANGUAGES CXX
+)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_subdirectory(external/glfw)
-add_subdirectory(external/entt)
+set(BGFX_BUILD_TOOLS ON CACHE BOOL "")
+set(BGFX_BUILD_EXAMPLES OFF CACHE BOOL "")
+set(BGFX_INSTALL ON CACHE BOOL "")
+set(BGFX_INSTALL_EXAMPLES OFF CACHE BOOL "")
+set(BGFX_CUSTOM_TARGETS ON CACHE BOOL "")
+set(BGFX_USE_OVR OFF CACHE BOOL "") # wtf is this?
+set(BGFX_AMALGAMATED OFF CACHE BOOL "")
+set(BX_AMALGAMATED OFF CACHE BOOL "")
+set(BGFX_CONFIG_DEBUG OFF CACHE BOOL "")
+set(BGFX_USE_DEBUG_SUFFIX ON CACHE BOOL "")
+set(BGFX_OPENGL_VERSION "" CACHE STRING "")
 
-# You can download SDK from https://vulkan.lunarg.com
-find_package(Vulkan REQUIRED)
+set(ENTITYX_BUILD_TESTING OFF CACHE BOOL "")
+set(ENTITYX_RUN_BENCHMARKS OFF CACHE BOOL "")
+set(ENTITYX_MAX_COMPONENTS 64 CACHE STRING "")
+set(ENTITYX_DT_TYPE double CACHE STRING "")
+set(ENTITYX_BUILD_SHARED OFF CACHE BOOL "")
 
-# TODO: FindLua, FindLibLZMA, FindGLUT
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
+set(GLFW_INSTALL ON CACHE BOOL "")
+set(GLFW_VULKAN_STATIC OFF CACHE BOOL "")
 
-set(InjectorEngine_SOURCE
-	source/engine.cpp
-	source/main.cpp 
-	source/vulkan_window.cpp
-	source/window.cpp
-)
+add_subdirectory(3rdparty/bgfx.cmake)
+add_subdirectory(3rdparty/glfw)
 
-set(InjectorEngine_LIBRARIES
+set(INJECTOR_ENGINE_LINK_LIBS
+	bgfx
 	glfw
-	EnTT::EnTT
-	Vulkan::Vulkan
+	dear-imgui
 )
 
-set(InjectorEngine_INCLUDE_DIRS
+set(INJECTOR_ENGINE_INCLUDE_DIRS
+	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
-	${GLFW_SOURCE_DIR}/include
-	${ENTT_SOURCE_DIR}/single_include
-	${Vulkan_INCLUDE_DIRS}
 )
 
-set(InjectorEngine_RESOURCES
-	LICENSE.md
-PARENT_SCOPE)
+configure_file(cmake/config.hpp.in njng/config.hpp)
 
-add_library(InjectorEngine STATIC ${InjectorEngine_SOURCE})
-target_link_libraries(InjectorEngine PUBLIC ${InjectorEngine_LIBRARIES})
-target_include_directories(InjectorEngine PUBLIC ${InjectorEngine_INCLUDE_DIRS})
-
-add_executable(InjectorEngineEditor ${InjectorEngine_SOURCE})
-target_link_libraries(InjectorEngineEditor PUBLIC ${InjectorEngine_LIBRARIES})
-target_include_directories(InjectorEngineEditor PUBLIC ${InjectorEngine_INCLUDE_DIRS})
-
-foreach(FILE ${InjectorEngine_RESOURCES})
-    configure_file(resources/${FILE} resources/${FILE} COPYONLY)
-endforeach(FILE)
+add_executable(InjectorEngineEditor main.cpp)
+target_link_libraries(InjectorEngineEditor PUBLIC ${INJECTOR_ENGINE_LINK_LIBS})
+target_include_directories(InjectorEngineEditor PUBLIC ${INJECTOR_ENGINE_INCLUDE_DIRS})
