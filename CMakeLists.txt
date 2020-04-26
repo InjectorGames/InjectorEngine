@@ -37,21 +37,22 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
 set(GLFW_INSTALL ON CACHE BOOL "")
 set(GLFW_VULKAN_STATIC OFF CACHE BOOL "")
 
-add_subdirectory(external/bgfx.cmake)
-add_subdirectory(external/glfw)
+add_subdirectory(3rdparty/bgfx.cmake)
+add_subdirectory(3rdparty/glfw)
 
-set(InjectorEngine_LIBRARIES
+set(INJECTOR_ENGINE_LINK_LIBS
 	bgfx
 	glfw
+	dear-imgui
 )
 
-set(InjectorEngine_INCLUDE_DIRS
+set(INJECTOR_ENGINE_INCLUDE_DIRS
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
 )
 
-configure_file(cmake/config.hpp.in injector_engine/config.hpp)
+configure_file(cmake/config.hpp.in njng/config.hpp)
 
-add_executable(InjectorEngineEditor source/main.cpp)
-target_link_libraries(InjectorEngineEditor PUBLIC ${InjectorEngine_LIBRARIES})
-target_include_directories(InjectorEngineEditor PUBLIC ${InjectorEngine_INCLUDE_DIRS})
+add_executable(InjectorEngineEditor main.cpp)
+target_link_libraries(InjectorEngineEditor PUBLIC ${INJECTOR_ENGINE_LINK_LIBS})
+target_include_directories(InjectorEngineEditor PUBLIC ${INJECTOR_ENGINE_INCLUDE_DIRS})

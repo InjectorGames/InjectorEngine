@@ -1,13 +1,142 @@
 #pragma once
-#include <injector_engine/config.hpp>
+#include <bgfx/bgfx.h>
+#include <bgfx/platform.h>
+#include <dear-imgui/imgui.h>
+
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#	if USE_WAYLAND
+#		include <wayland-egl.h>
+#		define GLFW_EXPOSE_NATIVE_WAYLAND
+#	else
+#		define GLFW_EXPOSE_NATIVE_X11
+#		define GLFW_EXPOSE_NATIVE_GLX
+#	endif
+#elif BX_PLATFORM_OSX
+#	define GLFW_EXPOSE_NATIVE_COCOA
+#	define GLFW_EXPOSE_NATIVE_NSGL
+#elif BX_PLATFORM_WINDOWS
+#	define GLFW_EXPOSE_NATIVE_WIN32
+#	define GLFW_EXPOSE_NATIVE_WGL
+#endif
+#include <GLFW/glfw3native.h>
+
+#include <set>
+#include <vector>
+#include <iostream>
+
+namespace njng
+{
+	static GLFWwindow* window = nullptr;
+
+	static void ErrorCallback(int error, const char* description)
+	{
+		std::cerr << "GLFW error: Code = " << error << ", Description = " << description << ".\n";
+	}
+
+	static void Initialize()
+	{
+		std::cout << "Injector Engine version: " <<
+			NJNG_VERSION_MAJOR << "." <<
+			NJNG_VERSION_MINOR << "." <<
+			NJNG_VERSION_PATCH << std::endl;
+
+		glfwSetErrorCallback(ErrorCallback);
+
+		if (!glfwInit())
+			throw std::runtime_error("Failed to intialize GLFW.");
+
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		window = glfwCreateWindow(800, 600, "NJNG Test", nullptr, nullptr);
+
+		bgfx::PlatformData pd = {};
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#	if USE_WAYLAND
+		pd.ndt = glfwGetWaylandDisplay();
+#	else
+		pd.ndt = glfwGetX11Display();
+#	endif
+#endif
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#	if USE_WAYLAND
+		wl_egl_window* win_impl = (wl_egl_window*)glfwGetWindowUserPointer(window);
+		if (!win_impl)
+		{
+			int width, height;
+			glfwGetWindowSize(_window, &width, &height);
+			struct wl_surface* surface = (struct wl_surface*)glfwGetWaylandWindow(window);
+			if (surface)
+			{
+				win_impl = wl_egl_window_create(surface, width, height);
+				glfwSetWindowUserPointer(window, (void*)(uintptr_t)win_impl);
+			}
+		}
+		pd.nwh = (void*)(uintptr_t)win_impl;
+#	else
+		pd.nwh = (void*)(uintptr_t)glfwGetX11Window(window);
+#	endif
+#elif BX_PLATFORM_OSX
+		pd.nwh = glfwGetCocoaWindow(window);
+#elif BX_PLATFORM_WINDOWS
+		pd.nwh = glfwGetWin32Window(window);
+#endif
+		bgfx::setPlatformData(pd);
+
+		bgfx::Init bgfxInit = {};
+		bgfxInit.type = bgfx::RendererType::Direct3D12;
+		bgfxInit.resolution.width = 800;
+		bgfxInit.resolution.height = 600;
+		bgfxInit.resolution.reset = BGFX_RESET_VSYNC;
+
+		if (!bgfx::init(bgfxInit))
+			throw std::runtime_error("Failed to intialize BGFX.");
+
+		bgfx::setDebug(BGFX_DEBUG_TEXT);
+		bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x443355FF, 1.0f, 0);
+	}
+	static void Terminate()
+	{
+		bgfx::shutdown();
+
+		if (window)
+		{
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#	if USE_WAYLAND
+			wl_egl_window* win_impl = (wl_egl_window*)glfwGetWindowUserPointer(window);
+			if (win_impl)
+			{
+				glfwSetWindowUserPointer(window, nullptr);
+				wl_egl_window_destroy(win_impl);
+			}
+#	endif
+#endif
+			glfwDestroyWindow(window);
+			window = nullptr;
+		}
+
+		glfwTerminate();
+	}
+	static void BeginUpdate()
+	{
+		while (glfwWindowShouldClose(window) == GLFW_FALSE)
+		{
+			bgfx::setViewRect(0, 0, 0, 800, 600);
+			bgfx::touch(0);
+			bgfx::dbgTextClear();
+			bgfx::dbgTextPrintf(0, 1, 0x0f, "Test text");
+			bgfx::frame();
+			glfwPollEvents();
+		}
+	}
+}
+
+/*
+#include <ngng/config.hpp>
 
 #include <bgfx/bgfx.h>
 #include <common/entry/entry.h>
-
-#ifdef VULKAN_FOUND
-#define VULKAN_HPP_TYPESAFE_CONVERSION 1
-#include <vulkan/vulkan.hpp>
-#endif // VULKAN_FOUND
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -1070,3 +1199,4 @@ namespace InjectorEngine
 		}
 	};
 }
+*/
