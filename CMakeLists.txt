@@ -4,10 +4,15 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR "Prevented in-tree build.")
 endif()
 
-project(InjectorEngine
+project(njng
 	VERSION 0.1.0
 	LANGUAGES CXX
 )
+
+#option(BUILD_SHARED_LIBS "Build shared libraries" OFF) TODO:
+option(NJNG_INSTALL "Generate installation target" ON)
+
+include(GNUInstallDirs)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -24,11 +29,11 @@ set(BGFX_CONFIG_DEBUG OFF CACHE BOOL "")
 set(BGFX_USE_DEBUG_SUFFIX ON CACHE BOOL "")
 set(BGFX_OPENGL_VERSION "" CACHE STRING "")
 
-set(ENTITYX_BUILD_TESTING OFF CACHE BOOL "")
-set(ENTITYX_RUN_BENCHMARKS OFF CACHE BOOL "")
-set(ENTITYX_MAX_COMPONENTS 64 CACHE STRING "")
-set(ENTITYX_DT_TYPE double CACHE STRING "")
-set(ENTITYX_BUILD_SHARED OFF CACHE BOOL "")
+#set(ENTITYX_BUILD_TESTING OFF CACHE BOOL "")
+#set(ENTITYX_RUN_BENCHMARKS OFF CACHE BOOL "")
+#set(ENTITYX_MAX_COMPONENTS 64 CACHE STRING "")
+#set(ENTITYX_DT_TYPE double CACHE STRING "")
+#set(ENTITYX_BUILD_SHARED OFF CACHE BOOL "")
 
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
@@ -38,21 +43,21 @@ set(GLFW_INSTALL ON CACHE BOOL "")
 set(GLFW_VULKAN_STATIC OFF CACHE BOOL "")
 
 add_subdirectory(3rdparty/bgfx.cmake)
+add_subdirectory(3rdparty/entityx)
 add_subdirectory(3rdparty/glfw)
 
-set(INJECTOR_ENGINE_LINK_LIBS
+configure_file(cmake/config.hpp.in njng/config.hpp)
+
+add_library(njng INTERFACE)
+
+target_link_libraries(njng INTERFACE
 	bgfx
+	entityx
 	glfw
 	dear-imgui
 )
 
-set(INJECTOR_ENGINE_INCLUDE_DIRS
+target_include_directories(njng INTERFACE
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
 )
-
-configure_file(cmake/config.hpp.in njng/config.hpp)
-
-add_executable(InjectorEngineEditor main.cpp)
-target_link_libraries(InjectorEngineEditor PUBLIC ${INJECTOR_ENGINE_LINK_LIBS})
-target_include_directories(InjectorEngineEditor PUBLIC ${INJECTOR_ENGINE_INCLUDE_DIRS})
