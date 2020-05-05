@@ -1,15 +1,6 @@
 ## Requirements
 * C++17 comiler
-* CMake 3.10+
-* Vulkan SDK (optional)
-
-### Linux
-* xorg-dev package
-* doxygen package
+* [CMake 3.10+](https://cmake.org/)
 
 ## Third-Party
-* entityx
-* fastnoise
-* glad
-* glfw
-* glm
+* [entityx](https://github.com/alecthomas/entityx/) * MIT License

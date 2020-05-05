@@ -1,9 +1,12 @@
-[submodule "3rdparty/bgfx.cmake"]
-	path = 3rdparty/bgfx.cmake
-	url = https://github.com/InjectorGames/bgfx.cmake
+[submodule "3rdparty/asio"]
+	path = 3rdparty/asio
+	url = https://github.com/InjectorGames/asio
 [submodule "3rdparty/entityx"]
 	path = 3rdparty/entityx
 	url = https://github.com/InjectorGames/entityx
-[submodule "3rdparty/glfw"]
-	path = 3rdparty/glfw
-	url = https://github.com/InjectorGames/glfw
+[submodule "3rdparty/glm"]
+	path = 3rdparty/glm
+	url = https://github.com/InjectorGames/glm
+[submodule "3rdparty/SDL"]
+	path = 3rdparty/SDL
+	url = https://github.com/InjectorGames/SDL
