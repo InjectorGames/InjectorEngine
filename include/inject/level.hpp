@@ -1,8 +1,6 @@
 #pragma once
 #include <entityx/entityx.h>
 
-#include <cstdio>
-
 namespace inject
 {
 	class Level : public entityx::EntityX

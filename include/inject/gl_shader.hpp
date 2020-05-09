@@ -6,7 +6,6 @@
 #include <SDL_rwops.h>
 
 #include <vector>
-#include <cstdio>
 #include <stdexcept>
 
 namespace inject

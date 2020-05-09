@@ -1,10 +1,8 @@
 #pragma once
-#include <entityx/entityx.h>
-
 #include <inject/camera_component.hpp>
 #include <inject/aspect_ratio_event.hpp>
 
-#include <glm/gtc/type_ptr.hpp>
+#include <entityx/entityx.h>
 
 namespace inject
 {

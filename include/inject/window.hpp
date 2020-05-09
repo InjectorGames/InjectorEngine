@@ -8,12 +8,8 @@
 #include <inject/mouse_button_event.hpp>
 #include <inject/mouse_motion_event.hpp>
 
-#include <SDL.h>
-#include <glm/glm.hpp>
-
 #include <map>
 #include <string>
-#include <cstdint>
 #include <stdexcept>
 
 namespace inject

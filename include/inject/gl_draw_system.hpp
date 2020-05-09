@@ -2,11 +2,6 @@
 #include <inject/window_size_event.hpp>
 #include <inject/gl_draw_component.hpp>
 
-#include <entityx/entityx.h>
-
-#include <GL/glew.h>
-#include <SDL_opengl.h>
-
 namespace inject
 {
 	class GlDrawSystem final :

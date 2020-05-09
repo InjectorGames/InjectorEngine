@@ -5,9 +5,6 @@
 #include <inject/mouse_button_event.hpp>
 #include <inject/transform_component.hpp>
 
-#include <entityx/entityx.h>
-#include <glm/glm.hpp>
-
 namespace inject
 {
 	class FreeCameraSystem final :

@@ -3,8 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-#include <cstdio>
-
 namespace inject
 {
 	struct CameraComponent final : entityx::Component<CameraComponent>

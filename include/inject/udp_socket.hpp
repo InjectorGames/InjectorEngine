@@ -3,7 +3,6 @@
 #include <asio.hpp>
 
 #include <vector>
-#include <cstdlib>
 
 namespace njng
 {

@@ -3,10 +3,6 @@
 
 #include <SDL.h>
 
-#include <map>
-#include <string>
-#include <stdexcept>
-
 namespace inject
 {
 	class Engine final

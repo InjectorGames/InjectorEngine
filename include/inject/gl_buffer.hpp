@@ -2,7 +2,6 @@
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 
-#include <cstdio>
 #include <vector>
 
 namespace inject

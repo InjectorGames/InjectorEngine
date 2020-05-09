@@ -1,7 +1,6 @@
 #pragma once
 #include <entityx/entityx.h>
 #include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
 
 namespace inject
 {
