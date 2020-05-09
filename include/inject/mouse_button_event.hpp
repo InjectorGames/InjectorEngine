@@ -1,13 +1,12 @@
 #pragma once
 #include <entityx/entityx.h>
-#include <glm/glm.hpp>
 #include <SDL.h>
 
 namespace inject
 {
 	struct MouseButtonEvent final : public entityx::Event<MouseButtonEvent>
 	{
-		enum class Button
+		enum Button
 		{
 			Left = SDL_BUTTON_LEFT,
 			Middle = SDL_BUTTON_MIDDLE,
@@ -15,29 +14,16 @@ namespace inject
 			X1 = SDL_BUTTON_X1,
 			X2 = SDL_BUTTON_X2,
 		};
-		enum class State
+		enum State
 		{
-			Pressed = SDL_PRESSED,
 			Released = SDL_RELEASED,
+			Pressed = SDL_PRESSED,
 		};
 
-		uint32_t id;
-		Button button;
-		State state;
-		uint8_t clicks;
-		glm::ivec2 position;
+		const SDL_MouseButtonEvent& data;
 
-		MouseButtonEvent(
-			const uint32_t _id,
-			const Button _button,
-			const State _state,
-			const uint8_t _clicks,
-			const glm::ivec2 _position) :
-			id(_id),
-			button(_button),
-			state(_state),
-			clicks(_clicks),
-			position(_position)
+		MouseButtonEvent(const SDL_MouseButtonEvent& _data) :
+			data(_data)
 		{}
 	};
 }

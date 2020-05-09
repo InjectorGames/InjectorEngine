@@ -29,7 +29,8 @@ namespace inject
 			entityx::EventManager& events,
 			entityx::TimeDelta deltaTime) override
 		{
-			entities.each<CameraComponent>([](entityx::Entity entity, CameraComponent& cameraComponent)
+			entities.each<CameraComponent>(
+				[](entityx::Entity entity, CameraComponent& cameraComponent)
 				{
 					if (cameraComponent.projChanged)
 					{

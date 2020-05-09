@@ -3,7 +3,7 @@
 #include <inject/camera_system.hpp>
 #include <inject/transform_system.hpp>
 #include <inject/first_person_system.hpp>
-#include <inject/gl_render_system.hpp>
+#include <inject/gl_draw_system.hpp>
 #include <inject/gl_draw_component.hpp>
 #include <inject/gl_color_material.hpp>
 
@@ -27,13 +27,18 @@ namespace inject
 			systems.add<FirstPersonSystem>();
 			systems.add<TransformSystem>();
 			systems.add<CameraSystem>();
-			systems.add<GlRenderSystem>();
+			systems.add<GlDrawSystem>();
 			systems.configure();
 
 			auto square = entities.create();
 			square.assign<GlDrawComponent>(colorMaterial, squareMesh);
-			square.assign<TransformComponent>();
-			square.assign<RotateComponent>(glm::vec3(0.5f, 0.0f, 0.0f));
+			square.assign<TransformComponent>(glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+			//square.assign<RotateComponent>(glm::vec3(0.5f, 0.0f, 0.0f));
+
+			square = entities.create();
+			square.assign<GlDrawComponent>(colorMaterial, squareMesh);
+			square.assign<TransformComponent>(glm::vec3(1.0f), glm::vec3(4.0f, 0.0f, 0.0f));
+			//square.assign<RotateComponent>(glm::vec3(0.5f, 0.0f, 0.0f));
 		}
 	};
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <inject/level.hpp>
+#include <inject/keyboard_event.hpp>
 #include <inject/window_pos_event.hpp>
 #include <inject/window_size_event.hpp>
 #include <inject/aspect_ratio_event.hpp>
@@ -62,42 +63,6 @@ namespace inject
 			{
 				const auto& level = pair.second;
 				level->events.emit<WindowPosEvent>(newWindowPos, deltaWindowPos);
-			}
-		}
-		inline void handleMouseMotionEvent(const SDL_MouseMotionEvent& event)
-		{
-			const auto position = glm::ivec2(
-				static_cast<int>(event.x),
-				static_cast<int>(event.y));
-			const auto deltaPosition = glm::ivec2(
-				static_cast<int>(event.xrel),
-				static_cast<int>(event.yrel));
-
-			for (const auto& pair : levels)
-			{
-				const auto& level = pair.second;
-				level->events.emit<MouseMotionEvent>(
-					static_cast<uint32_t>(event.which),
-					static_cast<uint32_t>(event.state),
-					position,
-					deltaPosition);
-			}
-		}
-		inline void handleMouseButtonEvent(const SDL_MouseButtonEvent& event)
-		{
-			const auto position = glm::ivec2(
-				static_cast<int>(event.x),
-				static_cast<int>(event.y));
-
-			for (const auto& pair : levels)
-			{
-				const auto& level = pair.second;
-				level->events.emit<MouseButtonEvent>(
-					static_cast<uint32_t>(event.which),
-					static_cast<MouseButtonEvent::Button>(event.button),
-					static_cast<MouseButtonEvent::State>(event.state),
-					static_cast<uint8_t>(event.clicks),
-					position);
 			}
 		}
 	public:
@@ -190,13 +155,29 @@ namespace inject
 					break;
 				}
 			}
+			else if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.windowID == id)
+			{
+				for (const auto& pair : levels)
+				{
+					const auto& level = pair.second;
+					level->events.emit<KeyboardEvent>(event.key);
+				}
+			}
 			else if (event.type == SDL_MOUSEMOTION && event.motion.windowID == id)
 			{
-				handleMouseMotionEvent(event.motion);
+				for (const auto& pair : levels)
+				{
+					const auto& level = pair.second;
+					level->events.emit<MouseMotionEvent>(event.motion);
+				}
 			}
 			else if ((event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) && event.button.windowID == id)
 			{
-				handleMouseButtonEvent(event.button);
+				for (const auto& pair : levels)
+				{
+					const auto& level = pair.second;
+					level->events.emit<MouseButtonEvent>(event.button);
+				}
 			}
 		}
 

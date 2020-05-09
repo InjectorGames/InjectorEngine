@@ -9,9 +9,9 @@
 
 namespace inject
 {
-	class GlRenderSystem final :
-		public entityx::System<GlRenderSystem>,
-		public entityx::Receiver<GlRenderSystem>
+	class GlDrawSystem final :
+		public entityx::System<GlDrawSystem>,
+		public entityx::Receiver<GlDrawSystem>
 	{
 	public:
 		void configure(entityx::EntityManager& entities,
@@ -24,14 +24,15 @@ namespace inject
 			entityx::EventManager& events,
 			entityx::TimeDelta deltaTime) override
 		{
-			glClear(GL_COLOR_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST);
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_FRONT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			std::multimap<int, entityx::Entity> cameraEntities;
 
-			entities.each<CameraComponent, TransformComponent>([&](
-				entityx::Entity entity,
-				CameraComponent& cameraComponent,
-				TransformComponent& transformComponent)
+			entities.each<CameraComponent, TransformComponent>(
+				[&](entityx::Entity entity, CameraComponent& cameraComponent, TransformComponent& transformComponent)
 				{
 					cameraEntities.emplace(cameraComponent.renderQueue, entity);
 				});
@@ -46,10 +47,8 @@ namespace inject
 				const auto& projMatrix = cameraComponent.projMatrix;
 				const auto viewProjMatrix = projMatrix * viewMatrix;
 
-				entities.each<GlDrawComponent, TransformComponent>([&](
-					entityx::Entity entity,
-					GlDrawComponent& drawComponent,
-					TransformComponent& transformComponent)
+				entities.each<GlDrawComponent, TransformComponent>(
+					[&](entityx::Entity entity,GlDrawComponent& drawComponent,TransformComponent& transformComponent)
 					{
 						const auto& material = drawComponent.material;
 						const auto& mesh = drawComponent.mesh;
