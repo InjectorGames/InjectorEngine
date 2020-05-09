@@ -31,8 +31,8 @@ namespace inject
 
 			std::multimap<int, entityx::Entity> cameraEntities;
 
-			entities.each<CameraComponent, TransformComponent>(
-				[&](entityx::Entity entity, CameraComponent& cameraComponent, TransformComponent& transformComponent)
+			entities.each<CameraComponent>(
+				[&](entityx::Entity entity, CameraComponent& cameraComponent)
 				{
 					cameraEntities.emplace(cameraComponent.renderQueue, entity);
 				});
@@ -41,9 +41,7 @@ namespace inject
 			for (auto cameraEntity : cameraEntities)
 			{
 				const auto& cameraComponent = *cameraEntity.second.component<CameraComponent>();
-				const auto& transformComponent = *cameraEntity.second.component<TransformComponent>();
-
-				const auto& viewMatrix = transformComponent.matrix;
+				const auto& viewMatrix = cameraComponent.viewMatrix;
 				const auto& projMatrix = cameraComponent.projMatrix;
 				const auto viewProjMatrix = projMatrix * viewMatrix;
 
@@ -62,11 +60,11 @@ namespace inject
 
 							material->use();
 
-							material->setModel(modelMatrix);
-							material->setView(viewMatrix);
-							material->setProj(projMatrix);
-							material->setViewProj(viewProjMatrix);
-							material->setMVP(mvpMatrix);
+							material->setModelMatrix(modelMatrix);
+							material->setViewMatrix(viewMatrix);
+							material->setProjMatrix(projMatrix);
+							material->setViewProjMatrix(viewProjMatrix);
+							material->setMvpMatrix(mvpMatrix);
 
 							mesh->bind();
 							mesh->draw();

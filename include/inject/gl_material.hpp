@@ -186,15 +186,15 @@ namespace inject
 			use(0);
 		}
 
-		virtual void setModel(const glm::mat4& value) const
+		virtual void setModelMatrix(const glm::mat4& value) const
 		{}
-		virtual void setView(const glm::mat4& value) const
+		virtual void setViewMatrix(const glm::mat4& value) const
 		{}
-		virtual void setProj(const glm::mat4& value) const
+		virtual void setProjMatrix(const glm::mat4& value) const
 		{}
-		virtual void setViewProj(const glm::mat4& value) const
+		virtual void setViewProjMatrix(const glm::mat4& value) const
 		{}
-		virtual void setMVP(const glm::mat4& value) const
+		virtual void setMvpMatrix(const glm::mat4& value) const
 		{}
 	};
 }

@@ -35,7 +35,9 @@ namespace inject
 					if (transformComponent.changed)
 					{
 						transformComponent.matrix = 
-							glm::translate(glm::scale(glm::mat4_cast(glm::normalize(transformComponent.rotation)), transformComponent.scale), transformComponent.position);
+							glm::translate(glm::mat4(1.0f), transformComponent.position) *
+							glm::mat4_cast(glm::normalize(transformComponent.rotation)) *
+							glm::scale(glm::mat4(1.0f), transformComponent.scale);
 						transformComponent.changed = false;
 					}
 				});

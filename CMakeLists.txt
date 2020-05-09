@@ -64,6 +64,8 @@ target_include_directories(main PUBLIC
 set(INJECT_RESOURCES
 	shaders/color.vert
 	shaders/color.frag
+	shaders/diffuse.vert
+	shaders/diffuse.frag
 )
 
 foreach(FILE ${INJECT_RESOURCES})

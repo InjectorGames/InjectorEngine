@@ -10,9 +10,9 @@
 
 namespace inject
 {
-	class FirstPersonSystem final :
-		public entityx::System<FirstPersonSystem>,
-		public entityx::Receiver<FirstPersonSystem>
+	class FreeCameraSystem final :
+		public entityx::System<FreeCameraSystem>,
+		public entityx::Receiver<FreeCameraSystem>
 	{
 	private:
 		entityx::Entity camera;
@@ -25,7 +25,7 @@ namespace inject
 		float speed;
 		float sensitivity;
 
-		FirstPersonSystem() :
+		FreeCameraSystem() :
 			camera(),
 			rotating(false),
 			rotation(glm::vec3(0.0f)),
@@ -44,18 +44,17 @@ namespace inject
 
 			camera = entities.create();
 			camera.assign<CameraComponent>();
-			camera.assign<TransformComponent>(glm::vec3(-1.0f), glm::vec3(0.0f, 0.0f, 2.0f));
 		}
 
 		void update(entityx::EntityManager& entities,
 			entityx::EventManager& events,
 			entityx::TimeDelta deltaTime) override
 		{
-			if (camera.has_component<TransformComponent>())
+			if (camera.has_component<CameraComponent>())
 			{
-				auto& transformComponent = *camera.component<TransformComponent>();
-				transformComponent.position += translation * transformComponent.rotation * speed * static_cast<float>(deltaTime);
-				transformComponent.changed = true;
+				auto& cameraComponent = *camera.component<CameraComponent>();
+				cameraComponent.position += translation * cameraComponent.rotation * speed * static_cast<float>(deltaTime);
+				cameraComponent.viewChanged = true;
 
 				if (rotating)
 				{
@@ -64,7 +63,7 @@ namespace inject
 					if (clampPitch)
 						eulerAngles.x = std::clamp(eulerAngles.x, -1.57f, 1.57f);
 
-					transformComponent.rotation =
+					cameraComponent.rotation =
 						glm::angleAxis(eulerAngles.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
 						glm::angleAxis(eulerAngles.y, glm::vec3(0.0f, 1.0f, 0.0f));
 				}

@@ -1,4 +1,5 @@
 #pragma once
+#include <inject/config.hpp>
 #include <inject/level.hpp>
 #include <inject/keyboard_event.hpp>
 #include <inject/window_pos_event.hpp>
@@ -17,10 +18,6 @@
 
 namespace inject
 {
-#define INJECT_WINDOW_NAME "Inject Engine"
-#define INJECT_WINDOW_WIDTH 800
-#define INJECT_WINDOW_HEIGHT 600
-
 	class Window
 	{
 	protected:

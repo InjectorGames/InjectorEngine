@@ -5,4 +5,8 @@ namespace njng
 #define INJECT_VERSION_MAJOR @inject_VERSION_MAJOR@
 #define INJECT_VERSION_MINOR @inject_VERSION_MINOR@
 #define INJECT_VERSION_PATCH @inject_VERSION_PATCH@
+
+#define INJECT_WINDOW_NAME "Inject Engine"
+#define INJECT_WINDOW_WIDTH 800
+#define INJECT_WINDOW_HEIGHT 600
 }

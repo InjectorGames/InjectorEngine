@@ -32,6 +32,15 @@ namespace inject
 			entities.each<CameraComponent>(
 				[](entityx::Entity entity, CameraComponent& cameraComponent)
 				{
+					if (cameraComponent.viewChanged)
+					{
+						cameraComponent.viewMatrix =
+							glm::scale(glm::mat4(1.0f), -cameraComponent.scale) *
+							glm::mat4_cast(glm::normalize(cameraComponent.rotation)) *
+							glm::translate(glm::mat4(1.0f), cameraComponent.position);
+
+						cameraComponent.viewChanged = false;
+					}
 					if (cameraComponent.projChanged)
 					{
 						if (cameraComponent.type == CameraComponent::Type::Perspective)

@@ -122,6 +122,40 @@ namespace inject
 				DrawMode::Triangles,
 				DrawType::UnsignedByte);
 		}
+		inline static std::shared_ptr<GlMesh> CreateSquareVN() noexcept
+		{
+			auto vertices(GlPrimitive::squareVertices);
+			std::copy(GlPrimitive::squareNormals.begin(), GlPrimitive::squareNormals.end(), std::back_inserter(vertices));
+
+			auto vertexBuffer = std::make_shared<GlBuffer>(
+				GlBuffer::Type::Array,
+				GlBuffer::Usage::StaticDraw);
+			vertexBuffer->bind();
+			vertexBuffer->setData(vertices);
+			vertexBuffer->unbind();
+
+			auto indexBuffer = std::make_shared<GlBuffer>(
+				GlBuffer::Type::ElementArray,
+				GlBuffer::Usage::StaticDraw);
+			indexBuffer->bind();
+			indexBuffer->setData(GlPrimitive::squareIndices);
+			indexBuffer->unbind();
+
+			auto attributes = std::vector<GlAttribute>
+			{
+				GlAttribute(0, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0, 0),
+				GlAttribute(1, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0,
+				GlPrimitive::squareVertices.size() * sizeof(float)),
+			};
+
+			return std::make_shared<GlMesh>(
+				vertexBuffer,
+				indexBuffer,
+				attributes,
+				GlPrimitive::squareIndices.size(),
+				DrawMode::Triangles,
+				DrawType::UnsignedByte);
+		}
 		inline static std::shared_ptr<GlMesh> CreateCubeV() noexcept
 		{
 			auto vertexBuffer = std::make_shared<GlBuffer>(
@@ -141,6 +175,40 @@ namespace inject
 			auto attributes = std::vector<GlAttribute>
 			{
 				GlAttribute(0, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0, 0),
+			};
+
+			return std::make_shared<GlMesh>(
+				vertexBuffer,
+				indexBuffer,
+				attributes,
+				GlPrimitive::cubeIndices.size(),
+				DrawMode::Triangles,
+				DrawType::UnsignedByte);
+		}
+		inline static std::shared_ptr<GlMesh> CreateCubeVN() noexcept
+		{
+			auto vertices(GlPrimitive::cubeVertices);
+			std::copy(GlPrimitive::cubeNormals.begin(), GlPrimitive::cubeNormals.end(), std::back_inserter(vertices));
+
+			auto vertexBuffer = std::make_shared<GlBuffer>(
+				GlBuffer::Type::Array,
+				GlBuffer::Usage::StaticDraw);
+			vertexBuffer->bind();
+			vertexBuffer->setData(vertices);
+			vertexBuffer->unbind();
+
+			auto indexBuffer = std::make_shared<GlBuffer>(
+				GlBuffer::Type::ElementArray,
+				GlBuffer::Usage::StaticDraw);
+			indexBuffer->bind();
+			indexBuffer->setData(GlPrimitive::cubeIndices);
+			indexBuffer->unbind();
+
+			auto attributes = std::vector<GlAttribute>
+			{
+				GlAttribute(0, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0, 0),
+				GlAttribute(1, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0,
+				GlPrimitive::cubeVertices.size() * sizeof(float)),
 			};
 
 			return std::make_shared<GlMesh>(
