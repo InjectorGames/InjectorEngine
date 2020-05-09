@@ -9,14 +9,14 @@ namespace njng
 	class BinaryStream
 	{
 	protected:
-		size_t m_index;
-		size_t m_size;
-		uint8_t* m_buffer;
+		size_t index;
+		size_t size;
+		uint8_t* buffer;
 	public:
-		BinaryStream(const size_t size) :
-			m_index(0),
-			m_size(size),
-			m_buffer(new uint8_t[size])
+		BinaryStream(const size_t _size) :
+			index(0),
+			size(_size),
+			buffer(new uint8_t[_size])
 		{}
 		virtual ~BinaryStream()
 		{
@@ -26,25 +26,25 @@ namespace njng
 
 		inline void write(const uint8_t value)
 		{
-			m_buffer[m_index++] = value;
+			buffer[index++] = value;
 		}
 		inline void write(const int8_t value)
 		{
-			m_buffer[m_index++] = static_cast<uint8_t>(value);
+			buffer[index++] = static_cast<uint8_t>(value);
 		}
 		inline void write(const uint16_t value)
 		{
-			
-			m_buffer[m_index++] = static_cast<uint8_t>(value);
+			// TODO:
+			buffer[index++] = static_cast<uint8_t>(value);
 		}
 
 		inline uint8_t read()
 		{
-			return m_buffer[m_index--];
+			return buffer_index--];
 		}
 		inline int8_t read()
 		{
-			return static_cast<int8_t>(m_buffer[m_index--]);
+			return static_cast<int8_t>(buffer[index--]);
 		}
 
 		inline static bool isBigEndian()

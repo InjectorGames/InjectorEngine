@@ -1,5 +1,5 @@
 #pragma once
-#include <inject/level.hpp>
+#include <inject/window.hpp>
 
 #include <SDL.h>
 
@@ -7,21 +7,17 @@
 #include <string>
 #include <stdexcept>
 
-namespace njng
+namespace inject
 {
 	class Engine final
 	{
-	public:
-		inline static const auto DefaultWindowWidth = 800;
-		inline static const auto DefaultWindowHeight = 600;
-		inline static const auto DefaultWindowName = "Injector Engine";
 	private:
 		inline static bool initialized = false;
-		inline static double lastTime = 0;
+		inline static std::map<uint32_t, std::shared_ptr<Window>> windows = {};
 
-		inline static void initializeSDL(uint32_t flags = SDL_INIT_EVERYTHING)
+		inline static void initializeSDL(uint32_t flags)
 		{
-			if (SDL_Init(static_cast<Uint32>(flags)) < 0)
+			if (SDL_Init(static_cast<Uint32>(flags)) == -1)
 				throw std::runtime_error("Failed to intialize SDL. Error: " + std::string(SDL_GetError()));
 		}
 		inline static void terminateSDL()
@@ -29,6 +25,10 @@ namespace njng
 			SDL_Quit();
 		}
 	public:
+		inline static bool isInitialized() noexcept
+		{
+			return initialized;
+		}
 		inline static void initialize(uint32_t flags = SDL_INIT_EVERYTHING)
 		{
 			if (initialized)
@@ -43,6 +43,8 @@ namespace njng
 			if (!initialized)
 				throw std::runtime_error("Engine is not initialized");
 
+			windows.clear();
+
 			terminateSDL();
 
 			initialized = false;
@@ -52,64 +54,65 @@ namespace njng
 		{
 			bool quit = false;
 			SDL_Event event = {};
+			uint64_t newTicks = 0;
+			uint64_t lastTicks = 0;
+			uint64_t deltaTicks = 0;
+			double deltaTime = 0.0f;
+
+			auto frequency = static_cast<double>(SDL_GetPerformanceFrequency());
 
 			while (!quit)
 			{
 				while (SDL_PollEvent(&event) != 0)
 				{
-					if (event.type == SDL_QUIT)
-						quit = true;
-				}
-			}
-			
-
-			/*if (m_window)
-			{
-				while (!glfwWindowShouldClose(m_window))
-				{
-					auto time = glfwGetTime();
-					auto dt = time - lastTime;
-
-					for (const auto& pair : levels)
+					for (const auto& pair : windows)
 					{
-						const auto& level = pair.second;
-						level->systems.update_all(static_cast<entityx::TimeDelta>(dt));
+						const auto& window = pair.second;
+						window->handleEvent(event);
 					}
-
-					lastTime = time;
-					glfwPollEvents();
 				}
-			}
-			else
-			{
-				auto time = glfwGetTime();
-				auto dt = time - lastTime;
 
-				for (const auto& pair : levels)
+				newTicks = static_cast<uint64_t>(SDL_GetPerformanceCounter());
+				deltaTicks = newTicks - lastTicks;
+				lastTicks = newTicks;
+
+				deltaTime = deltaTicks / frequency;
+
+				for (const auto& pair : windows)
 				{
-					const auto& level = pair.second;
-					level->systems.update_all(static_cast<entityx::TimeDelta>(dt));
+					const auto& window = pair.second;
+					window->update(deltaTime);
 				}
 
-				lastTime = time;
-				glfwPollEvents();
-			}*/
+				auto allWindowsClosed = true;
+				for (const auto& pair : windows)
+				{
+					const auto& window = pair.second;
+					if (window->isShown())
+					{
+						allWindowsClosed = false;
+						break;
+					}
+				}
+
+				if (allWindowsClosed)
+					quit = true;
+			}
 		}
 
-		/*
-		inline static void addLevel(std::shared_ptr<Level> level)
+		inline static void addWindow(const std::shared_ptr<Window> window)
 		{
-			if (!levels.emplace(level->id, level).second)
+			if (!windows.emplace(window->getId(), window).second)
 				throw std::exception("Failed to add level");
 		}
-		inline static void removeLevel(const size_t id)
+		inline static void removeWindow(const uint32_t id)
 		{
-			if (levels.erase(id) == 0)
+			if (windows.erase(id) == 0)
 				throw std::exception("Failed to remove level");
 		}
-		inline static void removeLevels()
+		inline static void removeWindows() noexcept
 		{
-			levels.clear();
-		}*/
+			windows.clear();
+		}
 	};
 }

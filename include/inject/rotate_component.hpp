@@ -3,10 +3,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-namespace njng
+namespace inject
 {
 	struct RotateComponent final : public entityx::Component<RotateComponent>
 	{
 		glm::vec3 rotation;
+
+		RotateComponent(const glm::vec3 _rotation = glm::vec3(0.0f)) :
+			rotation(_rotation)
+		{}
 	};
 }

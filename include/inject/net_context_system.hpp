@@ -7,21 +7,17 @@ namespace njng
 	class NetContextSystem final : public entityx::System<NetContextSystem>
 	{
 	private:
-		asio::io_context m_context;
+		asio::io_context context;
 	public:
-		NetContextSystem() :
-			m_context()
-		{}
-
-		inline asio::io_context& context()
+		inline asio::io_context& getContext()
 		{
-			return m_context;
+			return context;
 		}
 
-		void update(entityx::EntityManager& entities, entityx::EventManager& events, entityx::TimeDelta dt) override
+		void update(entityx::EntityManager& entities, entityx::EventManager& events, entityx::TimeDelta deltaTime) override
 		{
-			m_context.poll();
-			m_context.reset();
+			context.poll();
+			context.reset();
 		}
 	};
 }

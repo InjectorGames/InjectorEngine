@@ -1,29 +1,29 @@
 #pragma once
-#include <njng/transform_component.hpp>
-#include <njng/translate_component.hpp>
-#include <njng/rotate_component.hpp>
+#include <inject/transform_component.hpp>
+#include <inject/translate_component.hpp>
+#include <inject/rotate_component.hpp>
 
-namespace njng
+namespace inject
 {
 	class TransformSystem final : public entityx::System<TransformSystem>
 	{
-		void update(entityx::EntityManager& entities, entityx::EventManager& events, entityx::TimeDelta dt) override
+		void update(entityx::EntityManager& entities, entityx::EventManager& events, entityx::TimeDelta deltaTime) override
 		{
 			// TODO: paralelize this
 
-			entities.each<TransformComponent>([dt](entityx::Entity entity, TransformComponent& transformComponent)
+			entities.each<TransformComponent>([deltaTime](entityx::Entity entity, TransformComponent& transformComponent)
 				{
 					if (entity.has_component<TranslateComponent>())
 					{
 						auto& translateComponent = *entity.component<TranslateComponent>();
-						transformComponent.position += translateComponent.translation * static_cast<float>(dt);
+						transformComponent.position += translateComponent.translation * static_cast<float>(deltaTime);
 						transformComponent.changed = true;
 					}
 
 					if (entity.has_component<RotateComponent>())
 					{
 						auto& rotateComponent = *entity.component<RotateComponent>();
-						transformComponent.rotation *= glm::quat(rotateComponent.rotation * static_cast<float>(dt));
+						transformComponent.rotation *= glm::quat(rotateComponent.rotation * static_cast<float>(deltaTime));
 						transformComponent.changed = true;
 					}
 
