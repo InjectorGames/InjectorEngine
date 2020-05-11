@@ -8,7 +8,7 @@ namespace inject
 	{
 		glm::vec3 translation;
 
-		TranslateComponent(const glm::vec3 _translation = glm::vec3(0.0f)) :
+		TranslateComponent(const glm::vec3& _translation = glm::vec3(0.0f)) :
 			translation(_translation)
 		{}
 	};

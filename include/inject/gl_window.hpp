@@ -10,7 +10,7 @@ namespace inject
 	{
 		SDL_GLContext context;
 	public:
-		GlWindow(const std::string& title = INJECT_WINDOW_NAME,
+		GlWindow(const std::string& title = INJECT_WINDOW_NAME + std::string(" (OpenGL)"),
 			const glm::ivec2& position = glm::ivec2(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED),
 			const glm::ivec2& size = glm::ivec2(INJECT_WINDOW_WIDTH, INJECT_WINDOW_HEIGHT),
 			const uint32_t flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL) :
@@ -36,7 +36,7 @@ namespace inject
 			SDL_GL_DeleteContext(context);
 		}
 
-		void update(const double deltaTime) override
+		void update(const float deltaTime) override
 		{
 			SDL_GL_MakeCurrent(window, context);
 			Window::update(deltaTime);

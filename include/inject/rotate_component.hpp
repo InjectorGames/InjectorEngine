@@ -8,7 +8,7 @@ namespace inject
 	{
 		glm::vec3 rotation;
 
-		RotateComponent(const glm::vec3 _rotation = glm::vec3(0.0f)) :
+		RotateComponent(const glm::vec3& _rotation = glm::vec3(0.0f)) :
 			rotation(_rotation)
 		{}
 	};

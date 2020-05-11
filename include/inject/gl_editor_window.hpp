@@ -1,17 +1,16 @@
 #pragma once
 #include <inject/config.hpp>
-#include <inject/level.hpp>
 #include <inject/camera_system.hpp>
 #include <inject/transform_system.hpp>
 #include <inject/free_camera_system.hpp>
+#include <inject/gl_window.hpp>
 #include <inject/gl_draw_system.hpp>
-#include <inject/gl_draw_component.hpp>
 #include <inject/gl_color_material.hpp>
 #include <inject/gl_diffuse_material.hpp>
 
 namespace inject
 {
-	class GlEditorLevel : public Level
+	class GlEditorWindow : public GlWindow
 	{
 	protected:
 		std::shared_ptr<GlColorMaterial> colorMaterial;
@@ -20,7 +19,11 @@ namespace inject
 		std::shared_ptr<GlMesh> squareMesh;
 		std::shared_ptr<GlMesh> cubeMesh;
 	public:
-		GlEditorLevel(const uint32_t id) : Level(id)
+		GlEditorWindow(const std::string& title = INJECT_WINDOW_NAME + std::string("- Editor (OpenGL)"),
+			const glm::ivec2& position = glm::ivec2(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED),
+			const glm::ivec2& size = glm::ivec2(INJECT_WINDOW_WIDTH, INJECT_WINDOW_HEIGHT),
+			const uint32_t flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL) :
+			GlWindow(title, position, size, flags)
 		{
 			colorMaterial = std::make_shared<GlColorMaterial>(
 				std::make_shared<GlShader>(Shader::Type::Vertex, "resources/shaders/color.vert", true),

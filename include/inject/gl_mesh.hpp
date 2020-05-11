@@ -48,8 +48,8 @@ namespace inject
 		DrawMode drawMode;
 		DrawType drawType;
 
-		GlMesh(const std::shared_ptr<GlBuffer> _vertexBuffer,
-			const std::shared_ptr<GlBuffer> _indexBuffer,
+		GlMesh(const std::shared_ptr<GlBuffer>& _vertexBuffer,
+			const std::shared_ptr<GlBuffer>& _indexBuffer,
 			const std::vector<GlAttribute>& _attributes,
 			const uint32_t _indexCount,
 			const DrawMode _drawMode,

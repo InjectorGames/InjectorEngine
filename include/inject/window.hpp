@@ -1,6 +1,5 @@
 #pragma once
 #include <inject/config.hpp>
-#include <inject/level.hpp>
 #include <inject/keyboard_event.hpp>
 #include <inject/window_pos_event.hpp>
 #include <inject/window_size_event.hpp>
@@ -14,7 +13,7 @@
 
 namespace inject
 {
-	class Window
+	class Window : public entityx::EntityX
 	{
 	protected:
 		SDL_Window* window;
@@ -22,8 +21,6 @@ namespace inject
 		glm::ivec2 windowPos;
 		glm::ivec2 windowSize;
 		float aspectRatio;
-
-		std::map<uint32_t, std::shared_ptr<Level>> levels;
 
 		inline void handleSizeChangedEvent(const SDL_WindowEvent& event)
 		{
@@ -36,13 +33,8 @@ namespace inject
 			const auto newAspectRatio = float(newWindowSize.x) / float(newWindowSize.y);
 			const auto deltaAspectRatio = newAspectRatio - aspectRatio;
 			aspectRatio = newAspectRatio;
-
-			for (const auto& pair : levels)
-			{
-				const auto& level = pair.second;
-				level->events.emit<WindowSizeEvent>(newWindowSize, deltaWindowSize);
-				level->events.emit<AspectRatioEvent>(newAspectRatio, deltaAspectRatio);
-			}
+			events.emit<WindowSizeEvent>(newWindowSize, deltaWindowSize);
+			events.emit<AspectRatioEvent>(newAspectRatio, deltaAspectRatio);
 		}
 		inline void handleMovedEvent(const SDL_WindowEvent& event)
 		{
@@ -51,12 +43,7 @@ namespace inject
 				static_cast<int>(event.data2));
 			const auto deltaWindowPos = newWindowPos - windowPos;
 			windowPos = newWindowPos;
-
-			for (const auto& pair : levels)
-			{
-				const auto& level = pair.second;
-				level->events.emit<WindowPosEvent>(newWindowPos, deltaWindowPos);
-			}
+			events.emit<WindowPosEvent>(newWindowPos, deltaWindowPos);
 		}
 	public:
 		Window(const std::string& title = INJECT_WINDOW_NAME,
@@ -75,8 +62,6 @@ namespace inject
 		}
 		virtual ~Window()
 		{
-			levels.clear();
-
 			SDL_DestroyWindow(window);
 			window = nullptr;
 		}
@@ -90,28 +75,13 @@ namespace inject
 			return SDL_GetWindowFlags(window) & SDL_WINDOW_SHOWN;
 		}
 
-		inline void addLevel(std::shared_ptr<Level> level)
-		{
-			if (!levels.emplace(level->getId(), level).second)
-				throw std::exception("Failed to add level");
-		}
-		inline void removeLevel(const uint32_t id)
-		{
-			if (levels.erase(id) == 0)
-				throw std::exception("Failed to remove level");
-		}
-		inline void removeLevels()
-		{
-			levels.clear();
-		}
-
 		virtual void handleCloseEvent(const SDL_WindowEvent& event)
 		{
 			SDL_HideWindow(window);
 		}
 		virtual void handleEvent(const SDL_Event& event)
 		{
-			auto id = getId();
+			auto id = SDL_GetWindowID(window);
 
 			if (event.type == SDL_WINDOWEVENT && event.window.windowID == id)
 			{
@@ -150,37 +120,21 @@ namespace inject
 			}
 			else if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.windowID == id)
 			{
-				for (const auto& pair : levels)
-				{
-					const auto& level = pair.second;
-					level->events.emit<KeyboardEvent>(event.key);
-				}
+				events.emit<KeyboardEvent>(event.key);
 			}
 			else if (event.type == SDL_MOUSEMOTION && event.motion.windowID == id)
 			{
-				for (const auto& pair : levels)
-				{
-					const auto& level = pair.second;
-					level->events.emit<MouseMotionEvent>(event.motion);
-				}
+				events.emit<MouseMotionEvent>(event.motion);
 			}
 			else if ((event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) && event.button.windowID == id)
 			{
-				for (const auto& pair : levels)
-				{
-					const auto& level = pair.second;
-					level->events.emit<MouseButtonEvent>(event.button);
-				}
+				events.emit<MouseButtonEvent>(event.button);
 			}
 		}
 
-		virtual void update(const double deltaTime)
+		virtual void update(const float deltaTime)
 		{
-			for (const auto& pair : levels)
-			{
-				const auto& level = pair.second;
-				level->update(deltaTime);
-			}
+			systems.update_all(static_cast<entityx::TimeDelta>(deltaTime));
 		}
 	};
 }

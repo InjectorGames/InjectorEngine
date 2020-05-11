@@ -1,6 +1,8 @@
 #pragma once
 #include <inject/window_size_event.hpp>
+#include <inject/camera_component.hpp>
 #include <inject/gl_draw_component.hpp>
+#include <inject/transform_component.hpp>
 
 namespace inject
 {

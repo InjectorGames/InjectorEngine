@@ -1,21 +1,22 @@
 #include <inject/engine.hpp>
 #include <inject/gl_window.hpp>
-#include <inject/gl_editor_level.hpp>
+#include <inject/gl_editor_window.hpp>
+#include <starnet/gl_window.hpp>
 
 int main(int argc, char* args[])
 {
 	try
 	{
-		inject::Engine::initialize();
-
-		auto window = std::make_shared<inject::GlWindow>();
-		window->addLevel(std::make_shared<inject::GlEditorLevel>(0));
-		inject::Engine::addWindow(window);
-
+		/*inject::Engine::initialize();
+		inject::Engine::addWindow(std::make_shared<inject::GlEditorWindow>());
 		inject::Engine::update();
+		inject::Engine::terminate();*/
 
-		window = nullptr;
-
+		inject::Engine::initialize();
+		inject::Engine::initializeNet();
+		inject::Engine::addWindow(std::make_shared<starnet::GlWindow>());
+		inject::Engine::update();
+		inject::Engine::terminateNet();
 		inject::Engine::terminate();
 		return 0;
 	}

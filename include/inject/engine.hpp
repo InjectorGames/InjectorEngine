@@ -2,60 +2,68 @@
 #include <inject/window.hpp>
 
 #include <SDL.h>
+#include <SDL_net.h>
 
 namespace inject
 {
 	class Engine final
 	{
 	private:
-		inline static bool initialized = false;
+		inline static bool isInitialized = false;
 		inline static std::map<uint32_t, std::shared_ptr<Window>> windows = {};
-
-		inline static void initializeSDL(uint32_t flags)
-		{
-			if (SDL_Init(static_cast<Uint32>(flags)) == -1)
-				throw std::runtime_error("Failed to intialize SDL. Error: " + std::string(SDL_GetError()));
-		}
-		inline static void terminateSDL()
-		{
-			SDL_Quit();
-		}
 	public:
-		inline static bool isInitialized() noexcept
+		inline static bool initialized() noexcept
 		{
-			return initialized;
+			return isInitialized;
 		}
 		inline static void initialize(uint32_t flags = SDL_INIT_EVERYTHING)
 		{
-			if (initialized)
+			if (isInitialized)
 				throw std::runtime_error("Engine is already initialized");
 
-			initializeSDL(flags);
+			if (SDL_Init(static_cast<Uint32>(flags)) == -1)
+				throw std::runtime_error("Failed to intialize SDL. Error: " + std::string(SDL_GetError()));
 
-			initialized = true;
+			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+				"Initialized Inject Engine (v%d.%d.%d)",
+				INJECT_VERSION_MAJOR, INJECT_VERSION_MINOR, INJECT_VERSION_PATCH);
+
+			isInitialized = true;
 		}
 		inline static void terminate()
 		{
-			if (!initialized)
+			if (!isInitialized)
 				throw std::runtime_error("Engine is not initialized");
 
 			windows.clear();
 
-			terminateSDL();
+			SDL_Quit();
 
-			initialized = false;
+			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+				"Terminated Inject Engine");
+
+			isInitialized = false;
+		}
+
+		inline static void initializeNet()
+		{
+			if(!isInitialized)
+				throw std::runtime_error("Engine is not initialized");
+			if(SDLNet_Init() == -1)
+				throw std::runtime_error("Failed to intialize SDL Net. Error: " + std::string(SDLNet_GetError()));
+		}
+		inline static void terminateNet()
+		{
+			SDLNet_Quit();
 		}
 
 		inline static void update()
 		{
 			bool quit = false;
 			SDL_Event event = {};
-			uint64_t newTicks = 0;
 			uint64_t lastTicks = 0;
-			uint64_t deltaTicks = 0;
-			double deltaTime = 0.0f;
 
-			auto frequency = static_cast<double>(SDL_GetPerformanceFrequency());
+			auto frequency = static_cast<float>(SDL_GetPerformanceFrequency());
 
 			while (!quit)
 			{
@@ -68,11 +76,10 @@ namespace inject
 					}
 				}
 
-				newTicks = static_cast<uint64_t>(SDL_GetPerformanceCounter());
-				deltaTicks = newTicks - lastTicks;
+				auto newTicks = static_cast<uint64_t>(SDL_GetPerformanceCounter());
+				auto deltaTicks = newTicks - lastTicks;
+				auto deltaTime = deltaTicks / frequency;
 				lastTicks = newTicks;
-
-				deltaTime = deltaTicks / frequency;
 
 				for (const auto& pair : windows)
 				{
