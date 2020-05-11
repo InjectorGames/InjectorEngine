@@ -1,3 +1,6 @@
+[submodule "3rdparty/asio"]
+	path = 3rdparty/asio
+	url = https://github.com/InjectorGames/asio
 [submodule "3rdparty/entityx"]
 	path = 3rdparty/entityx
 	url = https://github.com/InjectorGames/entityx
@@ -10,12 +13,3 @@
 [submodule "3rdparty/glew"]
 	path = 3rdparty/glew
 	url = https://github.com/InjectorGames/glew
-[submodule "3rdparty/vxl"]
-	path = 3rdparty/vxl
-	url = https://github.com/InjectorGames/vxl
-[submodule "3rdparty/SDL_net"]
-	path = 3rdparty/SDL_net
-	url = https://github.com/InjectorGames/SDL_net
-[submodule "3rdparty/asio"]
-	path = 3rdparty/asio
-	url = https://github.com/InjectorGames/asio

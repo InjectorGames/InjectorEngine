@@ -32,7 +32,6 @@ add_subdirectory(3rdparty/entityx)
 add_subdirectory(3rdparty/glew/build/cmake)
 add_subdirectory(3rdparty/glm)
 add_subdirectory(3rdparty/sdl)
-add_subdirectory(3rdparty/vxl)
 
 configure_file(cmake/config.hpp.in inject/config.hpp)
 
