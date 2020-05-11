@@ -19,25 +19,26 @@ namespace starnet
 		UdpConnectResponse(const uint8_t _result) :
 			result(_result)
 		{}
-		UdpConnectResponse(const std::vector<uint8_t>& buffer)
+		UdpConnectResponse(const std::vector<uint8_t>& buffer, const size_t count)
 		{
-			inject::UdpRequestResponse::fromBytes(buffer);
+			if (count != UdpConnectResponse::size)
+				throw std::runtime_error("Incorrect Connect response size");
+
+			inject::UdpRequestResponse::fromBytes(buffer.data(), count);
 		}
 
-		uint8_t getType() const
-		{
-			return static_cast<uint8_t>(DatagramType::Connect);
-		}
 		size_t getSize() const override
 		{
 			return size;
 		}
 		void toBytes(SDL_RWops* context) const override
 		{
+			SDL_WriteU8(context, static_cast<Uint8>(DatagramType::Connect));
 			SDL_WriteU8(context, static_cast<Uint8>(result));
 		}
 		void fromBytes(SDL_RWops* context) override
 		{
+			SDL_ReadU8(context);
 			result = static_cast<uint8_t>(SDL_ReadU8(context));
 		}
 	};

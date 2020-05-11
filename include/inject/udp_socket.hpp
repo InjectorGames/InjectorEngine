@@ -1,72 +1,84 @@
 #pragma once
 #include <inject/udp_request_response.hpp>
 
-#include <SDL.h>
-#include <SDL_net.h>
-
-#include <string>
-#include <stdexcept>
-
-/*template <class Derived>
-class UdpSocketSystem : public entityx::System<Derived>
-{
-protected:
-	UDPsocket socket;
-	std::vector<uint8_t> buffer;
-
-	inline void sendTo(const UdpRequestResponse& requestResponse, const asio::ip::udp::endpoint& endpoint)
-	{
-		std::vector<uint8_t> buffer(requestResponse.getSize());
-		requestResponse.toBytes(buffer);
-		socket.send_to(asio::buffer(buffer), endpoint);
-	}
-	inline void asyncReceive()
-	{
-		socket.async_receive_from(asio::buffer(buffer), endpoint,
-			std::bind(&UdpSocketSystem::handleReceive, this, std::placeholders::_1, std::placeholders::_2));
-	}
-
-	virtual void onReceive(const asio::error_code& error, const size_t count) = 0;
-
-	inline void handleReceive(const asio::error_code& error, size_t count)
-	{
-		onReceive(error, count);
-	}
-public:
-	UdpSocketSystem(const uint16_t port = 0,
-		const size_t bufferSize = 0xFFFF) :
-		buffer(bufferSize)
-	{
-		udpsock = SDLNet_UDP_Open(static_cast<Uint16>(port));
-
-		if (!udpsock)
-			throw std::runtime_error("Failed to open UDP socket. Error: " + std::string(SDLNet_GetError()));
-	}
-};*/
+#include <asio.hpp>
 
 namespace inject
 {
 	class UdpSocket
 	{
 	protected:
-		UDPsocket socket;
+		asio::ip::udp::socket socket;
 	public:
-		UdpSocket(const uint16_t port = 0)
-		{
-			socket = SDLNet_UDP_Open(static_cast<Uint16>(port));
+		UdpSocket(asio::io_context& context,
+			const uint16_t port = 0) :
+			socket(context, asio::ip::udp::endpoint(asio::ip::udp::v6(), port))
+		{}
 
-			if (!socket)
-				throw std::runtime_error("Failed to open UDP socket. Error: " + std::string(SDLNet_GetError()));
-		}
-		virtual ~UdpSocket()
+		inline void connect(const asio::ip::udp::endpoint& endpoint)
 		{
-			SDLNet_UDP_Close(socket);
-			socket = nullptr;
+			socket.connect(endpoint);
 		}
 
-		inline void send()
+		inline void asyncReceive(void* buffer, const size_t size,
+			std::function<void(const asio::error_code&, size_t)>& callback)
 		{
-			auto packet = SDLNet_AllocPacket(1024);
+			socket.async_receive(asio::buffer(buffer, size), callback);
+		}
+		inline void asyncReceive(std::vector<uint8_t>& buffer,
+			std::function<void(const asio::error_code&, size_t)>& callback)
+		{
+			socket.async_receive(asio::buffer(buffer), callback);
+		}
+
+		inline void asyncReceiveFrom(void* buffer, const size_t size,
+			asio::ip::udp::endpoint& endpoint,
+			std::function<void(const asio::error_code&, size_t)>& callback)
+		{
+			socket.async_receive_from(asio::buffer(buffer, size), endpoint, callback);
+		}
+		inline void asyncReceiveFrom(std::vector<uint8_t>& buffer,
+			asio::ip::udp::endpoint& endpoint,
+			std::function<void(const asio::error_code&, size_t)>& callback)
+		{
+			socket.async_receive_from(asio::buffer(buffer), endpoint, callback);
+		}
+
+		inline void sendTo(const void* buffer, const size_t size,
+			const asio::ip::udp::endpoint& endpoint)
+		{
+			socket.send_to(asio::buffer(buffer, size), endpoint);
+		}
+		inline void sendTo(const std::vector<uint8_t>& buffer,
+			const asio::ip::udp::endpoint& endpoint)
+		{
+			socket.send_to(asio::buffer(buffer), endpoint);
+		}
+		inline void sendTo(const UdpRequestResponse& requestResponse,
+			const asio::ip::udp::endpoint& endpoint)
+		{
+			auto size = requestResponse.getSize();
+			auto buffer = new uint8_t[size];
+			requestResponse.toBytes(buffer, size);
+			socket.send_to(asio::buffer(buffer, size), endpoint);
+			delete[] buffer;
+		}
+
+		inline void send(const void* buffer, const size_t size)
+		{
+			socket.send(asio::buffer(buffer, size));
+		}
+		inline void send(const std::vector<uint8_t>& buffer)
+		{
+			socket.send(asio::buffer(buffer));
+		}
+		inline void send(const UdpRequestResponse& requestResponse)
+		{
+			auto size = requestResponse.getSize();
+			auto buffer = new uint8_t[size];
+			requestResponse.toBytes(buffer, size);
+			socket.send(asio::buffer(buffer, size));
+			delete[] buffer;
 		}
 	};
 }

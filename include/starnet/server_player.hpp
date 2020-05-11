@@ -1,26 +1,24 @@
 #pragma once
+#include <asio.hpp>
 #include <string>
 
 namespace starnet
 {
-	class ServerPlayer
+	struct ServerPlayer
 	{
-	protected:
 		uint64_t id;
 		std::string username;
-	public:
-		ServerPlayer(const uint64_t _id, const std::string& _username) :
-			id(_id),
-			username(_username)
-		{}
+		asio::ip::udp::endpoint endpoint;
+		uint32_t lastTicks;
 
-		inline uint64_t getId() const
-		{
-			return id;
-		}
-		inline const std::string& getUsername() const
-		{
-			return username;
-		}
+		ServerPlayer(const uint64_t _id = 0,
+			const std::string& _username = std::string(),
+			const asio::ip::udp::endpoint& _endpoint = asio::ip::udp::endpoint(),
+			const uint32_t _lastTicks = 0) :
+			id(_id),
+			username(_username),
+			endpoint(_endpoint),
+			lastTicks(_lastTicks)
+		{}
 	};
 }

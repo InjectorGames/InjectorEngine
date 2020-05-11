@@ -13,10 +13,8 @@ int main(int argc, char* args[])
 		inject::Engine::terminate();*/
 
 		inject::Engine::initialize();
-		inject::Engine::initializeNet();
 		inject::Engine::addWindow(std::make_shared<starnet::GlWindow>());
 		inject::Engine::update();
-		inject::Engine::terminateNet();
 		inject::Engine::terminate();
 		return 0;
 	}

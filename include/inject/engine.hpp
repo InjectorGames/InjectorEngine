@@ -2,7 +2,6 @@
 #include <inject/window.hpp>
 
 #include <SDL.h>
-#include <SDL_net.h>
 
 namespace inject
 {
@@ -25,7 +24,7 @@ namespace inject
 				throw std::runtime_error("Failed to intialize SDL. Error: " + std::string(SDL_GetError()));
 
 			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
-				"Initialized Inject Engine (v%d.%d.%d)",
+				"Initialized engine (v%d.%d.%d)",
 				INJECT_VERSION_MAJOR, INJECT_VERSION_MINOR, INJECT_VERSION_PATCH);
 
 			isInitialized = true;
@@ -40,21 +39,9 @@ namespace inject
 			SDL_Quit();
 
 			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
-				"Terminated Inject Engine");
+				"Terminated engine");
 
 			isInitialized = false;
-		}
-
-		inline static void initializeNet()
-		{
-			if(!isInitialized)
-				throw std::runtime_error("Engine is not initialized");
-			if(SDLNet_Init() == -1)
-				throw std::runtime_error("Failed to intialize SDL Net. Error: " + std::string(SDLNet_GetError()));
-		}
-		inline static void terminateNet()
-		{
-			SDLNet_Quit();
 		}
 
 		inline static void update()

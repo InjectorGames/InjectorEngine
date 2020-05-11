@@ -16,3 +16,6 @@
 [submodule "3rdparty/SDL_net"]
 	path = 3rdparty/SDL_net
 	url = https://github.com/InjectorGames/SDL_net
+[submodule "3rdparty/asio"]
+	path = 3rdparty/asio
+	url = https://github.com/InjectorGames/asio

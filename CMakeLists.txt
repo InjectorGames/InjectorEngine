@@ -27,11 +27,11 @@ set(BUILD_UTILS OFF CACHE BOOL "")
 set(GLEW_REGAL OFF CACHE BOOL "")
 set(GLEW_OSMESA OFF CACHE BOOL "")
 
+include(cmake/asio.cmake)
 add_subdirectory(3rdparty/entityx)
 add_subdirectory(3rdparty/glew/build/cmake)
 add_subdirectory(3rdparty/glm)
 add_subdirectory(3rdparty/sdl)
-include(cmake/SDL_net.cmake)
 add_subdirectory(3rdparty/vxl)
 
 configure_file(cmake/config.hpp.in inject/config.hpp)
@@ -39,12 +39,12 @@ configure_file(cmake/config.hpp.in inject/config.hpp)
 add_library(inject INTERFACE
 )
 target_link_libraries(inject INTERFACE
+	asio
 	entityx
 	glew_s
 	glm::glm
 	SDL2main
 	SDL2-static
-	SDL_net
 )
 target_include_directories(inject INTERFACE
 	${PROJECT_BINARY_DIR}

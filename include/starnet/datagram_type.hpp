@@ -6,5 +6,6 @@ namespace starnet
 	{
 		Ping,
 		Connect,
+		Disconnect,
 	};
 }

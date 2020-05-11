@@ -17,26 +17,27 @@ namespace starnet
 			playerCount(_playerCount),
 			maxPlayerCount(_maxPlayerCount)
 		{}
-		UdpPingResponse(const std::vector<uint8_t>& buffer)
+		UdpPingResponse(const std::vector<uint8_t>& buffer, const size_t count)
 		{
-			inject::UdpRequestResponse::fromBytes(buffer);
+			if (count != UdpPingResponse::size)
+				throw std::runtime_error("Incorrect Ping response size");
+
+			inject::UdpRequestResponse::fromBytes(buffer.data(), count);
 		}
 
-		uint8_t getType() const
-		{
-			return static_cast<uint8_t>(DatagramType::Ping);
-		}
 		size_t getSize() const override
 		{
 			return size;
 		}
 		void toBytes(SDL_RWops* context) const override
 		{
+			SDL_WriteU8(context, static_cast<Uint8>(DatagramType::Ping));
 			SDL_WriteBE32(context, static_cast<Uint32>(playerCount));
 			SDL_WriteBE32(context, static_cast<Uint32>(maxPlayerCount));
 		}
 		void fromBytes(SDL_RWops* context) override
 		{
+			SDL_ReadU8(context);
 			playerCount = static_cast<uint32_t>(SDL_ReadBE32(context));
 			maxPlayerCount = static_cast<uint32_t>(SDL_ReadBE32(context));
 		}

@@ -9,11 +9,10 @@ namespace starnet
 {
 	struct UdpConnectRequest final : inject::UdpRequestResponse
 	{
-		inline static constexpr size_t usernameSize = 16;
-
-		inline static bool isValidUsername(const std::string& username)
+		inline static constexpr size_t maxUsernameSize = 16;
+		inline static bool isCorrectUsername(const std::string& username)
 		{
-			if (username.size() != usernameSize)
+			if (username.size() > maxUsernameSize)
 				return false;
 
 			for (size_t i = 0; i < username.size(); i++)
@@ -27,40 +26,62 @@ namespace starnet
 			return true;
 		}
 
-		inline static const size_t size = headerSize + usernameSize;
+		inline static constexpr size_t size = headerSize + sizeof(uint8_t) + maxUsernameSize;
 
 		std::string username;
 
 		UdpConnectRequest(const std::string& _username) :
 			username(_username)
+		{}
+		UdpConnectRequest(const std::vector<uint8_t>& buffer, const size_t count)
 		{
-			if (!isValidUsername(username))
-				throw std::runtime_error("Invalid username value");
-		}
-		UdpConnectRequest(const std::vector<uint8_t>& buffer)
-		{
-			inject::UdpRequestResponse::fromBytes(buffer);
+			if (count != UdpConnectRequest::size)
+				throw std::runtime_error("Incorrect request size");
 
-			if (!isValidUsername(username))
-				throw std::runtime_error("Invalid username value");
+			inject::UdpRequestResponse::fromBytes(buffer.data(), count);
 		}
 
-		uint8_t getType() const
-		{
-			return static_cast<uint8_t>(DatagramType::Connect);
-		}
 		size_t getSize() const override
 		{
 			return size;
 		}
 		void toBytes(SDL_RWops* context) const override
 		{
-			SDL_RWwrite(context, username.data(), sizeof(char), username.size());
+			if (!isCorrectUsername(username))
+				throw std::runtime_error("Incorrect username value");
+
+			SDL_WriteU8(context, static_cast<Uint8>(DatagramType::Connect));
+
+			auto usernameSize = username.size();
+			SDL_WriteU8(context, static_cast<Uint8>(usernameSize));
+			SDL_RWwrite(context, username.data(), sizeof(char), usernameSize);
+
+			if (usernameSize < maxUsernameSize)
+			{
+				for (size_t i = usernameSize; i < maxUsernameSize; i++)
+					SDL_WriteU8(context, 0);
+			}
 		}
 		void fromBytes(SDL_RWops* context) override
 		{
+			SDL_ReadU8(context);
+
+			auto usernameSize = static_cast<size_t>(SDL_ReadU8(context));
+
+			if(usernameSize > maxUsernameSize)
+				throw std::runtime_error("Incorrect username size");
+
 			username = std::string(usernameSize, ' ');
-			SDL_RWread(context, username.data(), sizeof(char), username.size());
+			SDL_RWread(context, username.data(), sizeof(char), usernameSize);
+
+			if (!isCorrectUsername(username))
+				throw std::runtime_error("Incorrect username value");
+
+			if (usernameSize < maxUsernameSize)
+			{
+				for (size_t i = usernameSize; i < maxUsernameSize; i++)
+					SDL_ReadU8(context);
+			}
 		}
 	};
 }
