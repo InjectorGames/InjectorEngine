@@ -13,10 +13,6 @@ namespace inject
 		{
 			0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f,
 		};
-		inline static const std::vector<float> squareTexCoords =
-		{
-			0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		};
 		inline static const std::vector<uint8_t> squareIndices =
 		{
 			0, 1, 2, 0, 2, 3,
@@ -48,6 +44,15 @@ namespace inject
 			12, 13, 14, 12, 14, 15,
 			16, 17, 18, 16, 18, 19,
 			20, 21, 22, 20, 22, 23,
+		};
+
+		inline static const std::vector<float> gradientSkyVertices =
+		{
+			-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
+		};
+		inline static const std::vector<uint8_t> gradientSkyIndices =
+		{
+			0, 1, 2, 0, 2, 3,
 		};
 	};
 }

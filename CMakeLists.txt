@@ -66,6 +66,8 @@ set(INJECT_RESOURCES
 	shaders/color.frag
 	shaders/diffuse.vert
 	shaders/diffuse.frag
+	shaders/gradient_sky.vert
+	shaders/gradient_sky.frag
 )
 
 foreach(FILE ${INJECT_RESOURCES})

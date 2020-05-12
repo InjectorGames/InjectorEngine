@@ -9,10 +9,9 @@ namespace inject
 	private:
 		asio::io_context context;
 	public:
-		inline asio::io_context& getContext()
-		{
-			return context;
-		}
+		NetContextSystem() :
+			context()
+		{}
 
 		void update(entityx::EntityManager& entities,
 			entityx::EventManager& events,
@@ -20,6 +19,11 @@ namespace inject
 		{
 			context.poll();
 			context.reset();
+		}
+
+		inline asio::io_context& getContext()
+		{
+			return context;
 		}
 	};
 }

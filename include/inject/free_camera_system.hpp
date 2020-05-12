@@ -1,9 +1,9 @@
 #pragma once
 #include <inject/keyboard_event.hpp>
-#include <inject/camera_component.hpp>
 #include <inject/mouse_motion_event.hpp>
 #include <inject/mouse_button_event.hpp>
 #include <inject/transform_component.hpp>
+#include <inject/persp_camera_component.hpp>
 
 namespace inject
 {
@@ -13,10 +13,11 @@ namespace inject
 	{
 	private:
 		entityx::Entity camera;
+		glm::vec3 eulerAngles;
+
 		bool rotating;
 		glm::vec3 translation;
 		glm::vec3 rotation;
-		glm::vec3 eulerAngles;
 	public:
 		bool clampPitch;
 		float speed;
@@ -24,34 +25,36 @@ namespace inject
 
 		FreeCameraSystem() :
 			camera(),
+			eulerAngles(),
 			rotating(false),
-			rotation(glm::vec3(0.0f)),
-			translation(glm::vec3(0.0f)),
-			eulerAngles(glm::vec3(0.0f)),
+			rotation(),
+			translation(),
 			clampPitch(true),
 			speed(2.0f),
 			sensitivity(0.15f)
 		{}
 
-		void configure(entityx::EntityManager& entities, entityx::EventManager& events) override
+		void configure(entityx::EntityManager& entities,
+			entityx::EventManager& events) override
 		{
 			events.subscribe<KeyboardEvent>(*this);
 			events.subscribe<MouseMotionEvent>(*this);
 			events.subscribe<MouseButtonEvent>(*this);
 
 			camera = entities.create();
-			camera.assign<CameraComponent>();
+			camera.assign<PerspCameraComponent>(0);
+			camera.assign<TransformComponent>(TransformComponent::Type::Orbit, glm::vec3(-1.0f));
 		}
 
 		void update(entityx::EntityManager& entities,
 			entityx::EventManager& events,
 			entityx::TimeDelta deltaTime) override
 		{
-			if (camera.has_component<CameraComponent>())
+			if (camera.has_component<TransformComponent>())
 			{
-				auto& cameraComponent = *camera.component<CameraComponent>();
-				cameraComponent.position += translation * cameraComponent.rotation * speed * static_cast<float>(deltaTime);
-				cameraComponent.viewChanged = true;
+				auto& transform = *camera.component<TransformComponent>();
+				transform.position += translation * transform.rotation * speed * static_cast<float>(deltaTime);
+				transform.changed = true;
 
 				if (rotating)
 				{
@@ -60,7 +63,7 @@ namespace inject
 					if (clampPitch)
 						eulerAngles.x = std::clamp(eulerAngles.x, -1.57f, 1.57f);
 
-					cameraComponent.rotation =
+					transform.rotation =
 						glm::angleAxis(eulerAngles.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
 						glm::angleAxis(eulerAngles.y, glm::vec3(0.0f, 1.0f, 0.0f));
 				}
@@ -136,6 +139,15 @@ namespace inject
 					rotating = true;
 				}
 			}
+		}
+
+		inline entityx::Entity getCamera()
+		{
+			return camera;
+		}
+		inline const glm::vec3& getEulerAngles()
+		{
+			return eulerAngles;
 		}
 	};
 }

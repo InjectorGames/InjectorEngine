@@ -13,6 +13,11 @@ namespace inject
 		int32_t lightColorLocation;
 		int32_t lightDirectionLocation;
 	public:
+		inline static constexpr glm::vec3 defaultObjectColor = glm::vec3(1.0f);
+		inline static constexpr glm::vec3 defaultAmbientColor = glm::vec3(0.25f);
+		inline static constexpr glm::vec3 defaultLightColor = glm::vec3(1.0f);
+		inline static constexpr glm::vec3 defaultLightDirection = glm::vec3(-0.5f, -0.75f, -1.0f);
+
 		GlDiffuseMaterial(const std::shared_ptr<GlShader>& vertexShader,
 			const std::shared_ptr<GlShader>& fragmentShader) :
 			GlMaterial(vertexShader, fragmentShader)
@@ -25,10 +30,10 @@ namespace inject
 			lightDirectionLocation = getUniformLocation("u_LightDirection");
 
 			use();
-			setObjectColor(glm::vec3(1.0f));
-			setAmbientColor(glm::vec3(0.25f));
-			setLightColor(glm::vec3(1.0f));
-			setLightDirection(glm::vec3(-0.5f, -0.75f, -1.0f));
+			setObjectColor(defaultObjectColor);
+			setAmbientColor(defaultAmbientColor);
+			setLightColor(defaultLightColor);
+			setLightDirection(defaultLightDirection);
 			unuse();
 		}
 

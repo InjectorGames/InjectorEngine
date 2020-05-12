@@ -7,6 +7,7 @@
 #include <inject/gl_draw_system.hpp>
 #include <inject/gl_color_material.hpp>
 #include <inject/gl_diffuse_material.hpp>
+#include <inject/gl_gradient_sky_system.hpp>
 
 namespace inject
 {
@@ -15,9 +16,11 @@ namespace inject
 	protected:
 		std::shared_ptr<GlColorMaterial> colorMaterial;
 		std::shared_ptr<GlDiffuseMaterial> diffuseMaterial;
+		std::shared_ptr<GlGradientSkyMaterial> gradientSkyMaterial;
 
 		std::shared_ptr<GlMesh> squareMesh;
 		std::shared_ptr<GlMesh> cubeMesh;
+		std::shared_ptr<GlMesh> gradientSkyMesh;
 	public:
 		GlEditorWindow(const std::string& title = INJECT_WINDOW_NAME + std::string("- Editor (OpenGL)"),
 			const glm::ivec2& position = glm::ivec2(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED),
@@ -31,25 +34,54 @@ namespace inject
 			diffuseMaterial = std::make_shared<GlDiffuseMaterial>(
 				std::make_shared<GlShader>(Shader::Type::Vertex, "resources/shaders/diffuse.vert", true),
 				std::make_shared<GlShader>(Shader::Type::Fragment, "resources/shaders/diffuse.frag", true));
+			gradientSkyMaterial = std::make_shared<GlGradientSkyMaterial>(
+				std::make_shared<GlShader>(Shader::Type::Vertex, "resources/shaders/gradient_sky.vert", true),
+				std::make_shared<GlShader>(Shader::Type::Fragment, "resources/shaders/gradient_sky.frag", true));
+
+			diffuseMaterial->use();
+			diffuseMaterial->setAmbientColor(
+				glm::mix(GlGradientSkyMaterial::defaultUpColor, GlGradientSkyMaterial::defaultUpColor, 0.5f) * 0.5f);
+			diffuseMaterial->unuse();
 
 			squareMesh = GlMesh::CreateSquareVN();
 			cubeMesh = GlMesh::CreateCubeVN();
+			gradientSkyMesh = GlMesh::CreateGradientSky();
 
-			systems.add<FreeCameraSystem>();
-			systems.add<TransformSystem>();
-			systems.add<CameraSystem>();
-			systems.add<GlDrawSystem>();
+			auto freeCameraSystem = systems.add<FreeCameraSystem>();
+			auto transformSystem = systems.add<TransformSystem>();
+			auto cameraSystem = systems.add<CameraSystem>();
+			auto glGradientSkySystem = systems.add<GlGradientSkySystem>();
+			auto glDrawSystem = systems.add<GlDrawSystem>();
 			systems.configure();
 
-			auto cube = entities.create();
-			cube.assign<GlDrawComponent>(diffuseMaterial, cubeMesh);
-			cube.assign<TransformComponent>(glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 2.0f));
-			cube.assign<RotateComponent>(glm::vec3(0.75f, 0.5f, 0.25f));
+			glGradientSkySystem->material = gradientSkyMaterial;
+			glGradientSkySystem->cameraEulerAngles = const_cast<glm::vec3*>(&freeCameraSystem->getEulerAngles());
 
-			cube = entities.create();
-			cube.assign<GlDrawComponent>(colorMaterial, cubeMesh);
-			cube.assign<TransformComponent>(glm::vec3(1.0f), glm::vec3(4.0f, 0.0f, 2.0f));
-			cube.assign<RotateComponent>(glm::vec3(0.25f, 0.5f, 0.75f));
+			auto mesh = entities.create();
+			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Back, 0,
+				gradientSkyMaterial, gradientSkyMesh);
+			mesh.assign<TransformComponent>();
+
+			mesh = entities.create();
+			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Ascending, 0,
+				colorMaterial, cubeMesh);
+			mesh.assign<TransformComponent>(TransformComponent::Type::Spin,
+				glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 2.0f));
+			mesh.assign<RotateComponent>(glm::vec3(0.25f, 0.5f, 0.75));
+
+			mesh = entities.create();
+			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Ascending, 0,
+				diffuseMaterial, cubeMesh);
+			mesh.assign<TransformComponent>(TransformComponent::Type::Spin,
+				glm::vec3(1.0f), glm::vec3(4.0f, 0.0f, 2.0f));
+			mesh.assign<RotateComponent>(glm::vec3(0.75f, 0.5f, 0.25f));
+
+			mesh = entities.create();
+			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Descending, 2,
+				diffuseMaterial, cubeMesh);
+			mesh.assign<TransformComponent>(TransformComponent::Type::Spin,
+				glm::vec3(1.0f), glm::vec3(8.0f, 0.0f, 2.0f));
+			mesh.assign<RotateComponent>(glm::vec3(0.25f, 0.75f, 0.5f));
 
 			events.emit<AspectRatioEvent>(
 				float(INJECT_WINDOW_WIDTH) / float(INJECT_WINDOW_HEIGHT), 0.0f);

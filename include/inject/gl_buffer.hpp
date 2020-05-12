@@ -9,7 +9,7 @@ namespace inject
 	class GlBuffer
 	{
 	public:
-		enum class Type
+		enum class Type : GLenum
 		{
 			Array = GL_ARRAY_BUFFER, // GL 2.0
 			AtomicCounter = GL_ATOMIC_COUNTER_BUFFER, // GL 4.3
@@ -27,7 +27,7 @@ namespace inject
 			Uniform = GL_UNIFORM_BUFFER, // GL 3.1
 		};
 
-		enum class Usage
+		enum class Usage : GLenum
 		{
 			// STREAM: The data store contents will be modified once and used at most a few times.
 			// STATIC: The data store contents will be modified once and used many times.
@@ -89,7 +89,7 @@ namespace inject
 		}
 	public:
 		GlBuffer(const Type _type, const Usage _usage) :
-			size(0),
+			size(),
 			type(_type),
 			usage(_usage)
 		{

@@ -9,6 +9,8 @@ namespace inject
 		int32_t mvpMatrixLocation;
 		int32_t colorLocation;
 	public:
+		inline static constexpr glm::vec3 defaultColor = glm::vec3(1.0f);
+
 		GlColorMaterial(const std::shared_ptr<GlShader>& vertexShader,
 			const std::shared_ptr<GlShader>& fragmentShader) :
 			GlMaterial(vertexShader, fragmentShader)
@@ -17,7 +19,7 @@ namespace inject
 			colorLocation = getUniformLocation("u_Color");
 
 			use();
-			setColor(glm::vec3(1.0f));
+			setColor(glm::vec3(defaultColor));
 			unuse();
 		}
 

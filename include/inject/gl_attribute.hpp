@@ -6,7 +6,7 @@ namespace inject
 {
 	struct GlAttribute
 	{
-		enum class Type
+		enum class Type : GLenum
 		{
 			Byte = GL_BYTE,
 			UnsignedByte = GL_UNSIGNED_BYTE,

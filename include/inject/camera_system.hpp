@@ -1,8 +1,7 @@
 #pragma once
-#include <inject/camera_component.hpp>
 #include <inject/aspect_ratio_event.hpp>
-
-#include <entityx/entityx.h>
+#include <inject/persp_camera_component.hpp>
+#include <inject/ortho_camera_component.hpp>
 
 namespace inject
 {
@@ -14,7 +13,7 @@ namespace inject
 		float newAspectRatio;
 	public:
 		CameraSystem() :
-			newAspectRatio(0.0f)
+			newAspectRatio()
 		{}
 
 		void configure(entityx::EntityManager& entities,
@@ -27,39 +26,28 @@ namespace inject
 			entityx::EventManager& events,
 			entityx::TimeDelta deltaTime) override
 		{
-			entities.each<CameraComponent>(
-				[](entityx::Entity entity, CameraComponent& cameraComponent)
+			entities.each<PerspCameraComponent>(
+				[](entityx::Entity entity, PerspCameraComponent& camera)
 				{
-					if (cameraComponent.viewChanged)
+					if (camera.changed)
 					{
-						cameraComponent.viewMatrix =
-							glm::scale(glm::mat4(1.0f), -cameraComponent.scale) *
-							glm::mat4_cast(glm::normalize(cameraComponent.rotation)) *
-							glm::translate(glm::mat4(1.0f), cameraComponent.position);
-
-						cameraComponent.viewChanged = false;
+						camera.matrix = glm::perspective(
+							camera.fieldOfView, camera.aspectRatio,
+							camera.clipPlane.x, camera.clipPlane.y);
+						camera.changed = false;
 					}
-					if (cameraComponent.projChanged)
-					{
-						if (cameraComponent.type == CameraComponent::Type::Perspective)
-						{
-							cameraComponent.projMatrix = glm::perspective(
-								cameraComponent.fieldOfView, cameraComponent.aspectRatio,
-								cameraComponent.clipPlane.x, cameraComponent.clipPlane.y);
-						}
-						else if (cameraComponent.type == CameraComponent::Type::Orthographic)
-						{
-							cameraComponent.projMatrix = glm::ortho(
-								cameraComponent.frustum.x, cameraComponent.frustum.y,
-								cameraComponent.frustum.z, cameraComponent.frustum.w,
-								cameraComponent.clipPlane.x, cameraComponent.clipPlane.y);
-						}
-						else
-						{
-							throw std::runtime_error("Failed to update camera, unsupported type.");
-						}
+				});
 
-						cameraComponent.projChanged = false;
+			entities.each<OrthoCameraComponent>(
+				[](entityx::Entity entity, OrthoCameraComponent& camera)
+				{
+					if (camera.changed)
+					{
+						camera.matrix = glm::ortho(
+							camera.frustum.x, camera.frustum.y,
+							camera.frustum.z, camera.frustum.w,
+							camera.clipPlane.x, camera.clipPlane.y);
+						camera.changed = false;
 					}
 				});
 
@@ -68,12 +56,13 @@ namespace inject
 				auto aspectRatio = newAspectRatio;
 				newAspectRatio = 0.0f;
 
-				entities.each<CameraComponent>([aspectRatio](entityx::Entity entity, CameraComponent& cameraComponent)
+				entities.each<PerspCameraComponent>(
+					[aspectRatio](entityx::Entity entity, PerspCameraComponent& camera)
 					{
-						if (cameraComponent.updateAspectRatio)
+						if (camera.updateAspectRatio)
 						{
-							cameraComponent.aspectRatio = aspectRatio;
-							cameraComponent.projChanged = true;
+							camera.aspectRatio = aspectRatio;
+							camera.changed = true;
 						}
 					});
 			}
