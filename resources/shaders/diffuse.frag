@@ -3,18 +3,17 @@
 in vec3 f_Normal;
 out vec4 o_Color;
 
-uniform vec3 u_ObjectColor;
-uniform vec3 u_AmbientColor;
-uniform vec3 u_LightColor;
+uniform vec4 u_ObjectColor;
+uniform vec4 u_AmbientColor;
+uniform vec4 u_LightColor;
 uniform vec3 u_LightDirection;
 
 void main()
 {
-    vec3 ambientColor = u_ObjectColor * u_AmbientColor;
+    vec4 ambientColor = u_ObjectColor * u_AmbientColor;
 
     float diffuse = max(dot(f_Normal, u_LightDirection), 0.0);
-    vec3 diffuseColor = diffuse * u_LightColor;
+    vec4 diffuseColor =  u_LightColor * diffuse;
 
-    vec3 color = (ambientColor + diffuseColor) * u_ObjectColor;
-    o_Color = vec4(color, 1.0);
+    o_Color = (ambientColor + diffuseColor) * u_ObjectColor;
 }

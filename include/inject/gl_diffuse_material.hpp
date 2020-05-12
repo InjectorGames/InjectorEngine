@@ -13,9 +13,9 @@ namespace inject
 		int32_t lightColorLocation;
 		int32_t lightDirectionLocation;
 	public:
-		inline static constexpr glm::vec3 defaultObjectColor = glm::vec3(1.0f);
-		inline static constexpr glm::vec3 defaultAmbientColor = glm::vec3(0.25f);
-		inline static constexpr glm::vec3 defaultLightColor = glm::vec3(1.0f);
+		inline static constexpr glm::vec4 defaultObjectColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		inline static constexpr glm::vec4 defaultAmbientColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
+		inline static constexpr glm::vec4 defaultLightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		inline static constexpr glm::vec3 defaultLightDirection = glm::vec3(-0.5f, -0.75f, -1.0f);
 
 		GlDiffuseMaterial(const std::shared_ptr<GlShader>& vertexShader,
@@ -46,15 +46,15 @@ namespace inject
 		{
 			setUniform(mvpMatrixLocation, value);
 		}
-		inline void setObjectColor(const glm::vec3& value) const
+		inline void setObjectColor(const glm::vec4& value) const
 		{
 			setUniform(objectColorLocation, value);
 		}
-		inline void setAmbientColor(const glm::vec3& value) const
+		inline void setAmbientColor(const glm::vec4& value) const
 		{
 			setUniform(ambientColorLocation, value);
 		}
-		inline void setLightColor(const glm::vec3& value) const
+		inline void setLightColor(const glm::vec4& value) const
 		{
 			setUniform(lightColorLocation, value);
 		}

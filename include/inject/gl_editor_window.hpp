@@ -6,6 +6,7 @@
 #include <inject/gl_window.hpp>
 #include <inject/gl_draw_system.hpp>
 #include <inject/gl_color_material.hpp>
+#include <inject/gl_blend_color_material.hpp>
 #include <inject/gl_diffuse_material.hpp>
 #include <inject/gl_gradient_sky_system.hpp>
 
@@ -15,6 +16,7 @@ namespace inject
 	{
 	protected:
 		std::shared_ptr<GlColorMaterial> colorMaterial;
+		std::shared_ptr<GlBlendColorMaterial> blendColorMaterial;
 		std::shared_ptr<GlDiffuseMaterial> diffuseMaterial;
 		std::shared_ptr<GlGradientSkyMaterial> gradientSkyMaterial;
 
@@ -31,6 +33,9 @@ namespace inject
 			colorMaterial = std::make_shared<GlColorMaterial>(
 				std::make_shared<GlShader>(Shader::Type::Vertex, "resources/shaders/color.vert", true),
 				std::make_shared<GlShader>(Shader::Type::Fragment, "resources/shaders/color.frag", true));
+			blendColorMaterial = std::make_shared<GlBlendColorMaterial>(
+				std::make_shared<GlShader>(Shader::Type::Vertex, "resources/shaders/color.vert", true),
+				std::make_shared<GlShader>(Shader::Type::Fragment, "resources/shaders/color.frag", true));
 			diffuseMaterial = std::make_shared<GlDiffuseMaterial>(
 				std::make_shared<GlShader>(Shader::Type::Vertex, "resources/shaders/diffuse.vert", true),
 				std::make_shared<GlShader>(Shader::Type::Fragment, "resources/shaders/diffuse.frag", true));
@@ -40,7 +45,7 @@ namespace inject
 
 			diffuseMaterial->use();
 			diffuseMaterial->setAmbientColor(
-				glm::mix(GlGradientSkyMaterial::defaultUpColor, GlGradientSkyMaterial::defaultUpColor, 0.5f) * 0.5f);
+				glm::vec4(glm::mix(GlGradientSkyMaterial::defaultUpColor, GlGradientSkyMaterial::defaultUpColor, 0.5f), 1.0f) * 0.5f);
 			diffuseMaterial->unuse();
 
 			squareMesh = GlMesh::CreateSquareVN();
@@ -70,18 +75,18 @@ namespace inject
 			mesh.assign<RotateComponent>(glm::vec3(0.25f, 0.5f, 0.75));
 
 			mesh = entities.create();
+			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Descending, 2,
+				blendColorMaterial, cubeMesh);
+			mesh.assign<TransformComponent>(TransformComponent::Type::Spin,
+				glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 4.0f));
+			mesh.assign<RotateComponent>(glm::vec3(0.25f, 0.75f, 0.5f));
+
+			mesh = entities.create();
 			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Ascending, 0,
 				diffuseMaterial, cubeMesh);
 			mesh.assign<TransformComponent>(TransformComponent::Type::Spin,
 				glm::vec3(1.0f), glm::vec3(4.0f, 0.0f, 2.0f));
 			mesh.assign<RotateComponent>(glm::vec3(0.75f, 0.5f, 0.25f));
-
-			mesh = entities.create();
-			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Descending, 2,
-				diffuseMaterial, cubeMesh);
-			mesh.assign<TransformComponent>(TransformComponent::Type::Spin,
-				glm::vec3(1.0f), glm::vec3(8.0f, 0.0f, 2.0f));
-			mesh.assign<RotateComponent>(glm::vec3(0.25f, 0.75f, 0.5f));
 
 			events.emit<AspectRatioEvent>(
 				float(INJECT_WINDOW_WIDTH) / float(INJECT_WINDOW_HEIGHT), 0.0f);
