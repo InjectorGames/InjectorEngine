@@ -10,6 +10,7 @@ namespace inject
 	{
 		SDL_GLContext context;
 	public:
+		// SDL_WINDOW_ALLOW_HIGHDPI
 		GlWindow(const std::string& title = INJECT_WINDOW_NAME + std::string(" (OpenGL)"),
 			const glm::ivec2& position = glm::ivec2(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED),
 			const glm::ivec2& size = glm::ivec2(INJECT_WINDOW_WIDTH, INJECT_WINDOW_HEIGHT),

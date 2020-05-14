@@ -24,7 +24,7 @@ namespace inject
 			const glm::vec3& _scale = glm::vec3(1.0f),
 			const glm::vec3& _position = glm::vec3(),
 			const glm::quat& _rotation = glm::quat(glm::vec3()),
-			const glm::mat4& _matrix = glm::mat4(),
+			const glm::mat4& _matrix = glm::mat4(1.0f),
 			const bool _changed = true) :
 			type(_type),
 			scale(_scale),

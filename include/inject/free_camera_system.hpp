@@ -43,7 +43,8 @@ namespace inject
 
 			camera = entities.create();
 			camera.assign<PerspCameraComponent>(0);
-			camera.assign<TransformComponent>(TransformComponent::Type::Orbit, glm::vec3(-1.0f));
+			camera.assign<TransformComponent>(TransformComponent::Type::Orbit,
+				glm::vec3(-1.0f), glm::vec3(), glm::quat(glm::vec3()), glm::mat4(), true);
 		}
 
 		void update(entityx::EntityManager& entities,

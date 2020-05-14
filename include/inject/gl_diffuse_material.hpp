@@ -19,7 +19,11 @@ namespace inject
 		inline static constexpr glm::vec3 defaultLightDirection = glm::vec3(-0.5f, -0.75f, -1.0f);
 
 		GlDiffuseMaterial(const std::shared_ptr<GlShader>& vertexShader,
-			const std::shared_ptr<GlShader>& fragmentShader) :
+			const std::shared_ptr<GlShader>& fragmentShader,
+			const glm::vec4& objectColor = defaultObjectColor,
+			const glm::vec4& ambientColor = defaultAmbientColor,
+			const glm::vec4& lightColor = defaultLightColor,
+			const glm::vec3& lightDirection = defaultLightDirection) :
 			GlMaterial(vertexShader, fragmentShader)
 		{
 			mvpMatrixLocation = getUniformLocation("u_MvpMatrix");
@@ -30,11 +34,18 @@ namespace inject
 			lightDirectionLocation = getUniformLocation("u_LightDirection");
 
 			use();
-			setObjectColor(defaultObjectColor);
-			setAmbientColor(defaultAmbientColor);
-			setLightColor(defaultLightColor);
-			setLightDirection(defaultLightDirection);
+			setObjectColor(objectColor);
+			setAmbientColor(ambientColor);
+			setLightColor(lightColor);
+			setLightDirection(lightDirection);
 			unuse();
+		}
+
+		void use() const override
+		{
+			enableDepthTest();
+			disableBlend();
+			GlMaterial::use();
 		}
 
 		void setModelMatrix(const glm::mat4& value) const override

@@ -34,6 +34,13 @@ namespace inject
 			unuse();
 		}
 
+		void use() const override
+		{
+			enableDepthTest();
+			disableBlend();
+			GlMaterial::use();
+		}
+
 		inline void setPitch(const float value) const
 		{
 			setUniform(pitchLocation, value);

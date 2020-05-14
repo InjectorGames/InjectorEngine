@@ -115,12 +115,9 @@ namespace inject
 
 					draw.material->unuse();
 					drawCount++;
-
-					std::cout << drawEntity.second.id() << " " << drawEntity.first << "\n";
 				}
 			}
 
-			std::cout << "\n";
 			//std::cout << drawCount << "\n";
 		}
 

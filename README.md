@@ -7,3 +7,6 @@
 * [glew](https://github.com/nigels-com/glew) (Custom License)
 * [glm](https://github.com/g-truc/glm) (MIT License)
 * [SDL](https://hg.libsdl.org/SDL) (zlib License)
+
+## TODO
+[ ] Add screen-door transparency shaders

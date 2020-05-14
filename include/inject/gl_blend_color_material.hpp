@@ -6,18 +6,19 @@ namespace inject
 	class GlBlendColorMaterial : public GlColorMaterial
 	{
 	public:
-		inline static constexpr glm::vec4 defaultTransColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+		inline static constexpr glm::vec4 defaultBlendColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
 
 		GlBlendColorMaterial(const std::shared_ptr<GlShader>& vertexShader,
 			const std::shared_ptr<GlShader>& fragmentShader,
-			const glm::vec4& color = defaultTransColor) :
-			GlColorMaterial(vertexShader, fragmentShader, defaultTransColor)
+			const glm::vec4& color = defaultBlendColor) :
+			GlColorMaterial(vertexShader, fragmentShader, color)
 		{}
 
 		void use() const override
 		{
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			enableDepthTest();
+			enableBlend();
+			setBlendFunction(BlendType::SrcAlpha, BlendType::OneMinusSrcAlpha);
 			GlMaterial::use();
 		}
 	};

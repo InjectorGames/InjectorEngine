@@ -26,7 +26,8 @@ namespace inject
 
 		void use() const override
 		{
-			glDisable(GL_BLEND);
+			enableDepthTest();
+			disableBlend();
 			GlMaterial::use();
 		}
 
