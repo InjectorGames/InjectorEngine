@@ -31,7 +31,7 @@ namespace inject
 			translation(),
 			clampPitch(true),
 			speed(2.0f),
-			sensitivity(0.15f)
+			sensitivity(0.0025f)
 		{}
 
 		void configure(entityx::EntityManager& entities,
@@ -43,7 +43,7 @@ namespace inject
 
 			camera = entities.create();
 			camera.assign<PerspCameraComponent>(0);
-			camera.assign<TransformComponent>(TransformComponent::Type::Orbit,
+			camera.assign<TransformComponent>(TransformComponent::Type::Orbit, entityx::Entity(),
 				glm::vec3(-1.0f), glm::vec3(), glm::quat(glm::vec3()), glm::mat4(), true);
 		}
 
@@ -51,15 +51,15 @@ namespace inject
 			entityx::EventManager& events,
 			entityx::TimeDelta deltaTime) override
 		{
-			if (camera.has_component<TransformComponent>())
+			if (camera.valid() && camera.has_component<TransformComponent>())
 			{
 				auto& transform = *camera.component<TransformComponent>();
-				transform.position += translation * transform.rotation * speed * static_cast<float>(deltaTime);
+				transform.position += translation * transform.rotation * speed * deltaTime;
 				transform.changed = true;
 
 				if (rotating)
 				{
-					eulerAngles += rotation * sensitivity * static_cast<float>(deltaTime);
+					eulerAngles += rotation * sensitivity;
 
 					if (clampPitch)
 						eulerAngles.x = std::clamp(eulerAngles.x, -1.57f, 1.57f);
@@ -120,10 +120,7 @@ namespace inject
 		}
 		void receive(const MouseMotionEvent& event)
 		{
-			rotation += glm::vec3(
-				static_cast<float>(event.data.yrel),
-				static_cast<float>(event.data.xrel),
-				0.0f);
+			rotation += glm::vec3(event.data.yrel, event.data.xrel, 0.0f);
 		}
 		void receive(const MouseButtonEvent& event)
 		{

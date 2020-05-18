@@ -5,31 +5,31 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 endif()
 
 project(inject
-	VERSION 0.1.0
+	VERSION 1.0.0
 	LANGUAGES CXX
 )
 
-#option(BUILD_SHARED_LIBS "Build shared libraries" OFF) TODO:
-#option(NJNG_INSTALL "Generate installation target" ON)
+option(INJECT_BUILD_EDITOR "Build editor executable" ON)
 
 include(GNUInstallDirs)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+include(cmake/asio.cmake)
+
 set(ENTITYX_BUILD_TESTING OFF CACHE BOOL "")
 set(ENTITYX_RUN_BENCHMARKS OFF CACHE BOOL "")
 set(ENTITYX_MAX_COMPONENTS 64 CACHE STRING "")
 set(ENTITYX_DT_TYPE float CACHE STRING "")
 set(ENTITYX_BUILD_SHARED OFF CACHE BOOL "")
+add_subdirectory(3rdparty/entityx)
 
 set(BUILD_UTILS OFF CACHE BOOL "")
 set(GLEW_REGAL OFF CACHE BOOL "")
 set(GLEW_OSMESA OFF CACHE BOOL "")
-
-include(cmake/asio.cmake)
-add_subdirectory(3rdparty/entityx)
 add_subdirectory(3rdparty/glew/build/cmake)
+
 add_subdirectory(3rdparty/glm)
 add_subdirectory(3rdparty/sdl)
 
@@ -51,15 +51,17 @@ target_include_directories(inject INTERFACE
 	${PROJECT_SOURCE_DIR}/3rdparty/glew/include
 )
 
-add_executable(main
-    ${PROJECT_SOURCE_DIR}/source/main.cpp
-)
-target_link_libraries(main PUBLIC 
-    inject
-)
-target_include_directories(main PUBLIC
-	${PROJECT_SOURCE_DIR}/include
-)
+if(INJECT_BUILD_EDITOR)
+	add_executable(main
+	    ${PROJECT_SOURCE_DIR}/source/main.cpp
+	)
+	target_link_libraries(main PUBLIC 
+	    inject
+	)
+	target_include_directories(main PUBLIC
+		${PROJECT_SOURCE_DIR}/include
+	)
+endif()
 
 set(INJECT_RESOURCES
 	shaders/color.vert

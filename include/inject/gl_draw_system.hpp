@@ -91,14 +91,24 @@ namespace inject
 						}
 					});
 
-				for (auto drawEntity : drawEntities)
+				for (auto& drawEntity : drawEntities)
 				{
 					auto& transform = *drawEntity.second.component<TransformComponent>();
 					auto& draw = *drawEntity.second.component<GlDrawComponent>();
 
-					// TODO:
-					// Multiply by parents matrices
-					auto& modelMatrix = transform.matrix;
+					auto modelMatrix = transform.matrix;
+					auto relative = transform.parent;
+
+					while (relative.valid())
+					{
+						if (!relative.has_component<TransformComponent>())
+							break;
+
+						auto& relativeTransform = *relative.component<TransformComponent>();
+						modelMatrix = relativeTransform.matrix * modelMatrix;
+						relative = relativeTransform.parent;
+					}
+					
 					auto mvpMatrix = viewProjMatrix * modelMatrix;
 
 					draw.material->use();

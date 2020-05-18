@@ -1,4 +1,6 @@
 #pragma once
+#include <inject/aspect_ratio_event.hpp>
+#include <inject/mouse_button_event.hpp>
 #include <inject/gl_draw_component.hpp>
 #include <inject/gl_sprite_color_material.hpp>
 
@@ -31,11 +33,12 @@ namespace inject
 			entityx::EventManager& events) override
 		{
 			events.subscribe<AspectRatioEvent>(*this);
+			events.subscribe<MouseButtonEvent>(*this);
 
 			camera = entities.create();
 			camera.assign<OrthoCameraComponent>(1);
-			camera.assign<TransformComponent>(
-				TransformComponent::Type::Orbit, glm::vec3(1.0f));
+			camera.assign<TransformComponent>(TransformComponent::Type::Orbit,
+				entityx::Entity(), glm::vec3(1.0f));
 
 			/*toolbar = entities.create();
 			toolbar.assign<GlDrawComponent>(1, GlDrawComponent::Order::Front, 0,
@@ -48,7 +51,7 @@ namespace inject
 			entityx::EventManager& events,
 			entityx::TimeDelta deltaTime) override
 		{
-			if (newAspectRatio != 0.0f && camera.has_component<OrthoCameraComponent>())
+			if (newAspectRatio != 0.0f && camera.valid() && camera.has_component<OrthoCameraComponent>())
 			{
 				auto& cameraComponent = *camera.component<OrthoCameraComponent>();
 				cameraComponent.frustum.x = -newAspectRatio;
@@ -61,6 +64,10 @@ namespace inject
 		void receive(const AspectRatioEvent& event)
 		{
 			newAspectRatio = event.aspectRatio;
+		}
+		void receive(const MouseButtonEvent& event)
+		{
+
 		}
 	};
 }

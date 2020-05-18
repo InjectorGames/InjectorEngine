@@ -27,7 +27,7 @@ namespace inject
 		std::shared_ptr<GlMesh> cubeMesh;
 		std::shared_ptr<GlMesh> gradientSkyMesh;
 	public:
-		GlEditorWindow(const std::string& title = INJECT_WINDOW_NAME + std::string("- Editor (OpenGL)"),
+		GlEditorWindow(const std::string& title = INJECT_WINDOW_NAME + std::string(" - Editor (OpenGL)"),
 			const glm::ivec2& position = glm::ivec2(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED),
 			const glm::ivec2& size = glm::ivec2(INJECT_WINDOW_WIDTH, INJECT_WINDOW_HEIGHT),
 			const uint32_t flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL) :
@@ -69,38 +69,39 @@ namespace inject
 			glGradientSkySystem->material = gradientSkyMaterial;
 			glGradientSkySystem->cameraEulerAngles = const_cast<glm::vec3*>(&freeCameraSystem->getEulerAngles());
 
-			auto mesh = entities.create();
-			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Back, 0,
+			auto gradientSkyEntity = entities.create();
+			gradientSkyEntity.assign<GlDrawComponent>(0, GlDrawComponent::Order::Back, 0,
 				gradientSkyMaterial, gradientSkyMesh);
-			mesh.assign<TransformComponent>();
+			gradientSkyEntity.assign<TransformComponent>();
 
-			mesh = entities.create();
-			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Ascending, 0,
+			auto colorEntity = entities.create();
+			colorEntity.assign<GlDrawComponent>(0, GlDrawComponent::Order::Ascending, 0,
 				colorMaterial, cubeMesh);
-			mesh.assign<TransformComponent>(TransformComponent::Type::Spin,
+			colorEntity.assign<TransformComponent>(TransformComponent::Type::Spin, entityx::Entity(),
 				glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 2.0f));
-			mesh.assign<RotateComponent>(glm::vec3(0.25f, 0.5f, 0.75));
+			colorEntity.assign<RotateComponent>(glm::vec3(0.25f, 0.5f, 0.75));
 
-			mesh = entities.create();
-			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Descending, 2,
+			auto blendColorEntity = entities.create();
+			blendColorEntity.assign<GlDrawComponent>(0, GlDrawComponent::Order::Descending, 2,
 				blendColorMaterial, cubeMesh);
-			mesh.assign<TransformComponent>(TransformComponent::Type::Spin,
+			blendColorEntity.assign<TransformComponent>(TransformComponent::Type::Spin, colorEntity,
 				glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 4.0f));
-			mesh.assign<RotateComponent>(glm::vec3(0.25f, 0.75f, 0.5f));
+			blendColorEntity.assign<RotateComponent>(glm::vec3(0.25f, 0.75f, 0.5f));
 
-			mesh = entities.create();
-			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Ascending, 0,
+			auto diffuseEntity = entities.create();
+			diffuseEntity.assign<GlDrawComponent>(0, GlDrawComponent::Order::Ascending, 0,
 				diffuseMaterial, cubeMesh);
-			mesh.assign<TransformComponent>(TransformComponent::Type::Spin,
+			diffuseEntity.assign<TransformComponent>(TransformComponent::Type::Spin, entityx::Entity(),
 				glm::vec3(1.0f), glm::vec3(2.0f, 0.0f, 2.0f));
-			mesh.assign<RotateComponent>(glm::vec3(0.75f, 0.5f, 0.25f));
+			diffuseEntity.assign<RotateComponent>(glm::vec3(0.75f, 0.5f, 0.25f));
 
-			mesh = entities.create();
-			mesh.assign<GlDrawComponent>(0, GlDrawComponent::Order::Descending, 2,
+			
+			auto blendDiffuseEntity = entities.create();
+			blendDiffuseEntity.assign<GlDrawComponent>(0, GlDrawComponent::Order::Descending, 2,
 				blendDiffuseMaterial, cubeMesh);
-			mesh.assign<TransformComponent>(TransformComponent::Type::Spin,
+			blendDiffuseEntity.assign<TransformComponent>(TransformComponent::Type::Spin, entityx::Entity(),
 				glm::vec3(1.0f), glm::vec3(2.0f, 0.0f, 4.0f));
-			mesh.assign<RotateComponent>(glm::vec3(0.5f, 0.75f, 0.25f));
+			blendDiffuseEntity.assign<RotateComponent>(glm::vec3(0.5f, 0.75f, 0.25f));
 
 			auto aspectRatio = float(INJECT_WINDOW_WIDTH) / float(INJECT_WINDOW_HEIGHT);
 			events.emit<AspectRatioEvent>(aspectRatio, aspectRatio);

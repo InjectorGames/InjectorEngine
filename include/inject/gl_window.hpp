@@ -27,7 +27,7 @@ namespace inject
 				throw std::runtime_error("Failed to create SDL window OpenGL context. Error: " + std::string(SDL_GetError()));
 
 			SDL_GL_MakeCurrent(window, context);
-			//SDL_GL_SetSwapInterval(0);
+			SDL_GL_SetSwapInterval(0);
 
 			if(glewInit() != GLEW_OK)
 				throw std::runtime_error("Failed to initialize SDL window GLEW.");
