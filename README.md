@@ -9,4 +9,4 @@
 * [SDL](https://hg.libsdl.org/SDL) (zlib License)
 
 ## TODO
-[ ] Add screen-door transparency shaders
+- [ ] Add screen-door transparency shaders
