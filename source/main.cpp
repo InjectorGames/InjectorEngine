@@ -2,8 +2,6 @@
 #include <inject/gl_window.hpp>
 #include <inject/gl_editor_window.hpp>
 
-#include <png.h>
-
 int main(int argc, char* args[])
 {
 	try
@@ -18,6 +16,5 @@ int main(int argc, char* args[])
 	{
 		std::cerr << exception.what() << std::endl;
 		throw exception;
-		return -1;
 	}
 }

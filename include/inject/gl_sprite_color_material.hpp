@@ -15,7 +15,8 @@ namespace inject
 		void use() const override
 		{
 			disableDepthTest();
-			disableBlend();
+			enableBlend();
+			setBlendFunction(BlendType::SrcAlpha, BlendType::OneMinusSrcAlpha);
 			GlMaterial::use();
 		}
 	};

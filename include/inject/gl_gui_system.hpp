@@ -27,6 +27,10 @@ namespace inject
 				std::make_shared<GlShader>(Shader::Type::Vertex, "resources/shaders/color.vert", true),
 				std::make_shared<GlShader>(Shader::Type::Fragment, "resources/shaders/color.frag", true));
 			spriteMesh = GlMesh::CreateSquareV();
+
+			spriteColorMaterial->use();
+			spriteColorMaterial->setColor(glm::vec4(0.25f, 0.25f, 0.25f, 0.75f));
+			spriteColorMaterial->unuse();
 		}
 
 		void configure(entityx::EntityManager& entities,
@@ -40,11 +44,11 @@ namespace inject
 			camera.assign<TransformComponent>(TransformComponent::Type::Orbit,
 				entityx::Entity(), glm::vec3(1.0f));
 
-			/*toolbar = entities.create();
+			toolbar = entities.create();
 			toolbar.assign<GlDrawComponent>(1, GlDrawComponent::Order::Front, 0,
 				spriteColorMaterial, spriteMesh, GlMesh::DrawMode::Triangles, true);
-			toolbar.assign<TransformComponent>(TransformComponent::Type::Spin,
-				glm::vec3(1.0f, 0.1f, 1.0f), glm::vec3(0.0f, 0.95f, 0.0f));*/
+			toolbar.assign<TransformComponent>(TransformComponent::Type::Spin, entityx::Entity(),
+				glm::vec3(1.0f, 0.05f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 		}
 
 		void update(entityx::EntityManager& entities,

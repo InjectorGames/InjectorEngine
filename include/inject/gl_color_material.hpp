@@ -9,7 +9,7 @@ namespace inject
 		int32_t mvpMatrixLocation;
 		int32_t colorLocation;
 	public:
-		inline static constexpr glm::vec4 defaultColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		inline static const glm::vec4 defaultColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		GlColorMaterial(const std::shared_ptr<GlShader>& vertexShader,
 			const std::shared_ptr<GlShader>& fragmentShader,

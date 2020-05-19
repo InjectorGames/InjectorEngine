@@ -44,7 +44,7 @@ namespace inject
 			camera = entities.create();
 			camera.assign<PerspCameraComponent>(0);
 			camera.assign<TransformComponent>(TransformComponent::Type::Orbit, entityx::Entity(),
-				glm::vec3(-1.0f), glm::vec3(), glm::quat(glm::vec3()), glm::mat4(), true);
+				glm::vec3(1.0f), glm::vec3(), glm::quat(glm::vec3()), glm::mat4(), true);
 		}
 
 		void update(entityx::EntityManager& entities,
@@ -77,31 +77,31 @@ namespace inject
 		{
 			if (event.data.keysym.scancode == SDL_Scancode::SDL_SCANCODE_A)
 			{
-				if (event.data.state == KeyboardEvent::State::Released && translation.x < 0.0f)
-					translation.x = 0.0f;
-				else if (event.data.state == KeyboardEvent::State::Pressed)
-					translation.x = -1.0f;
-			}
-			else if (event.data.keysym.scancode == SDL_Scancode::SDL_SCANCODE_D)
-			{
 				if (event.data.state == KeyboardEvent::State::Released && translation.x > 0.0f)
 					translation.x = 0.0f;
 				else if (event.data.state == KeyboardEvent::State::Pressed)
 					translation.x = 1.0f;
 			}
-			else if (event.data.keysym.scancode == SDL_Scancode::SDL_SCANCODE_LCTRL)
+			else if (event.data.keysym.scancode == SDL_Scancode::SDL_SCANCODE_D)
 			{
-				if (event.data.state == KeyboardEvent::State::Released && translation.y < 0.0f)
-					translation.y = 0.0f;
+				if (event.data.state == KeyboardEvent::State::Released && translation.x < 0.0f)
+					translation.x = 0.0f;
 				else if (event.data.state == KeyboardEvent::State::Pressed)
-					translation.y = -1.0f;
+					translation.x = -1.0f;
 			}
-			else if (event.data.keysym.scancode == SDL_Scancode::SDL_SCANCODE_SPACE)
+			else if (event.data.keysym.scancode == SDL_Scancode::SDL_SCANCODE_LCTRL)
 			{
 				if (event.data.state == KeyboardEvent::State::Released && translation.y > 0.0f)
 					translation.y = 0.0f;
 				else if (event.data.state == KeyboardEvent::State::Pressed)
 					translation.y = 1.0f;
+			}
+			else if (event.data.keysym.scancode == SDL_Scancode::SDL_SCANCODE_SPACE)
+			{
+				if (event.data.state == KeyboardEvent::State::Released && translation.y < 0.0f)
+					translation.y = 0.0f;
+				else if (event.data.state == KeyboardEvent::State::Pressed)
+					translation.y = -1.0f;
 			}
 			else if (event.data.keysym.scancode == SDL_Scancode::SDL_SCANCODE_W)
 			{
@@ -120,7 +120,7 @@ namespace inject
 		}
 		void receive(const MouseMotionEvent& event)
 		{
-			rotation += glm::vec3(event.data.yrel, event.data.xrel, 0.0f);
+			rotation += glm::vec3(-event.data.yrel, -event.data.xrel, 0.0f);
 		}
 		void receive(const MouseButtonEvent& event)
 		{

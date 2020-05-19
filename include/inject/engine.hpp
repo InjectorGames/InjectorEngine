@@ -9,9 +9,12 @@ namespace inject
 	{
 	private:
 		inline static bool isInitialized = false;
+		inline static bool capUpdateRate = true;
+		inline static uint32_t targetUpdateRate = 60;
+		inline static uint32_t updateRateDelay = 1000 / targetUpdateRate;
 		inline static std::map<uint32_t, std::shared_ptr<Window>> windows = {};
 	public:
-		inline static bool initialized() noexcept
+		inline static bool getIsInitialized() noexcept
 		{
 			return isInitialized;
 		}
@@ -50,7 +53,8 @@ namespace inject
 			SDL_Event event = {};
 			uint64_t lastTicks = 0;
 
-			auto frequency = static_cast<float>(SDL_GetPerformanceFrequency());
+			auto frequency = static_cast<uint64_t>(SDL_GetPerformanceFrequency());
+			auto milliFrequence = static_cast<uint64_t>(frequency / 1000);
 
 			while (!quit)
 			{
@@ -64,8 +68,8 @@ namespace inject
 				}
 
 				auto newTicks = static_cast<uint64_t>(SDL_GetPerformanceCounter());
-				auto deltaTicks = newTicks - lastTicks;
-				auto deltaTime = deltaTicks / frequency;
+				auto deltaTicks = static_cast<uint64_t>(newTicks - lastTicks);
+				auto deltaTime = static_cast<float>(deltaTicks / float(frequency));
 				lastTicks = newTicks;
 
 				for (const auto& pair : windows)
@@ -87,7 +91,31 @@ namespace inject
 
 				if (allWindowsClosed)
 					quit = true;
+
+				if (capUpdateRate)
+				{
+					newTicks = static_cast<uint64_t>(SDL_GetPerformanceCounter());
+					deltaTicks = static_cast<uint64_t>(newTicks - lastTicks);
+					auto delay = static_cast<int32_t>(updateRateDelay - deltaTicks / milliFrequence) - 1;
+
+					if (delay > 0)
+						SDL_Delay(static_cast<Uint32>(delay));
+				}
 			}
+		}
+
+		inline static uint32_t getTargetUpdateRate()
+		{
+			return targetUpdateRate;
+		}
+		inline static uint32_t getUpdateRateDelay()
+		{
+			return updateRateDelay;
+		}
+		inline static void setTargetUpdateRate(const uint32_t frameRate)
+		{
+			targetUpdateRate = frameRate;
+			updateRateDelay = 1000 / frameRate;
 		}
 
 		inline static void addWindow(const std::shared_ptr<Window> window)

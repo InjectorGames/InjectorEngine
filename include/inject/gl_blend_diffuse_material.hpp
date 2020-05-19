@@ -6,9 +6,9 @@ namespace inject
 	class GlBlendDiffuseMaterial : public GlDiffuseMaterial
 	{
 	public:
-		inline static constexpr glm::vec4 defaultBlendObjectColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
-		inline static constexpr glm::vec4 defaultBlendAmbientColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
-		inline static constexpr glm::vec4 defaultBlendLightColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+		inline static const glm::vec4 defaultBlendObjectColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+		inline static const glm::vec4 defaultBlendAmbientColor = glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
+		inline static const glm::vec4 defaultBlendLightColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 
 		GlBlendDiffuseMaterial(const std::shared_ptr<GlShader>& vertexShader,
 			const std::shared_ptr<GlShader>& fragmentShader,

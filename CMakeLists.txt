@@ -64,12 +64,12 @@ if(INJECT_BUILD_EDITOR)
 endif()
 
 set(INJECT_RESOURCES
-	shaders/color.vert
 	shaders/color.frag
-	shaders/diffuse.vert
+	shaders/color.vert
 	shaders/diffuse.frag
-	shaders/gradient_sky.vert
+	shaders/diffuse.vert
 	shaders/gradient_sky.frag
+	shaders/gradient_sky.vert
 )
 
 foreach(FILE ${INJECT_RESOURCES})

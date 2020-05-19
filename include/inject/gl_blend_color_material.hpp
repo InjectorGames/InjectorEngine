@@ -6,7 +6,7 @@ namespace inject
 	class GlBlendColorMaterial : public GlColorMaterial
 	{
 	public:
-		inline static constexpr glm::vec4 defaultBlendColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+		inline static const glm::vec4 defaultBlendColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
 
 		GlBlendColorMaterial(const std::shared_ptr<GlShader>& vertexShader,
 			const std::shared_ptr<GlShader>& fragmentShader,

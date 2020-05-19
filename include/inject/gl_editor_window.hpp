@@ -94,7 +94,6 @@ namespace inject
 			diffuseEntity.assign<TransformComponent>(TransformComponent::Type::Spin, entityx::Entity(),
 				glm::vec3(1.0f), glm::vec3(2.0f, 0.0f, 2.0f));
 			diffuseEntity.assign<RotateComponent>(glm::vec3(0.75f, 0.5f, 0.25f));
-
 			
 			auto blendDiffuseEntity = entities.create();
 			blendDiffuseEntity.assign<GlDrawComponent>(0, GlDrawComponent::Order::Descending, 2,

@@ -73,13 +73,26 @@ namespace inject
 					{
 						if (draw.draw && draw.queue == cameraQueue && draw.material && draw.mesh)
 						{
+							auto relative = transform.parent;
+							auto transformPosition = glm::vec4(transform.position, 1.0f);
+
+							while (relative.valid())
+							{
+								if (!relative.has_component<TransformComponent>())
+									break;
+
+								auto& relativeTransform = *relative.component<TransformComponent>();
+								transformPosition = relativeTransform.matrix * transformPosition;
+								relative = relativeTransform.parent;
+							}
+
 							switch (draw.order)
 							{
 							case GlDrawComponent::Order::Ascending:
-								drawEntities.emplace(glm::distance(-cameraTransform.position, transform.position) + clipPlane.y * draw.offset, entity);
+								drawEntities.emplace(glm::distance(-cameraTransform.position, glm::vec3(transformPosition)) + clipPlane.y * draw.offset, entity);
 								break;
 							case GlDrawComponent::Order::Descending:
-								drawEntities.emplace(-glm::distance(-cameraTransform.position, transform.position) + clipPlane.y * draw.offset, entity);
+								drawEntities.emplace(-glm::distance(-cameraTransform.position, glm::vec3(transformPosition)) + clipPlane.y * draw.offset, entity);
 								break;
 							case GlDrawComponent::Order::Front:
 								drawEntities.emplace(-clipPlane.y + clipPlane.y * draw.offset, entity);
