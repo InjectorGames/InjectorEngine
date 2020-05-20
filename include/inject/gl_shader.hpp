@@ -1,9 +1,9 @@
 #pragma once
 #include <inject/shader.hpp>
+#include <inject/file_stream.hpp>
 
 #include <GL/glew.h>
 #include <SDL_opengl.h>
-#include <SDL_rwops.h>
 
 #include <vector>
 #include <stdexcept>
@@ -90,26 +90,15 @@ namespace inject
 
 			if (readFile)
 			{
-				auto context = SDL_RWFromFile(string.c_str(), "rt");
-
-				if (context == nullptr)
-					throw std::runtime_error("Failed to open shader file. Error: " + std::string(SDL_GetError()));
-
-				auto size = static_cast<int32_t>(SDL_RWsize(context));
-
-				if (size < 0)
-					throw ("Failed to get shader file size. Error: " + std::string(SDL_GetError()));
-
+				auto stream = FileStream(string, "rt");
+				auto size = stream.getSize();
 				sourceCode.resize(size, ' ');
-
-				if(SDL_RWread(context, &sourceCode[0], sizeof(char), size) == 0)
-					throw ("Failed to read shader from file. Error: " + std::string(SDL_GetError()));
+				stream.read(sourceCode.data(), size);
 			}
 			else
 			{
 				sourceCode = string;
 			}
-				
 
 			std::vector<const char*> sources;
 			sources.push_back(sourceCode.c_str());

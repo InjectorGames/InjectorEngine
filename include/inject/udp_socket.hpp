@@ -1,6 +1,5 @@
 #pragma once
 #include <inject/udp_request_response.hpp>
-
 #include <asio.hpp>
 
 namespace inject

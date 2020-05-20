@@ -1,8 +1,5 @@
 #pragma once
-#include <SDL_rwops.h>
-
-#include <array>
-#include <vector>
+#include <inject/memory_stream.hpp>
 
 namespace inject
 {
@@ -10,21 +7,17 @@ namespace inject
 	{
 		inline static constexpr size_t headerSize = 1;
 
-		inline void toBytes(void* buffer, const size_t count) const
+		inline void toBytes(void* const buffer, const size_t size) const
 		{
-			auto context = SDL_RWFromMem(buffer, count);
-			toBytes(context);
-			SDL_RWclose(context);
+			toBytes(MemoryStream(buffer, size));
 		}
-		inline void fromBytes(const void* buffer, const size_t count)
+		inline void fromBytes(const void* const buffer, const size_t size)
 		{
-			auto context = SDL_RWFromConstMem(buffer, count);
-			fromBytes(context);
-			SDL_RWclose(context);
+			fromBytes(MemoryStream(buffer, size));
 		}
 
-		virtual size_t getSize() const = 0;
-		virtual void toBytes(SDL_RWops* context) const = 0;
-		virtual void fromBytes(SDL_RWops* context) = 0;
+		virtual const size_t getSize() const = 0;
+		virtual void toBytes(Stream& stream) const = 0;
+		virtual void fromBytes(Stream& stream) = 0;
 	};
 }
