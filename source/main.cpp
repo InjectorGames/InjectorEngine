@@ -7,7 +7,7 @@ int main(int argc, char* args[])
 	try
 	{
 		inject::Engine::initialize();
-		inject::Engine::addWindow(std::make_shared<inject::GlEditorWindow>());
+		inject::Engine::addManager(std::make_shared<inject::GlEditorWindow>());
 		inject::Engine::update();
 		inject::Engine::terminate();
 		return 0;

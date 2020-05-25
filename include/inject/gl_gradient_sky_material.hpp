@@ -13,7 +13,7 @@ namespace inject
 		int32_t upColorLocation;
 		int32_t downColorLocation;
 	public:
-		inline static const float defaultPitch = 0.0f;
+		inline static constexpr float defaultPitch = 0.0f;
 		inline static const glm::vec3 defaultUpColor =
 			glm::vec3(71.0f / 255.0f, 115.0f / 255.0f, 187.0f / 255.0f);
 		inline static const glm::vec3 defaultDownColor =

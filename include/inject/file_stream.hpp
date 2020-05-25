@@ -19,5 +19,19 @@ namespace inject
 		{
 			context->close(context);
 		}
+
+		inline static bool isFileExist(const std::string& filePath)
+		{
+			auto context = SDL_RWFromFile(filePath.c_str(), "r");
+			if (context)
+			{
+				context->close(context);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 }

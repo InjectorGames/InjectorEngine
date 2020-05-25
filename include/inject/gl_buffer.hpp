@@ -53,7 +53,7 @@ namespace inject
 		Type type;
 		Usage usage;
 
-		inline static uint32_t create() noexcept
+		inline static const uint32_t create() noexcept
 		{
 			GLuint buffer;
 			glGenBuffers(GL_ONE, &buffer);
@@ -100,19 +100,19 @@ namespace inject
 			destroy(buffer);
 		}
 
-		inline uint32_t getBuffer() const noexcept
+		inline const uint32_t getBuffer() const noexcept
 		{
 			return buffer;
 		}
-		inline uint64_t getSize() const noexcept
+		inline const uint64_t getSize() const noexcept
 		{
 			return size;
 		}
-		inline Type getType() const noexcept
+		inline const Type getType() const noexcept
 		{
 			return type;
 		}
-		inline Usage getUsage() const noexcept
+		inline const Usage getUsage() const noexcept
 		{
 			return usage;
 		}

@@ -9,7 +9,7 @@ namespace inject
 	protected:
 		uint32_t vertexArray;
 
-		inline static uint32_t create() noexcept
+		inline static const uint32_t create() noexcept
 		{
 			GLuint vertexArray;
 			glGenVertexArrays(GL_ONE, &vertexArray);
@@ -34,7 +34,7 @@ namespace inject
 			destroy(vertexArray);
 		}
 
-		inline uint32_t getVertexArray() const noexcept
+		inline const uint32_t getVertexArray() const noexcept
 		{
 			return vertexArray;
 		}

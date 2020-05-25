@@ -28,7 +28,7 @@ namespace inject
 			type(_type)
 		{}
 
-		inline Type getType() const noexcept
+		inline const Type getType() const noexcept
 		{
 			return type;
 		}

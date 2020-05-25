@@ -18,6 +18,7 @@ namespace inject
 	{
 	protected:
 		std::shared_ptr<GlColorMaterial> colorMaterial;
+		std::shared_ptr<GlColorMaterial> colColorMaterial;
 		std::shared_ptr<GlBlendColorMaterial> blendColorMaterial;
 		std::shared_ptr<GlDiffuseMaterial> diffuseMaterial;
 		std::shared_ptr<GlBlendDiffuseMaterial> blendDiffuseMaterial;
@@ -25,6 +26,7 @@ namespace inject
 
 		std::shared_ptr<GlMesh> squareMesh;
 		std::shared_ptr<GlMesh> cubeMesh;
+		std::shared_ptr<GlMesh> axisMesh;
 		std::shared_ptr<GlMesh> gradientSkyMesh;
 	public:
 		GlEditorWindow(const std::string& title = INJECT_WINDOW_NAME + std::string(" - Editor (OpenGL)"),
@@ -36,6 +38,9 @@ namespace inject
 			colorMaterial = std::make_shared<GlColorMaterial>(
 				std::make_shared<GlShader>(Shader::Type::Vertex, "resources/shaders/color.vert", true),
 				std::make_shared<GlShader>(Shader::Type::Fragment, "resources/shaders/color.frag", true));
+			colColorMaterial = std::make_shared<GlColorMaterial>(
+				std::make_shared<GlShader>(Shader::Type::Vertex, "resources/shaders/col_color.vert", true),
+				std::make_shared<GlShader>(Shader::Type::Fragment, "resources/shaders/col_color.frag", true));
 			blendColorMaterial = std::make_shared<GlBlendColorMaterial>(
 				std::make_shared<GlShader>(Shader::Type::Vertex, "resources/shaders/color.vert", true),
 				std::make_shared<GlShader>(Shader::Type::Fragment, "resources/shaders/color.frag", true));
@@ -56,6 +61,7 @@ namespace inject
 
 			squareMesh = GlMesh::CreateSquareVN();
 			cubeMesh = GlMesh::CreateCubeVN();
+			axisMesh = GlMesh::CreateAxisVC();
 			gradientSkyMesh = GlMesh::CreateGradientSky();
 
 			auto freeCameraSystem = systems.add<FreeCameraSystem>();
@@ -68,6 +74,11 @@ namespace inject
 
 			glGradientSkySystem->material = gradientSkyMaterial;
 			glGradientSkySystem->cameraEulerAngles = const_cast<glm::vec3*>(&freeCameraSystem->getEulerAngles());
+
+			auto axisEntity = entities.create();
+			axisEntity.assign<GlDrawComponent>(0, GlDrawComponent::Order::Ascending, 0,
+				colColorMaterial, axisMesh, GlMesh::DrawMode::Lines);
+			axisEntity.assign<TransformComponent>();
 
 			auto gradientSkyEntity = entities.create();
 			gradientSkyEntity.assign<GlDrawComponent>(0, GlDrawComponent::Order::Back, 0,

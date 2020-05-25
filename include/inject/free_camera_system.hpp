@@ -54,7 +54,8 @@ namespace inject
 			if (camera.valid() && camera.has_component<TransformComponent>())
 			{
 				auto& transform = *camera.component<TransformComponent>();
-				transform.position += translation * transform.rotation * speed * deltaTime;
+				transform.position += translation * transform.rotation * 
+					speed * static_cast<float>(deltaTime);
 				transform.changed = true;
 
 				if (rotating)
@@ -128,6 +129,7 @@ namespace inject
 			{
 				if (event.data.state == MouseButtonEvent::State::Released)
 				{
+					// TODO: move to engine class
 					SDL_SetRelativeMouseMode(SDL_FALSE);
 					rotating = false;
 				}

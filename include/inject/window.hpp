@@ -1,5 +1,6 @@
 #pragma once
 #include <inject/config.hpp>
+#include <inject/manager.hpp>
 #include <inject/keyboard_event.hpp>
 #include <inject/window_pos_event.hpp>
 #include <inject/window_size_event.hpp>
@@ -13,7 +14,7 @@
 
 namespace inject
 {
-	class Window : public entityx::EntityX
+	class Window : public Manager
 	{
 	protected:
 		SDL_Window* window;
@@ -22,6 +23,14 @@ namespace inject
 		glm::ivec2 windowSize;
 		float aspectRatio;
 
+		inline void handleHiddenEvent(const SDL_WindowEvent& event)
+		{
+			isActive = false;
+		}
+		inline void handleShownEvent(const SDL_WindowEvent& event)
+		{
+			isActive = true;
+		}
 		inline void handleSizeChangedEvent(const SDL_WindowEvent& event)
 		{
 			const auto newWindowSize = glm::ivec2(
@@ -45,6 +54,10 @@ namespace inject
 			windowPos = newWindowPos;
 			events.emit<WindowPosEvent>(newWindowPos, deltaWindowPos);
 		}
+		virtual void handleCloseEvent(const SDL_WindowEvent& event)
+		{
+			SDL_HideWindow(window);
+		}
 	public:
 		Window(const std::string& title = INJECT_WINDOW_NAME,
 			const glm::ivec2& position = glm::ivec2(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED),
@@ -58,6 +71,7 @@ namespace inject
 			if (!window)
 				throw std::runtime_error("Failed to create SDL window. Error: " + std::string(SDL_GetError()));
 
+			id = static_cast<uint32_t>(SDL_GetWindowID(window));
 			SDL_GetWindowPosition(window, &windowPos.x, &windowPos.y);
 		}
 		virtual ~Window()
@@ -65,21 +79,8 @@ namespace inject
 			SDL_DestroyWindow(window);
 			window = nullptr;
 		}
-
-		inline uint32_t getId() const noexcept
-		{
-			return static_cast<uint32_t>(SDL_GetWindowID(window));
-		}
-		inline bool isShown() const noexcept
-		{
-			return SDL_GetWindowFlags(window) & SDL_WINDOW_SHOWN;
-		}
-
-		virtual void handleCloseEvent(const SDL_WindowEvent& event)
-		{
-			SDL_HideWindow(window);
-		}
-		virtual void handleEvent(const SDL_Event& event)
+		
+		void handleEvent(const SDL_Event& event) override
 		{
 			auto id = SDL_GetWindowID(window);
 
@@ -88,8 +89,10 @@ namespace inject
 				switch (event.window.event)
 				{
 				case SDL_WINDOWEVENT_HIDDEN:
+					handleHiddenEvent(event.window);
 					break;
 				case SDL_WINDOWEVENT_SHOWN:
+					handleShownEvent(event.window);
 					break;
 				case SDL_WINDOWEVENT_EXPOSED:
 					break;
@@ -130,11 +133,6 @@ namespace inject
 			{
 				events.emit<MouseButtonEvent>(event.button);
 			}
-		}
-
-		virtual void update(const float deltaTime)
-		{
-			systems.update_all(static_cast<entityx::TimeDelta>(deltaTime));
 		}
 	};
 }

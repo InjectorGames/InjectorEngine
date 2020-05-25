@@ -37,7 +37,7 @@ namespace inject
 			SDL_GL_DeleteContext(context);
 		}
 
-		void update(const float deltaTime) override
+		void update(const double deltaTime) override
 		{
 			SDL_GL_MakeCurrent(window, context);
 			Window::update(deltaTime);

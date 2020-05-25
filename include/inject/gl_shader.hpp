@@ -15,7 +15,7 @@ namespace inject
 	protected:
 		uint32_t shader;
 
-		inline static uint32_t typeToEnum(const Type type)
+		inline static const uint32_t typeToEnum(const Type type)
 		{
 			switch (type)
 			{
@@ -36,7 +36,7 @@ namespace inject
 			}
 		}
 
-		inline static uint32_t create(const Type type)
+		inline static const uint32_t create(const Type type)
 		{
 			return static_cast<uint32_t>(glCreateShader(static_cast<GLenum>(typeToEnum(type))));
 		}
@@ -58,13 +58,13 @@ namespace inject
 		{
 			glCompileShader(static_cast<GLuint>(shader));
 		}
-		inline static bool getCompileStatus(const uint32_t shader) noexcept
+		inline static const bool getCompileStatus(const uint32_t shader) noexcept
 		{
 			GLint success;
 			glGetShaderiv(static_cast<GLuint>(shader), GL_COMPILE_STATUS, &success);
 			return success == GL_TRUE;
 		}
-		inline static std::string getInfoLog(const uint32_t shader) noexcept
+		inline static const std::string getInfoLog(const uint32_t shader) noexcept
 		{
 			GLint length;
 			glGetShaderiv(static_cast<GLuint>(shader), GL_INFO_LOG_LENGTH, &length);
@@ -120,7 +120,7 @@ namespace inject
 			destroy(shader);
 		}
 
-		inline uint32_t getShader() const noexcept
+		inline const uint32_t getShader() const noexcept
 		{
 			return shader;
 		}

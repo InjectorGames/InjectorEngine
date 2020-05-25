@@ -21,7 +21,7 @@ include(cmake/asio.cmake)
 set(ENTITYX_BUILD_TESTING OFF CACHE BOOL "")
 set(ENTITYX_RUN_BENCHMARKS OFF CACHE BOOL "")
 set(ENTITYX_MAX_COMPONENTS 64 CACHE STRING "")
-set(ENTITYX_DT_TYPE float CACHE STRING "")
+set(ENTITYX_DT_TYPE double CACHE STRING "")
 set(ENTITYX_BUILD_SHARED OFF CACHE BOOL "")
 add_subdirectory(3rdparty/entityx)
 
@@ -32,6 +32,7 @@ add_subdirectory(3rdparty/glew/build/cmake)
 
 add_subdirectory(3rdparty/glm)
 add_subdirectory(3rdparty/sdl)
+add_subdirectory(3rdparty/zlib)
 
 configure_file(cmake/config.hpp.in inject/config.hpp)
 
@@ -44,11 +45,14 @@ target_link_libraries(inject INTERFACE
 	glm::glm
 	SDL2main
 	SDL2-static
+	zlibstatic
 )
 target_include_directories(inject INTERFACE
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/3rdparty/glew/include
+	${PROJECT_SOURCE_DIR}/3rdparty/zlib
+	${PROJECT_BINARY_DIR}/3rdparty/zlib
 )
 
 if(INJECT_BUILD_EDITOR)
@@ -64,6 +68,8 @@ if(INJECT_BUILD_EDITOR)
 endif()
 
 set(INJECT_RESOURCES
+	shaders/col_color.frag
+	shaders/col_color.vert
 	shaders/color.frag
 	shaders/color.vert
 	shaders/diffuse.frag

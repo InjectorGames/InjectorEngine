@@ -46,6 +46,23 @@ namespace inject
 			20, 21, 22, 20, 22, 23,
 		};
 
+		inline static const std::vector<float> axisVertices =
+		{
+			0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		};
+		inline static const std::vector<float> axisColors =
+		{
+			1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+		};
+		inline static const std::vector<uint8_t> axisIndices =
+		{
+			0, 1, 2, 3, 4, 5,
+		};
+
 		inline static const std::vector<float> gradientSkyVertices =
 		{
 			-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f,

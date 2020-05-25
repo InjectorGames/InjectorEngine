@@ -51,7 +51,7 @@ namespace inject
 	protected:
 		uint32_t program;
 
-		inline static uint32_t create() noexcept
+		inline static const uint32_t create() noexcept
 		{
 			return static_cast<uint32_t>(glCreateProgram());
 		}
@@ -77,13 +77,13 @@ namespace inject
 		{
 			glLinkProgram(static_cast<GLuint>(program));
 		}
-		inline static bool getLinkStatus(const uint32_t program) noexcept
+		inline static const bool getLinkStatus(const uint32_t program) noexcept
 		{
 			GLint success;
 			glGetProgramiv(static_cast<GLuint>(program), GL_LINK_STATUS, &success);
 			return success == GL_TRUE;
 		}
-		inline static std::string getInfoLog(const uint32_t program) noexcept
+		inline static const std::string getInfoLog(const uint32_t program) noexcept
 		{
 			GLint length;
 			glGetProgramiv(static_cast<GLuint>(program), GL_INFO_LOG_LENGTH, &length);
@@ -92,7 +92,7 @@ namespace inject
 			return infoLog;
 		}
 
-		inline static int32_t getUniformLocation(const uint32_t program, const std::string& name)
+		inline static const int32_t getUniformLocation(const uint32_t program, const std::string& name)
 		{
 			auto location = static_cast<GLint>(glGetUniformLocation(static_cast<GLuint>(program), static_cast<const GLchar*>(name.c_str())));
 			if (location == -1)
@@ -240,11 +240,11 @@ namespace inject
 			destroy(program);
 		}
 
-		inline uint32_t getProgram() const noexcept
+		inline const uint32_t getProgram() const noexcept
 		{
 			return program;
 		}
-		inline int32_t getUniformLocation(const std::string& name) const
+		inline const int32_t getUniformLocation(const std::string& name) const
 		{
 			return getUniformLocation(program, name);
 		}

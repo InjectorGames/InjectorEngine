@@ -72,11 +72,11 @@ namespace inject
 			indexBuffer->unbind();
 		}
 
-		inline std::shared_ptr<GlBuffer> getVertexBuffer() const noexcept
+		inline const std::shared_ptr<GlBuffer>& getVertexBuffer() const noexcept
 		{
 			return vertexBuffer;
 		}
-		inline std::shared_ptr<GlBuffer> getIndexBuffer() const noexcept
+		inline const std::shared_ptr<GlBuffer>& getIndexBuffer() const noexcept
 		{
 			return indexBuffer;
 		}
@@ -86,52 +86,48 @@ namespace inject
 			draw(mode, indexCount, drawType);
 		}
 
-		inline static std::shared_ptr<GlMesh> CreateSquareV() noexcept
+		template<class TV, class TI>
+		inline static const std::shared_ptr<GlMesh> Create(
+			const std::vector<TV>& vertices,
+			const std::vector<TI>& indices,
+			const std::vector<GlAttribute>& attributes,
+			const GlBuffer::Usage usage,
+			const DrawType drawType) noexcept
 		{
 			auto vertexBuffer = std::make_shared<GlBuffer>(
-				GlBuffer::Type::Array,
-				GlBuffer::Usage::StaticDraw);
+				GlBuffer::Type::Array, usage);
 			vertexBuffer->bind();
-			vertexBuffer->setData(GlPrimitive::squareVertices);
+			vertexBuffer->setData<TV>(vertices);
 			vertexBuffer->unbind();
 
 			auto indexBuffer = std::make_shared<GlBuffer>(
-				GlBuffer::Type::ElementArray,
-				GlBuffer::Usage::StaticDraw);
+				GlBuffer::Type::ElementArray, usage);
 			indexBuffer->bind();
-			indexBuffer->setData(GlPrimitive::squareIndices);
+			indexBuffer->setData<TI>(indices);
 			indexBuffer->unbind();
-
-			auto attributes = std::vector<GlAttribute>
-			{
-				GlAttribute(0, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0, 0),
-			};
 
 			return std::make_shared<GlMesh>(
 				vertexBuffer,
 				indexBuffer,
 				attributes,
-				GlPrimitive::squareIndices.size(),
-				DrawType::UnsignedByte);
+				indices.size(),
+				drawType);
 		}
-		inline static std::shared_ptr<GlMesh> CreateSquareVN() noexcept
+
+		inline static const std::shared_ptr<GlMesh> CreateSquareV() noexcept
+		{
+			auto attributes = std::vector<GlAttribute>
+			{
+				GlAttribute(0, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0, 0),
+			};
+
+			return Create(GlPrimitive::squareVertices, GlPrimitive::squareIndices, attributes,
+				GlBuffer::Usage::StaticDraw, DrawType::UnsignedByte);
+		}
+		inline static const std::shared_ptr<GlMesh> CreateSquareVN() noexcept
 		{
 			auto vertices(GlPrimitive::squareVertices);
 			std::copy(GlPrimitive::squareNormals.begin(), GlPrimitive::squareNormals.end(), std::back_inserter(vertices));
-
-			auto vertexBuffer = std::make_shared<GlBuffer>(
-				GlBuffer::Type::Array,
-				GlBuffer::Usage::StaticDraw);
-			vertexBuffer->bind();
-			vertexBuffer->setData(vertices);
-			vertexBuffer->unbind();
-
-			auto indexBuffer = std::make_shared<GlBuffer>(
-				GlBuffer::Type::ElementArray,
-				GlBuffer::Usage::StaticDraw);
-			indexBuffer->bind();
-			indexBuffer->setData(GlPrimitive::squareIndices);
-			indexBuffer->unbind();
 
 			auto attributes = std::vector<GlAttribute>
 			{
@@ -140,60 +136,24 @@ namespace inject
 				GlPrimitive::squareVertices.size() * sizeof(float)),
 			};
 
-			return std::make_shared<GlMesh>(
-				vertexBuffer,
-				indexBuffer,
-				attributes,
-				GlPrimitive::squareIndices.size(),
-				DrawType::UnsignedByte);
+			return Create(vertices, GlPrimitive::squareIndices, attributes,
+				GlBuffer::Usage::StaticDraw, DrawType::UnsignedByte);
 		}
 
-		inline static std::shared_ptr<GlMesh> CreateCubeV() noexcept
+		inline static const std::shared_ptr<GlMesh> CreateCubeV() noexcept
 		{
-			auto vertexBuffer = std::make_shared<GlBuffer>(
-				GlBuffer::Type::Array,
-				GlBuffer::Usage::StaticDraw);
-			vertexBuffer->bind();
-			vertexBuffer->setData(GlPrimitive::cubeVertices);
-			vertexBuffer->unbind();
-
-			auto indexBuffer = std::make_shared<GlBuffer>(
-				GlBuffer::Type::ElementArray,
-				GlBuffer::Usage::StaticDraw);
-			indexBuffer->bind();
-			indexBuffer->setData(GlPrimitive::cubeIndices);
-			indexBuffer->unbind();
-
 			auto attributes = std::vector<GlAttribute>
 			{
 				GlAttribute(0, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0, 0),
 			};
 
-			return std::make_shared<GlMesh>(
-				vertexBuffer,
-				indexBuffer,
-				attributes,
-				GlPrimitive::cubeIndices.size(),
-				DrawType::UnsignedByte);
+			return Create(GlPrimitive::cubeVertices, GlPrimitive::cubeIndices, attributes,
+				GlBuffer::Usage::StaticDraw, DrawType::UnsignedByte);
 		}
-		inline static std::shared_ptr<GlMesh> CreateCubeVN() noexcept
+		inline static const std::shared_ptr<GlMesh> CreateCubeVN() noexcept
 		{
 			auto vertices(GlPrimitive::cubeVertices);
 			std::copy(GlPrimitive::cubeNormals.begin(), GlPrimitive::cubeNormals.end(), std::back_inserter(vertices));
-
-			auto vertexBuffer = std::make_shared<GlBuffer>(
-				GlBuffer::Type::Array,
-				GlBuffer::Usage::StaticDraw);
-			vertexBuffer->bind();
-			vertexBuffer->setData(vertices);
-			vertexBuffer->unbind();
-
-			auto indexBuffer = std::make_shared<GlBuffer>(
-				GlBuffer::Type::ElementArray,
-				GlBuffer::Usage::StaticDraw);
-			indexBuffer->bind();
-			indexBuffer->setData(GlPrimitive::cubeIndices);
-			indexBuffer->unbind();
 
 			auto attributes = std::vector<GlAttribute>
 			{
@@ -202,41 +162,45 @@ namespace inject
 				GlPrimitive::cubeVertices.size() * sizeof(float)),
 			};
 
-			return std::make_shared<GlMesh>(
-				vertexBuffer,
-				indexBuffer,
-				attributes,
-				GlPrimitive::cubeIndices.size(),
-				DrawType::UnsignedByte);
+			return Create(vertices, GlPrimitive::cubeIndices, attributes,
+				GlBuffer::Usage::StaticDraw, DrawType::UnsignedByte);
 		}
 
-		inline static std::shared_ptr<GlMesh> CreateGradientSky() noexcept
+		inline static const std::shared_ptr<GlMesh> CreateAxisV() noexcept
 		{
-			auto vertexBuffer = std::make_shared<GlBuffer>(
-				GlBuffer::Type::Array,
-				GlBuffer::Usage::StaticDraw);
-			vertexBuffer->bind();
-			vertexBuffer->setData(GlPrimitive::gradientSkyVertices);
-			vertexBuffer->unbind();
-
-			auto indexBuffer = std::make_shared<GlBuffer>(
-				GlBuffer::Type::ElementArray,
-				GlBuffer::Usage::StaticDraw);
-			indexBuffer->bind();
-			indexBuffer->setData(GlPrimitive::gradientSkyIndices);
-			indexBuffer->unbind();
-
 			auto attributes = std::vector<GlAttribute>
 			{
 				GlAttribute(0, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0, 0),
 			};
 
-			return std::make_shared<GlMesh>(
-				vertexBuffer,
-				indexBuffer,
-				attributes,
-				GlPrimitive::gradientSkyIndices.size(),
-				DrawType::UnsignedByte);
+			return Create(GlPrimitive::axisVertices, GlPrimitive::axisIndices, attributes,
+				GlBuffer::Usage::StaticDraw, DrawType::UnsignedByte);
+		}
+		inline static const std::shared_ptr<GlMesh> CreateAxisVC() noexcept
+		{
+			auto vertices(GlPrimitive::axisVertices);
+			std::copy(GlPrimitive::axisColors.begin(), GlPrimitive::axisColors.end(), std::back_inserter(vertices));
+
+			auto attributes = std::vector<GlAttribute>
+			{
+				GlAttribute(0, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0, 0),
+				GlAttribute(1, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0,
+				GlPrimitive::axisVertices.size() * sizeof(float)),
+			};
+
+			return Create(vertices, GlPrimitive::axisIndices, attributes,
+				GlBuffer::Usage::StaticDraw, DrawType::UnsignedByte);
+		}
+
+		inline static const std::shared_ptr<GlMesh> CreateGradientSky() noexcept
+		{
+			auto attributes = std::vector<GlAttribute>
+			{
+				GlAttribute(0, GlAttribute::Size::Three, GlAttribute::Type::Float, false, 0, 0),
+			};
+
+			return Create(GlPrimitive::gradientSkyVertices, GlPrimitive::gradientSkyIndices, attributes,
+				GlBuffer::Usage::StaticDraw, DrawType::UnsignedByte);
 		}
 	};
 }
