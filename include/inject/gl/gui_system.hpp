@@ -1,8 +1,8 @@
 #pragma once
 #include <inject/aspect_ratio_event.hpp>
 #include <inject/mouse_button_event.hpp>
-#include <inject/gl_draw_component.hpp>
-#include <inject/gl_sprite_color_material.hpp>
+#include <inject/gl/draw_component.hpp>
+#include <inject/gl/sprite_color_material.hpp>
 
 namespace inject
 {

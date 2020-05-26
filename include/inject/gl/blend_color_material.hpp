@@ -1,5 +1,5 @@
 #pragma once
-#include <inject/gl_color_material.hpp>
+#include <inject/gl/color_material.hpp>
 
 namespace inject
 {

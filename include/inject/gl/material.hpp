@@ -1,6 +1,6 @@
 #pragma once
 #include <inject/glm_defines.hpp>
-#include <inject/gl_shader.hpp>
+#include <inject/gl/shader.hpp>
 
 namespace inject
 {

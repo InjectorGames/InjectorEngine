@@ -1,8 +1,8 @@
 #pragma once
-#include <inject/gl_batch.hpp>
-#include <inject/gl_buffer.hpp>
-#include <inject/gl_attribute.hpp>
-#include <inject/gl_primitive.hpp>
+#include <inject/gl/batch.hpp>
+#include <inject/gl/buffer.hpp>
+#include <inject/gl/attribute.hpp>
+#include <inject/gl/primitive.hpp>
 
 namespace inject
 {

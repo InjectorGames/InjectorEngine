@@ -1,6 +1,6 @@
 #pragma once
-#include <inject/gl_mesh.hpp>
-#include <inject/gl_material.hpp>
+#include <inject/gl/mesh.hpp>
+#include <inject/gl/material.hpp>
 
 #include <entityx/entityx.h>
 

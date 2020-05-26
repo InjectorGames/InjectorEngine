@@ -1,5 +1,5 @@
 #pragma once
-#include <inject/gl_gradient_sky_material.hpp>
+#include <inject/gl/gradient_sky_material.hpp>
 #include <entityx/entity.h>
 
 // TODO: Use box or sphere instead

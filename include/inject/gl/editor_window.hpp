@@ -3,14 +3,14 @@
 #include <inject/camera_system.hpp>
 #include <inject/transform_system.hpp>
 #include <inject/free_camera_system.hpp>
-#include <inject/gl_window.hpp>
-#include <inject/gl_gui_system.hpp>
-#include <inject/gl_draw_system.hpp>
-#include <inject/gl_color_material.hpp>
-#include <inject/gl_blend_color_material.hpp>
-#include <inject/gl_diffuse_material.hpp>
-#include <inject/gl_blend_diffuse_material.hpp>
-#include <inject/gl_gradient_sky_system.hpp>
+#include <inject/gl/window.hpp>
+#include <inject/gl/gui_system.hpp>
+#include <inject/gl/draw_system.hpp>
+#include <inject/gl/color_material.hpp>
+#include <inject/gl/blend_color_material.hpp>
+#include <inject/gl/diffuse_material.hpp>
+#include <inject/gl/blend_diffuse_material.hpp>
+#include <inject/gl/gradient_sky_system.hpp>
 
 namespace inject
 {

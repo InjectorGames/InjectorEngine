@@ -1,5 +1,5 @@
 #pragma once
-#include <inject/gl_material.hpp>
+#include <inject/gl/material.hpp>
 
 namespace inject
 {

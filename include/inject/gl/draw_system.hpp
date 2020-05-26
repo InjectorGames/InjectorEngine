@@ -1,6 +1,6 @@
 #pragma once
 #include <inject/window_size_event.hpp>
-#include <inject/gl_draw_component.hpp>
+#include <inject/gl/draw_component.hpp>
 #include <inject/transform_component.hpp>
 #include <inject/persp_camera_component.hpp>
 #include <inject/ortho_camera_component.hpp>

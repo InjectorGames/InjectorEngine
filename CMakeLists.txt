@@ -56,13 +56,13 @@ target_include_directories(inject INTERFACE
 )
 
 if(INJECT_BUILD_EDITOR)
-	add_executable(main
-	    ${PROJECT_SOURCE_DIR}/source/main.cpp
+	add_executable(editor
+	    ${PROJECT_SOURCE_DIR}/source/editor.cpp
 	)
-	target_link_libraries(main PUBLIC 
+	target_link_libraries(editor PUBLIC 
 	    inject
 	)
-	target_include_directories(main PUBLIC
+	target_include_directories(editor PUBLIC
 		${PROJECT_SOURCE_DIR}/include
 	)
 endif()

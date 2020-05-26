@@ -1,5 +1,5 @@
 #pragma once
-#include <inject/gl_diffuse_material.hpp>
+#include <inject/gl/diffuse_material.hpp>
 
 namespace inject
 {

@@ -90,10 +90,11 @@ namespace inject
 
 			if (readFile)
 			{
-				auto stream = FileStream(string, "rt");
-				auto size = stream.getSize();
+				auto fileStream = FileStream(string, std::ios::in | std::ios::ate);
+				auto size = static_cast<size_t>(fileStream.tellg());
+				fileStream.seekg(0, fileStream.beg);
 				sourceCode.resize(size, ' ');
-				stream.read(sourceCode.data(), size);
+				fileStream.read(sourceCode.data(), size);
 			}
 			else
 			{

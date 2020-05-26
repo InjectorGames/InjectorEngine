@@ -123,7 +123,7 @@ namespace inject
 		{
 			return updateTicksRate;
 		}
-		inline static const uint64_t getUpdateTimeRate() noexcept
+		inline static const double getUpdateTimeRate() noexcept
 		{
 			return updateTicksRate / double(ticksFrequency);
 		}
