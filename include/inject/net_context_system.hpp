@@ -7,21 +7,23 @@ namespace inject
 	class NetContextSystem final : public entityx::System<NetContextSystem>
 	{
 	private:
-		asio::io_context context;
+		std::shared_ptr<asio::io_context> context;
 	public:
-		NetContextSystem() :
-			context()
+		NetContextSystem(
+			const std::shared_ptr<asio::io_context>& _context =
+			std::make_shared<asio::io_context>()) :
+			context(_context)
 		{}
 
 		void update(entityx::EntityManager& entities,
 			entityx::EventManager& events,
 			entityx::TimeDelta deltaTime) override
 		{
-			context.poll();
-			context.reset();
+			context->poll();
+			context->reset();
 		}
 
-		inline asio::io_context& getContext()
+		inline const std::shared_ptr<asio::io_context> getContext() const
 		{
 			return context;
 		}

@@ -7,11 +7,14 @@ namespace inject
 	class UdpSocket
 	{
 	protected:
+		std::shared_ptr<asio::io_context> context;
 		asio::ip::udp::socket socket;
 	public:
-		UdpSocket(asio::io_context& context,
+		UdpSocket(
+			const std::shared_ptr<asio::io_context>& _context,
 			const uint16_t port = 0) :
-			socket(context, asio::ip::udp::endpoint(asio::ip::udp::v6(), port))
+			context(_context),
+			socket(*_context, asio::ip::udp::endpoint(asio::ip::udp::v6(), port))
 		{}
 
 		inline void connect(const asio::ip::udp::endpoint& endpoint)

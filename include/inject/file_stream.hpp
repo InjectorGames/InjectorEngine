@@ -114,7 +114,7 @@ namespace inject
 		inline std::istream& readBE(uint64_t* value)
 		{
 			return std::fstream::read(reinterpret_cast<char*>(value), sizeof(uint64_t));
-			*value = SDL_SwapBE32(*value);
+			*value = SDL_SwapBE64(*value);
 		}
 		inline std::istream& readBE(int64_t* value)
 		{
@@ -232,7 +232,7 @@ namespace inject
 		}
 		inline std::ostream& writeBE(const float* value)
 		{
-			auto val = SDL_SwapFloat(*value);
+			auto val = SDL_SwapFloatBE(*value);
 			return std::fstream::write(reinterpret_cast<const char*>(value), sizeof(float));
 		}
 	};
