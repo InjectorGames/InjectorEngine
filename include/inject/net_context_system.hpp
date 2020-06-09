@@ -4,14 +4,17 @@
 
 namespace inject
 {
-	class NetContextSystem final : public entityx::System<NetContextSystem>
+	class NetContextSystem final :
+		public entityx::System<NetContextSystem>
 	{
+	public:
+		using Context = asio::io_context;
 	private:
-		std::shared_ptr<asio::io_context> context;
+		std::shared_ptr<Context> context;
 	public:
 		NetContextSystem(
-			const std::shared_ptr<asio::io_context>& _context =
-			std::make_shared<asio::io_context>()) :
+			const std::shared_ptr<Context>& _context =
+			std::make_shared<Context>()) :
 			context(_context)
 		{}
 
@@ -23,7 +26,7 @@ namespace inject
 			context->reset();
 		}
 
-		inline const std::shared_ptr<asio::io_context> getContext() const
+		inline const std::shared_ptr<Context> getContext() const
 		{
 			return context;
 		}

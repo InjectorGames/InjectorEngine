@@ -1,9 +1,11 @@
 #pragma once
 #include <inject/config.hpp>
-#include <inject/manager.hpp>
-
+#include <inject/window.hpp>
 #include <SDL.h>
+
 #include <map>
+#include <chrono>
+#include <thread>
 
 namespace inject
 {
@@ -13,12 +15,10 @@ namespace inject
 	{
 	private:
 		inline static bool isInitialized = false;
-		inline static uint64_t ticksFrequency = 0;
-		inline static uint64_t targetUpdateRate = 0;
-		inline static uint64_t updateTicksRate = 0;
-		inline static uint64_t updateStartTicks = 0;
+		inline static std::chrono::steady_clock::time_point updateStartTicks = {};
 		inline static std::map<uint32_t, std::shared_ptr<Manager>> managers = {};
 	public:
+		inline static uint64_t targetUpdateRate = 60;
 		inline static bool handleEvents = true;
 		inline static bool capUpdateRate = true;
 
@@ -34,10 +34,7 @@ namespace inject
 			if (SDL_Init(static_cast<Uint32>(flags)) == -1)
 				throw std::runtime_error("Failed to intialize SDL. Error: " + std::string(SDL_GetError()));
 
-			ticksFrequency = static_cast<uint64_t>(SDL_GetPerformanceFrequency());
-			setTargetUpdateRate(60);
-
-			logInfo("Initialized engine (v%d.%d.%d)",
+			logInfo("Initialized engine. (v%d.%d.%d)",
 				INJECT_VERSION_MAJOR, INJECT_VERSION_MINOR, INJECT_VERSION_PATCH);
 			isInitialized = true;
 		}
@@ -50,7 +47,7 @@ namespace inject
 
 			SDL_Quit();
 
-			logInfo("Terminated engine");
+			logInfo("Terminated engine.");
 			isInitialized = false;
 		}
 
@@ -67,16 +64,18 @@ namespace inject
 					{
 						for (const auto& pair : managers)
 						{
-							const auto& manager = pair.second;
-							manager->handleEvent(event);
+							const auto window = std::dynamic_pointer_cast<Window>(pair.second);
+
+							if (window)
+								window->handleEvent(event);
 						}
 					}
 				}
 
-				auto newTicks = getElapsedTicks();
-				auto deltaTicks = newTicks - updateStartTicks;
-				auto deltaTime = static_cast<double>(deltaTicks / double(ticksFrequency));
-				updateStartTicks = newTicks;
+				auto ticks = std::chrono::high_resolution_clock::now();
+				auto deltaTime = std::chrono::duration_cast<
+					std::chrono::duration<double>>(ticks - updateStartTicks).count();
+				updateStartTicks = ticks;
 
 				for (const auto& pair : managers)
 				{
@@ -87,8 +86,8 @@ namespace inject
 				auto allNotActive = true;
 				for (const auto& pair : managers)
 				{
-					const auto& window = pair.second;
-					if (window->getActive())
+					const auto& manager = pair.second;
+					if (manager->getActive())
 					{
 						allNotActive = false;
 						break;
@@ -100,61 +99,37 @@ namespace inject
 
 				if (capUpdateRate)
 				{
-					newTicks = getElapsedTicks();;
-					deltaTicks = newTicks - updateStartTicks;
-					auto delayTime = static_cast<int32_t>((updateTicksRate - deltaTicks) / (ticksFrequency / 1000)) - 1;
+					ticks = std::chrono::high_resolution_clock::now();
+					deltaTime = std::chrono::duration_cast<
+						std::chrono::duration<double>>(ticks - updateStartTicks).count();
+					const auto delayTime = (1.0 / targetUpdateRate - deltaTime) * 1000 - 1.0;
 
 					if (delayTime > 0)
-						delay(delayTime);
+						std::this_thread::sleep_for(
+							std::chrono::milliseconds(static_cast<uint64_t>(delayTime)));
 				}
 			}
 		}
 
-		inline static const uint64_t getTicksFrequency() noexcept
-		{
-			return ticksFrequency;
-		}
-		inline static const uint64_t getTargetUpdateRate() noexcept
-		{
-			return targetUpdateRate;
-		}
-
-		inline static const uint64_t getUpdateTicksRate() noexcept
-		{
-			return updateTicksRate;
-		}
-		inline static const double getUpdateTimeRate() noexcept
-		{
-			return updateTicksRate / double(ticksFrequency);
-		}
-
-		inline static const uint64_t getUpdateStartTicks() noexcept
+		inline static const std::chrono::steady_clock::time_point
+			getUpdateStartTicks() noexcept
 		{
 			return updateStartTicks;
 		}
 		inline static const double getUpdateStartTime() noexcept
 		{
-			return updateStartTicks / double(ticksFrequency);
+			return std::chrono::duration_cast<std::chrono::duration<double>>(
+				updateStartTicks.time_since_epoch()).count();
 		}
 
-		inline static void setTargetUpdateRate(const uint32_t frameRate)
+		inline static const std::chrono::steady_clock::time_point getTicksNow() noexcept
 		{
-			targetUpdateRate = frameRate;
-			updateTicksRate = ticksFrequency / frameRate;
+			return std::chrono::high_resolution_clock::now();
 		}
-
-		inline static const uint64_t getElapsedTicks() noexcept
+		inline static const double getTimeNow() noexcept
 		{
-			return static_cast<uint64_t>(SDL_GetPerformanceCounter());
-		}
-		inline static const double getElapsedTime() noexcept
-		{
-			return static_cast<double>(SDL_GetPerformanceCounter() / double(ticksFrequency));
-		}
-
-		inline static void delay(uint32_t milliseconds) noexcept
-		{
-			SDL_Delay(static_cast<Uint32>(milliseconds));
+			return std::chrono::duration_cast<std::chrono::duration<double>>(
+				std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 		}
 
 		inline static void addManager(const std::shared_ptr<Manager> manager)

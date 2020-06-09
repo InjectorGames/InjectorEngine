@@ -1,86 +1,99 @@
 #pragma once
-#include <inject/udp_request_response.hpp>
 #include <asio.hpp>
 
 namespace inject
 {
-	class UdpSocket
+	class UdpSocket : public asio::ip::udp::socket
 	{
+	public:
+		using Context = asio::io_context;
+		using ErrorCode = asio::error_code;
+		using Socket = asio::ip::udp::socket;
+		using Endpoint = asio::ip::udp::endpoint;
+		using Handler = std::function<void(const ErrorCode&, size_t)>;
+
+		inline static constexpr uint16_t defaultPort = 0;
 	protected:
-		std::shared_ptr<asio::io_context> context;
-		asio::ip::udp::socket socket;
+		std::shared_ptr<Context> context;
 	public:
 		UdpSocket(
-			const std::shared_ptr<asio::io_context>& _context,
-			const uint16_t port = 0) :
-			context(_context),
-			socket(*_context, asio::ip::udp::endpoint(asio::ip::udp::v6(), port))
+			const std::shared_ptr<Context>& _context = std::make_shared<Context>(),
+			const Endpoint& localEndpoint = Endpoint(asio::ip::udp::v6(), defaultPort)) :
+			asio::ip::udp::socket(*_context, localEndpoint),
+			context(_context)
+		{}
+		UdpSocket(
+			const std::shared_ptr<Context>& _context = std::make_shared<Context>(),
+			const uint16_t localPort = defaultPort) :
+			asio::ip::udp::socket(*_context, Endpoint(asio::ip::udp::v6(), localPort)),
+			context(_context)
+		{}
+		virtual ~UdpSocket()
 		{}
 
-		inline void connect(const asio::ip::udp::endpoint& endpoint)
+		inline const std::shared_ptr<Context>& getContext() const noexcept
 		{
-			socket.connect(endpoint);
+			return context;
 		}
 
-		inline void asyncReceive(void* buffer, const size_t size,
-			std::function<void(const asio::error_code&, size_t)>& callback)
+		inline const size_t receive(
+			void* buffer,
+			const size_t size)
 		{
-			socket.async_receive(asio::buffer(buffer, size), callback);
+			return Socket::receive(asio::buffer(buffer, size));
 		}
-		inline void asyncReceive(std::vector<uint8_t>& buffer,
-			std::function<void(const asio::error_code&, size_t)>& callback)
+		inline const size_t receive_from(
+			void* buffer,
+			const size_t size,
+			Endpoint& endpoint)
 		{
-			socket.async_receive(asio::buffer(buffer), callback);
-		}
-
-		inline void asyncReceiveFrom(void* buffer, const size_t size,
-			asio::ip::udp::endpoint& endpoint,
-			std::function<void(const asio::error_code&, size_t)>& callback)
-		{
-			socket.async_receive_from(asio::buffer(buffer, size), endpoint, callback);
-		}
-		inline void asyncReceiveFrom(std::vector<uint8_t>& buffer,
-			asio::ip::udp::endpoint& endpoint,
-			std::function<void(const asio::error_code&, size_t)>& callback)
-		{
-			socket.async_receive_from(asio::buffer(buffer), endpoint, callback);
+			return Socket::receive_from(asio::buffer(buffer, size), endpoint);
 		}
 
-		inline void sendTo(const void* buffer, const size_t size,
-			const asio::ip::udp::endpoint& endpoint)
+		inline void async_receive(
+			void* buffer,
+			const size_t size,
+			Handler& handler)
 		{
-			socket.send_to(asio::buffer(buffer, size), endpoint);
+			Socket::async_receive(asio::buffer(buffer, size), handler);
 		}
-		inline void sendTo(const std::vector<uint8_t>& buffer,
-			const asio::ip::udp::endpoint& endpoint)
+		inline void async_receive_from(
+			void* buffer,
+			const size_t size,
+			Endpoint& endpoint,
+			Handler& handler)
 		{
-			socket.send_to(asio::buffer(buffer), endpoint);
-		}
-		inline void sendTo(const UdpRequestResponse& requestResponse,
-			const asio::ip::udp::endpoint& endpoint)
-		{
-			auto size = requestResponse.getSize();
-			auto buffer = new uint8_t[size];
-			requestResponse.toBytes(buffer, size);
-			socket.send_to(asio::buffer(buffer, size), endpoint);
-			delete[] buffer;
+			Socket::async_receive_from(asio::buffer(buffer, size), endpoint, handler);
 		}
 
-		inline void send(const void* buffer, const size_t size)
+		inline const size_t send(
+			const void* buffer,
+			const size_t size)
 		{
-			socket.send(asio::buffer(buffer, size));
+			return Socket::send(asio::buffer(buffer, size));
 		}
-		inline void send(const std::vector<uint8_t>& buffer)
+		inline const size_t send_to(
+			const void* buffer,
+			const size_t size,
+			const Endpoint& endpoint)
 		{
-			socket.send(asio::buffer(buffer));
+			return Socket::send_to(asio::buffer(buffer, size), endpoint);
 		}
-		inline void send(const UdpRequestResponse& requestResponse)
+
+		inline void async_send(
+			const void* buffer,
+			const size_t size,
+			Handler& handler)
 		{
-			auto size = requestResponse.getSize();
-			auto buffer = new uint8_t[size];
-			requestResponse.toBytes(buffer, size);
-			socket.send(asio::buffer(buffer, size));
-			delete[] buffer;
+			Socket::async_send(asio::buffer(buffer, size), handler);
+		}
+		inline void async_send_to(
+			const void* buffer,
+			const size_t size,
+			Endpoint& endpoint,
+			Handler& handler)
+		{
+			Socket::async_send_to(asio::buffer(buffer, size), endpoint, handler);
 		}
 	};
 }

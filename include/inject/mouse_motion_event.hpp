@@ -4,7 +4,8 @@
 
 namespace inject
 {
-	struct MouseMotionEvent final : public entityx::Event<MouseMotionEvent>
+	struct MouseMotionEvent final :
+		public entityx::Event<MouseMotionEvent>
 	{
 		enum class StateBits
 		{
@@ -17,7 +18,8 @@ namespace inject
 
 		const SDL_MouseMotionEvent& data;
 
-		MouseMotionEvent(const SDL_MouseMotionEvent& _data) :
+		MouseMotionEvent(
+			const SDL_MouseMotionEvent& _data) :
 			data(_data)
 		{}
 	};

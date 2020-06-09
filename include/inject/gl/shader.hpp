@@ -91,6 +91,10 @@ namespace inject
 			if (readFile)
 			{
 				auto fileStream = FileStream(string, std::ios::in | std::ios::ate);
+
+				if (!fileStream.is_open())
+					throw std::runtime_error("Failed to open shader file");
+
 				auto size = static_cast<size_t>(fileStream.tellg());
 				fileStream.seekg(0, fileStream.beg);
 				sourceCode.resize(size, ' ');

@@ -1,6 +1,5 @@
 #pragma once
 #include <entityx/entityx.h>
-#include <SDL_events.h>
 
 namespace inject
 {
@@ -20,15 +19,16 @@ namespace inject
 		{
 			return id;
 		}
+
 		inline const bool getActive() const noexcept
 		{
 			return isActive;
 		}
-
-		virtual void handleEvent(const SDL_Event& event)
+		virtual void setActive(const bool active)
 		{
-			return;
+			isActive = active;
 		}
+
 		virtual void update(const double deltaTime)
 		{
 			systems.update_all(static_cast<entityx::TimeDelta>(deltaTime));

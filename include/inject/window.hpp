@@ -8,6 +8,8 @@
 #include <inject/mouse_button_event.hpp>
 #include <inject/mouse_motion_event.hpp>
 
+#include <SDL_events.h>
+
 #include <map>
 #include <string>
 #include <stdexcept>
@@ -80,7 +82,7 @@ namespace inject
 			window = nullptr;
 		}
 		
-		void handleEvent(const SDL_Event& event) override
+		virtual void handleEvent(const SDL_Event& event)
 		{
 			auto id = SDL_GetWindowID(window);
 

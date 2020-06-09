@@ -4,7 +4,8 @@
 
 namespace inject
 {
-	struct MouseButtonEvent final : public entityx::Event<MouseButtonEvent>
+	struct MouseButtonEvent final :
+		public entityx::Event<MouseButtonEvent>
 	{
 		enum Button
 		{
@@ -22,7 +23,8 @@ namespace inject
 
 		const SDL_MouseButtonEvent& data;
 
-		MouseButtonEvent(const SDL_MouseButtonEvent& _data) :
+		MouseButtonEvent(
+			const SDL_MouseButtonEvent& _data) :
 			data(_data)
 		{}
 	};

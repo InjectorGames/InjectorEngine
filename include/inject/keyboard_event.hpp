@@ -4,7 +4,8 @@
 
 namespace inject
 {
-	struct KeyboardEvent final : public entityx::Event<KeyboardEvent>
+	struct KeyboardEvent final :
+		public entityx::Event<KeyboardEvent>
 	{
 		enum State
 		{
@@ -14,7 +15,8 @@ namespace inject
 
 		const SDL_KeyboardEvent& data;
 
-		KeyboardEvent(const SDL_KeyboardEvent& _data) :
+		KeyboardEvent(
+			const SDL_KeyboardEvent& _data) :
 			data(_data)
 		{}
 	};
