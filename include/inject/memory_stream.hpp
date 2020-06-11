@@ -108,8 +108,9 @@ namespace inject
 
 		inline std::istream& readBE(uint16_t* value)
 		{
-			return std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint16_t));
+			auto& stream = std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint16_t));
 			*value = static_cast<uint16_t>(SDL_SwapBE16(*value));
+			return stream;
 		}
 		inline std::istream& readBE(int16_t* value)
 		{
@@ -117,8 +118,9 @@ namespace inject
 		}
 		inline std::istream& readBE(uint32_t* value)
 		{
-			return std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint32_t));
+			auto& stream = std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint32_t));
 			*value = static_cast<uint32_t>(SDL_SwapBE32(*value));
+			return stream;
 		}
 		inline std::istream& readBE(int32_t* value)
 		{
@@ -126,8 +128,9 @@ namespace inject
 		}
 		inline std::istream& readBE(uint64_t* value)
 		{
-			return std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint64_t));
+			auto& stream = std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint64_t));
 			*value = static_cast<uint64_t>(SDL_SwapBE64(*value));
+			return stream;
 		}
 		inline std::istream& readBE(int64_t* value)
 		{
@@ -135,14 +138,16 @@ namespace inject
 		}
 		inline std::istream& readBE(float* value)
 		{
-			return std::stringstream::read(reinterpret_cast<char*>(value), sizeof(float));
+			auto& stream = std::stringstream::read(reinterpret_cast<char*>(value), sizeof(float));
 			*value = static_cast<float>(SDL_SwapFloatBE(*value));
+			return stream;
 		}
 
 		inline std::istream& readLE(uint16_t* value)
 		{
-			return std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint16_t));
+			auto& stream = std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint16_t));
 			*value = static_cast<uint16_t>(SDL_SwapLE16(*value));
+			return stream;
 		}
 		inline std::istream& readLE(int16_t* value)
 		{
@@ -150,8 +155,9 @@ namespace inject
 		}
 		inline std::istream& readLE(uint32_t* value)
 		{
-			return std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint32_t));
+			auto& stream = std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint32_t));
 			*value = static_cast<uint32_t>(SDL_SwapLE32(*value));
+			return stream;
 		}
 		inline std::istream& readLE(int32_t* value)
 		{
@@ -159,8 +165,9 @@ namespace inject
 		}
 		inline std::istream& readLE(uint64_t* value)
 		{
-			return std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint64_t));
+			auto& stream = std::stringstream::read(reinterpret_cast<char*>(value), sizeof(uint64_t));
 			*value = static_cast<uint64_t>(SDL_SwapLE64(*value));
+			return stream;
 		}
 		inline std::istream& readLE(int64_t* value)
 		{
@@ -168,8 +175,9 @@ namespace inject
 		}
 		inline std::istream& readLE(float* value)
 		{
-			return std::stringstream::read(reinterpret_cast<char*>(value), sizeof(float));
+			auto& stream = std::stringstream::read(reinterpret_cast<char*>(value), sizeof(float));
 			*value = static_cast<float>(SDL_SwapFloatLE(*value));
+			return stream;
 		}
 
 		inline std::ostream& write(const void* value, const size_t count)

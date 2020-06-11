@@ -51,11 +51,6 @@ namespace inject
 						exception.what());
 				}
 			}
-			else
-			{
-				inject::Engine::logError("Udp socket system receive error: %s",
-					error.message().c_str());
-			}
 
 			async_receive_from();
 		}
