@@ -51,6 +51,11 @@ namespace inject
 		void setModelMatrix(const glm::mat4& value) const override
 		{
 			auto normalMatrix = glm::mat3(glm::transpose(glm::inverse(value)));
+
+			// FIX: fixed incorrect value_ptr behavior with mat3
+			std::copy_n(&normalMatrix[1][0], 3, &normalMatrix[0][2] + 1);
+			std::copy_n(&normalMatrix[2][0], 3, &normalMatrix[1][2]);
+
 			setUniform(normalMatrixLocation, normalMatrix);
 		}
 		void setMvpMatrix(const glm::mat4& value) const override
