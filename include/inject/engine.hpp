@@ -1,13 +1,13 @@
 #pragma once
-#include <inject/config.hpp>
 #include <inject/window.hpp>
 #include <SDL.h>
+#include <SDL_vulkan.h>
 
 #include <map>
 #include <chrono>
 #include <thread>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	constexpr bool isBigEndian = SDL_BYTEORDER == SDL_BIG_ENDIAN;
 
@@ -15,6 +15,7 @@ namespace inject
 	{
 	private:
 		inline static bool isInitialized = false;
+		inline static bool isVulkan = false;
 		inline static std::chrono::steady_clock::time_point updateStartTicks = {};
 		inline static std::map<uint32_t, std::shared_ptr<Manager>> managers = {};
 	public:
@@ -22,17 +23,35 @@ namespace inject
 		inline static bool handleEvents = true;
 		inline static bool capUpdateRate = true;
 
-		inline static const bool getIsInitialized() noexcept
-		{
-			return isInitialized;
-		}
-		inline static void initialize(uint32_t flags = SDL_INIT_EVERYTHING)
+		inline static void initialize(
+			const uint32_t flags = SDL_INIT_EVERYTHING,
+			const bool useVulkan = true)
 		{
 			if (isInitialized)
 				throw std::runtime_error("Engine is already initialized");
 
 			if (SDL_Init(static_cast<Uint32>(flags)) == -1)
-				throw std::runtime_error("Failed to intialize SDL. Error: " + std::string(SDL_GetError()));
+				throw std::runtime_error("Failed to intialize SDL. Error: " +
+					std::string(SDL_GetError()));
+
+			if (useVulkan)
+			{
+				if (SDL_Vulkan_LoadLibrary(nullptr) == -1)
+				{
+					SDL_Quit();
+
+					throw std::runtime_error("Failed to load Vulkan library. Error: " +
+						std::string(SDL_GetError()));
+				}
+
+				//SDL_Vulkan
+
+				isVulkan = true;
+			}
+			else
+			{
+				isVulkan = false;
+			}
 
 			logInfo("Initialized engine. (v%d.%d.%d)",
 				INJECT_VERSION_MAJOR, INJECT_VERSION_MINOR, INJECT_VERSION_PATCH);
@@ -45,12 +64,14 @@ namespace inject
 
 			managers.clear();
 
+			if (isVulkan)
+				SDL_Vulkan_UnloadLibrary();
+
 			SDL_Quit();
 
 			logInfo("Terminated engine.");
 			isInitialized = false;
 		}
-
 		inline static void update()
 		{
 			bool quit = false;
@@ -111,6 +132,14 @@ namespace inject
 			}
 		}
 
+		inline static const bool getIsInitialized() noexcept
+		{
+			return isInitialized;
+		}
+		inline static const bool getIsVulkan() noexcept
+		{
+			return isVulkan;
+		}
 		inline static const std::chrono::steady_clock::time_point
 			getUpdateStartTicks() noexcept
 		{

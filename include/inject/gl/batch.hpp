@@ -1,8 +1,10 @@
 #pragma once
+#include <inject/defines.hpp>
+
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class GlBatch
 	{

@@ -1,10 +1,11 @@
 #pragma once
+#include <inject/defines.hpp>
 #include <SDL_endian.h>
 
 #include <fstream>
 #include <filesystem>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class FileStream : public std::fstream
 	{

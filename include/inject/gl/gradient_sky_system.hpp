@@ -4,7 +4,7 @@
 
 // TODO: Use box or sphere instead
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class GlGradientSkySystem : public entityx::System<GlGradientSkySystem>
 	{

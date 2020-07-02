@@ -1,8 +1,9 @@
 #pragma once
+#include <inject/defines.hpp>
 #include <entityx/entityx.h>
 #include <asio.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class NetContextSystem final :
 		public entityx::System<NetContextSystem>

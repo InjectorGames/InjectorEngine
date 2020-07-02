@@ -1,6 +1,8 @@
 #pragma once
 
-namespace njng
+#define INJECT_NAMESPACE inject
+
+namespace INJECT_NAMESPACE
 {
 #define INJECT_VERSION_MAJOR @inject_VERSION_MAJOR@
 #define INJECT_VERSION_MINOR @inject_VERSION_MINOR@

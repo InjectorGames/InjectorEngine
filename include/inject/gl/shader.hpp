@@ -8,7 +8,7 @@
 #include <vector>
 #include <stdexcept>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class GlShader : public Shader
 	{

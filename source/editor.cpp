@@ -6,7 +6,7 @@ int main(int argc, char* args[])
 {
 	try
 	{
-		inject::Engine::initialize();
+		inject::Engine::initialize(SDL_INIT_EVERYTHING, false);
 
 		inject::Engine::addManager(
 			std::make_shared<inject::GlEditorWindow>());

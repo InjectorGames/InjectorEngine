@@ -5,7 +5,7 @@
 
 #include <entityx/entityx.h>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class UdpSocketSystem final :
 		public UdpSocket,

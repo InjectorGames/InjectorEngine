@@ -1,8 +1,10 @@
 #pragma once
+#include <inject/defines.hpp>
 #include <SDL_endian.h>
+
 #include <sstream>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class MemoryStream : public std::stringstream
 	{

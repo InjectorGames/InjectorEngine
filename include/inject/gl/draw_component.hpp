@@ -4,7 +4,7 @@
 
 #include <entityx/entityx.h>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	struct GlDrawComponent final : public entityx::Component<GlDrawComponent>
 	{

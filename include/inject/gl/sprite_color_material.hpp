@@ -1,7 +1,7 @@
 #pragma once
 #include <inject/gl/color_material.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class GlSpriteColorMaterial : public GlColorMaterial
 	{

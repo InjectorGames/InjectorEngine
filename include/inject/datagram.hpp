@@ -2,7 +2,7 @@
 #include <inject/memory_stream.hpp>
 #include <vector>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	struct Datagram
 	{

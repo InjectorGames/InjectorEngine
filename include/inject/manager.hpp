@@ -1,7 +1,8 @@
 #pragma once
+#include <inject/defines.hpp>
 #include <entityx/entityx.h>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class Manager : public entityx::EntityX
 	{

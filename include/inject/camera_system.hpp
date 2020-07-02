@@ -1,9 +1,9 @@
 #pragma once
-#include <inject/aspect_ratio_event.hpp>
+#include <inject/window_size_event.hpp>
 #include <inject/persp_camera_component.hpp>
 #include <inject/ortho_camera_component.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class CameraSystem final :
 		public entityx::System<CameraSystem>,
@@ -19,7 +19,7 @@ namespace inject
 		void configure(entityx::EntityManager& entities,
 			entityx::EventManager& events) override
 		{
-			events.subscribe<AspectRatioEvent>(*this);
+			events.subscribe<WindowSizeEvent>(*this);
 		}
 
 		void update(entityx::EntityManager& entities,
@@ -68,9 +68,9 @@ namespace inject
 			}
 		}
 
-		void receive(const AspectRatioEvent& event)
+		void receive(const WindowSizeEvent& event)
 		{
-			newAspectRatio = event.aspectRatio;
+			newAspectRatio = event.size.x / float(event.size.y);
 		}
 	};
 }

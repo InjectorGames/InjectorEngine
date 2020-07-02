@@ -1,4 +1,6 @@
 #pragma once
+#include <inject/defines.hpp>
+
 #include <zlib.h>
 
 #include <stdio.h>
@@ -11,12 +13,13 @@
 #  define SET_BINARY_MODE(file)
 #endif
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class Compressor
 	{
 	public:
-		inline static const int compress(FILE* source, FILE* dest, int level = -1)
+		inline static const int compress(
+			FILE* source, FILE* dest, int level = -1)
 		{
 			z_stream strm;
 			strm.zalloc = Z_NULL;

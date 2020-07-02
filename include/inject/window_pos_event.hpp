@@ -1,8 +1,9 @@
 #pragma once
+#include <inject/defines.hpp>
 #include <inject/glm_defines.hpp>
 #include <entityx/entityx.h>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	struct WindowPosEvent final :
 		public entityx::Event<WindowPosEvent>

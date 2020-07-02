@@ -1,10 +1,12 @@
 #pragma once
+#include <inject/defines.hpp>
 #include <inject/glm_defines.hpp>
 #include <entityx/entityx.h>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
-	struct OrthoCameraComponent final : entityx::Component<OrthoCameraComponent>
+	struct OrthoCameraComponent final :
+		entityx::Component<OrthoCameraComponent>
 	{
 		int queue;
 		glm::vec4 frustum;

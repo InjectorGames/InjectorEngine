@@ -1,7 +1,7 @@
 #pragma once
 #include <inject/gl/material.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	// TODO: remake with this:
 	// https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/simulating-sky/simulating-colors-of-the-sky

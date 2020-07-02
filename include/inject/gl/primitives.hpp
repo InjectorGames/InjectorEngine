@@ -1,9 +1,10 @@
 #pragma once
+#include <inject/defines.hpp>
 #include <vector>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
-	struct GlPrimitive
+	struct GlPrimitives
 	{
 		inline static const std::vector<float> squareVertices =
 		{

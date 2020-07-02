@@ -1,10 +1,12 @@
 #pragma once
+#include <inject/defines.hpp>
+
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 
 #include <vector>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class GlBuffer
 	{

@@ -34,10 +34,9 @@ add_subdirectory(3rdparty/glm)
 add_subdirectory(3rdparty/sdl)
 add_subdirectory(3rdparty/zlib)
 
-configure_file(cmake/config.hpp.in inject/config.hpp)
+configure_file(cmake/defines.hpp.in inject/defines.hpp)
 
-add_library(inject INTERFACE
-)
+add_library(inject INTERFACE)
 target_link_libraries(inject INTERFACE
 	asio
 	entityx

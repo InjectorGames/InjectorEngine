@@ -1,5 +1,4 @@
 #pragma once
-#include <inject/config.hpp>
 #include <inject/camera_system.hpp>
 #include <inject/transform_system.hpp>
 #include <inject/free_camera_system.hpp>
@@ -12,7 +11,7 @@
 #include <inject/gl/blend_diffuse_material.hpp>
 #include <inject/gl/gradient_sky_system.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class GlEditorWindow : public GlWindow
 	{
@@ -113,8 +112,7 @@ namespace inject
 				glm::vec3(1.0f), glm::vec3(2.0f, 0.0f, 4.0f));
 			blendDiffuseEntity.assign<RotateComponent>(glm::vec3(0.5f, 0.75f, 0.25f));
 
-			auto aspectRatio = float(INJECT_WINDOW_WIDTH) / float(INJECT_WINDOW_HEIGHT);
-			events.emit<AspectRatioEvent>(aspectRatio, aspectRatio);
+			events.emit<WindowSizeEvent>(windowSize, windowSize);
 		}
 	};
 }

@@ -1,11 +1,13 @@
 #pragma once
+#include <inject/defines.hpp>
+
 #include <queue>
 #include <mutex>
 #include <thread>
 #include <string>
 #include <iostream>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class AsyncConsole
 	{

@@ -1,7 +1,8 @@
 #pragma once
+#include <inject/defines.hpp>
 #include <asio.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class UdpSocket : public asio::ip::udp::socket
 	{

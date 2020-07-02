@@ -3,9 +3,10 @@
 #include <inject/translate_component.hpp>
 #include <inject/rotate_component.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
-	class TransformSystem final : public entityx::System<TransformSystem>
+	class TransformSystem final :
+		public entityx::System<TransformSystem>
 	{
 	public:
 		void update(entityx::EntityManager& entities,

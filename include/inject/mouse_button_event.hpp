@@ -1,8 +1,9 @@
 #pragma once
+#include <inject/defines.hpp>
 #include <entityx/entityx.h>
 #include <SDL.h>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	struct MouseButtonEvent final :
 		public entityx::Event<MouseButtonEvent>

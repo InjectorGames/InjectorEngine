@@ -2,7 +2,7 @@
 #include <inject/glm_defines.hpp>
 #include <inject/gl/shader.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class GlMaterial
 	{

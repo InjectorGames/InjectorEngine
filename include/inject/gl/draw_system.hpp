@@ -5,7 +5,7 @@
 #include <inject/persp_camera_component.hpp>
 #include <inject/ortho_camera_component.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class GlDrawSystem final :
 		public entityx::System<GlDrawSystem>,

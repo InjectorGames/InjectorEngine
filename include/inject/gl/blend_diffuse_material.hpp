@@ -1,7 +1,7 @@
 #pragma once
 #include <inject/gl/diffuse_material.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class GlBlendDiffuseMaterial : public GlDiffuseMaterial
 	{

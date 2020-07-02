@@ -1,6 +1,7 @@
 #pragma once
+#include <inject/defines.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class Image
 	{

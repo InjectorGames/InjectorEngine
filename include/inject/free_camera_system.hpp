@@ -5,7 +5,7 @@
 #include <inject/transform_component.hpp>
 #include <inject/persp_camera_component.hpp>
 
-namespace inject
+namespace INJECT_NAMESPACE
 {
 	class FreeCameraSystem final :
 		public entityx::System<FreeCameraSystem>,
