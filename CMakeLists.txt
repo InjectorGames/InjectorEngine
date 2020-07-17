@@ -4,12 +4,10 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR "Prevented in-tree build.")
 endif()
 
-project(inject
+project(injector-engine
 	VERSION 1.0.0
 	LANGUAGES CXX
 )
-
-option(INJECT_BUILD_EDITOR "Build editor executable" ON)
 
 include(GNUInstallDirs)
 
@@ -17,13 +15,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 include(cmake/asio.cmake)
-
-set(ENTITYX_BUILD_TESTING OFF CACHE BOOL "")
-set(ENTITYX_RUN_BENCHMARKS OFF CACHE BOOL "")
-set(ENTITYX_MAX_COMPONENTS 64 CACHE STRING "")
-set(ENTITYX_DT_TYPE double CACHE STRING "")
-set(ENTITYX_BUILD_SHARED OFF CACHE BOOL "")
-add_subdirectory(3rdparty/entityx)
 
 set(BUILD_UTILS OFF CACHE BOOL "")
 set(GLEW_REGAL OFF CACHE BOOL "")
@@ -34,19 +25,23 @@ add_subdirectory(3rdparty/glm)
 add_subdirectory(3rdparty/sdl)
 add_subdirectory(3rdparty/zlib)
 
-configure_file(cmake/defines.hpp.in inject/defines.hpp)
+configure_file(cmake/defines.hpp.in injector/defines.hpp)
 
-add_library(inject INTERFACE)
-target_link_libraries(inject INTERFACE
+add_library(injector-engine STATIC
+	${PROJECT_SOURCE_DIR}/source/component.cpp
+	${PROJECT_SOURCE_DIR}/source/entity.cpp
+	${PROJECT_SOURCE_DIR}/source/manager.cpp
+	${PROJECT_SOURCE_DIR}/source/system.cpp
+)
+target_link_libraries(injector-engine PUBLIC
 	asio
-	entityx
 	glew_s
 	glm::glm
 	SDL2main
 	SDL2-static
 	zlibstatic
 )
-target_include_directories(inject INTERFACE
+target_include_directories(injector-engine PUBLIC
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/3rdparty/glew/include
@@ -54,19 +49,7 @@ target_include_directories(inject INTERFACE
 	${PROJECT_BINARY_DIR}/3rdparty/zlib
 )
 
-if(INJECT_BUILD_EDITOR)
-	add_executable(editor
-	    ${PROJECT_SOURCE_DIR}/source/editor.cpp
-	)
-	target_link_libraries(editor PUBLIC 
-	    inject
-	)
-	target_include_directories(editor PUBLIC
-		${PROJECT_SOURCE_DIR}/include
-	)
-endif()
-
-set(INJECT_RESOURCES
+set(INJECTOR_RESOURCES
 	shaders/col_color.frag
 	shaders/col_color.vert
 	shaders/color.frag
@@ -77,6 +60,6 @@ set(INJECT_RESOURCES
 	shaders/gradient_sky.vert
 )
 
-foreach(FILE ${INJECT_RESOURCES})
+foreach(FILE ${INJECTOR_RESOURCES})
     configure_file(resources/${FILE} resources/${FILE} COPYONLY)
 endforeach(FILE)

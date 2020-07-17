@@ -112,7 +112,7 @@ namespace INJECT_NAMESPACE
 				glm::vec3(1.0f), glm::vec3(2.0f, 0.0f, 4.0f));
 			blendDiffuseEntity.assign<RotateComponent>(glm::vec3(0.5f, 0.75f, 0.25f));
 
-			events.emit<WindowSizeEvent>(windowSize, windowSize);
+			events.emit<WindowSizeEvent>(size, size);
 		}
 	};
 }

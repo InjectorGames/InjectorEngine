@@ -1,10 +1,15 @@
-#include <inject/engine.hpp>
-#include <inject/gl/window.hpp>
-#include <inject/gl/editor_window.hpp>
+#include <injector/manager.hpp>
+//#include <injector/gl/editor_window.hpp>
+
+using namespace INJECTOR_NAMESPACE;
 
 int main(int argc, char* args[])
 {
-	try
+	auto manager = Manager(0);
+	auto entity = manager.createEntity();
+	//entity.addComponent<Component>();
+
+	/*try
 	{
 		inject::Engine::initialize(SDL_INIT_EVERYTHING, false);
 
@@ -19,5 +24,7 @@ int main(int argc, char* args[])
 	{
 		inject::Engine::logCritical(exception.what());
 		throw exception;
-	}
+	}*/
+
+	return 0;
 }
