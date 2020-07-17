@@ -11,6 +11,15 @@ namespace INJECTOR_NAMESPACE
 		systems(),
 		entities()
 	{}
+	Manager::~Manager()
+	{
+		removeEntities();
+
+		for (const auto& pair : systems)
+			delete pair.second;
+
+		systems.clear();
+	}
 
 	size_t Manager::getID() const noexcept
 	{
@@ -58,9 +67,45 @@ namespace INJECTOR_NAMESPACE
 			// TODO: reorder map
 		}
 
-		if (!entities.emplace(freeEntityID, std::map<std::type_index, Component*>()).second)
+		if (!entities.emplace(freeEntityID, Components()).second)
 			throw std::runtime_error("Failed to create manager entity");
 
 		return Entity(freeEntityID++, *this);
+	}
+	size_t Manager::getEntityCount() const noexcept
+	{
+		return entities.size();
+	}
+	bool Manager::isContainsEntity(size_t id) const noexcept
+	{
+		return entities.find(id) != entities.end();
+	}
+
+	bool Manager::removeEntity(size_t id) noexcept
+	{
+		auto iterator = entities.find(id);
+
+		if (iterator == entities.end())
+			return false;
+
+		auto components = iterator->second;
+
+		for (const auto& pair : components)
+			delete pair.second;
+
+		entities.erase(iterator);
+		return true;
+	}
+	bool Manager::removeEntities() noexcept
+	{
+		for (const auto& pair : entities)
+		{
+			const auto& components = pair.second;
+
+			for (const auto& pair : components)
+				delete pair.second;
+		}
+
+		entities.clear();
 	}
 }

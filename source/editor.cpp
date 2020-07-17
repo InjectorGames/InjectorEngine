@@ -7,7 +7,7 @@ int main(int argc, char* args[])
 {
 	auto manager = Manager(0);
 	auto entity = manager.createEntity();
-	//entity.addComponent<Component>();
+	entity.addComponent<int>();
 
 	/*try
 	{

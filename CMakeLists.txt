@@ -4,10 +4,12 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR "Prevented in-tree build.")
 endif()
 
-project(injector-engine
+project(InjectorEngine
 	VERSION 1.0.0
 	LANGUAGES CXX
 )
+
+option(INJECTOR_BUILD_EDITOR "Build in editor executable" ON)
 
 include(GNUInstallDirs)
 
@@ -23,31 +25,48 @@ add_subdirectory(3rdparty/glew/build/cmake)
 
 add_subdirectory(3rdparty/glm)
 add_subdirectory(3rdparty/sdl)
-add_subdirectory(3rdparty/zlib)
+#add_subdirectory(3rdparty/zlib)
 
 configure_file(cmake/defines.hpp.in injector/defines.hpp)
 
-add_library(injector-engine STATIC
-	${PROJECT_SOURCE_DIR}/source/component.cpp
-	${PROJECT_SOURCE_DIR}/source/entity.cpp
-	${PROJECT_SOURCE_DIR}/source/manager.cpp
-	${PROJECT_SOURCE_DIR}/source/system.cpp
+add_library(InjectorEngine STATIC
+	
+	source/engine.cpp
+	source/entity.cpp
+	source/manager.cpp
+	source/system.cpp
+	source/vector2.cpp
+	source/vector3.cpp
+	source/vector4.cpp
 )
-target_link_libraries(injector-engine PUBLIC
+target_link_libraries(InjectorEngine PUBLIC
 	asio
 	glew_s
 	glm::glm
 	SDL2main
 	SDL2-static
-	zlibstatic
+	#zlibstatic
 )
-target_include_directories(injector-engine PUBLIC
+target_include_directories(InjectorEngine PUBLIC
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/3rdparty/glew/include
-	${PROJECT_SOURCE_DIR}/3rdparty/zlib
-	${PROJECT_BINARY_DIR}/3rdparty/zlib
+	#${PROJECT_SOURCE_DIR}/3rdparty/zlib
+	#${PROJECT_BINARY_DIR}/3rdparty/zlib
 )
+
+if(INJECTOR_BUILD_EDITOR)
+	add_executable(InjectorEditor
+	    source/editor.cpp
+	)
+	target_link_libraries(InjectorEditor PUBLIC 
+	    InjectorEngine
+	)
+	target_include_directories(InjectorEditor PUBLIC
+		${PROJECT_BINARY_DIR}
+		${PROJECT_SOURCE_DIR}/include
+	)
+endif()
 
 set(INJECTOR_RESOURCES
 	shaders/col_color.frag

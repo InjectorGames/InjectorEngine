@@ -3,6 +3,9 @@
 #include <SDL.h>
 #include <SDL_vulkan.h>
 
+#include <map>
+#include <thread>
+
 namespace INJECTOR_NAMESPACE
 {
 	static bool initializedEngine = false;
@@ -10,20 +13,24 @@ namespace INJECTOR_NAMESPACE
 
 	static GraphicsAPI graphicsAPI = GraphicsAPI::Unknown;
 
-	static std::map<uint32_t, std::shared_ptr<Manager>> managers = {};
+	static uint64_t targetUPS = 60;
+	static bool handleEvents = true;
+	static bool capUpdateRate = true;
+
+	static std::map<size_t, Manager*> managers = {};
 	static std::chrono::steady_clock::time_point updateStartTicks = {};
 
-	static void Engine::initializeEngine()
+	void Engine::initializeEngine()
 	{
 		if (initializedEngine)
 			throw std::runtime_error("Engine is already initialized");
 
 		initializedEngine = true;
 
-		logInfo("Initialized engine. (v%d.%d.%d)",
-			INJECT_VERSION_MAJOR, INJECT_VERSION_MINOR, INJECT_VERSION_PATCH);
+		logInfo("Initialized engine (v%d.%d.%d)",
+			INJECTOR_VERSION_MAJOR, INJECTOR_VERSION_MINOR, INJECTOR_VERSION_PATCH);
 	}
-	static void Engine::terminateEngine()
+	void Engine::terminateEngine()
 	{
 		if (!initializedEngine)
 			throw std::runtime_error("Engine is already terminated");
@@ -35,12 +42,12 @@ namespace INJECTOR_NAMESPACE
 
 		logInfo("Terminated engine");
 	}
-	static bool Engine::getInitializedEngine() noexcept
+	bool Engine::getInitializedEngine() noexcept
 	{
 		return initializedEngine;
 	}
 
-	static void Engine::initializeVideo(GraphicsAPI api)
+	void Engine::initializeVideo(GraphicsAPI api)
 	{
 		if (initializedEngine)
 			throw std::runtime_error("Engine is already initialized");
@@ -51,7 +58,7 @@ namespace INJECTOR_NAMESPACE
 			throw std::runtime_error("Failed to intialize Video subsystem. Error: " +
 				std::string(SDL_GetError()));
 
-		if (type == GraphicsApiType::Vulkan)
+		if (api == GraphicsAPI::Vulkan)
 		{
 			if (SDL_Vulkan_LoadLibrary(nullptr) != 0)
 			{
@@ -61,38 +68,38 @@ namespace INJECTOR_NAMESPACE
 			}
 		}
 		
-		graphicsApi = type;
+		graphicsAPI = api;
 		initializedVideo = true;
 
 		logInfo("Initialized Video subsytem");
 	}
-	static void Engine::terminateVideo()
+	void Engine::terminateVideo()
 	{
 		if (!initializedEngine)
 			throw std::runtime_error("Engine is already terminated");
 		if (!initializedVideo)
 			throw std::runtime_error("Video subsystem is already terminated");
 
-		if (graphicsApi == GraphicsApiType::Vulkan)
+		if (graphicsAPI == GraphicsAPI::Vulkan)
 			SDL_Vulkan_UnloadLibrary();
 
 		SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
-		graphicsApi = GraphicsApiType::Unknown;
+		graphicsAPI = GraphicsAPI::Unknown;
 		initializedVideo = false;
 
 		logInfo("Terminated Video subsystem");
 	}
-	static bool Engine::getInitializedVideo() noexcept
+	bool Engine::getInitializedVideo() noexcept
 	{
 		return initializedVideo;
 	}
-	static GraphicsAPI Engine::getGraphicsAPI() noexcept
+	GraphicsAPI Engine::getGraphicsAPI() noexcept
 	{
 		return graphicsAPI;
 	}
 
-	static void Engine::startUpdateLoop()
+	void Engine::startUpdateLoop()
 	{
 		bool quit = false;
 		SDL_Event event = {};
@@ -150,5 +157,15 @@ namespace INJECTOR_NAMESPACE
 						std::chrono::milliseconds(static_cast<uint64_t>(delayTime)));
 			}
 		}
+	}
+
+	Engine::tick_t Engine::getTickNow() noexcept
+	{
+		return std::chrono::high_resolution_clock::now();
+	}
+	double Engine::getTimeNow() noexcept
+	{
+		return std::chrono::duration_cast<std::chrono::duration<double>>(
+			std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 	}
 }

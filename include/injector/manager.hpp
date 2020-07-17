@@ -6,6 +6,8 @@ namespace INJECTOR_NAMESPACE
 {
 	class Manager
 	{
+	public:
+		using Components = std::map<std::type_index, void*>;
 	protected:
 		size_t id;
 		bool active;
@@ -14,21 +16,27 @@ namespace INJECTOR_NAMESPACE
 		size_t freeEntityID;
 
 		std::map<std::type_index, System*> systems;
-		std::map<size_t, std::map<std::type_index, Component*>> entities;
+		std::map<size_t, Components> entities;
 
 		friend class Entity;
 	public:
 		Manager(size_t id, bool active = true);
+		virtual ~Manager();
 
-		inline size_t getID() const noexcept;
-		inline bool getActive() const noexcept;
+		size_t getID() const noexcept;
+		bool getActive() const noexcept;
 
-		inline bool getInitialized() const noexcept;
-		inline size_t getFreeEntityID() const noexcept;
+		bool getInitialized() const noexcept;
+		size_t getFreeEntityID() const noexcept;
 
-		inline void initialize();
-		inline void terminate();
+		void initialize();
+		void terminate();
 
-		inline Entity createEntity();
+		Entity createEntity();
+		size_t getEntityCount() const noexcept;
+		bool isContainsEntity(size_t id) const noexcept;
+
+		bool removeEntity(size_t id) noexcept;
+		bool removeEntities() noexcept;
 	};
 }

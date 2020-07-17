@@ -1,12 +1,11 @@
 #pragma once
-#include <inject/defines.hpp>
-#include <inject/glm_defines.hpp>
+#include <injector/defines.hpp>
+#include <injector/glm_defines.hpp>
 #include <entityx/entityx.h>
 
 namespace INJECT_NAMESPACE
 {
-	struct TransformComponent final :
-		public entityx::Component<TransformComponent>
+	struct TransformComponent
 	{
 		enum class Type
 		{

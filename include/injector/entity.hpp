@@ -1,5 +1,5 @@
 #pragma once
-#include <injector/component.hpp>
+#include <injector/defines.hpp>
 
 #include <map>
 #include <typeindex>
@@ -17,15 +17,16 @@ namespace INJECTOR_NAMESPACE
 	public:
 		Entity(size_t id, Manager& manager);
 
-		inline size_t getID() const noexcept;
-		inline Manager& getManager() const noexcept;
+		size_t getID() const noexcept;
+		Manager& getManager() const noexcept;
 
-		inline bool isValid() const noexcept;
-		inline size_t getComponentCount() const noexcept;
-		inline bool removeComponents() noexcept;
+		bool isValid() const noexcept;
+
+		size_t getComponentCount() const noexcept;
+		bool removeComponents() noexcept;
 
 		template<class T>
-		inline T* addComponent()
+		T* addComponent()
 		{
 			auto& components = manager.entities.at(id);
 			auto component = new T();
@@ -39,7 +40,7 @@ namespace INJECTOR_NAMESPACE
 			return component;
 		}
 		template<class T>
-		inline bool addComponent(T* component) noexcept
+		bool addComponent(T* component) noexcept
 		{
 			auto& entities = manager.entities;
 			auto iterator = entities.find(id);
@@ -59,7 +60,7 @@ namespace INJECTOR_NAMESPACE
 		}
 
 		template<class T>
-		inline void removeComponent()
+		void removeComponent()
 		{
 			auto& components = manager.entities.at(id);
 			auto iterator = components.find(typeid(T));
@@ -71,7 +72,7 @@ namespace INJECTOR_NAMESPACE
 			components.erase(iterator);
 		}
 		template<class T>
-		inline bool removeComponent() noexcept
+		bool removeComponent() noexcept
 		{
 			auto& entities = manager.entities;
 			auto iterator = entities.find(id);
@@ -91,19 +92,19 @@ namespace INJECTOR_NAMESPACE
 		}
 
 		template<class T>
-		inline T* getComponent()
+		T* getComponent()
 		{
 			auto& components = manager.entities.at(id);
 			return components.at(typeid(T));
 		}
 		template<class T>
-		inline const T* getComponent() const
+		const T* getComponent() const
 		{
 			auto& components = manager.entities.at(id);
 			return components.at(typeid(T));
 		}
 		template<class T>
-		inline bool getComponent(T* component) noexcept
+		bool getComponent(T* component) noexcept
 		{
 			auto& entities = manager.entities;
 			auto iterator = entities.find(id);
@@ -121,7 +122,7 @@ namespace INJECTOR_NAMESPACE
 			return true;
 		}
 		template<class T>
-		inline bool getComponent(const T* component) const noexcept
+		bool getComponent(const T* component) const noexcept
 		{
 			auto& entities = manager.entities;
 			auto iterator = entities.find(id);
@@ -140,7 +141,7 @@ namespace INJECTOR_NAMESPACE
 		}
 
 		template<class T1, class T2>
-		inline bool addComponents() noexcept
+		bool addComponents() noexcept
 		{
 			auto& entities = manager.entities;
 			auto iterator = entities.find(id);
@@ -158,6 +159,86 @@ namespace INJECTOR_NAMESPACE
 			}
 
 			auto component = new T2();
+
+			if (!components.emplace(component).second)
+			{
+				delete component;
+				return false;
+			}
+
+			return true;
+		}
+		template<class T1, class T2, class T3>
+		bool addComponents() noexcept
+		{
+			auto& entities = manager.entities;
+			auto iterator = entities.find(id);
+
+			if (iterator == entities.end())
+				return false;
+
+			auto& components = iterator->second;
+			auto component = new T1();
+
+			if (!components.emplace(component).second)
+			{
+				delete component;
+				return false;
+			}
+
+			auto component = new T2();
+
+			if (!components.emplace(component).second)
+			{
+				delete component;
+				return false;
+			}
+
+			auto component = new T3();
+
+			if (!components.emplace(component).second)
+			{
+				delete component;
+				return false;
+			}
+
+			return true;
+		}
+		template<class T1, class T2, class T3, class T4>
+		bool addComponents() noexcept
+		{
+			auto& entities = manager.entities;
+			auto iterator = entities.find(id);
+
+			if (iterator == entities.end())
+				return false;
+
+			auto& components = iterator->second;
+			auto component = new T1();
+
+			if (!components.emplace(component).second)
+			{
+				delete component;
+				return false;
+			}
+
+			auto component = new T2();
+
+			if (!components.emplace(component).second)
+			{
+				delete component;
+				return false;
+			}
+
+			auto component = new T3();
+
+			if (!components.emplace(component).second)
+			{
+				delete component;
+				return false;
+			}
+
+			auto component = new T4();
 
 			if (!components.emplace(component).second)
 			{

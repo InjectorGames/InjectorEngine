@@ -1,13 +1,11 @@
 #pragma once
 #include <injector/manager.hpp>
 
-#include <map>
 #include <chrono>
-#include <thread>
 
 namespace INJECTOR_NAMESPACE
 {
-	constexpr bool isBigEndian = SDL_BYTEORDER == SDL_BIG_ENDIAN;
+	//constexpr bool isBigEndian = SDL_BYTEORDER == SDL_BIG_ENDIAN;
 
 	enum class GraphicsAPI
 	{
@@ -19,22 +17,20 @@ namespace INJECTOR_NAMESPACE
 	class Engine final
 	{
 	public:
-		inline static uint64_t targetUpdateRate = 60;
-		inline static bool handleEvents = true;
-		inline static bool capUpdateRate = true;
+		using tick_t = std::chrono::steady_clock::time_point;
 
-		inline static void initializeEngine();
-		inline static void terminateEngine();
-		inline static bool getInitializedEngine() noexcept;
+		static void initializeEngine();
+		static void terminateEngine();
+		static bool getInitializedEngine() noexcept;
 
-		inline static void initializeVideo(GraphicsAPI graphicsAPI);
-		inline static void terminateVideo();
-		inline static bool getInitializedVideo() noexcept;
-		inline static GraphicsAPI getGraphicsAPI() noexcept;
+		static void initializeVideo(GraphicsAPI graphicsAPI);
+		static void terminateVideo();
+		static bool getInitializedVideo() noexcept;
+		static GraphicsAPI getGraphicsAPI() noexcept;
 
-		inline static void startUpdateLoop();
+		static void startUpdateLoop();
 
-		inline static const std::chrono::steady_clock::time_point
+		/*static std::chrono::steady_clock::time_point
 			getUpdateStartTicks() noexcept
 		{
 			return updateStartTicks;
@@ -43,17 +39,10 @@ namespace INJECTOR_NAMESPACE
 		{
 			return std::chrono::duration_cast<std::chrono::duration<double>>(
 				updateStartTicks.time_since_epoch()).count();
-		}
+		}*/
 
-		inline static const std::chrono::steady_clock::time_point getTicksNow() noexcept
-		{
-			return std::chrono::high_resolution_clock::now();
-		}
-		inline static const double getTimeNow() noexcept
-		{
-			return std::chrono::duration_cast<std::chrono::duration<double>>(
-				std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-		}
+		static tick_t getTickNow() noexcept;
+		static double getTimeNow() noexcept;
 
 		inline static void addManager(const std::shared_ptr<Manager> manager)
 		{

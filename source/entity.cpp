@@ -24,11 +24,11 @@ namespace INJECTOR_NAMESPACE
 		auto& entities = manager.entities;
 		return entities.find(id) != entities.end();
 	}
+
 	size_t Entity::getComponentCount() const noexcept
 	{
 		return manager.entities.size();
 	}
-
 	bool Entity::removeComponents() noexcept
 	{
 		auto& entities = manager.entities;
