@@ -1,30 +1,20 @@
-#include <injector/manager.hpp>
+#include <injector/engine.hpp>
+#include <injector/window_system.hpp>
 //#include <injector/gl/editor_window.hpp>
 
 using namespace INJECTOR_NAMESPACE;
 
 int main(int argc, char* args[])
 {
-	auto manager = Manager(0);
-	auto entity = manager.createEntity();
-	entity.addComponent<int>();
+	Engine::initializeVideo();
+	Engine::initializeEngine();
 
-	/*try
-	{
-		inject::Engine::initialize(SDL_INIT_EVERYTHING, false);
+	auto manager = Engine::createManager<Manager>();
+	auto windowSystem = manager->createSystem<WindowSystem>();
+	auto window = manager->createEntity();
+	windowSystem->createWindow(window);
 
-		inject::Engine::addManager(
-			std::make_shared<inject::GlEditorWindow>());
-		inject::Engine::update();
-
-		inject::Engine::terminate();
-		return 0;
-	}
-	catch (const std::exception& exception)
-	{
-		inject::Engine::logCritical(exception.what());
-		throw exception;
-	}*/
-
+	Engine::startUpdateLoop();
+	Engine::terminateEngine();
 	return 0;
 }

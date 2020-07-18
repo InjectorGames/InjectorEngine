@@ -1,16 +1,13 @@
 #pragma once
-#include <inject/manager.hpp>
-#include <inject/keyboard_event.hpp>
-#include <inject/window_pos_event.hpp>
-#include <inject/window_size_event.hpp>
-#include <inject/mouse_button_event.hpp>
-#include <inject/mouse_motion_event.hpp>
+#include <injector/manager.hpp>
+#include <injector/keyboard_event.hpp>
+#include <injector/window_pos_event.hpp>
+#include <injector/window_size_event.hpp>
+#include <injector/mouse_button_event.hpp>
+#include <injector/mouse_motion_event.hpp>
 
 #include <SDL_events.h>
-
-#include <map>
 #include <string>
-#include <stdexcept>
 
 namespace INJECT_NAMESPACE
 {

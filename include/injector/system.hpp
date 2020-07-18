@@ -13,8 +13,7 @@ namespace INJECTOR_NAMESPACE
 		System(Manager& manager);
 		virtual ~System();
 
-		virtual void initialize() = 0;
-		virtual void terminate() = 0;
+		Manager& getManager() const noexcept;
 		virtual void update() = 0;
 	};
 }

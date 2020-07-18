@@ -10,9 +10,6 @@ namespace INJECTOR_NAMESPACE
 		using Components = std::map<std::type_index, void*>;
 	protected:
 		size_t id;
-		bool active;
-
-		bool initialized;
 		size_t freeEntityID;
 
 		std::map<std::type_index, System*> systems;
@@ -20,23 +17,190 @@ namespace INJECTOR_NAMESPACE
 
 		friend class Entity;
 	public:
-		Manager(size_t id, bool active = true);
+		Manager(size_t id);
 		virtual ~Manager();
 
+		virtual void update();
+
 		size_t getID() const noexcept;
-		bool getActive() const noexcept;
-
-		bool getInitialized() const noexcept;
 		size_t getFreeEntityID() const noexcept;
-
-		void initialize();
-		void terminate();
-
+		
 		Entity createEntity();
+		bool destroyEntity(size_t id) noexcept;
+		void destroyEntities() noexcept;
 		size_t getEntityCount() const noexcept;
-		bool isContainsEntity(size_t id) const noexcept;
+		bool containsEntity(size_t id) const noexcept;
 
-		bool removeEntity(size_t id) noexcept;
-		bool removeEntities() noexcept;
+		size_t getComponentCount(size_t id) const;
+		bool getComponentCount(size_t id, size_t& count) const noexcept;
+		bool destroyComponents(size_t id) noexcept;
+
+		template<class T, typename ...Args>
+		T* createComponent(size_t id, Args... args)
+		{
+			auto& components = entities.at(id);
+			auto component = new T(args...);
+
+			if (!components.emplace(typeid(T), component).second)
+			{
+				delete component;
+				throw std::runtime_error("Failed to add entity component");
+			}
+
+			return component;
+		}
+		template<class T, class ...Args>
+		bool createComponent(size_t id, T*& component, Args... args) noexcept
+		{
+			auto iterator = entities.find(id);
+
+			if (iterator == entities.end())
+				return false;
+
+			component = new T(args...);
+
+			if (!iterator->second.emplace(typeid(T), component).second)
+			{
+				delete component;
+				return false;
+			}
+
+			return true;
+		}
+		template<class T>
+		bool destroyComponent(size_t id) noexcept
+		{
+			auto entityIterator = entities.find(id);
+
+			if (entityIterator == entities.end())
+				return false;
+
+			auto& components = entityIterator->second;
+			auto componentIterator = components.find(typeid(T));
+
+			if (componentIterator == components.end())
+				return false;
+
+			delete componentIterator->second;
+			components.erase(componentIterator);
+			return true;
+		}
+
+		template<class T>
+		T* getComponent(size_t id)
+		{
+			auto& components = entities.at(id);
+			return static_cast<T*>(components.at(typeid(T)));
+		}
+		template<class T>
+		const T* getComponent(size_t id) const
+		{
+			auto& components = entities.at(id);
+			return static_cast<const T*>(components.at(typeid(T)));
+		}
+		template<class T>
+		bool getComponent(size_t id, T*& component) noexcept
+		{
+			auto entityIterator = entities.find(id);
+
+			if (entityIterator == entities.end())
+				return false;
+
+			auto& components = entityIterator->second;
+			auto componentIterator = components.find(typeid(T));
+
+			if (componentIterator == components.end())
+				return false;
+
+			component = static_cast<T*>(componentIterator->second);
+			return true;
+		}
+		template<class T>
+		bool getComponent(size_t id, const T*& component) const noexcept
+		{
+			auto entityIterator = entities.find(id);
+
+			if (entityIterator == entities.end())
+				return false;
+
+			auto& components = entityIterator->second;
+			auto componentIterator = components.find(typeid(T));
+
+			if (componentIterator == components.end())
+				return false;
+
+			component = static_cast<const T*>(componentIterator->second);
+			return true;
+		}
+
+		size_t getSystemCount() const noexcept;
+		void destroySystems() noexcept;
+
+		template<class T>
+		T* createSystem()
+		{
+			auto system = new T(*this);
+
+			if (!systems.emplace(typeid(T), system).second)
+			{
+				delete system;
+				throw std::exception("Failed to add manager system");
+			}
+
+			return system;
+		}
+		template<class T>
+		bool createSystem(T*& system) noexcept
+		{
+			system = new T(*this);
+
+			if (!systems.emplace(typeid(T), system).second)
+			{
+				delete system;
+				return false;
+			}
+
+			return true;
+		}
+
+		template<class T>
+		T* getSystem()
+		{
+			return dynamic_cast<T*>(systems.at(typeid(T)));
+		}
+		template<class T>
+		const T* getSystem() const
+		{
+			return dynamic_cast<T*>(systems.at(typeid(T)));
+		}
+		template<class T>
+		bool getSystem(T*& system) noexcept
+		{
+			auto iterator = systems.find(typeid(T));
+
+			if (iterator == systems.end())
+				return false;
+
+			system = dynamic_cast<T*>(iterator->second);
+			return true;
+		}
+		template<class T>
+		bool getSystem(const T*& system) const noexcept
+		{
+			auto iterator = systems.find(typeid(T));
+
+			if (iterator == systems.end())
+				return false;
+
+			system = dynamic_cast<T*>(iterator->second);
+			return true;
+		}
+
+		bool operator==(const Manager& other);
+		bool operator!=(const Manager& other);
+		bool operator<(const Manager& other);
+		bool operator>(const Manager& other);
+		bool operator<=(const Manager& other);
+		bool operator>=(const Manager& other);
 	};
 }

@@ -7,4 +7,9 @@ namespace INJECTOR_NAMESPACE
 	{}
 	System::~System()
 	{}
+
+	Manager& System::getManager() const noexcept
+	{
+		return manager;
+	}
 }

@@ -3,59 +3,103 @@
 #include <SDL.h>
 #include <SDL_vulkan.h>
 
-#include <map>
 #include <thread>
+#include <iostream>
 
 namespace INJECTOR_NAMESPACE
 {
-	static bool initializedEngine = false;
-	static bool initializedVideo = false;
+	bool Engine::engineInitialized = false;
+	bool Engine::videoInitialized = false;
+	bool Engine::eventsInitialized = false;
 
-	static GraphicsAPI graphicsAPI = GraphicsAPI::Unknown;
+	GraphicsAPI Engine::graphicsAPI = GraphicsAPI::Unknown;
 
-	static uint64_t targetUPS = 60;
-	static bool handleEvents = true;
-	static bool capUpdateRate = true;
+	bool Engine::capUpdateRate = true;
+	int Engine::targetUpdateRate = 60;
 
-	static std::map<size_t, Manager*> managers = {};
-	static std::chrono::steady_clock::time_point updateStartTicks = {};
+	bool Engine::updateRunning = false;
+	Engine::tick_t Engine::updateStartTick = {};
+	double Engine::updateDeltaTime = 0.0;
+	size_t Engine::freeManagerID = 0;
+
+	std::map<size_t, Manager*> Engine::managers = {};
+
+	bool Engine::getCapUpdateRate() noexcept
+	{
+		return capUpdateRate;
+	}
+	void Engine::setCapUpdateRate(bool cap) noexcept
+	{
+		capUpdateRate = cap;
+	}
+
+	int Engine::getTargetUpdateRate() noexcept
+	{
+		return targetUpdateRate;
+	}
+	void Engine::setTargetUpdateRate(int ups) noexcept
+	{
+		targetUpdateRate = ups;
+	}
+
+	Engine::tick_t Engine::getUpdateStartTick() noexcept
+	{
+		return updateStartTick;
+	}
+	double Engine::getUpdateDeltaTime() noexcept
+	{
+		return updateDeltaTime;
+	}
+
+	size_t Engine::getFreeManagerID() noexcept
+	{
+		return freeManagerID;
+	}
 
 	void Engine::initializeEngine()
 	{
-		if (initializedEngine)
+		if (engineInitialized)
 			throw std::runtime_error("Engine is already initialized");
 
-		initializedEngine = true;
+		engineInitialized = true;
 
-		logInfo("Initialized engine (v%d.%d.%d)",
-			INJECTOR_VERSION_MAJOR, INJECTOR_VERSION_MINOR, INJECTOR_VERSION_PATCH);
+		std::cout << "Initialized engine (" <<
+			INJECTOR_VERSION_MAJOR << "." <<
+			INJECTOR_VERSION_MINOR << "." <<
+			INJECTOR_VERSION_PATCH << ")\n";
 	}
 	void Engine::terminateEngine()
 	{
-		if (!initializedEngine)
+		if (!engineInitialized)
 			throw std::runtime_error("Engine is already terminated");
 
-		managers.clear();
+		destroyManagers();
+
+		if (videoInitialized)
+			terminateVideo();
+		if (eventsInitialized)
+			terminateEvents();
+
 		SDL_Quit();
 		
-		initializedEngine = false;
+		engineInitialized = false;
 
-		logInfo("Terminated engine");
+		std::cout << "Terminated engine\n";
 	}
-	bool Engine::getInitializedEngine() noexcept
+	bool Engine::getEngineInitialized() noexcept
 	{
-		return initializedEngine;
+		return engineInitialized;
 	}
 
 	void Engine::initializeVideo(GraphicsAPI api)
 	{
-		if (initializedEngine)
+		if (engineInitialized)
 			throw std::runtime_error("Engine is already initialized");
-		if (initializedVideo)
+		if (videoInitialized)
 			throw std::runtime_error("Video subsystem is already initialized");
 
 		if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0)
-			throw std::runtime_error("Failed to intialize Video subsystem. Error: " +
+			throw std::runtime_error("Failed to intialize video subsystem. Error: " +
 				std::string(SDL_GetError()));
 
 		if (api == GraphicsAPI::Vulkan)
@@ -69,15 +113,15 @@ namespace INJECTOR_NAMESPACE
 		}
 		
 		graphicsAPI = api;
-		initializedVideo = true;
+		videoInitialized = true;
 
-		logInfo("Initialized Video subsytem");
+		std::cout << "Initialized video subsytem\n";
 	}
 	void Engine::terminateVideo()
 	{
-		if (!initializedEngine)
+		if (!engineInitialized)
 			throw std::runtime_error("Engine is already terminated");
-		if (!initializedVideo)
+		if (!videoInitialized)
 			throw std::runtime_error("Video subsystem is already terminated");
 
 		if (graphicsAPI == GraphicsAPI::Vulkan)
@@ -86,77 +130,93 @@ namespace INJECTOR_NAMESPACE
 		SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
 		graphicsAPI = GraphicsAPI::Unknown;
-		initializedVideo = false;
+		videoInitialized = false;
 
-		logInfo("Terminated Video subsystem");
+		std::cout << "Terminated video subsystem\n";
 	}
-	bool Engine::getInitializedVideo() noexcept
+	bool Engine::getVideoInitialized() noexcept
 	{
-		return initializedVideo;
+		return videoInitialized;
 	}
 	GraphicsAPI Engine::getGraphicsAPI() noexcept
 	{
 		return graphicsAPI;
 	}
 
+	void Engine::initializeEvents()
+	{
+		if (engineInitialized)
+			throw std::runtime_error("Engine is already initialized");
+		if (eventsInitialized)
+			throw std::runtime_error("Events subsystem is already initialized");
+
+		if (SDL_InitSubSystem(SDL_INIT_EVENTS) != 0)
+			throw std::runtime_error("Failed to intialize events subsystem. Error: " +
+				std::string(SDL_GetError()));
+
+		eventsInitialized = true;
+
+		std::cout << "Initialized events subsytem\n";
+	}
+	void Engine::terminateEvents()
+	{
+		if (!engineInitialized)
+			throw std::runtime_error("Engine is already terminated");
+		if (!eventsInitialized)
+			throw std::runtime_error("Events subsystem is already terminated");
+
+		SDL_QuitSubSystem(SDL_INIT_EVENTS);
+		eventsInitialized = false;
+
+		std::cout << "Terminated events subsystem\n";
+	}
+	bool Engine::getEventsInitialized() noexcept
+	{
+		return eventsInitialized;
+	}
+
 	void Engine::startUpdateLoop()
 	{
-		bool quit = false;
-		SDL_Event event = {};
+		if (updateRunning)
+			throw std::runtime_error("Update is already started");
 
-		while (!quit)
+		updateRunning = true;
+
+		while (updateRunning)
 		{
-			if (handleEvents)
-			{
-				while (SDL_PollEvent(&event) != 0)
-				{
-					for (const auto& pair : managers)
-					{
-						const auto window = std::dynamic_pointer_cast<Window>(pair.second);
-
-						if (window)
-							window->handleEvent(event);
-					}
-				}
-			}
-
-			auto ticks = std::chrono::high_resolution_clock::now();
-			auto deltaTime = std::chrono::duration_cast<
-				std::chrono::duration<double>>(ticks - updateStartTicks).count();
-			updateStartTicks = ticks;
+			auto tick = std::chrono::high_resolution_clock::now();
+			updateDeltaTime = std::chrono::duration_cast<
+				std::chrono::duration<double>>(tick - updateStartTick).count();
+			updateStartTick = tick;
 
 			for (const auto& pair : managers)
-			{
-				const auto& manager = pair.second;
-				manager->update(deltaTime);
-			}
-
-			auto allNotActive = true;
-			for (const auto& pair : managers)
-			{
-				const auto& manager = pair.second;
-				if (manager->getActive())
-				{
-					allNotActive = false;
-					break;
-				}
-			}
-
-			if (allNotActive)
-				quit = true;
+				pair.second->update();
 
 			if (capUpdateRate)
 			{
-				ticks = std::chrono::high_resolution_clock::now();
-				deltaTime = std::chrono::duration_cast<
-					std::chrono::duration<double>>(ticks - updateStartTicks).count();
-				const auto delayTime = (1.0 / targetUpdateRate - deltaTime) * 1000 - 1.0;
+				tick = std::chrono::high_resolution_clock::now();
+				updateDeltaTime = std::chrono::duration_cast<
+					std::chrono::duration<double>>(tick - updateStartTick).count();
+				auto delayTime = (1.0 / targetUpdateRate - updateDeltaTime) * 1000 - 1.0;
 
 				if (delayTime > 0)
-					std::this_thread::sleep_for(
-						std::chrono::milliseconds(static_cast<uint64_t>(delayTime)));
+				{
+					std::this_thread::sleep_for(std::chrono::milliseconds(
+						static_cast<uint64_t>(delayTime)));
+				}
 			}
 		}
+	}
+	void Engine::stopUpdateLoop()
+	{
+		if (!updateRunning)
+			throw std::runtime_error("Update is already stopped");
+
+		updateRunning = false;
+	}
+	bool Engine::getUpdateRunning() noexcept
+	{
+		return updateRunning;
 	}
 
 	Engine::tick_t Engine::getTickNow() noexcept
@@ -168,4 +228,28 @@ namespace INJECTOR_NAMESPACE
 		return std::chrono::duration_cast<std::chrono::duration<double>>(
 			std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 	}
+
+	size_t Engine::getManagerCount() noexcept
+	{
+		return managers.size();
+	}
+	bool Engine::destroyManager(size_t id) noexcept
+	{
+		auto iterator = managers.find(id);
+
+		if (iterator == managers.end())
+			return false;
+
+		delete iterator->second;
+		managers.erase(iterator);
+		return true;
+	}
+	void Engine::destroyManagers() noexcept
+	{
+		for (const auto& pair : managers)
+			delete pair.second;
+
+		managers.clear();
+	}
+	
 }

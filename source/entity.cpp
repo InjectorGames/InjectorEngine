@@ -6,43 +6,40 @@
 namespace INJECTOR_NAMESPACE
 {
 	Entity::Entity(size_t _id, Manager& _manager) :
-		id(_id),
-		manager(_manager)
+		id(_id), manager(_manager)
 	{}
 
-	size_t Entity::getID() const noexcept
+	bool Entity::destroy() noexcept
 	{
-		return id;
+		return manager.destroyEntity(id);
 	}
-	Manager& Entity::getManager() const noexcept
-	{
-		return manager;
-	}
-
 	bool Entity::isValid() const noexcept
 	{
-		auto& entities = manager.entities;
-		return entities.find(id) != entities.end();
+		if (id == 0)
+			return false;
+
+		return manager.containsEntity(id);
 	}
 
 	size_t Entity::getComponentCount() const noexcept
 	{
-		return manager.entities.size();
+		return manager.getComponentCount(id);
 	}
-	bool Entity::removeComponents() noexcept
+	bool Entity::getComponentCount(size_t& count) const noexcept
 	{
-		auto& entities = manager.entities;
-		auto iterator = entities.find(id);
+		return manager.getComponentCount(count);
+	}
+	bool Entity::destroyComponents() noexcept
+	{
+		return manager.destroyComponents(id);
+	}
 
-		if (iterator == entities.end())
-			return false;
-
-		auto& components = iterator->second;
-
-		for (const auto& pair : components)
-			delete pair.second;
-
-		components.clear();
-		return true;
+	bool Entity::operator==(const Entity& other)
+	{
+		return id == other.id && manager == other.manager;
+	}
+	bool Entity::operator!=(const Entity& other)
+	{
+		return id != other.id && manager != other.manager;
 	}
 }
