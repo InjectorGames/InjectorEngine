@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 
-namespace INJECT_NAMESPACE
+namespace INJECTOR_NAMESPACE
 {
 	class GlWindow : public Window
 	{

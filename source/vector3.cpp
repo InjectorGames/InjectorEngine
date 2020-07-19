@@ -5,13 +5,19 @@
 namespace INJECTOR_NAMESPACE
 {
 	Vector3::Vector3(float _x, float _y, float _z) :
-		x(_x),
-		y(_y),
-		z(_z)
+		x(_x), y(_y), z(_z)
+	{}
+	Vector3::Vector3(const IntVector3& other) :
+		x(static_cast<float>(other.x)),
+		y(static_cast<float>(other.y)),
+		z(static_cast<float>(other.z))
 	{}
 	Vector3::Vector3(const Vector2& other, float _z) :
-		x(other.x),
-		y(other.y),
+		x(other.x), y(other.y), z(_z)
+	{}
+	Vector3::Vector3(const IntVector2& other, float _z) :
+		x(static_cast<float>(other.x)),
+		y(static_cast<float>(other.y)),
 		z(_z)
 	{}
 
@@ -25,7 +31,8 @@ namespace INJECTOR_NAMESPACE
 	}
 	float Vector3::getDistance(const Vector3& other)
 	{
-		return  std::sqrtf(x - other.x * x - other.x +
+		return  std::sqrtf(
+			x - other.x * x - other.x +
 			y - other.y * y - other.y +
 			z - other.z * z - other.z);
 	}
@@ -115,6 +122,51 @@ namespace INJECTOR_NAMESPACE
 		return *this;
 	}
 	Vector3& Vector3::operator*=(const Vector3& other)
+	{
+		x *= other.x;
+		y *= other.y;
+		z *= other.z;
+		return *this;
+	}
+
+	Vector3 Vector3::operator-(const IntVector3& other)
+	{
+		return Vector3(x - other.x, y - other.y, z - other.z);
+	}
+	Vector3 Vector3::operator+(const IntVector3& other)
+	{
+		return Vector3(x + other.x, y + other.y, z + other.z);
+	}
+	Vector3 Vector3::operator/(const IntVector3& other)
+	{
+		return Vector3(x / other.x, y / other.y, z / other.z);
+	}
+	Vector3 Vector3::operator*(const IntVector3& other)
+	{
+		return Vector3(x * other.x, y * other.y, z * other.z);
+	}
+	Vector3& Vector3::operator-=(const IntVector3& other)
+	{
+		x -= other.x;
+		y -= other.y;
+		z -= other.z;
+		return *this;
+	}
+	Vector3& Vector3::operator+=(const IntVector3& other)
+	{
+		x += other.x;
+		y += other.y;
+		z += other.z;
+		return *this;
+	}
+	Vector3& Vector3::operator/=(const IntVector3& other)
+	{
+		x /= other.x;
+		y /= other.y;
+		z /= other.z;
+		return *this;
+	}
+	Vector3& Vector3::operator*=(const IntVector3& other)
 	{
 		x *= other.x;
 		y *= other.y;

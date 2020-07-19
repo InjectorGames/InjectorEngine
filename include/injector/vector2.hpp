@@ -1,5 +1,5 @@
 #pragma once
-#include <injector/defines.hpp>
+#include <injector/int_vector2.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -8,6 +8,7 @@ namespace INJECTOR_NAMESPACE
 		float x, y;
 
 		Vector2(float x = 0.0f, float y = 0.0f);
+		Vector2(const IntVector2& other);
 
 		float getMagnitude();
 		float getDot(const Vector2& other);
@@ -29,6 +30,15 @@ namespace INJECTOR_NAMESPACE
 		Vector2& operator+=(const Vector2& other);
 		Vector2& operator/=(const Vector2& other);
 		Vector2& operator*=(const Vector2& other);
+
+		Vector2 operator-(const IntVector2& other);
+		Vector2 operator+(const IntVector2& other);
+		Vector2 operator/(const IntVector2& other);
+		Vector2 operator*(const IntVector2& other);
+		Vector2& operator-=(const IntVector2& other);
+		Vector2& operator+=(const IntVector2& other);
+		Vector2& operator/=(const IntVector2& other);
+		Vector2& operator*=(const IntVector2& other);
 
 		Vector2 operator-(float value);
 		Vector2 operator+(float value);

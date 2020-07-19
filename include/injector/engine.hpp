@@ -11,6 +11,7 @@ namespace INJECTOR_NAMESPACE
 	{
 		Unknown,
 		OpenGL,
+		OpenGLES,
 		Vulkan,
 	};
 
@@ -112,11 +113,17 @@ namespace INJECTOR_NAMESPACE
 		template<class T>
 		static T* getManager(size_t id)
 		{
+			if (id == 0)
+				throw std::runtime_error("Manager id is null");
+
 			return dynamic_cast<T>(managers.at(id));
 		}
 		template<class T>
 		static bool getManager(size_t id, T*& manager) noexcept
 		{
+			if (id == 0)
+				return false;
+
 			auto iterator = managers.find(id);
 
 			if (iterator == managers.end())

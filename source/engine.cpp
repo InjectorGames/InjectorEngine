@@ -20,7 +20,7 @@ namespace INJECTOR_NAMESPACE
 	bool Engine::updateRunning = false;
 	Engine::tick_t Engine::updateStartTick = {};
 	double Engine::updateDeltaTime = 0.0;
-	size_t Engine::freeManagerID = 0;
+	size_t Engine::freeManagerID = 1;
 
 	std::map<size_t, Manager*> Engine::managers = {};
 
@@ -235,6 +235,9 @@ namespace INJECTOR_NAMESPACE
 	}
 	bool Engine::destroyManager(size_t id) noexcept
 	{
+		if (id == 0)
+			return false;
+
 		auto iterator = managers.find(id);
 
 		if (iterator == managers.end())

@@ -1,7 +1,8 @@
 #include <injector/window_system.hpp>
+#include <injector/window.hpp>
 #include <injector/engine.hpp>
 
-#include <string>
+#include <SDL_events.h>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -22,88 +23,115 @@ namespace INJECTOR_NAMESPACE
 		{
 			for (auto id : windows)
 			{
-				WindowComponent* windowComponent;
+				Window* window;
 
-				if (manager.getComponent(id, windowComponent))
+				if (manager.getComponent(id, window))
 				{
-					auto win = windowComponent->window;
+					auto windowID = window->getID();
+
+					if (event.type == SDL_WINDOWEVENT && event.window.windowID == windowID)
+					{
+						switch (event.window.event)
+						{
+						case SDL_WINDOWEVENT_HIDDEN:
+							//handleHiddenEvent(event.window);
+							break;
+						case SDL_WINDOWEVENT_SHOWN:
+							//handleShownEvent(event.window);
+							break;
+						case SDL_WINDOWEVENT_EXPOSED:
+							break;
+						case SDL_WINDOWEVENT_MOVED:
+							//handleMovedEvent(event.window);
+							break;
+						case SDL_WINDOWEVENT_SIZE_CHANGED:
+							//handleSizeChangedEvent(event.window);
+							break;
+						case SDL_WINDOWEVENT_MINIMIZED:
+							break;
+						case SDL_WINDOWEVENT_MAXIMIZED:
+							break;
+						case SDL_WINDOWEVENT_RESTORED:
+							break;
+						case SDL_WINDOWEVENT_ENTER:
+							break;
+						case SDL_WINDOWEVENT_LEAVE:
+							break;
+						case SDL_WINDOWEVENT_FOCUS_GAINED:
+							break;
+						case SDL_WINDOWEVENT_FOCUS_LOST:
+							break;
+						case SDL_WINDOWEVENT_CLOSE:
+							window->hide();
+							break;
+						}
+					}
 				}
+				/*else if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.windowID == id)
+				{
+					events.emit<KeyboardEvent>(event.key);
+				}
+				else if (event.type == SDL_MOUSEMOTION && event.motion.windowID == id)
+				{
+					events.emit<MouseMotionEvent>(event.motion);
+				}
+				else if ((event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) && event.button.windowID == id)
+				{
+					events.emit<MouseButtonEvent>(event.button);
+				}*/
 			}
 		}
+
+		bool existsVisible = false;
+
+		for (auto id : windows)
+		{
+			Window* window;
+
+			if (manager.getComponent(id, window))
+			{
+				if (window->getFlags() & SDL_WINDOW_SHOWN)
+					existsVisible = true;
+			}
+		}
+
+		if (!existsVisible)
+			Engine::stopUpdateLoop();
 	}
 
-	bool WindowSystem::createWindow(Entity entity) noexcept
+	bool WindowSystem::createWindow(size_t id) noexcept
 	{
-		if (manager != entity.manager)
+		Window* window;
+
+		if (!manager.createComponent(id, window))
 			return false;
 
-		auto graphicsAPI = Engine::getGraphicsAPI();
-		uint32_t flags = SDL_WINDOW_RESIZABLE;
-
-		switch (graphicsAPI)
-		{
-		case injector::GraphicsAPI::OpenGL:
-			flags |= SDL_WINDOW_OPENGL;
-			break;
-		case injector::GraphicsAPI::Vulkan:
-			flags |= SDL_WINDOW_VULKAN;
-			break;
-		default:
-			return false;
-		}
-
-		auto window = SDL_CreateWindow(INJECTOR_WINDOW_NAME,
-			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-			INJECTOR_WINDOW_WIDTH, INJECTOR_WINDOW_HEIGHT, flags);
-
-		if (window == nullptr)
-			throw false;
-
-		WindowComponent* windowComponent;
-
-		if (!entity.createComponent<WindowComponent>(windowComponent))
-		{
-			SDL_DestroyWindow(window);
-			throw false;
-		}
-
-		if (!windows.emplace(entity.id).second)
-		{
-			entity.destroyComponent<WindowComponent>();
-			SDL_DestroyWindow(window);
-			throw false;
-		}
-
+		windows.emplace(id);
 		return true;
 	}
-	bool WindowSystem::destroyWindow(Entity entity) noexcept
+	bool WindowSystem::destroyWindow(size_t id) noexcept
 	{
-		if (manager != entity.manager)
+		auto iterator = windows.find(id);
+
+		if (iterator == windows.end())
 			return false;
 
-		if (windows.find(entity.id) == windows.end())
-			return false;
+		Window* window;
 
-		WindowComponent* windowComponent;
-
-		if (!entity.getComponent<WindowComponent>(windowComponent))
-			return false;
-
-		SDL_DestroyWindow(windowComponent->window);
-		entity.destroyComponent<WindowComponent>();
+		if (!manager.getComponent(id, window))
+			manager.destroyComponent<Window>(id);
+		
+		windows.erase(iterator);
 		return true;
 	}
 	void WindowSystem::destroyWindows() noexcept
 	{
 		for (auto id : windows)
 		{
-			WindowComponent* component;
+			Window* component;
 
-			if (!manager.getComponent<WindowComponent>(id, component))
-				continue;
-
-			SDL_DestroyWindow(component->window);
-			manager.destroyComponent<WindowComponent>(id);
+			if (manager.getComponent(id, component))
+				manager.destroyComponent<Window>(id);
 		}
 	}
 }

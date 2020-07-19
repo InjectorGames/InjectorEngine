@@ -1,9 +1,7 @@
 #pragma once
 #include <injector/manager.hpp>
-#include <injector/window_component.hpp>
 
 #include <set>
-#include <SDL_events.h>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -17,8 +15,8 @@ namespace INJECTOR_NAMESPACE
 
 		void update() override;
 
-		bool createWindow(Entity entity) noexcept;
-		bool destroyWindow(Entity entity) noexcept;
+		bool createWindow(size_t id) noexcept;
+		bool destroyWindow(size_t id) noexcept;
 		void destroyWindows() noexcept;
 	};
 }

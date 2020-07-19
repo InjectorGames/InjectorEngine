@@ -5,8 +5,11 @@
 namespace INJECTOR_NAMESPACE
 {
 	Vector2::Vector2(float _x, float _y) :
-		x(_x),
-		y(_y)
+		x(_x), y(_y)
+	{}
+	Vector2::Vector2(const IntVector2& other) :
+		x(static_cast<float>(other.x)),
+		y(static_cast<float>(other.y))
 	{}
 
 	float Vector2::getMagnitude()
@@ -19,7 +22,8 @@ namespace INJECTOR_NAMESPACE
 	}
 	float Vector2::getDistance(const Vector2& other)
 	{
-		return std::sqrtf(x - other.x * x - other.x + 
+		return std::sqrtf(
+			x - other.x * x - other.x + 
 			y - other.y * y - other.y);
 	}
 
@@ -94,6 +98,47 @@ namespace INJECTOR_NAMESPACE
 		return *this;
 	}
 	Vector2& Vector2::operator*=(const Vector2& other)
+	{
+		x *= other.x;
+		y *= other.y;
+		return *this;
+	}
+
+	Vector2 Vector2::operator-(const IntVector2& other)
+	{
+		return Vector2(x - other.x, y - other.y);
+	}
+	Vector2 Vector2::operator+(const IntVector2& other)
+	{
+		return Vector2(x + other.x, y + other.y);
+	}
+	Vector2 Vector2::operator/(const IntVector2& other)
+	{
+		return Vector2(x / other.x, y / other.y);
+	}
+	Vector2 Vector2::operator*(const IntVector2& other)
+	{
+		return Vector2(x * other.x, y * other.y);
+	}
+	Vector2& Vector2::operator-=(const IntVector2& other)
+	{
+		x -= other.x;
+		y -= other.y;
+		return *this;
+	}
+	Vector2& Vector2::operator+=(const IntVector2& other)
+	{
+		x += other.x;
+		y += other.y;
+		return *this;
+	}
+	Vector2& Vector2::operator/=(const IntVector2& other)
+	{
+		x /= other.x;
+		y /= other.y;
+		return *this;
+	}
+	Vector2& Vector2::operator*=(const IntVector2& other)
 	{
 		x *= other.x;
 		y *= other.y;

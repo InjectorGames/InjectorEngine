@@ -1,6 +1,8 @@
 #pragma once
-#include <injector/entity.hpp>
 #include <injector/system.hpp>
+
+#include <map>
+#include <typeindex>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -25,7 +27,7 @@ namespace INJECTOR_NAMESPACE
 		size_t getID() const noexcept;
 		size_t getFreeEntityID() const noexcept;
 		
-		Entity createEntity();
+		size_t createEntity();
 		bool destroyEntity(size_t id) noexcept;
 		void destroyEntities() noexcept;
 		size_t getEntityCount() const noexcept;
@@ -38,6 +40,9 @@ namespace INJECTOR_NAMESPACE
 		template<class T, typename ...Args>
 		T* createComponent(size_t id, Args... args)
 		{
+			if (id == 0)
+				throw std::runtime_error("Entity id is null");
+
 			auto& components = entities.at(id);
 			auto component = new T(args...);
 
@@ -52,6 +57,9 @@ namespace INJECTOR_NAMESPACE
 		template<class T, class ...Args>
 		bool createComponent(size_t id, T*& component, Args... args) noexcept
 		{
+			if (id == 0)
+				return false;
+
 			auto iterator = entities.find(id);
 
 			if (iterator == entities.end())
@@ -70,6 +78,9 @@ namespace INJECTOR_NAMESPACE
 		template<class T>
 		bool destroyComponent(size_t id) noexcept
 		{
+			if (id == 0)
+				return false;
+
 			auto entityIterator = entities.find(id);
 
 			if (entityIterator == entities.end())
@@ -89,18 +100,27 @@ namespace INJECTOR_NAMESPACE
 		template<class T>
 		T* getComponent(size_t id)
 		{
+			if (id == 0)
+				throw std::runtime_error("Entity id is null");
+
 			auto& components = entities.at(id);
 			return static_cast<T*>(components.at(typeid(T)));
 		}
 		template<class T>
 		const T* getComponent(size_t id) const
 		{
+			if (id == 0)
+				throw std::runtime_error("Entity id is null");
+
 			auto& components = entities.at(id);
 			return static_cast<const T*>(components.at(typeid(T)));
 		}
 		template<class T>
 		bool getComponent(size_t id, T*& component) noexcept
 		{
+			if (id == 0)
+				return false;
+
 			auto entityIterator = entities.find(id);
 
 			if (entityIterator == entities.end())
@@ -118,6 +138,9 @@ namespace INJECTOR_NAMESPACE
 		template<class T>
 		bool getComponent(size_t id, const T*& component) const noexcept
 		{
+			if (id == 0)
+				return false;
+
 			auto entityIterator = entities.find(id);
 
 			if (entityIterator == entities.end())
