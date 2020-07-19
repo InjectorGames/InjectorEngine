@@ -11,13 +11,18 @@ namespace INJECTOR_NAMESPACE
 	protected:
 		SDL_Window* window;
 	public:
-		Window(const std::string& title = INJECTOR_WINDOW_NAME,
-			const IntVector2& position = IntVector2(
-				SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED),
-			const IntVector2& size = IntVector2(
-				INJECTOR_WINDOW_WIDTH, INJECTOR_WINDOW_HEIGHT),
-			uint32_t flags = SDL_WINDOW_RESIZABLE);
+		static const std::string defaultTitle;
+		static const IntVector2 defaultPosition;
+		static const IntVector2 defaultSize;
+		static const uint32_t defaultFlags;
+
+		Window(const std::string& title = defaultTitle,
+			const IntVector2& position = defaultPosition,
+			const IntVector2& size = defaultSize,
+			uint32_t flags = defaultFlags);
 		virtual ~Window();
+
+		virtual void update();
 
 		uint32_t getID() noexcept;
 		uint32_t getFlags() noexcept;

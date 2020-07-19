@@ -1,5 +1,7 @@
 #include <injector/window_system.hpp>
-#include <injector/window.hpp>
+#include <injector/component.hpp>
+#include <injector/transform_component.hpp>
+#include <injector/gl_window.hpp>
 #include <injector/engine.hpp>
 
 #include <SDL_events.h>
@@ -23,11 +25,11 @@ namespace INJECTOR_NAMESPACE
 		{
 			for (auto id : windows)
 			{
-				Window* window;
+				Component<Window*>* windowComponent;
 
-				if (manager.getComponent(id, window))
+				if (manager.getComponent(id, windowComponent))
 				{
-					auto windowID = window->getID();
+					auto windowID = windowComponent->value->getID();
 
 					if (event.type == SDL_WINDOWEVENT && event.window.windowID == windowID)
 					{
@@ -62,7 +64,7 @@ namespace INJECTOR_NAMESPACE
 						case SDL_WINDOWEVENT_FOCUS_LOST:
 							break;
 						case SDL_WINDOWEVENT_CLOSE:
-							window->hide();
+							windowComponent->value->hide();
 							break;
 						}
 					}
@@ -86,25 +88,46 @@ namespace INJECTOR_NAMESPACE
 
 		for (auto id : windows)
 		{
-			Window* window;
+			Component<Window*>* windowComponent;
 
-			if (manager.getComponent(id, window))
+			if (manager.getComponent(id, windowComponent))
 			{
-				if (window->getFlags() & SDL_WINDOW_SHOWN)
+				if (windowComponent->value->getFlags() & SDL_WINDOW_SHOWN)
 					existsVisible = true;
 			}
 		}
 
 		if (!existsVisible)
 			Engine::stopUpdateLoop();
+
+		/*for (auto id : windows)
+		{
+			WindowComponent* windowComponent;
+
+			if (manager.getComponent(id, windowComponent))
+				windowComponent->window->update();
+		}*/
 	}
 
-	bool WindowSystem::createWindow(size_t id) noexcept
+	bool WindowSystem::createWindow(size_t id, const std::string& title,
+		const IntVector2& position, const IntVector2& size, uint32_t flags) noexcept
 	{
+		auto graphicsAPI = Engine::getGraphicsAPI();
+
 		Window* window;
 
-		if (!manager.createComponent(id, window))
+		if (graphicsAPI == GraphicsAPI::OpenGL || graphicsAPI == GraphicsAPI::OpenGLES)
+			window = new GlWindow(title, position, size, flags);
+		else
 			return false;
+
+		Component<Window*>* windowComponent;
+
+		if (!manager.createComponent(id, windowComponent, window))
+		{
+			delete window;
+			return false;
+		}
 
 		windows.emplace(id);
 		return true;
@@ -116,10 +139,13 @@ namespace INJECTOR_NAMESPACE
 		if (iterator == windows.end())
 			return false;
 
-		Window* window;
+		Component<Window*>* windowComponent;
 
-		if (!manager.getComponent(id, window))
-			manager.destroyComponent<Window>(id);
+		if (!manager.getComponent(id, windowComponent))
+		{
+			delete windowComponent->value;
+			manager.destroyComponent<Component<Window*>>(id);
+		}
 		
 		windows.erase(iterator);
 		return true;
@@ -128,10 +154,13 @@ namespace INJECTOR_NAMESPACE
 	{
 		for (auto id : windows)
 		{
-			Window* component;
+			Component<Window*>* windowComponent;
 
-			if (manager.getComponent(id, component))
-				manager.destroyComponent<Window>(id);
+			if (manager.getComponent(id, windowComponent))
+			{
+				delete windowComponent->value;
+				manager.destroyComponent<Component<Window*>>(id);
+			}
 		}
 	}
 }

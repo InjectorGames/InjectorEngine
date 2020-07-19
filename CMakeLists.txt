@@ -31,10 +31,13 @@ configure_file(cmake/defines.hpp.in injector/defines.hpp)
 
 add_library(InjectorEngine STATIC
 	source/engine.cpp
+	source/gl_window.cpp
 	source/int_vector2.cpp
 	source/int_vector3.cpp
 	source/int_vector4.cpp
 	source/manager.cpp
+	source/matrix4.cpp
+	source/quaternion.cpp
 	source/system.cpp
 	source/vector2.cpp
 	source/vector3.cpp

@@ -21,22 +21,47 @@ namespace INJECTOR_NAMESPACE
 		z(_z)
 	{}
 
-	float Vector3::getMagnitude()
+	float Vector3::getMagnitude() const noexcept
 	{
 		return std::sqrtf(x * x + y * y + z * z);
 	}
-	float Vector3::getDot(const Vector3& other)
+	float Vector3::getDot(const Vector3& other) const noexcept
 	{
 		return x * other.x + y * other.y + z * other.z;
 	}
-	float Vector3::getDistance(const Vector3& other)
+	float Vector3::getDistance(const Vector3& other) const noexcept
 	{
 		return  std::sqrtf(
 			x - other.x * x - other.x +
 			y - other.y * y - other.y +
 			z - other.z * z - other.z);
 	}
-	Vector3 Vector3::getCross(const Vector3& other)
+	Vector3 Vector3::getNegative() const noexcept
+	{
+		return Vector3(-x, -y, -z);
+	}
+	Vector3 Vector3::getNormalized() const noexcept
+	{
+		auto magnitude = 1.0f / getMagnitude();
+		return Vector3(x * magnitude, y * magnitude, z * magnitude);
+	}
+	Vector3 Vector3::getSine() const noexcept
+	{
+		return Vector3(std::sinf(x), std::sinf(y), std::sinf(z));
+	}
+	Vector3 Vector3::getCosine() const noexcept
+	{
+		return Vector3(std::cosf(x), std::cosf(y), std::cosf(z));
+	}
+	Vector3 Vector3::getTangent() const noexcept
+	{
+		return Vector3(std::tanf(x), std::tanf(y), std::tanf(z));
+	}
+	Vector3 Vector3::getCotangent() const noexcept
+	{
+		return Vector3(1.0f / std::tanf(x), 1.0f / std::tanf(y), 1.0f / std::tanf(z));
+	}
+	Vector3 Vector3::getCross(const Vector3& other) const noexcept
 	{
 		return Vector3(
 			y * other.z - z * other.y,
@@ -44,30 +69,30 @@ namespace INJECTOR_NAMESPACE
 			x * other.y - y * other.x);
 	}
 
-	bool Vector3::operator==(const Vector3& other)
+	bool Vector3::operator==(const Vector3& other) const noexcept
 	{
 		return x == other.x && y == other.y && z == other.z;
 	}
-	bool Vector3::operator!=(const Vector3& other)
+	bool Vector3::operator!=(const Vector3& other) const noexcept
 	{
-		return x != other.x && y != other.y && z != other.z;
+		return x != other.x || y != other.y || z != other.z;
 	}
 
-	Vector3& Vector3::operator--()
+	Vector3& Vector3::operator--() noexcept
 	{
 		--x;
 		--y;
 		--z;
 		return *this;
 	}
-	Vector3& Vector3::operator++()
+	Vector3& Vector3::operator++() noexcept
 	{
 		++x;
 		++y;
 		++z;
 		return *this;
 	}
-	Vector3 Vector3::operator--(int)
+	Vector3 Vector3::operator--(int) noexcept
 	{
 		auto result = Vector3(*this);
 		--x;
@@ -75,7 +100,7 @@ namespace INJECTOR_NAMESPACE
 		--z;
 		return result;
 	}
-	Vector3 Vector3::operator++(int)
+	Vector3 Vector3::operator++(int) noexcept
 	{
 		auto result = Vector3(*this);
 		++x;
@@ -84,44 +109,51 @@ namespace INJECTOR_NAMESPACE
 		return result;
 	}
 
-	Vector3 Vector3::operator-(const Vector3& other)
+	Vector3 Vector3::operator-(const Vector3& other) const noexcept
 	{
 		return Vector3(x - other.x, y - other.y, z - other.z);
 	}
-	Vector3 Vector3::operator+(const Vector3& other)
+	Vector3 Vector3::operator+(const Vector3& other) const noexcept
 	{
 		return Vector3(x + other.x, y + other.y, z + other.z);
 	}
-	Vector3 Vector3::operator/(const Vector3& other)
+	Vector3 Vector3::operator/(const Vector3& other) const noexcept
 	{
 		return Vector3(x / other.x, y / other.y, z / other.z);
 	}
-	Vector3 Vector3::operator*(const Vector3& other)
+	Vector3 Vector3::operator*(const Vector3& other) const noexcept
 	{
 		return Vector3(x * other.x, y * other.y, z * other.z);
 	}
-	Vector3& Vector3::operator-=(const Vector3& other)
+	Vector3& Vector3::operator=(const Vector3& other) noexcept
+	{
+		x = other.x;
+		y = other.y;
+		z = other.z;
+		return *this;
+	}
+	Vector3& Vector3::operator-=(const Vector3& other) noexcept
 	{
 		x -= other.x;
 		y -= other.y;
 		z -= other.z;
 		return *this;
 	}
-	Vector3& Vector3::operator+=(const Vector3& other)
+	Vector3& Vector3::operator+=(const Vector3& other) noexcept
 	{
 		x += other.x;
 		y += other.y;
 		z += other.z;
 		return *this;
 	}
-	Vector3& Vector3::operator/=(const Vector3& other)
+	Vector3& Vector3::operator/=(const Vector3& other) noexcept
 	{
 		x /= other.x;
 		y /= other.y;
 		z /= other.z;
 		return *this;
 	}
-	Vector3& Vector3::operator*=(const Vector3& other)
+	Vector3& Vector3::operator*=(const Vector3& other) noexcept
 	{
 		x *= other.x;
 		y *= other.y;
@@ -129,44 +161,51 @@ namespace INJECTOR_NAMESPACE
 		return *this;
 	}
 
-	Vector3 Vector3::operator-(const IntVector3& other)
+	Vector3 Vector3::operator-(const IntVector3& other) const noexcept
 	{
 		return Vector3(x - other.x, y - other.y, z - other.z);
 	}
-	Vector3 Vector3::operator+(const IntVector3& other)
+	Vector3 Vector3::operator+(const IntVector3& other) const noexcept
 	{
 		return Vector3(x + other.x, y + other.y, z + other.z);
 	}
-	Vector3 Vector3::operator/(const IntVector3& other)
+	Vector3 Vector3::operator/(const IntVector3& other) const noexcept
 	{
 		return Vector3(x / other.x, y / other.y, z / other.z);
 	}
-	Vector3 Vector3::operator*(const IntVector3& other)
+	Vector3 Vector3::operator*(const IntVector3& other) const noexcept
 	{
 		return Vector3(x * other.x, y * other.y, z * other.z);
 	}
-	Vector3& Vector3::operator-=(const IntVector3& other)
+	Vector3& Vector3::operator=(const IntVector3& other) noexcept
+	{
+		x = other.x;
+		y = other.y;
+		z = other.z;
+		return *this;
+	}
+	Vector3& Vector3::operator-=(const IntVector3& other) noexcept
 	{
 		x -= other.x;
 		y -= other.y;
 		z -= other.z;
 		return *this;
 	}
-	Vector3& Vector3::operator+=(const IntVector3& other)
+	Vector3& Vector3::operator+=(const IntVector3& other) noexcept
 	{
 		x += other.x;
 		y += other.y;
 		z += other.z;
 		return *this;
 	}
-	Vector3& Vector3::operator/=(const IntVector3& other)
+	Vector3& Vector3::operator/=(const IntVector3& other) noexcept
 	{
 		x /= other.x;
 		y /= other.y;
 		z /= other.z;
 		return *this;
 	}
-	Vector3& Vector3::operator*=(const IntVector3& other)
+	Vector3& Vector3::operator*=(const IntVector3& other) noexcept
 	{
 		x *= other.x;
 		y *= other.y;
@@ -174,48 +213,59 @@ namespace INJECTOR_NAMESPACE
 		return *this;
 	}
 
-	Vector3 Vector3::operator-(float value)
+	Vector3 Vector3::operator-(float value) const noexcept
 	{
 		return Vector3(x - value, y - value, z - value);
 	}
-	Vector3 Vector3::operator+(float value)
+	Vector3 Vector3::operator+(float value) const noexcept
 	{
 		return Vector3(x + value, y + value, z + value);
 	}
-	Vector3 Vector3::operator/(float value)
+	Vector3 Vector3::operator/(float value) const noexcept
 	{
 		return Vector3(x / value, y / value, z / value);
 	}
-	Vector3 Vector3::operator*(float value)
+	Vector3 Vector3::operator*(float value) const noexcept
 	{
 		return Vector3(x * value, y * value, z * value);
 	}
-	Vector3& Vector3::operator-=(float value)
+	Vector3& Vector3::operator=(float value) noexcept
+	{
+		x = value;
+		y = value;
+		z = value;
+		return *this;
+	}
+	Vector3& Vector3::operator-=(float value) noexcept
 	{
 		x -= value;
 		y -= value;
 		z -= value;
 		return *this;
 	}
-	Vector3& Vector3::operator+=(float value)
+	Vector3& Vector3::operator+=(float value) noexcept
 	{
 		x += value;
 		y += value;
 		z += value;
 		return *this;
 	}
-	Vector3& Vector3::operator/=(float value)
+	Vector3& Vector3::operator/=(float value) noexcept
 	{
 		x /= value;
 		y /= value;
 		z /= value;
 		return *this;
 	}
-	Vector3& Vector3::operator*=(float value)
+	Vector3& Vector3::operator*=(float value) noexcept
 	{
 		x *= value;
 		y *= value;
 		z *= value;
 		return *this;
 	}
+
+	const Vector3 Vector3::zero = Vector3(0.0f, 0.0f, 0.0f);
+	const Vector3 Vector3::minusOne = Vector3(-1.0f, -1.0f, -1.0f);
+	const Vector3 Vector3::one = Vector3(1.0f, 1.0f, 1.0f);
 }

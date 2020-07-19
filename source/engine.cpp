@@ -189,8 +189,12 @@ namespace INJECTOR_NAMESPACE
 				std::chrono::duration<double>>(tick - updateStartTick).count();
 			updateStartTick = tick;
 
-			for (const auto& pair : managers)
+			for (auto& pair : managers)
+				pair.second->preUpdate();
+			for (auto& pair : managers)
 				pair.second->update();
+			for (auto& pair : managers)
+				pair.second->postUpdate();
 
 			if (capUpdateRate)
 			{
@@ -249,7 +253,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	void Engine::destroyManagers() noexcept
 	{
-		for (const auto& pair : managers)
+		for (auto& pair : managers)
 			delete pair.second;
 
 		managers.clear();

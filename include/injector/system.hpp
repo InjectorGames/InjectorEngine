@@ -14,6 +14,9 @@ namespace INJECTOR_NAMESPACE
 		virtual ~System();
 
 		Manager& getManager() const noexcept;
-		virtual void update() = 0;
+
+		virtual void preUpdate();
+		virtual void update();
+		virtual void postUpdate();
 	};
 }

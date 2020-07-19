@@ -1,9 +1,9 @@
 #pragma once
-#include <injector/defines.hpp>
-#include <injector/glm_defines.hpp>
-#include <entityx/entityx.h>
+#include <injector/vector3.hpp>
+#include <injector/matrix4.hpp>
+#include <injector/quaternion.hpp>
 
-namespace INJECT_NAMESPACE
+namespace INJECTOR_NAMESPACE
 {
 	struct TransformComponent
 	{
@@ -14,19 +14,20 @@ namespace INJECT_NAMESPACE
 		};
 
 		Type type;
-		entityx::Entity parent;
-		glm::vec3 scale;
-		glm::vec3 position;
-		glm::quat rotation;
-		glm::mat4 matrix;
+		size_t parent;
+		Vector3 scale;
+		Vector3 position;
+		Quaternion rotation;
+		Matrix4 matrix;
 		bool changed;
 
-		TransformComponent(const Type _type = Type::Spin,
-			const entityx::Entity& _parent = entityx::Entity(),
-			const glm::vec3& _scale = glm::vec3(1.0f),
-			const glm::vec3& _position = glm::vec3(0.0f),
-			const glm::quat& _rotation = glm::quat(glm::vec3(0.0f)),
-			const glm::mat4& _matrix = glm::mat4(1.0f),
+		TransformComponent(
+			Type _type = Type::Spin,
+			size_t _parent = 0,
+			const Vector3& _scale = Vector3::one,
+			const Vector3& _position = Vector3::zero,
+			const Quaternion& _rotation = Quaternion(Vector3::zero),
+			const Matrix4& _matrix = Matrix4::one,
 			const bool _changed = true) :
 			type(_type),
 			parent(_parent),

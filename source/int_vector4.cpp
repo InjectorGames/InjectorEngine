@@ -14,15 +14,15 @@ namespace INJECTOR_NAMESPACE
 		x(other.x), y(other.y), z(other.z), w(_w)
 	{}
 
-	float IntVector4::getMagnitude()
+	float IntVector4::getMagnitude() const noexcept
 	{
 		return std::sqrtf(static_cast<float>(x * x + y * y + z * z + w * w));
 	}
-	int IntVector4::getDot(const IntVector4& other)
+	int IntVector4::getDot(const IntVector4& other) const noexcept
 	{
 		return x * other.x + y * other.y + z * other.z + w * other.w;
 	}
-	float IntVector4::getDistance(const IntVector4& other)
+	float IntVector4::getDistance(const IntVector4& other) const noexcept
 	{
 		return  std::sqrtf(static_cast<float>(
 			x - other.x * x - other.x +
@@ -30,17 +30,21 @@ namespace INJECTOR_NAMESPACE
 			z - other.z * z - other.z +
 			w - other.w * w - other.w));
 	}
+	IntVector4 IntVector4::getNegative() const noexcept
+	{
+		return IntVector4(-x, -y, -z, -w);
+	}
 
-	bool IntVector4::operator==(const IntVector4& other)
+	bool IntVector4::operator==(const IntVector4& other) const noexcept
 	{
 		return x == other.x && y == other.y && z == other.z && w == other.w;
 	}
-	bool IntVector4::operator!=(const IntVector4& other)
+	bool IntVector4::operator!=(const IntVector4& other) const noexcept
 	{
-		return x != other.x && y != other.y && z != other.z && w != other.w;
+		return x != other.x || y != other.y || z != other.z || w != other.w;
 	}
 
-	IntVector4& IntVector4::operator--()
+	IntVector4& IntVector4::operator--() noexcept
 	{
 		--x;
 		--y;
@@ -48,7 +52,7 @@ namespace INJECTOR_NAMESPACE
 		--w;
 		return *this;
 	}
-	IntVector4& IntVector4::operator++()
+	IntVector4& IntVector4::operator++() noexcept
 	{
 		++x;
 		++y;
@@ -56,7 +60,7 @@ namespace INJECTOR_NAMESPACE
 		++w;
 		return *this;
 	}
-	IntVector4 IntVector4::operator--(int)
+	IntVector4 IntVector4::operator--(int) noexcept
 	{
 		auto result = IntVector4(*this);
 		--x;
@@ -65,7 +69,7 @@ namespace INJECTOR_NAMESPACE
 		--w;
 		return result;
 	}
-	IntVector4 IntVector4::operator++(int)
+	IntVector4 IntVector4::operator++(int) noexcept
 	{
 		auto result = IntVector4(*this);
 		++x;
@@ -75,47 +79,55 @@ namespace INJECTOR_NAMESPACE
 		return result;
 	}
 
-	IntVector4 IntVector4::operator-(const IntVector4& other)
+	IntVector4 IntVector4::operator-(const IntVector4& other) const noexcept
 	{
 		return IntVector4(x - other.x, y - other.y, z - other.z, w - other.w);
 	}
-	IntVector4 IntVector4::operator+(const IntVector4& other)
+	IntVector4 IntVector4::operator+(const IntVector4& other) const noexcept
 	{
 		return IntVector4(x + other.x, y + other.y, z + other.z, w + other.w);
 	}
-	IntVector4 IntVector4::operator/(const IntVector4& other)
+	IntVector4 IntVector4::operator/(const IntVector4& other) const noexcept
 	{
 		return IntVector4(x / other.x, y / other.y, z / other.z, w / other.w);
 	}
-	IntVector4 IntVector4::operator*(const IntVector4& other)
+	IntVector4 IntVector4::operator*(const IntVector4& other) const noexcept
 	{
 		return IntVector4(x * other.x, y * other.y, z * other.z, w * other.w);
 	}
-	IntVector4 IntVector4::operator%(const IntVector4& other)
+	IntVector4 IntVector4::operator%(const IntVector4& other) const noexcept
 	{
 		return IntVector4(x % other.x, y % other.y, z % other.z, w % other.w);
 	}
-	IntVector4 IntVector4::operator|(const IntVector4& other)
+	IntVector4 IntVector4::operator|(const IntVector4& other) const noexcept
 	{
 		return IntVector4(x | other.x, y | other.y, z | other.z, w | other.w);
 	}
-	IntVector4 IntVector4::operator&(const IntVector4& other)
+	IntVector4 IntVector4::operator&(const IntVector4& other) const noexcept
 	{
 		return IntVector4(x & other.x, y & other.y, z & other.z, w & other.w);
 	}
-	IntVector4 IntVector4::operator^(const IntVector4& other)
+	IntVector4 IntVector4::operator^(const IntVector4& other) const noexcept
 	{
 		return IntVector4(x ^ other.x, y ^ other.y, z ^ other.z, w ^ other.w);
 	}
-	IntVector4 IntVector4::operator<<(const IntVector4& other)
+	IntVector4 IntVector4::operator<<(const IntVector4& other) const noexcept
 	{
 		return IntVector4(x << other.x, y << other.y, z << other.z, w << other.w);
 	}
-	IntVector4 IntVector4::operator>>(const IntVector4& other)
+	IntVector4 IntVector4::operator>>(const IntVector4& other) const noexcept
 	{
 		return IntVector4(x >> other.x, y >> other.y, z >> other.z, w >> other.w);
 	}
-	IntVector4& IntVector4::operator-=(const IntVector4& other)
+	IntVector4& IntVector4::operator=(const IntVector4& other) noexcept
+	{
+		x = other.x;
+		y = other.y;
+		z = other.z;
+		w = other.w;
+		return *this;
+	}
+	IntVector4& IntVector4::operator-=(const IntVector4& other) noexcept
 	{
 		x -= other.x;
 		y -= other.y;
@@ -123,7 +135,7 @@ namespace INJECTOR_NAMESPACE
 		w -= other.w;
 		return *this;
 	}
-	IntVector4& IntVector4::operator+=(const IntVector4& other)
+	IntVector4& IntVector4::operator+=(const IntVector4& other) noexcept
 	{
 		x += other.x;
 		y += other.y;
@@ -131,7 +143,7 @@ namespace INJECTOR_NAMESPACE
 		w += other.w;
 		return *this;
 	}
-	IntVector4& IntVector4::operator/=(const IntVector4& other)
+	IntVector4& IntVector4::operator/=(const IntVector4& other) noexcept
 	{
 		x /= other.x;
 		y /= other.y;
@@ -139,7 +151,7 @@ namespace INJECTOR_NAMESPACE
 		w /= other.w;
 		return *this;
 	}
-	IntVector4& IntVector4::operator*=(const IntVector4& other)
+	IntVector4& IntVector4::operator*=(const IntVector4& other) noexcept
 	{
 		x *= other.x;
 		y *= other.y;
@@ -147,7 +159,7 @@ namespace INJECTOR_NAMESPACE
 		w *= other.w;
 		return *this;
 	}
-	IntVector4& IntVector4::operator%=(const IntVector4& other)
+	IntVector4& IntVector4::operator%=(const IntVector4& other) noexcept
 	{
 		x %= other.x;
 		y %= other.y;
@@ -155,7 +167,7 @@ namespace INJECTOR_NAMESPACE
 		w %= other.w;
 		return *this;
 	}
-	IntVector4& IntVector4::operator|=(const IntVector4& other)
+	IntVector4& IntVector4::operator|=(const IntVector4& other) noexcept
 	{
 		x |= other.x;
 		y |= other.y;
@@ -163,7 +175,7 @@ namespace INJECTOR_NAMESPACE
 		w |= other.w;
 		return *this;
 	}
-	IntVector4& IntVector4::operator&=(const IntVector4& other)
+	IntVector4& IntVector4::operator&=(const IntVector4& other) noexcept
 	{
 		x &= other.x;
 		y &= other.y;
@@ -171,7 +183,7 @@ namespace INJECTOR_NAMESPACE
 		w &= other.w;
 		return *this;
 	}
-	IntVector4& IntVector4::operator^=(const IntVector4& other)
+	IntVector4& IntVector4::operator^=(const IntVector4& other) noexcept
 	{
 		x ^= other.x;
 		y ^= other.y;
@@ -179,7 +191,7 @@ namespace INJECTOR_NAMESPACE
 		w ^= other.w;
 		return *this;
 	}
-	IntVector4& IntVector4::operator<<=(const IntVector4& other)
+	IntVector4& IntVector4::operator<<=(const IntVector4& other) noexcept
 	{
 		x <<= other.x;
 		y <<= other.y;
@@ -187,7 +199,7 @@ namespace INJECTOR_NAMESPACE
 		w <<= other.w;
 		return *this;
 	}
-	IntVector4& IntVector4::operator>>=(const IntVector4& other)
+	IntVector4& IntVector4::operator>>=(const IntVector4& other) noexcept
 	{
 		x >>= other.x;
 		y >>= other.y;
@@ -196,47 +208,55 @@ namespace INJECTOR_NAMESPACE
 		return *this;
 	}
 
-	IntVector4 IntVector4::operator-(int value)
+	IntVector4 IntVector4::operator-(int value) const noexcept
 	{
 		return IntVector4(x - value, y - value, z - value, w - value);
 	}
-	IntVector4 IntVector4::operator+(int value)
+	IntVector4 IntVector4::operator+(int value) const noexcept
 	{
 		return IntVector4(x + value, y + value, z + value, w + value);
 	}
-	IntVector4 IntVector4::operator/(int value)
+	IntVector4 IntVector4::operator/(int value) const noexcept
 	{
 		return IntVector4(x / value, y / value, z / value, w / value);
 	}
-	IntVector4 IntVector4::operator*(int value)
+	IntVector4 IntVector4::operator*(int value) const noexcept
 	{
 		return IntVector4(x * value, y * value, z * value, w * value);
 	}
-	IntVector4 IntVector4::operator%(int value)
+	IntVector4 IntVector4::operator%(int value) const noexcept
 	{
 		return IntVector4(x % value, y % value, z % value, w % value);
 	}
-	IntVector4 IntVector4::operator|(int value)
+	IntVector4 IntVector4::operator|(int value) const noexcept
 	{
 		return IntVector4(x | value, y | value, z | value, w | value);
 	}
-	IntVector4 IntVector4::operator&(int value)
+	IntVector4 IntVector4::operator&(int value) const noexcept
 	{
 		return IntVector4(x & value, y & value, z & value, w & value);
 	}
-	IntVector4 IntVector4::operator^(int value)
+	IntVector4 IntVector4::operator^(int value) const noexcept
 	{
 		return IntVector4(x ^ value, y ^ value, z ^ value, w ^ value);
 	}
-	IntVector4 IntVector4::operator<<(int value)
+	IntVector4 IntVector4::operator<<(int value) const noexcept
 	{
 		return IntVector4(x << value, y << value, z << value, w << value);
 	}
-	IntVector4 IntVector4::operator>>(int value)
+	IntVector4 IntVector4::operator>>(int value) const noexcept
 	{
 		return IntVector4(x >> value, y >> value, z >> value, w >> value);
 	}
-	IntVector4& IntVector4::operator-=(int value)
+	IntVector4& IntVector4::operator=(int value) noexcept
+	{
+		x = value;
+		y = value;
+		z = value;
+		w = value;
+		return *this;
+	}
+	IntVector4& IntVector4::operator-=(int value) noexcept
 	{
 		x -= value;
 		y -= value;
@@ -244,7 +264,7 @@ namespace INJECTOR_NAMESPACE
 		w -= value;
 		return *this;
 	}
-	IntVector4& IntVector4::operator+=(int value)
+	IntVector4& IntVector4::operator+=(int value) noexcept
 	{
 		x += value;
 		y += value;
@@ -252,7 +272,7 @@ namespace INJECTOR_NAMESPACE
 		w += value;
 		return *this;
 	}
-	IntVector4& IntVector4::operator/=(int value)
+	IntVector4& IntVector4::operator/=(int value) noexcept
 	{
 		x /= value;
 		y /= value;
@@ -260,7 +280,7 @@ namespace INJECTOR_NAMESPACE
 		w /= value;
 		return *this;
 	}
-	IntVector4& IntVector4::operator*=(int value)
+	IntVector4& IntVector4::operator*=(int value) noexcept
 	{
 		x *= value;
 		y *= value;
@@ -268,7 +288,7 @@ namespace INJECTOR_NAMESPACE
 		w *= value;
 		return *this;
 	}
-	IntVector4& IntVector4::operator%=(int value)
+	IntVector4& IntVector4::operator%=(int value) noexcept
 	{
 		x %= value;
 		y %= value;
@@ -276,7 +296,7 @@ namespace INJECTOR_NAMESPACE
 		w %= value;
 		return *this;
 	}
-	IntVector4& IntVector4::operator|=(int value)
+	IntVector4& IntVector4::operator|=(int value) noexcept
 	{
 		x |= value;
 		y |= value;
@@ -284,7 +304,7 @@ namespace INJECTOR_NAMESPACE
 		w |= value;
 		return *this;
 	}
-	IntVector4& IntVector4::operator&=(int value)
+	IntVector4& IntVector4::operator&=(int value) noexcept
 	{
 		x &= value;
 		y &= value;
@@ -292,7 +312,7 @@ namespace INJECTOR_NAMESPACE
 		w &= value;
 		return *this;
 	}
-	IntVector4& IntVector4::operator^=(int value)
+	IntVector4& IntVector4::operator^=(int value) noexcept
 	{
 		x ^= value;
 		y ^= value;
@@ -300,7 +320,7 @@ namespace INJECTOR_NAMESPACE
 		w ^= value;
 		return *this;
 	}
-	IntVector4& IntVector4::operator<<=(int value)
+	IntVector4& IntVector4::operator<<=(int value) noexcept
 	{
 		x <<= value;
 		y <<= value;
@@ -308,7 +328,7 @@ namespace INJECTOR_NAMESPACE
 		w <<= value;
 		return *this;
 	}
-	IntVector4& IntVector4::operator>>=(int value)
+	IntVector4& IntVector4::operator>>=(int value) noexcept
 	{
 		x >>= value;
 		y >>= value;
@@ -316,4 +336,8 @@ namespace INJECTOR_NAMESPACE
 		w >>= value;
 		return *this;
 	}
+
+	const IntVector4 IntVector4::zero = IntVector4(0, 0, 0, 0);
+	const IntVector4 IntVector4::minusOne = IntVector4(-1, -1, -1, -1);
+	const IntVector4 IntVector4::one = IntVector4(1, 1, 1, 1);
 }

@@ -17,10 +17,20 @@ namespace INJECTOR_NAMESPACE
 		destroySystems();
 	}
 
+	void Manager::preUpdate()
+	{
+		for (auto& pair : systems)
+			pair.second->preUpdate();
+	}
 	void Manager::update()
 	{
 		for (auto& pair : systems)
 			pair.second->update();
+	}
+	void Manager::postUpdate()
+	{
+		for (auto& pair : systems)
+			pair.second->postUpdate();
 	}
 
 	size_t Manager::getID() const noexcept

@@ -1,28 +1,19 @@
 #include <injector/window.hpp>
-#include <injector/engine.hpp>
 
 #include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
+	const std::string Window::defaultTitle = INJECTOR_WINDOW_NAME;
+	const IntVector2 Window::defaultPosition = IntVector2(
+		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
+	const IntVector2 Window::defaultSize = IntVector2(
+		INJECTOR_WINDOW_WIDTH, INJECTOR_WINDOW_HEIGHT);
+	const uint32_t Window::defaultFlags = SDL_WINDOW_RESIZABLE;
+
 	Window::Window(const std::string& title, const IntVector2& position,
 		const IntVector2& size, uint32_t flags)
 	{
-		auto graphicsAPI = Engine::getGraphicsAPI();
-
-		switch (graphicsAPI)
-		{
-		case injector::GraphicsAPI::OpenGL:
-		case injector::GraphicsAPI::OpenGLES:
-			flags |= SDL_WINDOW_OPENGL;
-			break;
-		case injector::GraphicsAPI::Vulkan:
-			flags |= SDL_WINDOW_VULKAN;
-			break;
-		default:
-			throw std::runtime_error("Unknown graphics API");
-		}
-
 		window = SDL_CreateWindow(title.c_str(),
 			position.x, position.y, size.x, size.y, flags);
 
@@ -35,6 +26,9 @@ namespace INJECTOR_NAMESPACE
 		SDL_DestroyWindow(window);
 		window = nullptr;
 	}
+
+	void Window::update()
+	{}
 
 	uint32_t Window::getID() noexcept
 	{

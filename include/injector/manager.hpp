@@ -22,7 +22,9 @@ namespace INJECTOR_NAMESPACE
 		Manager(size_t id);
 		virtual ~Manager();
 
+		virtual void preUpdate();
 		virtual void update();
+		virtual void postUpdate();
 
 		size_t getID() const noexcept;
 		size_t getFreeEntityID() const noexcept;
