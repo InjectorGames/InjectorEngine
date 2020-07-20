@@ -7,6 +7,7 @@ namespace INJECTOR_NAMESPACE
 	{
 		int x, y;
 
+		IntVector2();
 		IntVector2(int x = 0, int y = 0);
 
 		float getMagnitude() const noexcept;

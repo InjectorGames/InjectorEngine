@@ -1,13 +1,15 @@
 #include <injector/quaternion.hpp>
-
 #include <cmath>
 
 namespace INJECTOR_NAMESPACE
 {
+	Quaternion::Quaternion() :
+		x(0.0f), y(0.0f), z(0.0f), w(0.0f)
+	{}
 	Quaternion::Quaternion(float _x, float _y, float _z, float _w) :
 		x(_x), y(_y), z(_z), w(_w)
 	{}
-	Quaternion::Quaternion(const Vector3& other, float _w = 0.0f) :
+	Quaternion::Quaternion(const Vector3& other, float _w) :
 		x(other.x), y(other.y), z(other.z), w(_w)
 	{}
 	Quaternion::Quaternion(const Vector3& eulerAngles)

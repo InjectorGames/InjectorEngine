@@ -7,8 +7,10 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	GlWindow::GlWindow(const std::string& title, const IntVector2& position,
-		const IntVector2& size, uint32_t flags) :
+	GlWindow::GlWindow(const std::string& title,
+		const IntVector2& position,
+		const IntVector2& size,
+		uint32_t flags) :
 		Window(title, position, size, flags | SDL_WINDOW_OPENGL)
 	{
 		auto graphicsAPI = Engine::getGraphicsAPI();
@@ -48,20 +50,11 @@ namespace INJECTOR_NAMESPACE
 		context = nullptr;
 	}
 
-	void GlWindow::update()
-	{
-		makeCurrent();
-
-
-
-		swap();
-	}
-
-	void GlWindow::makeCurrent() noexcept
+	void GlWindow::setContext()
 	{
 		SDL_GL_MakeCurrent(window, context);
 	}
-	void GlWindow::swap() noexcept
+	void GlWindow::swapChain()
 	{
 		SDL_GL_SwapWindow(window);
 	}

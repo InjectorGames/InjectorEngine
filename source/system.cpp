@@ -12,11 +12,6 @@ namespace INJECTOR_NAMESPACE
 	{
 		return manager;
 	}
-
-	void System::preUpdate()
-	{}
 	void System::update()
-	{}
-	void System::postUpdate()
 	{}
 }

@@ -1,11 +1,28 @@
 #include <injector/vector4.hpp>
-
 #include <cmath>
 
 namespace INJECTOR_NAMESPACE
 {
+	Vector4::Vector4() :
+		x(0.0f), y(0.0f), z(0.0f), w(0.0f)
+	{}
 	Vector4::Vector4(float _x, float _y, float _z, float _w) :
 		x(_x), y(_y), z(_z), w(_w)
+	{}
+	Vector4::Vector4(const Vector2& other, float _z, float _w) :
+		x(other.x), y(other.y), z(_z), w(_w)
+	{}
+	Vector4::Vector4(float _x, const Vector2& other, float _w) :
+		x(_x), y(other.x), z(other.y), w(_w)
+	{}
+	Vector4::Vector4(float _x, float _y, const Vector2& other) :
+		x(_x), y(_y), z(other.x), w(other.y)
+	{}
+	Vector4::Vector4(const Vector3& other, float _w) :
+		x(other.x), y(other.y), z(other.z), w(_w)
+	{}
+	Vector4::Vector4(float _x, const Vector3& other) :
+		x(_x), y(other.x), z(other.y), w(other.z)
 	{}
 	Vector4::Vector4(const IntVector4& other) :
 		x(static_cast<float>(other.x)),
@@ -13,22 +30,35 @@ namespace INJECTOR_NAMESPACE
 		z(static_cast<float>(other.z)),
 		w(static_cast<float>(other.w))
 	{}
-	Vector4::Vector4(const Vector2& other, float _z, float _w) :
-		x(other.x), y(other.y), z(_z), w(_w)
-	{}
 	Vector4::Vector4(const IntVector2& other, float _z, float _w) :
 		x(static_cast<float>(other.x)),
 		y(static_cast<float>(other.y)),
-		z(_z), w(_w)
+		z(_z),
+		w(_w)
 	{}
-	Vector4::Vector4(const Vector3& other, float _w) :
-		x(other.x), y(other.y), z(other.z), w(_w)
+	Vector4::Vector4(float _x, const IntVector2& other, float _w) :
+		x(_x),
+		y(static_cast<float>(other.x)),
+		z(static_cast<float>(other.y)),
+		w(_w)
+	{}
+	Vector4::Vector4(float _x, float _y, const IntVector2& other) :
+		x(_x),
+		y(_y),
+		z(static_cast<float>(other.x)),
+		w(static_cast<float>(other.y))
 	{}
 	Vector4::Vector4(const IntVector3& other, float _w) :
 		x(static_cast<float>(other.x)),
 		y(static_cast<float>(other.y)),
 		z(static_cast<float>(other.z)),
 		w(_w)
+	{}
+	Vector4::Vector4(float _x, const IntVector3& other) :
+		x(_x),
+		y(static_cast<float>(other.x)),
+		z(static_cast<float>(other.y)),
+		w(static_cast<float>(other.z))
 	{}
 
 	float Vector4::getMagnitude() const noexcept
@@ -193,42 +223,42 @@ namespace INJECTOR_NAMESPACE
 	}
 	Vector4& Vector4::operator=(const IntVector4& other) noexcept
 	{
-		x = other.x;
-		y = other.y;
-		z = other.z;
-		w = other.w;
+		x = static_cast<float>(other.x);
+		y = static_cast<float>(other.y);
+		z = static_cast<float>(other.z);
+		w = static_cast<float>(other.w);
 		return *this;
 	}
 	Vector4& Vector4::operator-=(const IntVector4& other) noexcept
 	{
-		x -= other.x;
-		y -= other.y;
-		z -= other.z;
-		w -= other.w;
+		x -= static_cast<float>(other.x);
+		y -= static_cast<float>(other.y);
+		z -= static_cast<float>(other.z);
+		w -= static_cast<float>(other.w);
 		return *this;
 	}
 	Vector4& Vector4::operator+=(const IntVector4& other) noexcept
 	{
-		x += other.x;
-		y += other.y;
-		z += other.z;
-		w += other.w;
+		x += static_cast<float>(other.x);
+		y += static_cast<float>(other.y);
+		z += static_cast<float>(other.z);
+		w += static_cast<float>(other.w);
 		return *this;
 	}
 	Vector4& Vector4::operator/=(const IntVector4& other) noexcept
 	{
-		x /= other.x;
-		y /= other.y;
-		z /= other.z;
-		w /= other.w;
+		x /= static_cast<float>(other.x);
+		y /= static_cast<float>(other.y);
+		z /= static_cast<float>(other.z);
+		w /= static_cast<float>(other.w);
 		return *this;
 	}
 	Vector4& Vector4::operator*=(const IntVector4& other) noexcept
 	{
-		x *= other.x;
-		y *= other.y;
-		z *= other.z;
-		w *= other.w;
+		x *= static_cast<float>(other.x);
+		y *= static_cast<float>(other.y);
+		z *= static_cast<float>(other.z);
+		w *= static_cast<float>(other.w);
 		return *this;
 	}
 

@@ -1,14 +1,19 @@
 #include <injector/int_vector3.hpp>
-
 #include <cmath>
 
 namespace INJECTOR_NAMESPACE
 {
+	IntVector3::IntVector3() :
+		x(0), y(0), z(0)
+	{}
 	IntVector3::IntVector3(int _x, int _y, int _z) :
 		x(_x), y(_y), z(_z)
 	{}
 	IntVector3::IntVector3(const IntVector2& other, int _z) :
 		x(other.x), y(other.y), z(_z)
+	{}
+	IntVector3::IntVector3(int _x, const IntVector2& other) :
+		x(_x), y(other.x), z(other.y)
 	{}
 
 	float IntVector3::getMagnitude() const noexcept

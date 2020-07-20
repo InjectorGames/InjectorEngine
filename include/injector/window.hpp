@@ -2,6 +2,7 @@
 #include <injector/int_vector2.hpp>
 
 #include <string>
+#include <memory>
 #include <SDL.h>
 
 namespace INJECTOR_NAMESPACE
@@ -22,11 +23,14 @@ namespace INJECTOR_NAMESPACE
 			uint32_t flags = defaultFlags);
 		virtual ~Window();
 
-		virtual void update();
+		virtual void setContext();
+		virtual void swapChain();
 
 		uint32_t getID() noexcept;
 		uint32_t getFlags() noexcept;
 
 		void hide() noexcept;
 	};
+
+	using WindowHandle = std::shared_ptr<Window>;
 }

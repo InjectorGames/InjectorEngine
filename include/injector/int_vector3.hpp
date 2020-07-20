@@ -7,8 +7,10 @@ namespace INJECTOR_NAMESPACE
 	{
 		int x, y, z;
 
-		IntVector3(int x = 0.0f, int y = 0.0f, int z = 0.0f);
-		IntVector3(const IntVector2& other, int z = 0.0f);
+		IntVector3();
+		IntVector3(int x, int y, int z);
+		IntVector3(const IntVector2& other, int z);
+		IntVector3(int x, const IntVector2& other);
 
 		float getMagnitude() const noexcept;
 		int getDot(const IntVector3& other) const noexcept;

@@ -1,17 +1,28 @@
 #include <injector/int_vector4.hpp>
-
 #include <cmath>
 
 namespace INJECTOR_NAMESPACE
 {
+	IntVector4::IntVector4() :
+		x(0), y(0), z(0), w(0)
+	{}
 	IntVector4::IntVector4(int _x, int _y, int _z, int _w) :
 		x(_x), y(_y), z(_z), w(_w)
 	{}
 	IntVector4::IntVector4(const IntVector2& other, int _z, int _w) :
 		x(other.x), y(other.y), z(_z), w(_w)
 	{}
+	IntVector4::IntVector4(int _x, const IntVector2& other, int _w) :
+		x(_x), y(other.x), z(other.y), w(_w)
+	{}
+	IntVector4::IntVector4(int _x, int _y, const IntVector2& other) :
+		x(_x), y(_y), z(other.x), w(other.y)
+	{}
 	IntVector4::IntVector4(const IntVector3& other, int _w) :
 		x(other.x), y(other.y), z(other.z), w(_w)
+	{}
+	IntVector4::IntVector4(int _x, const IntVector3& other) :
+		x(_x), y(other.x), z(other.y), w(other.z)
 	{}
 
 	float IntVector4::getMagnitude() const noexcept

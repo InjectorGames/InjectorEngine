@@ -8,12 +8,19 @@ namespace INJECTOR_NAMESPACE
 	{
 		float x, y, z, w;
 
-		Vector4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f);
+		Vector4();
+		Vector4(float x, float y, float z, float w);
+		Vector4(const Vector2& other, float z, float w);
+		Vector4(float x, const Vector2& other, float w);
+		Vector4(float x, float y, const Vector2& other);
+		Vector4(const Vector3& other, float w);
+		Vector4(float x, const Vector3& other);
 		Vector4(const IntVector4& other);
-		Vector4(const Vector2& other, float z = 0.0f, float w = 0.0f);
-		Vector4(const IntVector2& other, float z = 0.0f, float w = 0.0f);
-		Vector4(const Vector3& other, float w = 0.0f);
-		Vector4(const IntVector3& other, float w = 0.0f);
+		Vector4(const IntVector2& other, float z, float w);
+		Vector4(float x, const IntVector2& other, float w);
+		Vector4(float x, float y, const IntVector2& other);
+		Vector4(const IntVector3& other, float w);
+		Vector4(float x, const IntVector3& other);
 
 		float getMagnitude() const noexcept;
 		float getDot(const Vector4& other) const noexcept;

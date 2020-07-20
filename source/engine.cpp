@@ -1,10 +1,10 @@
 #include <injector/engine.hpp>
 
-#include <SDL.h>
-#include <SDL_vulkan.h>
-
 #include <thread>
 #include <iostream>
+
+#include <SDL.h>
+#include <SDL_vulkan.h>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -20,9 +20,8 @@ namespace INJECTOR_NAMESPACE
 	bool Engine::updateRunning = false;
 	Engine::tick_t Engine::updateStartTick = {};
 	double Engine::updateDeltaTime = 0.0;
-	size_t Engine::freeManagerID = 1;
 
-	std::map<size_t, Manager*> Engine::managers = {};
+	std::vector<ManagerHandle> Engine::managers = {};
 
 	bool Engine::getCapUpdateRate() noexcept
 	{
@@ -51,11 +50,6 @@ namespace INJECTOR_NAMESPACE
 		return updateDeltaTime;
 	}
 
-	size_t Engine::getFreeManagerID() noexcept
-	{
-		return freeManagerID;
-	}
-
 	void Engine::initializeEngine()
 	{
 		if (engineInitialized)
@@ -72,8 +66,6 @@ namespace INJECTOR_NAMESPACE
 	{
 		if (!engineInitialized)
 			throw std::runtime_error("Engine is already terminated");
-
-		destroyManagers();
 
 		if (videoInitialized)
 			terminateVideo();
@@ -189,12 +181,8 @@ namespace INJECTOR_NAMESPACE
 				std::chrono::duration<double>>(tick - updateStartTick).count();
 			updateStartTick = tick;
 
-			for (auto& pair : managers)
-				pair.second->preUpdate();
-			for (auto& pair : managers)
-				pair.second->update();
-			for (auto& pair : managers)
-				pair.second->postUpdate();
+			for (auto& manager : managers)
+				manager->update();
 
 			if (capUpdateRate)
 			{
@@ -233,30 +221,50 @@ namespace INJECTOR_NAMESPACE
 			std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 	}
 
+	bool Engine::addManager(const ManagerHandle& manager) noexcept
+	{
+		if (manager == nullptr)
+			return false;
+
+		managers.push_back(manager);
+		return true;
+	}
+	bool Engine::removeManager(const ManagerHandle& manager) noexcept
+	{
+		if (manager == nullptr)
+			return false;
+
+		for (auto i = managers.begin(); i != managers.end(); i++)
+		{
+			if (manager == *i)
+			{
+				managers.erase(i);
+				return true;
+			}
+		}
+
+		return false;
+	}
+	bool Engine::containsManager(const ManagerHandle& manager) noexcept
+	{
+		if (manager == nullptr)
+			return false;
+
+		for (auto i = managers.begin(); i != managers.end(); i++)
+		{
+			if (manager == *i)
+				return true;
+		}
+
+		return false;
+	}
+	void Engine::removeManagers() noexcept
+	{
+		managers.clear();
+	}
 	size_t Engine::getManagerCount() noexcept
 	{
 		return managers.size();
-	}
-	bool Engine::destroyManager(size_t id) noexcept
-	{
-		if (id == 0)
-			return false;
-
-		auto iterator = managers.find(id);
-
-		if (iterator == managers.end())
-			return false;
-
-		delete iterator->second;
-		managers.erase(iterator);
-		return true;
-	}
-	void Engine::destroyManagers() noexcept
-	{
-		for (auto& pair : managers)
-			delete pair.second;
-
-		managers.clear();
 	}
 	
 }

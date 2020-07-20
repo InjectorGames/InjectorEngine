@@ -1,5 +1,5 @@
 #include <injector/window_system.hpp>
-#include <injector/component.hpp>
+#include <injector/window_component.hpp>
 #include <injector/transform_component.hpp>
 #include <injector/gl_window.hpp>
 #include <injector/engine.hpp>
@@ -9,13 +9,10 @@
 namespace INJECTOR_NAMESPACE
 {
 	WindowSystem::WindowSystem(Manager& manager) :
-		System(manager),
-		windows()
+		System(manager), windows()
 	{}
 	WindowSystem::~WindowSystem()
-	{
-		destroyWindows();
-	}
+	{}
 
 	void WindowSystem::update()
 	{
@@ -23,13 +20,14 @@ namespace INJECTOR_NAMESPACE
 
 		while (SDL_PollEvent(&event) != 0)
 		{
-			for (auto id : windows)
+			for (auto& window : windows)
 			{
-				Component<Window*>* windowComponent;
+				WindowComponent* windowComponent;
 
-				if (manager.getComponent(id, windowComponent))
+				if (window->getComponent(windowComponent))
 				{
-					auto windowID = windowComponent->value->getID();
+					auto window = windowComponent->window;
+					auto windowID = window->getID();
 
 					if (event.type == SDL_WINDOWEVENT && event.window.windowID == windowID)
 					{
@@ -64,7 +62,7 @@ namespace INJECTOR_NAMESPACE
 						case SDL_WINDOWEVENT_FOCUS_LOST:
 							break;
 						case SDL_WINDOWEVENT_CLOSE:
-							windowComponent->value->hide();
+							window->hide();
 							break;
 						}
 					}
@@ -86,13 +84,13 @@ namespace INJECTOR_NAMESPACE
 
 		bool existsVisible = false;
 
-		for (auto id : windows)
+		for (auto& window : windows)
 		{
-			Component<Window*>* windowComponent;
+			WindowComponent* windowComponent;
 
-			if (manager.getComponent(id, windowComponent))
+			if (window->getComponent(windowComponent))
 			{
-				if (windowComponent->value->getFlags() & SDL_WINDOW_SHOWN)
+				if (windowComponent->window->getFlags() & SDL_WINDOW_SHOWN)
 					existsVisible = true;
 			}
 		}
@@ -109,58 +107,53 @@ namespace INJECTOR_NAMESPACE
 		}*/
 	}
 
-	bool WindowSystem::createWindow(size_t id, const std::string& title,
-		const IntVector2& position, const IntVector2& size, uint32_t flags) noexcept
+	bool WindowSystem::createWindowComponent(
+		const EntityHandle& entity,
+		const std::string& title,
+		const IntVector2& position,
+		const IntVector2& size,
+		uint32_t flags) noexcept
 	{
+		if (entity == nullptr)
+			return false;
+
 		auto graphicsAPI = Engine::getGraphicsAPI();
 
-		Window* window;
+		WindowHandle window;
 
 		if (graphicsAPI == GraphicsAPI::OpenGL || graphicsAPI == GraphicsAPI::OpenGLES)
-			window = new GlWindow(title, position, size, flags);
+			window = std::make_shared<GlWindow>(title, position, size, flags);
 		else
 			return false;
 
-		Component<Window*>* windowComponent;
+		WindowComponent* windowComponent;
 
-		if (!manager.createComponent(id, windowComponent, window))
-		{
-			delete window;
+		if (!entity->createComponent(windowComponent, window))
 			return false;
-		}
 
-		windows.emplace(id);
+		windows.emplace(entity);
 		return true;
 	}
-	bool WindowSystem::destroyWindow(size_t id) noexcept
+	bool WindowSystem::destroyWindowComponent(
+		const EntityHandle& entity) noexcept
 	{
-		auto iterator = windows.find(id);
+		if (entity == nullptr)
+			return false;
+
+		auto iterator = windows.find(entity);
 
 		if (iterator == windows.end())
 			return false;
 
-		Component<Window*>* windowComponent;
-
-		if (!manager.getComponent(id, windowComponent))
-		{
-			delete windowComponent->value;
-			manager.destroyComponent<Component<Window*>>(id);
-		}
-		
+		entity->destroyComponent<WindowComponent>();
 		windows.erase(iterator);
 		return true;
 	}
-	void WindowSystem::destroyWindows() noexcept
+	void WindowSystem::destroyWindowComponents() noexcept
 	{
-		for (auto id : windows)
-		{
-			Component<Window*>* windowComponent;
+		for (auto& window : windows)
+			window->destroyComponent<WindowComponent>();
 
-			if (manager.getComponent(id, windowComponent))
-			{
-				delete windowComponent->value;
-				manager.destroyComponent<Component<Window*>>(id);
-			}
-		}
+		windows.clear();
 	}
 }

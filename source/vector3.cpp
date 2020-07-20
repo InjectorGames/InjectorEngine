@@ -1,24 +1,34 @@
 #include <injector/vector3.hpp>
-
 #include <cmath>
 
 namespace INJECTOR_NAMESPACE
 {
+	Vector3::Vector3() :
+		x(0.0f), y(0.0f), z(0.0f)
+	{}
 	Vector3::Vector3(float _x, float _y, float _z) :
 		x(_x), y(_y), z(_z)
+	{}
+	Vector3::Vector3(const Vector2& other, float _z) :
+		x(other.x), y(other.y), z(_z)
+	{}
+	Vector3::Vector3(float _x, const Vector2& other) :
+		x(_x), y(other.x), z(other.y)
 	{}
 	Vector3::Vector3(const IntVector3& other) :
 		x(static_cast<float>(other.x)),
 		y(static_cast<float>(other.y)),
 		z(static_cast<float>(other.z))
 	{}
-	Vector3::Vector3(const Vector2& other, float _z) :
-		x(other.x), y(other.y), z(_z)
-	{}
 	Vector3::Vector3(const IntVector2& other, float _z) :
 		x(static_cast<float>(other.x)),
 		y(static_cast<float>(other.y)),
 		z(_z)
+	{}
+	Vector3::Vector3(float _x, const IntVector2& other) :
+		x(_x),
+		y(static_cast<float>(other.x)),
+		z(static_cast<float>(other.y))
 	{}
 
 	float Vector3::getMagnitude() const noexcept
@@ -179,37 +189,37 @@ namespace INJECTOR_NAMESPACE
 	}
 	Vector3& Vector3::operator=(const IntVector3& other) noexcept
 	{
-		x = other.x;
-		y = other.y;
-		z = other.z;
+		x = static_cast<float>(other.x);
+		y = static_cast<float>(other.y);
+		z = static_cast<float>(other.z);
 		return *this;
 	}
 	Vector3& Vector3::operator-=(const IntVector3& other) noexcept
 	{
-		x -= other.x;
-		y -= other.y;
-		z -= other.z;
+		x -= static_cast<float>(other.x);
+		y -= static_cast<float>(other.y);
+		z -= static_cast<float>(other.z);
 		return *this;
 	}
 	Vector3& Vector3::operator+=(const IntVector3& other) noexcept
 	{
-		x += other.x;
-		y += other.y;
-		z += other.z;
+		x += static_cast<float>(other.x);
+		y += static_cast<float>(other.y);
+		z += static_cast<float>(other.z);
 		return *this;
 	}
 	Vector3& Vector3::operator/=(const IntVector3& other) noexcept
 	{
-		x /= other.x;
-		y /= other.y;
-		z /= other.z;
+		x /= static_cast<float>(other.x);
+		y /= static_cast<float>(other.y);
+		z /= static_cast<float>(other.z);
 		return *this;
 	}
 	Vector3& Vector3::operator*=(const IntVector3& other) noexcept
 	{
-		x *= other.x;
-		y *= other.y;
-		z *= other.z;
+		x *= static_cast<float>(other.x);
+		y *= static_cast<float>(other.y);
+		z *= static_cast<float>(other.z);
 		return *this;
 	}
 

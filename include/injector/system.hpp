@@ -1,5 +1,6 @@
 #pragma once
 #include <injector/defines.hpp>
+#include <memory>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -14,9 +15,8 @@ namespace INJECTOR_NAMESPACE
 		virtual ~System();
 
 		Manager& getManager() const noexcept;
-
-		virtual void preUpdate();
 		virtual void update();
-		virtual void postUpdate();
 	};
+
+	using SystemHandle = std::shared_ptr<System>;
 }

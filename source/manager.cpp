@@ -1,174 +1,120 @@
 #pragma once
 #include <injector/manager.hpp>
-
 #include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
-	Manager::Manager(size_t _id) :
-		id(_id),
-		freeEntityID(1),
-		systems(),
-		entities()
+	Manager::Manager() :
+		entities(),
+		systems()
 	{}
 	Manager::~Manager()
-	{
-		destroyEntities();
-		destroySystems();
-	}
+	{}
 
-	void Manager::preUpdate()
-	{
-		for (auto& pair : systems)
-			pair.second->preUpdate();
-	}
 	void Manager::update()
 	{
-		for (auto& pair : systems)
-			pair.second->update();
-	}
-	void Manager::postUpdate()
-	{
-		for (auto& pair : systems)
-			pair.second->postUpdate();
+		for (auto system : systems)
+			system->update();
 	}
 
-	size_t Manager::getID() const noexcept
+	EntityHandle Manager::createEntity()
 	{
-		return id;
-	}
-	size_t Manager::getFreeEntityID() const noexcept
-	{
-		return freeEntityID;
-	}
+		auto entity = std::make_shared<Entity>();
 
-	size_t Manager::createEntity()
-	{
-		if (freeEntityID == SIZE_MAX)
-		{
-			// TODO: reorder map
-		}
-
-		if (!entities.emplace(freeEntityID, Components()).second)
+		if (!entities.emplace(entity).second)
 			throw std::runtime_error("Failed to create manager entity");
 
-		return freeEntityID++;
+		return entity;
 	}
-	bool Manager::destroyEntity(size_t id) noexcept
+	bool Manager::createEntity(EntityHandle& _entity) noexcept
 	{
-		if (id == 0)
+		auto entity = std::make_shared<Entity>();
+
+		if (!entities.emplace(entity).second)
 			return false;
 
-		auto iterator = entities.find(id);
+		_entity = entity;
+		return true;
+	}
+	bool Manager::addEntity(const EntityHandle& entity) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		return entities.emplace(entity).second;
+	}
+	bool Manager::removeEntity(const EntityHandle& entity) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		auto iterator = entities.find(entity);
 
 		if (iterator == entities.end())
 			return false;
 
-		auto components = iterator->second;
-
-		for (auto& pair : components)
-			delete pair.second;
-
 		entities.erase(iterator);
 		return true;
 	}
-	void Manager::destroyEntities() noexcept
+	bool Manager::containsEntity(const EntityHandle& entity) const noexcept
 	{
-		for (auto& pair : entities)
-		{
-			auto& components = pair.second;
+		if (entity == nullptr)
+			return false;
 
-			for (auto& pair : components)
-				delete pair.second;
-		}
-
+		return entities.find(entity) != entities.end();
+	}
+	void Manager::removeEntities() noexcept
+	{
 		entities.clear();
 	}
 	size_t Manager::getEntityCount() const noexcept
 	{
 		return entities.size();
 	}
-	bool Manager::containsEntity(size_t id) const noexcept
+
+	bool Manager::addSystem(const SystemHandle &system) noexcept
 	{
-		if (id == 0)
+		if (system == nullptr)
 			return false;
 
-		return entities.find(id) != entities.end();
-	}
-
-	size_t Manager::getComponentCount(size_t id) const
-	{
-		if (id == 0)
-			throw std::runtime_error("Entity id is null");
-
-		return entities.at(id).size();
-	}
-	bool Manager::getComponentCount(size_t id, size_t& count) const noexcept
-	{
-		if (id == 0)
-			return false;
-
-		auto iterator = entities.find(id);
-
-		if (iterator == entities.end())
-			return false;
-
-		count = iterator->second.size();
+		systems.push_back(system);
 		return true;
 	}
-	bool Manager::destroyComponents(size_t id) noexcept
+	bool Manager::removeSystem(const SystemHandle& system) noexcept
 	{
-		if (id == 0)
+		if (system == nullptr)
 			return false;
 
-		auto iterator = entities.find(id);
+		for (auto i = systems.begin(); i != systems.end(); i++)
+		{
+			if (system == *i)
+			{
+				systems.erase(i);
+				return true;
+			}
+		}
 
-		if (iterator == entities.end())
-			return false;
-
-		auto& components = iterator->second;
-
-		for (auto& pair : components)
-			delete pair.second;
-
-		components.clear();
-		return true;
+		return false;
 	}
+	bool Manager::containsSystem(const SystemHandle& system) noexcept
+	{
+		if (system == nullptr)
+			return false;
 
+		for (auto i = systems.begin(); i != systems.end(); i++)
+		{
+			if (system == *i)
+				return true;
+		}
+
+		return false;
+	}
+	void Manager::removeSystems() noexcept
+	{
+		systems.clear();
+	}
 	size_t Manager::getSystemCount() const noexcept
 	{
 		return systems.size();
-	}
-	void Manager::destroySystems() noexcept
-	{
-		for (auto& pair : systems)
-			delete pair.second;
-
-		systems.clear();
-	}
-
-	bool Manager::operator==(const Manager& other)
-	{
-		return id == other.id;
-	}
-	bool Manager::operator!=(const Manager& other)
-	{
-		return id != other.id;
-	}
-	bool Manager::operator<(const Manager& other)
-	{
-		return id < other.id;
-	}
-	bool Manager::operator>(const Manager& other)
-	{
-		return id > other.id;
-	}
-	bool Manager::operator<=(const Manager& other)
-	{
-		return id <= other.id;
-	}
-	bool Manager::operator>=(const Manager& other)
-	{
-		return id >= other.id;
 	}
 }

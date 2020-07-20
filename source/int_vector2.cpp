@@ -1,9 +1,11 @@
 #include <injector/int_vector2.hpp>
-
 #include <cmath>
 
 namespace INJECTOR_NAMESPACE
 {
+	IntVector2::IntVector2() :
+		x(0), y(0)
+	{}
 	IntVector2::IntVector2(int _x, int _y) :
 		x(_x), y(_y)
 	{}

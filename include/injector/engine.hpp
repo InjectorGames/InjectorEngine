@@ -32,9 +32,8 @@ namespace INJECTOR_NAMESPACE
 		static bool updateRunning;
 		static tick_t updateStartTick;
 		static double updateDeltaTime;
-		static size_t freeManagerID;
 
-		static std::map<size_t, Manager*> managers;
+		static std::vector<ManagerHandle> managers;
 	public:
 		static bool getCapUpdateRate() noexcept;
 		static void setCapUpdateRate(bool cap = true) noexcept;
@@ -44,8 +43,6 @@ namespace INJECTOR_NAMESPACE
 
 		static tick_t getUpdateStartTick() noexcept;
 		static double getUpdateDeltaTime() noexcept;
-
-		static size_t getFreeManagerID() noexcept;
 
 		static void initializeEngine();
 		static void terminateEngine();
@@ -67,70 +64,18 @@ namespace INJECTOR_NAMESPACE
 		static tick_t getTickNow() noexcept;
 		static double getTimeNow() noexcept;
 
+		static bool addManager(const ManagerHandle& manager) noexcept;
+		static bool removeManager(const ManagerHandle& manager) noexcept;
+		static bool containsManager(const ManagerHandle& manager) noexcept;
+		static void removeManagers() noexcept;
 		static size_t getManagerCount() noexcept;
-		static bool destroyManager(size_t id) noexcept;
-		static void destroyManagers() noexcept;
 
-		template<class T>
-		static T* createManager()
+		template<class T, class ...Args>
+		static std::shared_ptr<T> createManager(Args... args) noexcept
 		{
-			if (freeManagerID == SIZE_MAX)
-			{
-				// TODO: reorder map
-			}
-
-			auto manager = new T(freeManagerID);
-
-			if (!managers.emplace(freeManagerID, manager).second)
-			{
-				delete manager;
-				throw std::exception("Failed to add engine manager");
-			}
-			
-			freeManagerID++;
+			auto manager = std::make_shared<T>(args...);
+			managers.push_back(manager);
 			return manager;
-		}
-		template<class T>
-		static bool createManager(T*& manager) noexcept
-		{
-			if (freeManagerID == SIZE_MAX)
-			{
-				// TODO: reorder map
-			}
-
-			manager = new T(freeManagerID);
-
-			if (!managers.emplace(freeManagerID, manager).second)
-			{
-				delete manager;
-				return false;
-			}
-
-			freeManagerID++;
-			return true;
-		}
-
-		template<class T>
-		static T* getManager(size_t id)
-		{
-			if (id == 0)
-				throw std::runtime_error("Manager id is null");
-
-			return dynamic_cast<T>(managers.at(id));
-		}
-		template<class T>
-		static bool getManager(size_t id, T*& manager) noexcept
-		{
-			if (id == 0)
-				return false;
-
-			auto iterator = managers.find(id);
-
-			if (iterator == managers.end())
-				return false;
-
-			manager = dynamic_cast<T>(iterator->second);
-			return true;
 		}
 	};
 }

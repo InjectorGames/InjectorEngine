@@ -1,5 +1,4 @@
 #include <injector/window.hpp>
-
 #include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
@@ -11,8 +10,10 @@ namespace INJECTOR_NAMESPACE
 		INJECTOR_WINDOW_WIDTH, INJECTOR_WINDOW_HEIGHT);
 	const uint32_t Window::defaultFlags = SDL_WINDOW_RESIZABLE;
 
-	Window::Window(const std::string& title, const IntVector2& position,
-		const IntVector2& size, uint32_t flags)
+	Window::Window(const std::string& title,
+		const IntVector2& position,
+		const IntVector2& size,
+		uint32_t flags)
 	{
 		window = SDL_CreateWindow(title.c_str(),
 			position.x, position.y, size.x, size.y, flags);
@@ -27,7 +28,9 @@ namespace INJECTOR_NAMESPACE
 		window = nullptr;
 	}
 
-	void Window::update()
+	void Window::setContext()
+	{}
+	void Window::swapChain()
 	{}
 
 	uint32_t Window::getID() noexcept

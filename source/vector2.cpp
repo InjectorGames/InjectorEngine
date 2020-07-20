@@ -1,9 +1,11 @@
 #include <injector/vector2.hpp>
-
 #include <cmath>
 
 namespace INJECTOR_NAMESPACE
 {
+	Vector2::Vector2() :
+		x(0.0f), y(0.0f)
+	{}
 	Vector2::Vector2(float _x, float _y) :
 		x(_x), y(_y)
 	{}
@@ -153,32 +155,32 @@ namespace INJECTOR_NAMESPACE
 	}
 	Vector2& Vector2::operator=(const IntVector2& other) noexcept
 	{
-		x = other.x;
-		y = other.y;
+		x = static_cast<float>(other.x);
+		y = static_cast<float>(other.y);
 		return *this;
 	}
 	Vector2& Vector2::operator-=(const IntVector2& other) noexcept
 	{
-		x -= other.x;
-		y -= other.y;
+		x -= static_cast<float>(other.x);
+		y -= static_cast<float>(other.y);
 		return *this;
 	}
 	Vector2& Vector2::operator+=(const IntVector2& other) noexcept
 	{
-		x += other.x;
-		y += other.y;
+		x += static_cast<float>(other.x);
+		y += static_cast<float>(other.y);
 		return *this;
 	}
 	Vector2& Vector2::operator/=(const IntVector2& other) noexcept
 	{
-		x /= other.x;
-		y /= other.y;
+		x /= static_cast<float>(other.x);
+		y /= static_cast<float>(other.y);
 		return *this;
 	}
 	Vector2& Vector2::operator*=(const IntVector2& other) noexcept
 	{
-		x *= other.x;
-		y *= other.y;
+		x *= static_cast<float>(other.x);
+		y *= static_cast<float>(other.y);
 		return *this;
 	}
 
