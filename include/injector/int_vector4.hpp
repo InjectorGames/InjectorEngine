@@ -8,47 +8,47 @@ namespace INJECTOR_NAMESPACE
 		int x, y, z, w;
 
 		IntVector4();
+		IntVector4(int xyzw);
 		IntVector4(int x, int y, int z, int w);
-		IntVector4(const IntVector2& other, int z, int w);
-		IntVector4(int x, const IntVector2& other, int w);
-		IntVector4(int x, int y, const IntVector2& other);
-		IntVector4(const IntVector3& other, int w);
-		IntVector4(int x, const IntVector3& other);
+		IntVector4(const IntVector2& vector, int z, int w);
+		IntVector4(int x, const IntVector2& vector, int w);
+		IntVector4(int x, int y, const IntVector2& vector);
+		IntVector4(const IntVector3& vector, int w);
+		IntVector4(int x, const IntVector3& vector);
 
-		float getMagnitude() const noexcept;
-		int getDot(const IntVector4& other) const noexcept;
-		float getDistance(const IntVector4& other) const noexcept;
-		IntVector4 getNegative() const noexcept;
+		int getDotProduct(const IntVector4& vector) const noexcept;
+		float getLength() const noexcept;
+		float getDistance(const IntVector4& vector) const noexcept;
+		IntVector4 getReflected(const IntVector4& normal) const noexcept;
 
-		bool operator==(const IntVector4& other) const noexcept;
-		bool operator!=(const IntVector4& other) const noexcept;
+		bool operator==(const IntVector4& vector) const noexcept;
+		bool operator!=(const IntVector4& vector) const noexcept;
 
 		IntVector4& operator--() noexcept;
 		IntVector4& operator++() noexcept;
 		IntVector4 operator--(int) noexcept;
 		IntVector4 operator++(int) noexcept;
 
-		IntVector4 operator-(const IntVector4& other) const noexcept;
-		IntVector4 operator+(const IntVector4& other) const noexcept;
-		IntVector4 operator/(const IntVector4& other) const noexcept;
-		IntVector4 operator*(const IntVector4& other) const noexcept;
-		IntVector4 operator%(const IntVector4& other) const noexcept;
-		IntVector4 operator|(const IntVector4& other) const noexcept;
-		IntVector4 operator&(const IntVector4& other) const noexcept;
-		IntVector4 operator^(const IntVector4& other) const noexcept;
-		IntVector4 operator<<(const IntVector4& other) const noexcept;
-		IntVector4 operator>>(const IntVector4& other) const noexcept;
-		IntVector4& operator=(const IntVector4& other) noexcept;
-		IntVector4& operator-=(const IntVector4& other) noexcept;
-		IntVector4& operator+=(const IntVector4& other) noexcept;
-		IntVector4& operator/=(const IntVector4& other) noexcept;
-		IntVector4& operator*=(const IntVector4& other) noexcept;
-		IntVector4& operator%=(const IntVector4& other) noexcept;
-		IntVector4& operator|=(const IntVector4& other) noexcept;
-		IntVector4& operator&=(const IntVector4& other) noexcept;
-		IntVector4& operator^=(const IntVector4& other) noexcept;
-		IntVector4& operator<<=(const IntVector4& other) noexcept;
-		IntVector4& operator>>=(const IntVector4& other) noexcept;
+		IntVector4 operator-(const IntVector4& vector) const noexcept;
+		IntVector4 operator+(const IntVector4& vector) const noexcept;
+		IntVector4 operator/(const IntVector4& vector) const noexcept;
+		IntVector4 operator*(const IntVector4& vector) const noexcept;
+		IntVector4 operator%(const IntVector4& vector) const noexcept;
+		IntVector4 operator|(const IntVector4& vector) const noexcept;
+		IntVector4 operator&(const IntVector4& vector) const noexcept;
+		IntVector4 operator^(const IntVector4& vector) const noexcept;
+		IntVector4 operator<<(const IntVector4& vector) const noexcept;
+		IntVector4 operator>>(const IntVector4& vector) const noexcept;
+		IntVector4& operator-=(const IntVector4& vector) noexcept;
+		IntVector4& operator+=(const IntVector4& vector) noexcept;
+		IntVector4& operator/=(const IntVector4& vector) noexcept;
+		IntVector4& operator*=(const IntVector4& vector) noexcept;
+		IntVector4& operator%=(const IntVector4& vector) noexcept;
+		IntVector4& operator|=(const IntVector4& vector) noexcept;
+		IntVector4& operator&=(const IntVector4& vector) noexcept;
+		IntVector4& operator^=(const IntVector4& vector) noexcept;
+		IntVector4& operator<<=(const IntVector4& vector) noexcept;
+		IntVector4& operator>>=(const IntVector4& vector) noexcept;
 
 		IntVector4 operator-(int value) const noexcept;
 		IntVector4 operator+(int value) const noexcept;
@@ -60,7 +60,6 @@ namespace INJECTOR_NAMESPACE
 		IntVector4 operator^(int value) const noexcept;
 		IntVector4 operator<<(int value) const noexcept;
 		IntVector4 operator>>(int value) const noexcept;
-		IntVector4& operator=(int value) noexcept;
 		IntVector4& operator-=(int value) noexcept;
 		IntVector4& operator+=(int value) noexcept;
 		IntVector4& operator/=(int value) noexcept;

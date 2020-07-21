@@ -32,14 +32,23 @@ int main(int argc, char* args[])
 
 	//glm::inverse
 	auto keks = glm::quat() * glm::quat();
-	auto kek1 = mat1.getDot(mat2);
+	auto kek1 = mat2.getMultiplied(mat1);
 	auto kek2 = matt2 * matt1;
+
+	auto kekss = matt2[0][1];
 
 	auto mat11 = Matrix3(1, 2, 1, 2, 1, 2, 1, 2, 1);
 	auto mat22 = glm::mat3(1, 2, 1, 2, 1, 2, 1, 2, 1);
-
-	mat11 = mat11.getInversed();
-	mat22 = glm::inverse(mat22);
+	//glm::mat4() * glm::vec4()
+	//glm::scale(mat22);
+	//mat22 * mat22
+	//mat22++
+	//glm::length()
+	//auto asdk = glm::dot(--glm::vec4());
+	//glm::mat4_cast
+	auto keksss = glm::mat4(mat22);
+	mat1 = Matrix4::identity.getInversed();
+	matt1 = glm::inverse(glm::mat4(1.0f));
 
 	Engine::startUpdateLoop();
 	Engine::terminateEngine();

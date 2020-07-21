@@ -24,11 +24,11 @@ namespace INJECTOR_NAMESPACE
 
 		TransformComponent(
 			Type type = Type::Spin,
-			const EntityHandle& parent = {},
+			const EntityHandle& parent = nullptr,
 			const Vector3& scale = Vector3::one,
 			const Vector3& position = Vector3::zero,
 			const Quaternion& rotation = Quaternion(Vector3::zero),
-			const Matrix4& matrix = Matrix4::one,
+			const Matrix4& matrix = Matrix4::identity,
 			const bool changed = true);
 	};
 }

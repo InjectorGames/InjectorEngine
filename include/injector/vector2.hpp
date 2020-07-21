@@ -8,52 +8,53 @@ namespace INJECTOR_NAMESPACE
 		float x, y;
 
 		Vector2();
+		Vector2(float xy);
 		Vector2(float x, float y);
-		Vector2(const IntVector2& other);
+		Vector2(const IntVector2& vector);
 
-		float getMagnitude() const noexcept;
-		float getDot(const Vector2& other) const noexcept;
-		float getDistance(const Vector2& other) const noexcept;
-		Vector2 getNegative() const noexcept;
+		float getDotProduct(const Vector2& vector) const noexcept;
+		float getDotProduct(const IntVector2& vector) const noexcept;
+		float getLength() const noexcept;
+		float getDistance(const Vector2& vector) const noexcept;
+		float getDistance(const IntVector2& vector) const noexcept;
 		Vector2 getNormalized() const noexcept;
+		Vector2 getReflected(const Vector2& normal) const noexcept;
+		Vector2 getRefracted(const Vector2& normal, float eta) const noexcept;
 		Vector2 getSine() const noexcept;
 		Vector2 getCosine() const noexcept;
 		Vector2 getTangent() const noexcept;
 		Vector2 getCotangent() const noexcept;
 
-		bool operator==(const Vector2& other) const noexcept;
-		bool operator!=(const Vector2& other) const noexcept;
+		bool operator==(const Vector2& vector) const noexcept;
+		bool operator!=(const Vector2& vector) const noexcept;
 
 		Vector2& operator--() noexcept;
 		Vector2& operator++() noexcept;
 		Vector2 operator--(int) noexcept;
 		Vector2 operator++(int) noexcept;
 
-		Vector2 operator-(const Vector2& other) const noexcept;
-		Vector2 operator+(const Vector2& other) const noexcept;
-		Vector2 operator/(const Vector2& other) const noexcept;
-		Vector2 operator*(const Vector2& other) const noexcept;
-		Vector2& operator=(const Vector2& other) noexcept;
-		Vector2& operator-=(const Vector2& other) noexcept;
-		Vector2& operator+=(const Vector2& other) noexcept;
-		Vector2& operator/=(const Vector2& other) noexcept;
-		Vector2& operator*=(const Vector2& other) noexcept;
+		Vector2 operator-(const Vector2& vector) const noexcept;
+		Vector2 operator+(const Vector2& vector) const noexcept;
+		Vector2 operator/(const Vector2& vector) const noexcept;
+		Vector2 operator*(const Vector2& vector) const noexcept;
+		Vector2& operator-=(const Vector2& vector) noexcept;
+		Vector2& operator+=(const Vector2& vector) noexcept;
+		Vector2& operator/=(const Vector2& vector) noexcept;
+		Vector2& operator*=(const Vector2& vector) noexcept;
 
-		Vector2 operator-(const IntVector2& other) const noexcept;
-		Vector2 operator+(const IntVector2& other) const noexcept;
-		Vector2 operator/(const IntVector2& other) const noexcept;
-		Vector2 operator*(const IntVector2& other) const noexcept;
-		Vector2& operator=(const IntVector2& other) noexcept;
-		Vector2& operator-=(const IntVector2& other) noexcept;
-		Vector2& operator+=(const IntVector2& other) noexcept;
-		Vector2& operator/=(const IntVector2& other) noexcept;
-		Vector2& operator*=(const IntVector2& other) noexcept;
+		Vector2 operator-(const IntVector2& vector) const noexcept;
+		Vector2 operator+(const IntVector2& vector) const noexcept;
+		Vector2 operator/(const IntVector2& vector) const noexcept;
+		Vector2 operator*(const IntVector2& vector) const noexcept;
+		Vector2& operator-=(const IntVector2& vector) noexcept;
+		Vector2& operator+=(const IntVector2& vector) noexcept;
+		Vector2& operator/=(const IntVector2& vector) noexcept;
+		Vector2& operator*=(const IntVector2& vector) noexcept;
 
 		Vector2 operator-(float value) const noexcept;
 		Vector2 operator+(float value) const noexcept;
 		Vector2 operator/(float value) const noexcept;
 		Vector2 operator*(float value) const noexcept;
-		Vector2& operator=(float value) noexcept;
 		Vector2& operator-=(float value) noexcept;
 		Vector2& operator+=(float value) noexcept;
 		Vector2& operator/=(float value) noexcept;

@@ -8,45 +8,45 @@ namespace INJECTOR_NAMESPACE
 		int x, y, z;
 
 		IntVector3();
+		IntVector3(int xyz);
 		IntVector3(int x, int y, int z);
-		IntVector3(const IntVector2& other, int z);
-		IntVector3(int x, const IntVector2& other);
+		IntVector3(const IntVector2& vectorS, int z);
+		IntVector3(int x, const IntVector2& vector);
 
-		float getMagnitude() const noexcept;
-		int getDot(const IntVector3& other) const noexcept;
-		float getDistance(const IntVector3& other) const noexcept;
-		IntVector3 getNegative() const noexcept;
-		IntVector3 getCross(const IntVector3& other) const noexcept;
+		int getDotProduct(const IntVector3& vector) const noexcept;
+		IntVector3 getCrossProduct(const IntVector3& vector) const noexcept;
+		float getLength() const noexcept;
+		float getDistance(const IntVector3& vector) const noexcept;
+		IntVector3 getReflected(const IntVector3& normal) const noexcept;
 
-		bool operator==(const IntVector3& other) const noexcept;
-		bool operator!=(const IntVector3& other) const noexcept;
+		bool operator==(const IntVector3& vector) const noexcept;
+		bool operator!=(const IntVector3& vector) const noexcept;
 
 		IntVector3& operator--() noexcept;
 		IntVector3& operator++() noexcept;
 		IntVector3 operator--(int) noexcept;
 		IntVector3 operator++(int) noexcept;
 
-		IntVector3 operator-(const IntVector3& other) const noexcept;
-		IntVector3 operator+(const IntVector3& other) const noexcept;
-		IntVector3 operator/(const IntVector3& other) const noexcept;
-		IntVector3 operator*(const IntVector3& other) const noexcept;
-		IntVector3 operator%(const IntVector3& other) const noexcept;
-		IntVector3 operator|(const IntVector3& other) const noexcept;
-		IntVector3 operator&(const IntVector3& other) const noexcept;
-		IntVector3 operator^(const IntVector3& other) const noexcept;
-		IntVector3 operator<<(const IntVector3& other) const noexcept;
-		IntVector3 operator>>(const IntVector3& other) const noexcept;
-		IntVector3& operator=(const IntVector3& other) noexcept;
-		IntVector3& operator-=(const IntVector3& other) noexcept;
-		IntVector3& operator+=(const IntVector3& other) noexcept;
-		IntVector3& operator/=(const IntVector3& other) noexcept;
-		IntVector3& operator*=(const IntVector3& other) noexcept;
-		IntVector3& operator%=(const IntVector3& other) noexcept;
-		IntVector3& operator|=(const IntVector3& other) noexcept;
-		IntVector3& operator&=(const IntVector3& other) noexcept;
-		IntVector3& operator^=(const IntVector3& other) noexcept;
-		IntVector3& operator<<=(const IntVector3& other) noexcept;
-		IntVector3& operator>>=(const IntVector3& other) noexcept;
+		IntVector3 operator-(const IntVector3& vector) const noexcept;
+		IntVector3 operator+(const IntVector3& vector) const noexcept;
+		IntVector3 operator/(const IntVector3& vector) const noexcept;
+		IntVector3 operator*(const IntVector3& vector) const noexcept;
+		IntVector3 operator%(const IntVector3& vector) const noexcept;
+		IntVector3 operator|(const IntVector3& vector) const noexcept;
+		IntVector3 operator&(const IntVector3& vector) const noexcept;
+		IntVector3 operator^(const IntVector3& vector) const noexcept;
+		IntVector3 operator<<(const IntVector3& vector) const noexcept;
+		IntVector3 operator>>(const IntVector3& vector) const noexcept;
+		IntVector3& operator-=(const IntVector3& vector) noexcept;
+		IntVector3& operator+=(const IntVector3& vector) noexcept;
+		IntVector3& operator/=(const IntVector3& vector) noexcept;
+		IntVector3& operator*=(const IntVector3& vector) noexcept;
+		IntVector3& operator%=(const IntVector3& vector) noexcept;
+		IntVector3& operator|=(const IntVector3& vector) noexcept;
+		IntVector3& operator&=(const IntVector3& vector) noexcept;
+		IntVector3& operator^=(const IntVector3& vector) noexcept;
+		IntVector3& operator<<=(const IntVector3& vector) noexcept;
+		IntVector3& operator>>=(const IntVector3& vector) noexcept;
 
 		IntVector3 operator-(int value) const noexcept;
 		IntVector3 operator+(int value) const noexcept;
@@ -58,7 +58,6 @@ namespace INJECTOR_NAMESPACE
 		IntVector3 operator^(int value) const noexcept;
 		IntVector3 operator<<(int value) const noexcept;
 		IntVector3 operator>>(int value) const noexcept;
-		IntVector3& operator=(int value) noexcept;
 		IntVector3& operator-=(int value) noexcept;
 		IntVector3& operator+=(int value) noexcept;
 		IntVector3& operator/=(int value) noexcept;

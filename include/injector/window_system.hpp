@@ -12,7 +12,7 @@ namespace INJECTOR_NAMESPACE
 	protected:
 		std::set<EntityHandle> windows;
 	public:
-		WindowSystem(Manager& manager);
+		WindowSystem();
 		virtual ~WindowSystem();
 
 		void update() override;
@@ -26,5 +26,6 @@ namespace INJECTOR_NAMESPACE
 		bool destroyWindowComponent(
 			const EntityHandle& entity) noexcept;
 		void destroyWindowComponents() noexcept;
+		size_t windowComponentCount() const noexcept;
 	};
 }

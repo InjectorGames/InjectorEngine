@@ -1,5 +1,7 @@
 #pragma once
 #include <injector/vector3.hpp>
+#include <injector/matrix3.hpp>
+#include <injector/matrix4.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -9,16 +11,50 @@ namespace INJECTOR_NAMESPACE
 
 		Quaternion();
 		Quaternion(float x, float y, float z, float w);
-		Quaternion(const Vector3& other, float w);
+		Quaternion(const Vector3& vector, float w);
 		Quaternion(const Vector3& eulerAngles);
+		Quaternion(const Vector3& a, const Vector3& b);
+		Quaternion(const Matrix3 matrix);
+		Quaternion(const Matrix4 matrix);
 
-		bool operator==(const Quaternion& other) const noexcept;
-		bool operator!=(const Quaternion& other) const noexcept;
-
-
-		float getMagnitude() const noexcept;
-		float getDot(const Quaternion& other) const noexcept;
+		float getDotProduct(const Quaternion& quaternion) const noexcept;
+		Quaternion getCrossProduct(const Quaternion& quaternion) const noexcept;
+		float getLength() const noexcept;
 		Quaternion getNormalized() const noexcept;
-		Quaternion getCross(const Quaternion& other) const noexcept;
+		Quaternion getLookedAt(const Vector3& direction, const Vector3& up) const noexcept;
+
+		float getRoll() const noexcept;
+		float getPitch() const noexcept;
+		float getYaw() const noexcept;
+		Vector3 getEulerAngles() const noexcept;
+
+		Matrix3 getMatrix3() const noexcept;
+		Matrix4 getMatrix4() const noexcept;
+
+		bool operator==(const Quaternion& quaternion) const noexcept;
+		bool operator!=(const Quaternion& quaternion) const noexcept;
+
+		Quaternion& operator--() noexcept;
+		Quaternion& operator++() noexcept;
+		Quaternion operator--(int) noexcept;
+		Quaternion operator++(int) noexcept;
+
+		Quaternion operator-(const Quaternion& quaternion) const noexcept;
+		Quaternion operator+(const Quaternion& quaternion) const noexcept;
+		Quaternion operator/(const Quaternion& quaternion) const noexcept;
+		Quaternion operator*(const Quaternion& quaternion) const noexcept;
+		Quaternion& operator-=(const Quaternion& quaternion) noexcept;
+		Quaternion& operator+=(const Quaternion& quaternion) noexcept;
+		Quaternion& operator/=(const Quaternion& quaternion) noexcept;
+		Quaternion& operator*=(const Quaternion& quaternion) noexcept;
+
+		Quaternion operator-(float value) const noexcept;
+		Quaternion operator+(float value) const noexcept;
+		Quaternion operator/(float value) const noexcept;
+		Quaternion operator*(float value) const noexcept;
+		Quaternion& operator-=(float value) noexcept;
+		Quaternion& operator+=(float value) noexcept;
+		Quaternion& operator/=(float value) noexcept;
+		Quaternion& operator*=(float value) noexcept;
 	};
 }

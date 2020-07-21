@@ -6,169 +6,161 @@ namespace INJECTOR_NAMESPACE
 	IntVector2::IntVector2() :
 		x(0), y(0)
 	{}
+	IntVector2::IntVector2(int xy) :
+		x(xy), y(xy)
+	{}
 	IntVector2::IntVector2(int _x, int _y) :
 		x(_x), y(_y)
 	{}
 
-	float IntVector2::getMagnitude() const noexcept
+	int IntVector2::getDotProduct(const IntVector2& vector) const noexcept
 	{
-		return std::sqrtf(static_cast<float>(x * x + y * y));
+		auto result = *this * vector;
+		return vector.x + vector.y;
 	}
-	int IntVector2::getDot(const IntVector2& other) const noexcept
+	float IntVector2::getLength() const noexcept
 	{
-		return x * other.x + y * other.y;
+		return std::sqrtf(static_cast<float>(getDotProduct(*this)));
 	}
-	float IntVector2::getDistance(const IntVector2& other) const noexcept
+	float IntVector2::getDistance(const IntVector2& vector) const noexcept
 	{
-		return std::sqrtf(static_cast<float>(
-			x - other.x * x - other.x +
-			y - other.y * y - other.y));
+		return std::sqrtf(static_cast<float>(getDotProduct(*this - vector)));
 	}
-	IntVector2 IntVector2::getNegative() const noexcept
+	IntVector2 IntVector2::getReflected(const IntVector2& normal) const noexcept
 	{
-		return IntVector2(-x, -y);
+		return *this - normal * getDotProduct(normal) * 2;
 	}
 
-	bool IntVector2::operator==(const IntVector2& other) const noexcept
+	bool IntVector2::operator==(const IntVector2& vector) const noexcept
 	{
-		return x == other.x && y == other.y;
+		return x == vector.x && y == vector.y;
 	}
-	bool IntVector2::operator!=(const IntVector2& other) const noexcept
+	bool IntVector2::operator!=(const IntVector2& vector) const noexcept
 	{
-		return x != other.x || y != other.y;
+		return x != vector.x || y != vector.y;
 	}
 
 	IntVector2& IntVector2::operator--() noexcept
 	{
-		--x;
-		--y;
+		--x; --y;
 		return *this;
 	}
 	IntVector2& IntVector2::operator++() noexcept
 	{
-		++x;
-		++y;
+		++x; ++y;
 		return *this;
 	}
 	IntVector2 IntVector2::operator--(int) noexcept
 	{
 		auto result = IntVector2(*this);
-		--x;
-		--y;
+		--x; --y;
 		return result;
 	}
 	IntVector2 IntVector2::operator++(int) noexcept
 	{
 		auto result = IntVector2(*this);
-		++x;
-		++y;
+		++x; ++y;
 		return result;
 	}
 
-	IntVector2 IntVector2::operator-(const IntVector2& other) const noexcept
+	IntVector2 IntVector2::operator-(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x - other.x, y - other.y);
+		return IntVector2(x - vector.x, y - vector.y);
 	}
-	IntVector2 IntVector2::operator+(const IntVector2& other) const noexcept
+	IntVector2 IntVector2::operator+(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x + other.x, y + other.y);
+		return IntVector2(x + vector.x, y + vector.y);
 	}
-	IntVector2 IntVector2::operator/(const IntVector2& other) const noexcept
+	IntVector2 IntVector2::operator/(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x / other.x, y / other.y);
+		return IntVector2(x / vector.x, y / vector.y);
 	}
-	IntVector2 IntVector2::operator*(const IntVector2& other) const noexcept
+	IntVector2 IntVector2::operator*(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x * other.x, y * other.y);
+		return IntVector2(x * vector.x, y * vector.y);
 	}
-	IntVector2 IntVector2::operator%(const IntVector2& other) const noexcept
+	IntVector2 IntVector2::operator%(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x % other.x, y % other.y);
+		return IntVector2(x % vector.x, y % vector.y);
 	}
-	IntVector2 IntVector2::operator|(const IntVector2& other) const noexcept
+	IntVector2 IntVector2::operator|(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x | other.x, y | other.y);
+		return IntVector2(x | vector.x, y | vector.y);
 	}
-	IntVector2 IntVector2::operator&(const IntVector2& other) const noexcept
+	IntVector2 IntVector2::operator&(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x & other.x, y & other.y);
+		return IntVector2(x & vector.x, y & vector.y);
 	}
-	IntVector2 IntVector2::operator^(const IntVector2& other) const noexcept
+	IntVector2 IntVector2::operator^(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x ^ other.x, y ^ other.y);
+		return IntVector2(x ^ vector.x, y ^ vector.y);
 	}
-	IntVector2 IntVector2::operator<<(const IntVector2& other) const noexcept
+	IntVector2 IntVector2::operator<<(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x << other.x, y << other.y);
+		return IntVector2(x << vector.x, y << vector.y);
 	}
-	IntVector2 IntVector2::operator>>(const IntVector2& other) const noexcept
+	IntVector2 IntVector2::operator>>(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x >> other.x, y >> other.y);
+		return IntVector2(x >> vector.x, y >> vector.y);
 	}
-	IntVector2& IntVector2::operator=(const IntVector2& other) noexcept
+	IntVector2& IntVector2::operator-=(const IntVector2& vector) noexcept
 	{
-		x = other.x;
-		y = other.y;
+		x -= vector.x;
+		y -= vector.y;
 		return *this;
 	}
-	IntVector2& IntVector2::operator-=(const IntVector2& other) noexcept
+	IntVector2& IntVector2::operator+=(const IntVector2& vector) noexcept
 	{
-		x -= other.x;
-		y -= other.y;
+		x += vector.x;
+		y += vector.y;
 		return *this;
 	}
-	IntVector2& IntVector2::operator+=(const IntVector2& other) noexcept
+	IntVector2& IntVector2::operator/=(const IntVector2& vector) noexcept
 	{
-		x += other.x;
-		y += other.y;
+		x /= vector.x;
+		y /= vector.y;
 		return *this;
 	}
-	IntVector2& IntVector2::operator/=(const IntVector2& other) noexcept
+	IntVector2& IntVector2::operator*=(const IntVector2& vector) noexcept
 	{
-		x /= other.x;
-		y /= other.y;
+		x *= vector.x;
+		y *= vector.y;
 		return *this;
 	}
-	IntVector2& IntVector2::operator*=(const IntVector2& other) noexcept
+	IntVector2& IntVector2::operator%=(const IntVector2& vector) noexcept
 	{
-		x *= other.x;
-		y *= other.y;
+		x %= vector.x;
+		y %= vector.y;
 		return *this;
 	}
-	IntVector2& IntVector2::operator%=(const IntVector2& other) noexcept
+	IntVector2& IntVector2::operator|=(const IntVector2& vector) noexcept
 	{
-		x %= other.x;
-		y %= other.y;
+		x |= vector.x;
+		y |= vector.y;
 		return *this;
 	}
-	IntVector2& IntVector2::operator|=(const IntVector2& other) noexcept
+	IntVector2& IntVector2::operator&=(const IntVector2& vector) noexcept
 	{
-		x |= other.x;
-		y |= other.y;
+		x &= vector.x;
+		y &= vector.y;
 		return *this;
 	}
-	IntVector2& IntVector2::operator&=(const IntVector2& other) noexcept
+	IntVector2& IntVector2::operator^=(const IntVector2& vector) noexcept
 	{
-		x &= other.x;
-		y &= other.y;
+		x ^= vector.x;
+		y ^= vector.y;
 		return *this;
 	}
-	IntVector2& IntVector2::operator^=(const IntVector2& other) noexcept
+	IntVector2& IntVector2::operator<<=(const IntVector2& vector) noexcept
 	{
-		x ^= other.x;
-		y ^= other.y;
+		x <<= vector.x;
+		y <<= vector.y;
 		return *this;
 	}
-	IntVector2& IntVector2::operator<<=(const IntVector2& other) noexcept
+	IntVector2& IntVector2::operator>>=(const IntVector2& vector) noexcept
 	{
-		x <<= other.x;
-		y <<= other.y;
-		return *this;
-	}
-	IntVector2& IntVector2::operator>>=(const IntVector2& other) noexcept
-	{
-		x >>= other.x;
-		y >>= other.y;
+		x >>= vector.x;
+		y >>= vector.y;
 		return *this;
 	}
 
@@ -211,12 +203,6 @@ namespace INJECTOR_NAMESPACE
 	IntVector2 IntVector2::operator>>(int value) const noexcept
 	{
 		return IntVector2(x >> value, y >> value);
-	}
-	IntVector2& IntVector2::operator=(int value) noexcept
-	{
-		x = value;
-		y = value;
-		return *this;
 	}
 	IntVector2& IntVector2::operator-=(int value) noexcept
 	{
@@ -279,7 +265,7 @@ namespace INJECTOR_NAMESPACE
 		return *this;
 	}
 
-	const IntVector2 IntVector2::zero = IntVector2(0, 0);
-	const IntVector2 IntVector2::minusOne = IntVector2(-1, -1);
-	const IntVector2 IntVector2::one = IntVector2(1, 1);
+	const IntVector2 IntVector2::zero = IntVector2(0);
+	const IntVector2 IntVector2::minusOne = IntVector2(-1);
+	const IntVector2 IntVector2::one = IntVector2(1);
 }

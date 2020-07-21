@@ -35,7 +35,7 @@ namespace INJECTOR_NAMESPACE
 		template<class T, class ...Args>
 		std::shared_ptr<T> createSystem(Args... args) noexcept
 		{
-			auto system = std::make_shared<T>(*this, args...);
+			auto system = std::make_shared<T>(args...);
 			systems.push_back(system);
 			return system;
 		}

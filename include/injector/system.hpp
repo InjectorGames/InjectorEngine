@@ -8,13 +8,8 @@ namespace INJECTOR_NAMESPACE
 
 	class System
 	{
-	protected:
-		Manager& manager;
 	public:
-		System(Manager& manager);
 		virtual ~System();
-
-		Manager& getManager() const noexcept;
 		virtual void update();
 	};
 

@@ -3,10 +3,7 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	RenderSystem::RenderSystem(
-		Manager& manager,
-		const EntityHandle& _window) :
-		System(manager),
+	RenderSystem::RenderSystem(const EntityHandle& _window) :
 		window(_window)
 	{}
 	RenderSystem::~RenderSystem()

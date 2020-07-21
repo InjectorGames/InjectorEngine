@@ -41,9 +41,13 @@ add_library(InjectorEngine STATIC
 	source/matrix3.cpp
 	source/matrix4.cpp
 	source/quaternion.cpp
+	source/render_component.cpp
 	source/render_system.cpp
+	source/rotate_component.cpp
 	source/system.cpp
 	source/transform_component.cpp
+	source/transform_system.cpp
+	source/translate_component.cpp
 	source/vector2.cpp
 	source/vector3.cpp
 	source/vector4.cpp

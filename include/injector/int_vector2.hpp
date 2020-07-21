@@ -8,42 +8,42 @@ namespace INJECTOR_NAMESPACE
 		int x, y;
 
 		IntVector2();
-		IntVector2(int x = 0, int y = 0);
+		IntVector2(int xy);
+		IntVector2(int x, int y);
 
-		float getMagnitude() const noexcept;
-		int getDot(const IntVector2& other) const noexcept;
-		float getDistance(const IntVector2& other) const noexcept;
-		IntVector2 getNegative() const noexcept;
+		int getDotProduct(const IntVector2& vector) const noexcept;
+		float getLength() const noexcept;
+		float getDistance(const IntVector2& vector) const noexcept;
+		IntVector2 getReflected(const IntVector2& normal) const noexcept;
 
-		bool operator==(const IntVector2& other) const noexcept;
-		bool operator!=(const IntVector2& other) const noexcept;
+		bool operator==(const IntVector2& vector) const noexcept;
+		bool operator!=(const IntVector2& vector) const noexcept;
 
 		IntVector2& operator--() noexcept;
 		IntVector2& operator++() noexcept;
 		IntVector2 operator--(int) noexcept;
 		IntVector2 operator++(int) noexcept;
 
-		IntVector2 operator-(const IntVector2& other) const noexcept;
-		IntVector2 operator+(const IntVector2& other) const noexcept;
-		IntVector2 operator/(const IntVector2& other) const noexcept;
-		IntVector2 operator*(const IntVector2& other) const noexcept;
-		IntVector2 operator%(const IntVector2& other) const noexcept;
-		IntVector2 operator|(const IntVector2& other) const noexcept;
-		IntVector2 operator&(const IntVector2& other) const noexcept;
-		IntVector2 operator^(const IntVector2& other) const noexcept;
-		IntVector2 operator<<(const IntVector2& other) const noexcept;
-		IntVector2 operator>>(const IntVector2& other) const noexcept;
-		IntVector2& operator=(const IntVector2& other) noexcept;
-		IntVector2& operator-=(const IntVector2& other) noexcept;
-		IntVector2& operator+=(const IntVector2& other) noexcept;
-		IntVector2& operator/=(const IntVector2& other) noexcept;
-		IntVector2& operator*=(const IntVector2& other) noexcept;
-		IntVector2& operator%=(const IntVector2& other) noexcept;
-		IntVector2& operator|=(const IntVector2& other) noexcept;
-		IntVector2& operator&=(const IntVector2& other) noexcept;
-		IntVector2& operator^=(const IntVector2& other) noexcept;
-		IntVector2& operator<<=(const IntVector2& other) noexcept;
-		IntVector2& operator>>=(const IntVector2& other) noexcept;
+		IntVector2 operator-(const IntVector2& vector) const noexcept;
+		IntVector2 operator+(const IntVector2& vector) const noexcept;
+		IntVector2 operator/(const IntVector2& vector) const noexcept;
+		IntVector2 operator*(const IntVector2& vector) const noexcept;
+		IntVector2 operator%(const IntVector2& vector) const noexcept;
+		IntVector2 operator|(const IntVector2& vector) const noexcept;
+		IntVector2 operator&(const IntVector2& vector) const noexcept;
+		IntVector2 operator^(const IntVector2& vector) const noexcept;
+		IntVector2 operator<<(const IntVector2& vector) const noexcept;
+		IntVector2 operator>>(const IntVector2& vector) const noexcept;
+		IntVector2& operator-=(const IntVector2& vector) noexcept;
+		IntVector2& operator+=(const IntVector2& vector) noexcept;
+		IntVector2& operator/=(const IntVector2& vector) noexcept;
+		IntVector2& operator*=(const IntVector2& vector) noexcept;
+		IntVector2& operator%=(const IntVector2& vector) noexcept;
+		IntVector2& operator|=(const IntVector2& vector) noexcept;
+		IntVector2& operator&=(const IntVector2& vector) noexcept;
+		IntVector2& operator^=(const IntVector2& vector) noexcept;
+		IntVector2& operator<<=(const IntVector2& vector) noexcept;
+		IntVector2& operator>>=(const IntVector2& vector) noexcept;
 
 		IntVector2 operator-(int value) const noexcept;
 		IntVector2 operator+(int value) const noexcept;
@@ -55,7 +55,6 @@ namespace INJECTOR_NAMESPACE
 		IntVector2 operator^(int value) const noexcept;
 		IntVector2 operator<<(int value) const noexcept;
 		IntVector2 operator>>(int value) const noexcept;
-		IntVector2& operator=(int value) noexcept;
 		IntVector2& operator-=(int value) noexcept;
 		IntVector2& operator+=(int value) noexcept;
 		IntVector2& operator/=(int value) noexcept;

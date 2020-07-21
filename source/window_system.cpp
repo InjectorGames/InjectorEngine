@@ -8,8 +8,8 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	WindowSystem::WindowSystem(Manager& manager) :
-		System(manager), windows()
+	WindowSystem::WindowSystem() :
+		windows()
 	{}
 	WindowSystem::~WindowSystem()
 	{}
@@ -155,5 +155,9 @@ namespace INJECTOR_NAMESPACE
 			window->destroyComponent<WindowComponent>();
 
 		windows.clear();
+	}
+	size_t WindowSystem::windowComponentCount() const noexcept
+	{
+		return windows.size();
 	}
 }

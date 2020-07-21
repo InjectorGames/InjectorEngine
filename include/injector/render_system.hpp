@@ -1,6 +1,5 @@
 #pragma once
 #include <injector/manager.hpp>
-#include <injector/window.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -9,9 +8,11 @@ namespace INJECTOR_NAMESPACE
 	public:
 		EntityHandle window;
 
-		RenderSystem(Manager& manager, const EntityHandle& window = {});
+		RenderSystem(const EntityHandle& window = {});
 		virtual ~RenderSystem();
 
 		void update() override;
+
+
 	};
 }
