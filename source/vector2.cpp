@@ -76,7 +76,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	bool Vector2::operator!=(const Vector2& vector) const noexcept
 	{
-		return x != vector.x || y != vector.y;
+		return !(*this == vector);
 	}
 
 	Vector2& Vector2::operator--() noexcept
@@ -100,6 +100,10 @@ namespace INJECTOR_NAMESPACE
 		auto result = Vector2(*this);
 		++x; ++y;
 		return result;
+	}
+	Vector2 Vector2::operator-() const noexcept
+	{
+		return Vector2(-x, -y);
 	}
 
 	Vector2 Vector2::operator-(const Vector2& vector) const noexcept

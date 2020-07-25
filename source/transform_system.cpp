@@ -1,111 +1,72 @@
 #include <injector/transform_system.hpp>
-#include <injector/transform_component.hpp>
-#include <injector/translate_component.hpp>
-#include <injector/rotate_component.hpp>
+#include <injector/engine.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
 	TransformSystem::TransformSystem() :
-		transforms(), translates(), rotates()
+		transforms()
 	{}
 	TransformSystem::~TransformSystem()
 	{}
 
 	void TransformSystem::update()
 	{
+		auto deltaTime = static_cast<float>(Engine::getUpdateDeltaTime());
+
 		for (auto& transform : transforms)
 		{
 			TransformComponent* transformComponent;
 
-			if (transform->getComponent(transformComponent))
+			if (!transform->getComponent(transformComponent))
+				continue;
+
+			TranslateComponent* translateComponent;
+			if (transform->getComponent(translateComponent))
 			{
-				if (transformComponent->changed)
-				{
-					if (transformComponent->type == TransformComponent::Type::Spin)
-					{
-						/*transformComponent->matrix =
-							glm::translate(glm::mat4(1.0f), transform.position) *
-							glm::mat4_cast(glm::normalize(transform.rotation)) *
-							glm::scale(glm::mat4(1.0f), transform.scale);*/
-						transformComponent->changed = false;
-					}
-					else
-					{
-						/*transformComponent->matrix =
-							glm::scale(glm::mat4(1.0f), transform.scale) *
-							glm::mat4_cast(glm::normalize(transform.rotation)) *
-							glm::translate(glm::mat4(1.0f), transform.position);*/
-						transformComponent->changed = false;
-					}
-				}
+				transformComponent->position +=
+					translateComponent->translation * deltaTime;
+				transformComponent->changed = true;
+			}
+
+			RotateComponent* rotateComponent;
+			if (transform->getComponent(rotateComponent))
+			{
+				transformComponent->rotation *=
+					rotateComponent->rotation * deltaTime;
+				transformComponent->changed = true;
+			}
+
+			if (!transformComponent->changed)
+				continue;
+
+			if (transformComponent->type == TransformComponent::Type::Spin)
+			{
+				auto matrix = Matrix4::identity.getTranslated(
+					transformComponent->position);
+				matrix *= transformComponent->rotation.getNormalized().getMatrix4();
+				matrix *= Matrix4::identity.getScaled(transformComponent->scale);
+				transformComponent->matrix = matrix;
+				transformComponent->changed = false;
+			}
+			else
+			{
+				/*transformComponent->matrix =
+					glm::scale(glm::mat4(1.0f), transform.scale) *
+					glm::mat4_cast(glm::normalize(transform.rotation)) *
+					glm::translate(glm::mat4(1.0f), transform.position);*/
+				transformComponent->changed = false;
 			}
 		}
-
-		/*entities.each<TransformComponent>(
-			[deltaTime](entityx::Entity entity, TransformComponent& transform)
-			{
-				if (entity.has_component<TranslateComponent>())
-				{
-					auto& translateComponent = *entity.component<TranslateComponent>();
-					transform.position +=
-						translateComponent.translation * static_cast<float>(deltaTime);
-					transform.changed = true;
-				}
-
-				if (entity.has_component<RotateComponent>())
-				{
-					auto& rotateComponent = *entity.component<RotateComponent>();
-					transform.rotation *=
-						glm::quat(rotateComponent.rotation * static_cast<float>(deltaTime));
-					transform.changed = true;
-				}
-
-				if (transform.changed)
-				{
-					if (transform.type == TransformComponent::Type::Spin)
-					{
-						transform.matrix =
-							glm::translate(glm::mat4(1.0f), transform.position) *
-							glm::mat4_cast(glm::normalize(transform.rotation)) *
-							glm::scale(glm::mat4(1.0f), transform.scale);
-						transform.changed = false;
-					}
-					else
-					{
-						transform.matrix =
-							glm::scale(glm::mat4(1.0f), transform.scale) *
-							glm::mat4_cast(glm::normalize(transform.rotation)) *
-							glm::translate(glm::mat4(1.0f), transform.position);
-						transform.changed = false;
-					}
-				}
-			});*/
 	}
 
-	bool TransformSystem::createTransformComponent(
-		const EntityHandle& entity,
-		TransformComponent::Type type,
-		const EntityHandle& parent,
-		const Vector3& scale,
-		const Vector3& position,
-		const Quaternion& rotation,
-		const Matrix4& matrix,
-		const bool changed) noexcept
+	bool TransformSystem::addTransform(const EntityHandle& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (entity == nullptr || !entity->containsComponent<TransformComponent>())
 			return false;
 
-		TransformComponent* transformComponent;
-
-		if (!entity->createComponent(transformComponent,
-			type, parent, scale, position, rotation, matrix, changed))
-			return false;
-
-		transforms.emplace(entity);
-		return true;
+		return transforms.emplace(entity).second;
 	}
-	bool TransformSystem::destroyTransformComponent(
-		const EntityHandle& entity) noexcept
+	bool TransformSystem::removeTransform(const EntityHandle& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;
@@ -115,18 +76,14 @@ namespace INJECTOR_NAMESPACE
 		if (iterator == transforms.end())
 			return false;
 
-		entity->destroyComponent<TransformComponent>();
 		transforms.erase(iterator);
 		return true;
 	}
-	void TransformSystem::destroyTransformComponents() noexcept
+	void TransformSystem::removeTransforms() noexcept
 	{
-		for (auto& transform : transforms)
-			transform->destroyComponent<TransformComponent>();
-
 		transforms.clear();
 	}
-	size_t TransformSystem::transformComponentCount() const noexcept
+	size_t TransformSystem::getTransformCount() const noexcept
 	{
 		return transforms.size();
 	}

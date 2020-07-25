@@ -23,6 +23,7 @@ namespace INJECTOR_NAMESPACE
 		IntVector2& operator++() noexcept;
 		IntVector2 operator--(int) noexcept;
 		IntVector2 operator++(int) noexcept;
+		IntVector2 operator-() const noexcept;
 
 		IntVector2 operator-(const IntVector2& vector) const noexcept;
 		IntVector2 operator+(const IntVector2& vector) const noexcept;

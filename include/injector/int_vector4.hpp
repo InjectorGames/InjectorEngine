@@ -21,6 +21,9 @@ namespace INJECTOR_NAMESPACE
 		float getDistance(const IntVector4& vector) const noexcept;
 		IntVector4 getReflected(const IntVector4& normal) const noexcept;
 
+		IntVector2 getIntVector2() const noexcept;
+		IntVector3 getIntVector3() const noexcept;
+
 		bool operator==(const IntVector4& vector) const noexcept;
 		bool operator!=(const IntVector4& vector) const noexcept;
 
@@ -28,6 +31,7 @@ namespace INJECTOR_NAMESPACE
 		IntVector4& operator++() noexcept;
 		IntVector4 operator--(int) noexcept;
 		IntVector4 operator++(int) noexcept;
+		IntVector4 operator-() const noexcept;
 
 		IntVector4 operator-(const IntVector4& vector) const noexcept;
 		IntVector4 operator+(const IntVector4& vector) const noexcept;

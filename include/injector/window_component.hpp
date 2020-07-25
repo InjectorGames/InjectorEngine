@@ -7,6 +7,6 @@ namespace INJECTOR_NAMESPACE
 	struct WindowComponent
 	{
 		WindowHandle window;
-		WindowComponent(const WindowHandle& window = {});
+		WindowComponent(const WindowHandle& window = nullptr);
 	};
 }

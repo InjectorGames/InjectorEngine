@@ -16,6 +16,9 @@ include(GNUInstallDirs)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+include (TestBigEndian)
+TEST_BIG_ENDIAN(INJECTOR_BIG_ENDIAN)
+
 include(cmake/asio.cmake)
 
 set(BUILD_UTILS OFF CACHE BOOL "")
@@ -30,20 +33,33 @@ add_subdirectory(3rdparty/sdl)
 configure_file(cmake/defines.hpp.in injector/defines.hpp)
 
 add_library(InjectorEngine STATIC
+	source/camera_component.cpp
+	source/camera_system.cpp
 	source/engine.cpp
 	source/entity.cpp
+	source/file_stream.cpp
+	source/gl_batch.cpp
+	source/gl_buffer.cpp
+	source/gl_color_material.cpp
+	source/gl_material.cpp
+	source/gl_mesh.cpp
+	source/gl_primitives.cpp
+	source/gl_shader.cpp
 	source/gl_window.cpp
 	source/int_vector2.cpp
 	source/int_vector3.cpp
 	source/int_vector4.cpp
 	source/manager.cpp
+	source/material.cpp
 	source/matrix2.cpp
 	source/matrix3.cpp
 	source/matrix4.cpp
+	source/mesh.cpp
 	source/quaternion.cpp
 	source/render_component.cpp
 	source/render_system.cpp
 	source/rotate_component.cpp
+	source/shader.cpp
 	source/system.cpp
 	source/transform_component.cpp
 	source/transform_system.cpp

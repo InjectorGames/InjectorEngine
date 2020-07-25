@@ -94,13 +94,18 @@ namespace INJECTOR_NAMESPACE
 		return Vector3(1.0f / std::tan(x), 1.0f / std::tan(y), 1.0f / std::tan(z));
 	}
 
+	Vector2 Vector3::getVector2() const noexcept
+	{
+		return Vector2(x, y);
+	}
+
 	bool Vector3::operator==(const Vector3& vector) const noexcept
 	{
 		return x == vector.x && y == vector.y && z == vector.z;
 	}
 	bool Vector3::operator!=(const Vector3& vector) const noexcept
 	{
-		return x != vector.x || y != vector.y || z != vector.z;
+		return !(*this == vector);
 	}
 
 	Vector3& Vector3::operator--() noexcept
@@ -124,6 +129,10 @@ namespace INJECTOR_NAMESPACE
 		auto result = Vector3(*this);
 		++x; ++y; ++z;
 		return result;
+	}
+	Vector3 Vector3::operator-() const noexcept
+	{
+		return Vector3(-x, -y, -z);
 	}
 
 	Vector3 Vector3::operator-(const Vector3& vector) const noexcept

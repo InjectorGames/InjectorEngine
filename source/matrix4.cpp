@@ -1,4 +1,6 @@
 #include <injector/matrix4.hpp>
+
+#include <cmath>
 #include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
@@ -117,35 +119,6 @@ namespace INJECTOR_NAMESPACE
 		auto determinant = 1.0f / dot1;
 
 		return inverse * determinant;
-	}
-	Matrix4 Matrix4::getMultiplied(const Matrix4& matrix) const noexcept
-	{
-		auto a0 = getColumn0();
-		auto a1 = getColumn1();
-		auto a2 = getColumn2();
-		auto a3 = getColumn3();
-
-		auto b0 = matrix.getColumn0();
-		auto b1 = matrix.getColumn1();
-		auto b2 = matrix.getColumn2();
-		auto b3 = matrix.getColumn3();
-
-		return Matrix4(
-			a0 * b0.x + a1 * b0.y + a2 * b0.z + a3 * b0.w,
-			a0 * b1.x + a1 * b1.y + a2 * b1.z + a3 * b1.w,
-			a0 * b2.x + a1 * b2.y + a2 * b2.z + a3 * b2.w,
-			a0 * b3.x + a1 * b3.y + a2 * b3.z + a3 * b3.w);
-	}
-	Vector4 Matrix4::getMultiplied(const Vector4& vector) const noexcept
-	{
-		return getColumn0() * Vector4(vector.x) +
-			getColumn1() * Vector4(vector.y) +
-			getColumn2() * Vector4(vector.z) +
-			getColumn3() * Vector4(vector.w);
-	}
-	Matrix4 Matrix4::getDivided(const Matrix4& matrix) const noexcept
-	{
-		return getMultiplied(matrix.getInversed());
 	}
 	Matrix4 Matrix4::getScaled(const Vector3& vector) const noexcept
 	{
@@ -300,6 +273,20 @@ namespace INJECTOR_NAMESPACE
 		m33 = vector.w;
 	}
 
+	Matrix2 Matrix4::getMatrix2() const noexcept
+	{
+		return Matrix2(
+			m00, m10,
+			m01, m11);
+	}
+	Matrix3 Matrix4::getMatrix3() const noexcept
+	{
+		return Matrix3(
+			m00, m10, m20,
+			m01, m11, m21,
+			m02, m12, m22);
+	}
+
 	bool Matrix4::operator==(const Matrix4& matrix) const noexcept
 	{
 		return getColumn0() == matrix.getColumn0() &&
@@ -309,10 +296,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	bool Matrix4::operator!=(const Matrix4& matrix) const noexcept
 	{
-		return getColumn0() != matrix.getColumn0() ||
-			getColumn1() != matrix.getColumn1() ||
-			getColumn2() != matrix.getColumn2() ||
-			getColumn3() != matrix.getColumn3();
+		return !(*this == matrix);
 	}
 
 	Matrix4& Matrix4::operator--() noexcept
@@ -349,6 +333,14 @@ namespace INJECTOR_NAMESPACE
 		setColumn3(++getColumn3());
 		return result;
 	}
+	Matrix4 Matrix4::operator-() const noexcept
+	{
+		return Matrix4(
+			-getColumn0(),
+			-getColumn1(),
+			-getColumn2(),
+			-getColumn3());
+	}
 
 	Matrix4 Matrix4::operator-(const Matrix4& matrix) const noexcept
 	{
@@ -366,18 +358,38 @@ namespace INJECTOR_NAMESPACE
 	}
 	Matrix4 Matrix4::operator/(const Matrix4& matrix) const noexcept
 	{
-		return Matrix4(getColumn0() / matrix.getColumn0(),
-			getColumn1() / matrix.getColumn1(),
-			getColumn2() / matrix.getColumn2(),
-			getColumn3() / matrix.getColumn3());
+		return *this * matrix.getInversed();
+	}
+	Vector4 Matrix4::operator/(const Vector4& vector) const noexcept
+	{
+		return getInversed() * vector;
 	}
 	Matrix4 Matrix4::operator*(const Matrix4& matrix) const noexcept
 	{
-		return Matrix4(getColumn0() * matrix.getColumn0(),
-			getColumn1() * matrix.getColumn1(),
-			getColumn2() * matrix.getColumn2(),
-			getColumn3() * matrix.getColumn3());
+		auto a0 = getColumn0();
+		auto a1 = getColumn1();
+		auto a2 = getColumn2();
+		auto a3 = getColumn3();
+
+		auto b0 = matrix.getColumn0();
+		auto b1 = matrix.getColumn1();
+		auto b2 = matrix.getColumn2();
+		auto b3 = matrix.getColumn3();
+
+		return Matrix4(
+			a0 * b0.x + a1 * b0.y + a2 * b0.z + a3 * b0.w,
+			a0 * b1.x + a1 * b1.y + a2 * b1.z + a3 * b1.w,
+			a0 * b2.x + a1 * b2.y + a2 * b2.z + a3 * b2.w,
+			a0 * b3.x + a1 * b3.y + a2 * b3.z + a3 * b3.w);
 	}
+	Vector4 Matrix4::operator*(const Vector4& vector) const noexcept
+	{
+		return getColumn0() * Vector4(vector.x) +
+			getColumn1() * Vector4(vector.y) +
+			getColumn2() * Vector4(vector.z) +
+			getColumn3() * Vector4(vector.w);
+	}
+
 	Matrix4& Matrix4::operator-=(const Matrix4& matrix) noexcept
 	{
 		setColumn0(getColumn0() - matrix.getColumn0());
@@ -396,18 +408,24 @@ namespace INJECTOR_NAMESPACE
 	}
 	Matrix4& Matrix4::operator/=(const Matrix4& matrix) noexcept
 	{
-		setColumn0(getColumn0() / matrix.getColumn0());
-		setColumn1(getColumn1() / matrix.getColumn1());
-		setColumn2(getColumn2() / matrix.getColumn2());
-		setColumn3(getColumn3() / matrix.getColumn3());
-		return *this;
+		return *this *= matrix.getInversed();
 	}
 	Matrix4& Matrix4::operator*=(const Matrix4& matrix) noexcept
 	{
-		setColumn0(getColumn0() * matrix.getColumn0());
-		setColumn1(getColumn1() * matrix.getColumn1());
-		setColumn2(getColumn2() * matrix.getColumn2());
-		setColumn3(getColumn3() * matrix.getColumn3());
+		auto a0 = getColumn0();
+		auto a1 = getColumn1();
+		auto a2 = getColumn2();
+		auto a3 = getColumn3();
+
+		auto b0 = matrix.getColumn0();
+		auto b1 = matrix.getColumn1();
+		auto b2 = matrix.getColumn2();
+		auto b3 = matrix.getColumn3();
+
+		setColumn0(a0 * b0.x + a1 * b0.y + a2 * b0.z + a3 * b0.w);
+		setColumn1(a0 * b1.x + a1 * b1.y + a2 * b1.z + a3 * b1.w);
+		setColumn2(a0 * b2.x + a1 * b2.y + a2 * b2.z + a3 * b2.w);
+		setColumn3(a0 * b3.x + a1 * b3.y + a2 * b3.z + a3 * b3.w);
 		return *this;
 	}
 
@@ -482,6 +500,35 @@ namespace INJECTOR_NAMESPACE
 		setColumn2(getColumn2() * vector);
 		setColumn3(getColumn3() * vector);
 		return *this;
+	}
+
+	Matrix4 Matrix4::createPerspectiveZO(float fieldOfView, float aspectRatio,
+		float nearClipPlane, float farClipPlane)
+	{
+		auto tanHalfFov = std::tan(fieldOfView / 2.0f);
+
+		return Matrix4(
+			1.0f / (aspectRatio * tanHalfFov),
+			0.0f, 0.0f, 0.0f, 0.0f,
+			1.0f / (tanHalfFov),
+			0.0f, 0.0f, 0.0f, 0.0f,
+			farClipPlane / (farClipPlane - nearClipPlane),
+			-(farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane),
+			0.0f, 0.0f, 1.0f, 0.0f);
+	}
+	Matrix4 Matrix4::createPerspectiveNO(float fieldOfView, float aspectRatio,
+		float nearClipPlane, float farClipPlane)
+	{
+		auto tanHalfFov = std::tan(fieldOfView / 2.0f);
+
+		return Matrix4(
+			1.0f / (aspectRatio * tanHalfFov),
+			0.0f, 0.0f, 0.0f, 0.0f,
+			1.0f / (tanHalfFov),
+			0.0f, 0.0f, 0.0f, 0.0f,
+			(farClipPlane + nearClipPlane) / (farClipPlane - nearClipPlane),
+			-(2.0f * farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane),
+			0.0f, 0.0f, 1.0f, 0.0f);
 	}
 
 	const Matrix4 Matrix4::zero = Matrix4(0.0f);

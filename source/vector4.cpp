@@ -118,13 +118,22 @@ namespace INJECTOR_NAMESPACE
 			1.0f / std::tan(z), 1.0f / std::tan(w));
 	}
 
+	Vector2 Vector4::getVector2() const noexcept
+	{
+		return Vector2(x, y);
+	}
+	Vector3 Vector4::getVector3() const noexcept
+	{
+		return Vector3(x, y, z);
+	}
+
 	bool Vector4::operator==(const Vector4& vector) const noexcept
 	{
 		return x == vector.x && y == vector.y && z == vector.z && w == vector.w;
 	}
 	bool Vector4::operator!=(const Vector4& vector) const noexcept
 	{
-		return x != vector.x || y != vector.y || z != vector.z || w != vector.w;
+		return !(*this == vector);
 	}
 
 	Vector4& Vector4::operator--() noexcept
@@ -148,6 +157,10 @@ namespace INJECTOR_NAMESPACE
 		auto result = Vector4(*this);
 		++x; ++y; ++z; ++w;
 		return result;
+	}
+	Vector4 Vector4::operator-() const noexcept
+	{
+		return Vector4(-x, -y, -z, -w);
 	}
 
 	Vector4 Vector4::operator-(const Vector4& vector) const noexcept

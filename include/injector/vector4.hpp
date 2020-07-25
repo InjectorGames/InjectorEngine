@@ -36,6 +36,9 @@ namespace INJECTOR_NAMESPACE
 		Vector4 getTangent() const noexcept;
 		Vector4 getCotangent() const noexcept;
 
+		Vector2 getVector2() const noexcept;
+		Vector3 getVector3() const noexcept;
+
 		bool operator==(const Vector4& vector) const noexcept;
 		bool operator!=(const Vector4& vector) const noexcept;
 
@@ -43,6 +46,7 @@ namespace INJECTOR_NAMESPACE
 		Vector4& operator++() noexcept;
 		Vector4 operator--(int) noexcept;
 		Vector4 operator++(int) noexcept;
+		Vector4 operator-() const noexcept;
 
 		Vector4 operator-(const Vector4& vector) const noexcept;
 		Vector4 operator+(const Vector4& vector) const noexcept;

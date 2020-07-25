@@ -1,11 +1,11 @@
 #pragma once
-#include <injector/vector3.hpp>
+#include <injector/quaternion.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
 	struct RotateComponent
 	{
-		Vector3 rotation;
-		RotateComponent(const Vector3& rotation);
+		Quaternion rotation;
+		RotateComponent(const Quaternion& rotation);
 	};
 }

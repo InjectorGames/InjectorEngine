@@ -1,7 +1,8 @@
 #pragma once
-#include <inject/defines.hpp>
+#include <injector/defines.hpp>
+#include <memory>
 
-namespace INJECT_NAMESPACE
+namespace INJECTOR_NAMESPACE
 {
 	class Shader
 	{
@@ -25,13 +26,11 @@ namespace INJECT_NAMESPACE
 	protected:
 		Type type;
 	public:
-		Shader(const Type _type) :
-			type(_type)
-		{}
+		Shader(Type _type);
+		virtual ~Shader();
 
-		inline const Type getType() const noexcept
-		{
-			return type;
-		}
+		Type getType() const noexcept;
 	};
+
+	using ShaderHandle = std::shared_ptr<Shader>;
 }

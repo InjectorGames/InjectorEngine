@@ -20,9 +20,6 @@ namespace INJECTOR_NAMESPACE
 		float getDeterminant() const noexcept;
 		Matrix2 getTransposed() const noexcept;
 		Matrix2 getInversed() const noexcept;
-		Matrix2 getMultiplied(const Matrix2& matrix) const noexcept;
-		Vector2 getMultiplied(const Vector2& vector) const noexcept;
-		Matrix2 getDivided(const Matrix2& matrix) const noexcept;
 
 		Vector2 getRow0() const noexcept;
 		Vector2 getRow1() const noexcept;
@@ -33,6 +30,35 @@ namespace INJECTOR_NAMESPACE
 		Vector2 getColumn1() const noexcept;
 		void setColumn0(const Vector2& vector) noexcept;
 		void setColumn1(const Vector2& vector) noexcept;
+
+		bool operator==(const Matrix2& matrix) const noexcept;
+		bool operator!=(const Matrix2& matrix) const noexcept;
+
+		Matrix2& operator--() noexcept;
+		Matrix2& operator++() noexcept;
+		Matrix2 operator--(int) noexcept;
+		Matrix2 operator++(int) noexcept;
+		Matrix2 operator-() const noexcept;
+
+		Matrix2 operator-(const Matrix2& matrix) const noexcept;
+		Matrix2 operator+(const Matrix2& matrix) const noexcept;
+		Matrix2 operator/(const Matrix2& matrix) const noexcept;
+		Vector2 operator/(const Vector2& vector) const noexcept;
+		Matrix2 operator*(const Matrix2& matrix) const noexcept;
+		Vector2 operator*(const Vector2& vector) const noexcept;
+		Matrix2& operator-=(const Matrix2& matrix) noexcept;
+		Matrix2& operator+=(const Matrix2& matrix) noexcept;
+		Matrix2& operator/=(const Matrix2& matrix) noexcept;
+		Matrix2& operator*=(const Matrix2& matrix) noexcept;
+
+		Matrix2 operator-(float value) const noexcept;
+		Matrix2 operator+(float value) const noexcept;
+		Matrix2 operator/(float value) const noexcept;
+		Matrix2 operator*(float value) const noexcept;
+		Matrix2& operator-=(float value) noexcept;
+		Matrix2& operator+=(float value) noexcept;
+		Matrix2& operator/=(float value) noexcept;
+		Matrix2& operator*=(float value) noexcept;
 		
 		static const Matrix2 zero;
 		static const Matrix2 minusOne;

@@ -1,6 +1,8 @@
 #include <injector/engine.hpp>
 
+
 #include <thread>
+#include <cstdlib>
 #include <iostream>
 
 #include <SDL.h>
@@ -266,5 +268,189 @@ namespace INJECTOR_NAMESPACE
 	{
 		return managers.size();
 	}
+
+	float Engine::toDegrees(float value)
+	{
+		return value * (static_cast<float>(M_PI) / 180.0f);
+	}
+	double Engine::toDegrees(double value)
+	{
+		return value * (M_PI / 180.0);
+	}
+	float Engine::toRadians(float value)
+	{
+		return value * (180.0f / static_cast<float>(M_PI));
+	}
+	double Engine::toRadians(double value)
+	{
+		return value * (180.0 / M_PI);
+	}
+
+	uint16_t Engine::swapEndian(uint16_t value) noexcept
+	{
+		return static_cast<uint16_t>(_byteswap_ushort(value));
+	}
+	int16_t Engine::swapEndian(int16_t value) noexcept
+	{
+		auto result = _byteswap_ushort(*reinterpret_cast<uint16_t*>(&value));
+		return *reinterpret_cast<int16_t*>(&result);
+	}
+	uint32_t Engine::swapEndian(uint32_t value) noexcept
+	{
+		return static_cast<uint32_t>(_byteswap_ulong(value));
+	}
+	int32_t Engine::swapEndian(int32_t value) noexcept
+	{
+		auto result = _byteswap_ulong(*reinterpret_cast<uint32_t*>(&value));
+		return *reinterpret_cast<int32_t*>(&result);
+	}
+	uint64_t Engine::swapEndian(uint64_t value) noexcept
+	{
+		return static_cast<uint64_t>(_byteswap_uint64(value));
+	}
+	int64_t Engine::swapEndian(int64_t value) noexcept
+	{
+		auto result = _byteswap_uint64(*reinterpret_cast<uint64_t*>(&value));
+		return *reinterpret_cast<int64_t*>(&result);
+	}
+	float Engine::swapEndian(float value) noexcept
+	{
+		auto result = _byteswap_ulong(*reinterpret_cast<uint32_t*>(&value));
+		return *reinterpret_cast<float*>(&result);
+	}
+	double Engine::swapEndian(double value) noexcept
+	{
+		auto result = _byteswap_uint64(*reinterpret_cast<uint64_t*>(&value));
+		return *reinterpret_cast<double*>(&result);
+	}
 	
+	uint16_t Engine::swapBigEndian(uint16_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return value;
+#else
+		return swapEndian(value);
+#endif
+	}
+	int16_t Engine::swapBigEndian(int16_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return value;
+#else
+		return swapEndian(value);
+#endif
+	}
+	uint32_t Engine::swapBigEndian(uint32_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return value;
+#else
+		return swapEndian(value);
+#endif
+	}
+	int32_t Engine::swapBigEndian(int32_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return value;
+#else
+		return swapEndian(value);
+#endif
+	}
+	uint64_t Engine::swapBigEndian(uint64_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return value;
+#else
+		return swapEndian(value);
+#endif
+	}
+	int64_t Engine::swapBigEndian(int64_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return value;
+#else
+		return swapEndian(value);
+#endif
+	}
+	float Engine::swapBigEndian(float value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return value;
+#else
+		return swapEndian(value);
+#endif
+	}
+	double Engine::swapBigEndian(double value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return value;
+#else
+		return swapEndian(value);
+#endif
+	}
+
+	uint16_t Engine::swapLittleEndian(uint16_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return swapEndian(value);
+#else
+		return value;
+#endif
+	}
+	int16_t Engine::swapLittleEndian(int16_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return swapEndian(value);
+#else
+		return value;
+#endif
+	}
+	uint32_t Engine::swapLittleEndian(uint32_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return swapEndian(value);
+#else
+		return value;
+#endif
+	}
+	int32_t Engine::swapLittleEndian(int32_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return swapEndian(value);
+#else
+		return value;
+#endif
+	}
+	uint64_t Engine::swapLittleEndian(uint64_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return swapEndian(value);
+#else
+		return value;
+#endif
+	}
+	int64_t Engine::swapLittleEndian(int64_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return swapEndian(value);
+#else
+		return value;
+#endif
+	}
+	float Engine::swapLittleEndian(float value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return swapEndian(value);
+#else
+		return value;
+#endif
+	}
+	double Engine::swapLittleEndian(double value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return swapEndian(value);
+#else
+		return value;
+#endif
+	}
 }

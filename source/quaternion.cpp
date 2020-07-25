@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <limits>
+#include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -52,15 +53,16 @@ namespace INJECTOR_NAMESPACE
 
 		*this = Quaternion(real, t.x, t.y, t.z).getNormalized();
 	}
-	Quaternion::Quaternion(const Matrix3 matrix)
+	Quaternion::Quaternion(const Matrix3& matrix)
 	{
-		T fourXSquaredMinus1 = m[0][0] - m[1][1] - m[2][2];
-		T fourYSquaredMinus1 = m[1][1] - m[0][0] - m[2][2];
-		T fourZSquaredMinus1 = m[2][2] - m[0][0] - m[1][1];
-		T fourWSquaredMinus1 = m[0][0] + m[1][1] + m[2][2];
+		auto fourXSquaredMinus1 = matrix.m00 - matrix.m11 - matrix.m22;
+		auto fourYSquaredMinus1 = matrix.m11 - matrix.m00 - matrix.m22;
+		auto fourZSquaredMinus1 = matrix.m22 - matrix.m00 - matrix.m11;
+		auto fourWSquaredMinus1 = matrix.m00 + matrix.m11 + matrix.m22;
 
+		auto fourBiggestSquaredMinus1 = fourWSquaredMinus1;
 		int biggestIndex = 0;
-		T fourBiggestSquaredMinus1 = fourWSquaredMinus1;
+
 		if (fourXSquaredMinus1 > fourBiggestSquaredMinus1)
 		{
 			fourBiggestSquaredMinus1 = fourXSquaredMinus1;
@@ -77,27 +79,89 @@ namespace INJECTOR_NAMESPACE
 			biggestIndex = 3;
 		}
 
-		T biggestVal = sqrt(fourBiggestSquaredMinus1 + static_cast<T>(1)) * static_cast<T>(0.5);
-		T mult = static_cast<T>(0.25) / biggestVal;
+		auto biggestValue = std::sqrt(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
+		auto multiplier = 0.25f / biggestValue;
 
 		switch (biggestIndex)
 		{
 		case 0:
-			return qua<T, Q>(biggestVal, (m[1][2] - m[2][1]) * mult, (m[2][0] - m[0][2]) * mult, (m[0][1] - m[1][0]) * mult);
+			x = (matrix.m12 - matrix.m21) * multiplier;
+			y = (matrix.m20 - matrix.m02) * multiplier;
+			z = (matrix.m01 - matrix.m10) * multiplier;
+			w = biggestValue;
 		case 1:
-			return qua<T, Q>((m[1][2] - m[2][1]) * mult, biggestVal, (m[0][1] + m[1][0]) * mult, (m[2][0] + m[0][2]) * mult);
+			x = biggestValue;
+			y = (matrix.m01 + matrix.m10) * multiplier;
+			z = (matrix.m20 + matrix.m02) * multiplier;
+			w = (matrix.m12 - matrix.m21) * multiplier;
 		case 2:
-			return qua<T, Q>((m[2][0] - m[0][2]) * mult, (m[0][1] + m[1][0]) * mult, biggestVal, (m[1][2] + m[2][1]) * mult);
+			x = (matrix.m01 + matrix.m10) * multiplier;
+			y = biggestValue;
+			z = (matrix.m12 + matrix.m21) * multiplier;
+			w = (matrix.m20 - matrix.m02) * multiplier;
 		case 3:
-			return qua<T, Q>((m[0][1] - m[1][0]) * mult, (m[2][0] + m[0][2]) * mult, (m[1][2] + m[2][1]) * mult, biggestVal);
-		default: // Silence a -Wswitch-default warning in GCC. Should never actually get here. Assert is just for sanity.
-			assert(false);
-			return qua<T, Q>(1, 0, 0, 0);
+			x = (matrix.m20 + matrix.m02) * multiplier;
+			y = (matrix.m12 + matrix.m21) * multiplier;
+			z = biggestValue;
+			w = (matrix.m01 - matrix.m10) * multiplier;
+		default:
+			throw std::runtime_error("Something went wrong");
 		}
 	}
-	Quaternion::Quaternion(const Matrix4 matrix)
+	Quaternion::Quaternion(const Matrix4& matrix)
 	{
+		auto fourXSquaredMinus1 = matrix.m00 - matrix.m11 - matrix.m22;
+		auto fourYSquaredMinus1 = matrix.m11 - matrix.m00 - matrix.m22;
+		auto fourZSquaredMinus1 = matrix.m22 - matrix.m00 - matrix.m11;
+		auto fourWSquaredMinus1 = matrix.m00 + matrix.m11 + matrix.m22;
 
+		auto fourBiggestSquaredMinus1 = fourWSquaredMinus1;
+		int biggestIndex = 0;
+
+		if (fourXSquaredMinus1 > fourBiggestSquaredMinus1)
+		{
+			fourBiggestSquaredMinus1 = fourXSquaredMinus1;
+			biggestIndex = 1;
+		}
+		if (fourYSquaredMinus1 > fourBiggestSquaredMinus1)
+		{
+			fourBiggestSquaredMinus1 = fourYSquaredMinus1;
+			biggestIndex = 2;
+		}
+		if (fourZSquaredMinus1 > fourBiggestSquaredMinus1)
+		{
+			fourBiggestSquaredMinus1 = fourZSquaredMinus1;
+			biggestIndex = 3;
+		}
+
+		auto biggestValue = std::sqrt(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
+		auto multiplier = 0.25f / biggestValue;
+
+		switch (biggestIndex)
+		{
+		case 0:
+			x = (matrix.m12 - matrix.m21) * multiplier;
+			y = (matrix.m20 - matrix.m02) * multiplier;
+			z = (matrix.m01 - matrix.m10) * multiplier;
+			w = biggestValue;
+		case 1:
+			x = biggestValue;
+			y = (matrix.m01 + matrix.m10) * multiplier;
+			z = (matrix.m20 + matrix.m02) * multiplier;
+			w = (matrix.m12 - matrix.m21) * multiplier;
+		case 2:
+			x = (matrix.m01 + matrix.m10) * multiplier;
+			y = biggestValue;
+			z = (matrix.m12 + matrix.m21) * multiplier;
+			w = (matrix.m20 - matrix.m02) * multiplier;
+		case 3:
+			x = (matrix.m20 + matrix.m02) * multiplier;
+			y = (matrix.m12 + matrix.m21) * multiplier;
+			z = biggestValue;
+			w = (matrix.m01 - matrix.m10) * multiplier;
+		default:
+			throw std::runtime_error("Something went wrong");
+		}
 	}
 
 	float Quaternion::getDotProduct(const Quaternion& quaternion) const noexcept
@@ -107,11 +171,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	Quaternion Quaternion::getCrossProduct(const Quaternion& quaternion) const noexcept
 	{
-		return Quaternion(
-			w * quaternion.x + x * quaternion.w + y * quaternion.z - z * quaternion.y,
-			w * quaternion.y + y * quaternion.w + z * quaternion.x - x * quaternion.z,
-			w * quaternion.z + z * quaternion.w + x * quaternion.y - y * quaternion.x,
-			w * quaternion.w - x * quaternion.x - y * quaternion.y - z * quaternion.z);
+		return *this * quaternion;
 	}
 	float Quaternion::getLength() const noexcept
 	{
@@ -126,16 +186,20 @@ namespace INJECTOR_NAMESPACE
 
 		return *this * (1.0f / length);
 	}
+	Quaternion Quaternion::getConjugated() const noexcept
+	{
+		return Quaternion(-x, -y, -z, w);
+	}
+	Quaternion Quaternion::getInversed() const noexcept
+	{
+		return getConjugated() / getDotProduct(*this);
+	}
 	Quaternion Quaternion::getLookedAt(
 		const Vector3& direction, const Vector3& up) const noexcept
 	{
 		auto c0 = up.getCrossProduct(direction) *
 			(1.0f / std::sqrt(std::fmaxf(0.00001f, direction.getDotProduct(direction))));
-
-		auto result = Matrix3(c0, direction.getCrossProduct(c0), direction);
-
-		// TODO:
-		return quat_cast(Result);
+		return Quaternion(Matrix3(c0, direction.getCrossProduct(c0), direction));
 	}
 
 	float Quaternion::getRoll() const noexcept
@@ -205,8 +269,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	bool Quaternion::operator!=(const Quaternion& quaternion) const noexcept
 	{
-		return x != quaternion.x || y != quaternion.y ||
-			z != quaternion.z || w != quaternion.w;
+		return !(*this == quaternion);
 	}
 
 	Quaternion& Quaternion::operator--() noexcept
@@ -232,52 +295,67 @@ namespace INJECTOR_NAMESPACE
 		return result;
 	}
 
-	Quaternion Quaternion::operator-(const Quaternion& vector) const noexcept
+	Quaternion Quaternion::operator-() const noexcept
 	{
-		return Quaternion(x - vector.x, y - vector.y, z - vector.z, w - vector.w);
+		return Quaternion(-x, -y, -z, -w);
 	}
-	Quaternion Quaternion::operator+(const Quaternion& vector) const noexcept
+	Quaternion Quaternion::operator+() const noexcept
 	{
-		return Quaternion(x + vector.x, y + vector.y, z + vector.z, w + vector.w);
+		return Quaternion(x, y, z, w);
 	}
-	Quaternion Quaternion::operator/(const Quaternion& vector) const noexcept
+
+	Quaternion Quaternion::operator-(const Quaternion& quaternion) const noexcept
 	{
-		return Quaternion(x / vector.x, y / vector.y, z / vector.z, w / vector.w);
+		return Quaternion(x - quaternion.x, y - quaternion.y,
+			z - quaternion.z, w - quaternion.w);
 	}
-	Quaternion Quaternion::operator*(const Quaternion& vector) const noexcept
+	Quaternion Quaternion::operator+(const Quaternion& quaternion) const noexcept
 	{
-		return Quaternion(x * vector.x, y * vector.y, z * vector.z, w * vector.w);
+		return Quaternion(x + quaternion.x, y + quaternion.y,
+			z + quaternion.z, w + quaternion.w);
 	}
-	Quaternion& Quaternion::operator-=(const Quaternion& vector) noexcept
+	Quaternion Quaternion::operator*(const Quaternion& quaternion) const noexcept
 	{
-		x -= vector.x;
-		y -= vector.y;
-		z -= vector.z;
-		w -= vector.w;
+		return Quaternion(
+			w * quaternion.x + x * quaternion.w + y * quaternion.z - z * quaternion.y,
+			w * quaternion.y + y * quaternion.w + z * quaternion.x - x * quaternion.z,
+			w * quaternion.z + z * quaternion.w + x * quaternion.y - y * quaternion.x,
+			w * quaternion.w - x * quaternion.x - y * quaternion.y - z * quaternion.z);
+	}
+	Vector3 Quaternion::operator*(const Vector3& vector) const noexcept
+	{
+		auto qv = Vector3(x, y, z);
+		auto uv = qv.getCrossProduct(vector);
+		auto uuv = qv.getCrossProduct(uv);
+		return vector + ((uv * w) + uuv) * 2.0f;
+	}
+	Vector4 Quaternion::operator*(const Vector4& vector) const noexcept
+	{
+		auto v = vector.getVector3();
+		return Vector4(*this * v, vector.w);
+	}
+	Quaternion& Quaternion::operator-=(const Quaternion& quaternion) noexcept
+	{
+		x -= quaternion.x;
+		y -= quaternion.y;
+		z -= quaternion.z;
+		w -= quaternion.w;
 		return *this;
 	}
-	Quaternion& Quaternion::operator+=(const Quaternion& vector) noexcept
+	Quaternion& Quaternion::operator+=(const Quaternion& quaternion) noexcept
 	{
-		x += vector.x;
-		y += vector.y;
-		z += vector.z;
-		w += vector.w;
+		x += quaternion.x;
+		y += quaternion.y;
+		z += quaternion.z;
+		w += quaternion.w;
 		return *this;
 	}
-	Quaternion& Quaternion::operator/=(const Quaternion& vector) noexcept
+	Quaternion& Quaternion::operator*=(const Quaternion& quaternion) noexcept
 	{
-		x /= vector.x;
-		y /= vector.y;
-		z /= vector.z;
-		w /= vector.w;
-		return *this;
-	}
-	Quaternion& Quaternion::operator*=(const Quaternion& vector) noexcept
-	{
-		x *= vector.x;
-		y *= vector.y;
-		z *= vector.z;
-		w *= vector.w;
+		x = w * quaternion.x + x * quaternion.w + y * quaternion.z - z * quaternion.y;
+		y = w * quaternion.y + y * quaternion.w + z * quaternion.x - x * quaternion.z;
+		z = w * quaternion.z + z * quaternion.w + x * quaternion.y - y * quaternion.x;
+		w = w * quaternion.w - x * quaternion.x - y * quaternion.y - z * quaternion.z;
 		return *this;
 	}
 

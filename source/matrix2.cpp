@@ -43,27 +43,6 @@ namespace INJECTOR_NAMESPACE
 			m11 * determinant, -m01 * determinant,
 			-m10 * determinant, m00 * determinant);
 	}
-	Matrix2 Matrix2::getMultiplied(const Matrix2& matrix) const noexcept
-	{
-		auto a0 = getColumn0();
-		auto a1 = getColumn1();
-
-		auto b0 = matrix.getColumn0();
-		auto b1 = matrix.getColumn1();
-
-		return Matrix2(
-			a0 * b0.x + a1 * b0.y,
-			a0 * b1.x + a1 * b1.y);
-	}
-	Vector2 Matrix2::getMultiplied(const Vector2& vector) const noexcept
-	{
-		return getColumn0() * Vector2(vector.x) +
-			getColumn1() * Vector2(vector.y);
-	}
-	Matrix2 Matrix2::getDivided(const Matrix2& matrix) const noexcept
-	{
-		return getMultiplied(matrix.getInversed());
-	}
 
 	Vector2 Matrix2::getRow0() const noexcept
 	{
@@ -101,6 +80,171 @@ namespace INJECTOR_NAMESPACE
 	{
 		m01 = vector.x;
 		m11 = vector.y;
+	}
+
+	bool Matrix2::operator==(const Matrix2& matrix) const noexcept
+	{
+		return getColumn0() == matrix.getColumn0() &&
+			getColumn1() == matrix.getColumn1();
+	}
+	bool Matrix2::operator!=(const Matrix2& matrix) const noexcept
+	{
+		return !(*this == matrix);
+	}
+
+	Matrix2& Matrix2::operator--() noexcept
+	{
+		setColumn0(--getColumn0());
+		setColumn1(--getColumn1());
+		return *this;
+	}
+	Matrix2& Matrix2::operator++() noexcept
+	{
+		setColumn0(++getColumn0());
+		setColumn1(++getColumn1());
+		return *this;
+	}
+	Matrix2 Matrix2::operator--(int) noexcept
+	{
+		auto result = Matrix2(*this);
+		setColumn0(--getColumn0());
+		setColumn1(--getColumn1());
+		return result;
+	}
+	Matrix2 Matrix2::operator++(int) noexcept
+	{
+		auto result = Matrix2(*this);
+		setColumn0(++getColumn0());
+		setColumn1(++getColumn1());
+		return result;
+	}
+	Matrix2 Matrix2::operator-() const noexcept
+	{
+		return Matrix2(
+			-getColumn0(),
+			-getColumn1());
+	}
+
+	Matrix2 Matrix2::operator-(const Matrix2& matrix) const noexcept
+	{
+		return Matrix2(getColumn0() - matrix.getColumn0(),
+			getColumn1() - matrix.getColumn1());
+	}
+	Matrix2 Matrix2::operator+(const Matrix2& matrix) const noexcept
+	{
+		return Matrix2(getColumn0() + matrix.getColumn0(),
+			getColumn1() + matrix.getColumn1());
+	}
+	Matrix2 Matrix2::operator/(const Matrix2& matrix) const noexcept
+	{
+		return *this * matrix.getInversed();
+	}
+	Vector2 Matrix2::operator/(const Vector2& vector) const noexcept
+	{
+		return getInversed() * vector;
+	}
+	Matrix2 Matrix2::operator*(const Matrix2& matrix) const noexcept
+	{
+		auto a0 = getColumn0();
+		auto a1 = getColumn1();
+
+		auto b0 = matrix.getColumn0();
+		auto b1 = matrix.getColumn1();
+
+		return Matrix2(
+			a0 * b0.x + a1 * b0.y,
+			a0 * b1.x + a1 * b1.y);
+	}
+	Vector2 Matrix2::operator*(const Vector2& vector) const noexcept
+	{
+		return getColumn0() * Vector2(vector.x) +
+			getColumn1() * Vector2(vector.y);
+	}
+
+	Matrix2& Matrix2::operator-=(const Matrix2& matrix) noexcept
+	{
+		setColumn0(getColumn0() - matrix.getColumn0());
+		setColumn1(getColumn1() - matrix.getColumn1());
+		return *this;
+	}
+	Matrix2& Matrix2::operator+=(const Matrix2& matrix) noexcept
+	{
+		setColumn0(getColumn0() + matrix.getColumn0());
+		setColumn1(getColumn1() + matrix.getColumn1());
+		return *this;
+	}
+	Matrix2& Matrix2::operator/=(const Matrix2& matrix) noexcept
+	{
+		return *this *= matrix.getInversed();
+	}
+	Matrix2& Matrix2::operator*=(const Matrix2& matrix) noexcept
+	{
+		auto a0 = getColumn0();
+		auto a1 = getColumn1();
+
+		auto b0 = matrix.getColumn0();
+		auto b1 = matrix.getColumn1();
+
+		setColumn0(a0 * b0.x + a1 * b0.y);
+		setColumn1(a0 * b1.x + a1 * b1.y);
+		return *this;
+	}
+
+	Matrix2 Matrix2::operator-(float value) const noexcept
+	{
+		auto vector = Vector2(value);
+
+		return Matrix2(getColumn0() - vector,
+			getColumn1() - vector);
+	}
+	Matrix2 Matrix2::operator+(float value) const noexcept
+	{
+		auto vector = Vector2(value);
+
+		return Matrix2(getColumn0() + vector,
+			getColumn1() + vector);
+	}
+	Matrix2 Matrix2::operator/(float value) const noexcept
+	{
+		auto vector = Vector2(value);
+
+		return Matrix2(getColumn0() / vector,
+			getColumn1() / vector);
+	}
+	Matrix2 Matrix2::operator*(float value) const noexcept
+	{
+		auto vector = Vector2(value);
+
+		return Matrix2(getColumn0() * vector,
+			getColumn1() * vector);
+	}
+	Matrix2& Matrix2::operator-=(float value) noexcept
+	{
+		auto vector = Vector2(value);
+		setColumn0(getColumn0() - vector);
+		setColumn1(getColumn1() - vector);
+		return *this;
+	}
+	Matrix2& Matrix2::operator+=(float value) noexcept
+	{
+		auto vector = Vector2(value);
+		setColumn0(getColumn0() + vector);
+		setColumn1(getColumn1() + vector);
+		return *this;
+	}
+	Matrix2& Matrix2::operator/=(float value) noexcept
+	{
+		auto vector = Vector2(value);
+		setColumn0(getColumn0() / vector);
+		setColumn1(getColumn1() / vector);
+		return *this;
+	}
+	Matrix2& Matrix2::operator*=(float value) noexcept
+	{
+		auto vector = Vector2(value);
+		setColumn0(getColumn0() * vector);
+		setColumn1(getColumn1() * vector);
+		return *this;
 	}
 
 	const Matrix2 Matrix2::zero = Matrix2(0.0f);

@@ -1,4 +1,5 @@
 #pragma once
+#include <injector/matrix3.hpp>
 #include <injector/vector4.hpp>
 
 namespace INJECTOR_NAMESPACE
@@ -26,9 +27,6 @@ namespace INJECTOR_NAMESPACE
 		float getDeterminant() const noexcept;
 		Matrix4 getTransposed() const noexcept;
 		Matrix4 getInversed() const noexcept;
-		Matrix4 getMultiplied(const Matrix4& matrix) const noexcept;
-		Vector4 getMultiplied(const Vector4& vector) const noexcept;
-		Matrix4 getDivided(const Matrix4& matrix) const noexcept;
 		Matrix4 getScaled(const Vector3& vector) const noexcept;
 		Matrix4 getTranslated(const Vector3& vector) const noexcept;
 		Matrix4 getRotated(const Vector3& vector, float angle) const noexcept;
@@ -52,6 +50,9 @@ namespace INJECTOR_NAMESPACE
 		void setColumn2(const Vector4& vector) noexcept;
 		void setColumn3(const Vector4& vector) noexcept;
 
+		Matrix2 getMatrix2() const noexcept;
+		Matrix3 getMatrix3() const noexcept;
+
 		bool operator==(const Matrix4& matrix) const noexcept;
 		bool operator!=(const Matrix4& matrix) const noexcept;
 
@@ -59,11 +60,14 @@ namespace INJECTOR_NAMESPACE
 		Matrix4& operator++() noexcept;
 		Matrix4 operator--(int) noexcept;
 		Matrix4 operator++(int) noexcept;
+		Matrix4 operator-() const noexcept;
 
 		Matrix4 operator-(const Matrix4& matrix) const noexcept;
 		Matrix4 operator+(const Matrix4& matrix) const noexcept;
 		Matrix4 operator/(const Matrix4& matrix) const noexcept;
+		Vector4 operator/(const Vector4& vector) const noexcept;
 		Matrix4 operator*(const Matrix4& matrix) const noexcept;
+		Vector4 operator*(const Vector4& vector) const noexcept;
 		Matrix4& operator-=(const Matrix4& matrix) noexcept;
 		Matrix4& operator+=(const Matrix4& matrix) noexcept;
 		Matrix4& operator/=(const Matrix4& matrix) noexcept;
@@ -77,6 +81,11 @@ namespace INJECTOR_NAMESPACE
 		Matrix4& operator+=(float value) noexcept;
 		Matrix4& operator/=(float value) noexcept;
 		Matrix4& operator*=(float value) noexcept;
+
+		static Matrix4 createPerspectiveZO(float fieldOfView, float aspectRatio,
+			float nearClipPlane, float farClipPlane);
+		static Matrix4 createPerspectiveNO(float fieldOfView, float aspectRatio,
+			float nearClipPlane, float farClipPlane);
 
 		static const Matrix4 zero;
 		static const Matrix4 minusOne;

@@ -3,13 +3,6 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	const std::string Window::defaultTitle = INJECTOR_WINDOW_NAME;
-	const IntVector2 Window::defaultPosition = IntVector2(
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
-	const IntVector2 Window::defaultSize = IntVector2(
-		INJECTOR_WINDOW_WIDTH, INJECTOR_WINDOW_HEIGHT);
-	const uint32_t Window::defaultFlags = SDL_WINDOW_RESIZABLE;
-
 	Window::Window(const std::string& title,
 		const IntVector2& position,
 		const IntVector2& size,
@@ -28,9 +21,9 @@ namespace INJECTOR_NAMESPACE
 		window = nullptr;
 	}
 
-	void Window::setContext()
+	void Window::beginRender()
 	{}
-	void Window::swapChain()
+	void Window::endRender()
 	{}
 
 	uint32_t Window::getID() noexcept
@@ -46,4 +39,10 @@ namespace INJECTOR_NAMESPACE
 	{
 		SDL_HideWindow(window);
 	}
+
+	const std::string Window::defaultTitle = "Injector Engine";
+	const IntVector2 Window::defaultPosition = IntVector2(
+		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
+	const IntVector2 Window::defaultSize = IntVector2(800, 600);
+	const uint32_t Window::defaultFlags = SDL_WINDOW_RESIZABLE;
 }

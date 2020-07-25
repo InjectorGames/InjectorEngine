@@ -58,31 +58,6 @@ namespace INJECTOR_NAMESPACE
 			-(m00 * m21 - m20 * m01) * determinant,
 			(m00 * m11 - m10 * m01) * determinant);
 	}
-	Matrix3 Matrix3::getMultiplied(const Matrix3& matrix) const noexcept
-	{
-		auto a0 = getColumn0();
-		auto a1 = getColumn1();
-		auto a2 = getColumn2();
-
-		auto b0 = matrix.getColumn0();
-		auto b1 = matrix.getColumn1();
-		auto b2 = matrix.getColumn2();
-
-		return Matrix3(
-			a0 * b0.x + a1 * b0.y + a2 * b0.z,
-			a0 * b1.x + a1 * b1.y + a2 * b1.z,
-			a0 * b2.x + a1 * b2.y + a2 * b2.z);
-	}
-	Vector3 Matrix3::getMultiplied(const Vector3& vector) const noexcept
-	{
-		return getColumn0() * Vector3(vector.x) +
-			getColumn1() * Vector3(vector.y) +
-			getColumn2() * Vector3(vector.z);
-	}
-	Matrix3 Matrix3::getDivided(const Matrix3& matrix) const noexcept
-	{
-		return getMultiplied(matrix.getInversed());
-	}
 
 	Vector3 Matrix3::getRow0() const noexcept
 	{
@@ -144,6 +119,203 @@ namespace INJECTOR_NAMESPACE
 		m02 = vector.x;
 		m12 = vector.y;
 		m22 = vector.z;
+	}
+
+	Matrix2 Matrix3::getMatrix2() const noexcept
+	{
+		return Matrix2(
+			m00, m10,
+			m01, m11);
+	}
+
+	bool Matrix3::operator==(const Matrix3& matrix) const noexcept
+	{
+		return getColumn0() == matrix.getColumn0() &&
+			getColumn1() == matrix.getColumn1() &&
+			getColumn2() == matrix.getColumn2();
+	}
+	bool Matrix3::operator!=(const Matrix3& matrix) const noexcept
+	{
+		return !(*this == matrix);
+	}
+
+	Matrix3& Matrix3::operator--() noexcept
+	{
+		setColumn0(--getColumn0());
+		setColumn1(--getColumn1());
+		setColumn2(--getColumn2());
+		return *this;
+	}
+	Matrix3& Matrix3::operator++() noexcept
+	{
+		setColumn0(++getColumn0());
+		setColumn1(++getColumn1());
+		setColumn2(++getColumn2());
+		return *this;
+	}
+	Matrix3 Matrix3::operator--(int) noexcept
+	{
+		auto result = Matrix3(*this);
+		setColumn0(--getColumn0());
+		setColumn1(--getColumn1());
+		setColumn2(--getColumn2());
+		return result;
+	}
+	Matrix3 Matrix3::operator++(int) noexcept
+	{
+		auto result = Matrix3(*this);
+		setColumn0(++getColumn0());
+		setColumn1(++getColumn1());
+		setColumn2(++getColumn2());
+		return result;
+	}
+	Matrix3 Matrix3::operator-() const noexcept
+	{
+		return Matrix3(
+			-getColumn0(),
+			-getColumn1(),
+			-getColumn2());
+	}
+
+	Matrix3 Matrix3::operator-(const Matrix3& matrix) const noexcept
+	{
+		return Matrix3(getColumn0() - matrix.getColumn0(),
+			getColumn1() - matrix.getColumn1(),
+			getColumn2() - matrix.getColumn2());
+	}
+	Matrix3 Matrix3::operator+(const Matrix3& matrix) const noexcept
+	{
+		return Matrix3(getColumn0() + matrix.getColumn0(),
+			getColumn1() + matrix.getColumn1(),
+			getColumn2() + matrix.getColumn2());
+	}
+	Matrix3 Matrix3::operator/(const Matrix3& matrix) const noexcept
+	{
+		return *this * matrix.getInversed();
+	}
+	Vector3 Matrix3::operator/(const Vector3& vector) const noexcept
+	{
+		return getInversed() * vector;
+	}
+	Matrix3 Matrix3::operator*(const Matrix3& matrix) const noexcept
+	{
+		auto a0 = getColumn0();
+		auto a1 = getColumn1();
+		auto a2 = getColumn2();
+
+		auto b0 = matrix.getColumn0();
+		auto b1 = matrix.getColumn1();
+		auto b2 = matrix.getColumn2();
+
+		return Matrix3(
+			a0 * b0.x + a1 * b0.y + a2 * b0.z,
+			a0 * b1.x + a1 * b1.y + a2 * b1.z,
+			a0 * b2.x + a1 * b2.y + a2 * b2.z);
+	}
+	Vector3 Matrix3::operator*(const Vector3& vector) const noexcept
+	{
+		return getColumn0() * Vector3(vector.x) +
+			getColumn1() * Vector3(vector.y) +
+			getColumn2() * Vector3(vector.z);
+	}
+
+	Matrix3& Matrix3::operator-=(const Matrix3& matrix) noexcept
+	{
+		setColumn0(getColumn0() - matrix.getColumn0());
+		setColumn1(getColumn1() - matrix.getColumn1());
+		setColumn2(getColumn2() - matrix.getColumn2());
+		return *this;
+	}
+	Matrix3& Matrix3::operator+=(const Matrix3& matrix) noexcept
+	{
+		setColumn0(getColumn0() + matrix.getColumn0());
+		setColumn1(getColumn1() + matrix.getColumn1());
+		setColumn2(getColumn2() + matrix.getColumn2());
+		return *this;
+	}
+	Matrix3& Matrix3::operator/=(const Matrix3& matrix) noexcept
+	{
+		return *this *= matrix.getInversed();
+	}
+	Matrix3& Matrix3::operator*=(const Matrix3& matrix) noexcept
+	{
+		auto a0 = getColumn0();
+		auto a1 = getColumn1();
+		auto a2 = getColumn2();
+
+		auto b0 = matrix.getColumn0();
+		auto b1 = matrix.getColumn1();
+		auto b2 = matrix.getColumn2();
+
+		setColumn0(a0 * b0.x + a1 * b0.y + a2 * b0.z);
+		setColumn1(a0 * b1.x + a1 * b1.y + a2 * b1.z);
+		setColumn2(a0 * b2.x + a1 * b2.y + a2 * b2.z);
+		return *this;
+	}
+
+	Matrix3 Matrix3::operator-(float value) const noexcept
+	{
+		auto vector = Vector3(value);
+
+		return Matrix3(getColumn0() - vector,
+			getColumn1() - vector,
+			getColumn2() - vector);
+	}
+	Matrix3 Matrix3::operator+(float value) const noexcept
+	{
+		auto vector = Vector3(value);
+
+		return Matrix3(getColumn0() + vector,
+			getColumn1() + vector,
+			getColumn2() + vector);
+	}
+	Matrix3 Matrix3::operator/(float value) const noexcept
+	{
+		auto vector = Vector3(value);
+
+		return Matrix3(getColumn0() / vector,
+			getColumn1() / vector,
+			getColumn2() / vector);
+	}
+	Matrix3 Matrix3::operator*(float value) const noexcept
+	{
+		auto vector = Vector3(value);
+
+		return Matrix3(getColumn0() * vector,
+			getColumn1() * vector,
+			getColumn2() * vector);
+	}
+	Matrix3& Matrix3::operator-=(float value) noexcept
+	{
+		auto vector = Vector3(value);
+		setColumn0(getColumn0() - vector);
+		setColumn1(getColumn1() - vector);
+		setColumn2(getColumn2() - vector);
+		return *this;
+	}
+	Matrix3& Matrix3::operator+=(float value) noexcept
+	{
+		auto vector = Vector3(value);
+		setColumn0(getColumn0() + vector);
+		setColumn1(getColumn1() + vector);
+		setColumn2(getColumn2() + vector);
+		return *this;
+	}
+	Matrix3& Matrix3::operator/=(float value) noexcept
+	{
+		auto vector = Vector3(value);
+		setColumn0(getColumn0() / vector);
+		setColumn1(getColumn1() / vector);
+		setColumn2(getColumn2() / vector);
+		return *this;
+	}
+	Matrix3& Matrix3::operator*=(float value) noexcept
+	{
+		auto vector = Vector3(value);
+		setColumn0(getColumn0() * vector);
+		setColumn1(getColumn1() * vector);
+		setColumn2(getColumn2() * vector);
+		return *this;
 	}
 
 	const Matrix3 Matrix3::zero = Matrix3(0.0f);

@@ -14,7 +14,7 @@ namespace INJECTOR_NAMESPACE
 			uint32_t flags = defaultFlags);
 		virtual ~GlWindow();
 
-		void setContext() override;
-		void swapChain() override;
+		void beginRender() override;
+		void endRender() override;
 	};
 }

@@ -1,12 +1,12 @@
 #pragma once
-#include <inject/gl/batch.hpp>
-#include <inject/gl/buffer.hpp>
-#include <inject/gl/attribute.hpp>
-#include <inject/gl/primitives.hpp>
+#include <injector/gl_batch.hpp>
+//#include <injector/gl_buffer.hpp>
+//#include <injector/gl_attribute.hpp>
+//#include <injector/gl_primitives.hpp>
 
-namespace INJECT_NAMESPACE
+namespace INJECTOR_NAMESPACE
 {
-	class GlMesh : public GlBatch
+	/*class GlMesh : public GlBatch
 	{
 	public:
 		enum class DrawMode : GLenum
@@ -253,5 +253,5 @@ namespace INJECT_NAMESPACE
 			return Create(GlPrimitives::gradientSkyVertices, GlPrimitives::gradientSkyIndices,
 				attributes, GlBuffer::Usage::StaticDraw, DrawType::UnsignedByte);
 		}
-	};
+	};*/
 }

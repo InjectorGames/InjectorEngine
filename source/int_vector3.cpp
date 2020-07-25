@@ -44,13 +44,18 @@ namespace INJECTOR_NAMESPACE
 		return *this - normal * getDotProduct(normal) * 2;
 	}
 
+	IntVector2 IntVector3::getIntVector2() const noexcept
+	{
+		return IntVector2(x, y);
+	}
+
 	bool IntVector3::operator==(const IntVector3& vector) const noexcept
 	{
 		return x == vector.x && y == vector.y && z == vector.z;
 	}
 	bool IntVector3::operator!=(const IntVector3& vector) const noexcept
 	{
-		return x != vector.x || y != vector.y || z != vector.z;
+		return !(*this == vector);
 	}
 
 	IntVector3& IntVector3::operator--() noexcept
@@ -82,6 +87,10 @@ namespace INJECTOR_NAMESPACE
 		++y;
 		++z;
 		return result;
+	}
+	IntVector3 IntVector3::operator-() const noexcept
+	{
+		return IntVector3(-x, -y, -z);
 	}
 
 	IntVector3 IntVector3::operator-(const IntVector3& vector) const noexcept

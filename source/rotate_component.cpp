@@ -2,7 +2,8 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	RotateComponent::RotateComponent(const Vector3& _rotation) :
+	RotateComponent::RotateComponent(
+		const Quaternion& _rotation) :
 		rotation(_rotation)
 	{}
 }

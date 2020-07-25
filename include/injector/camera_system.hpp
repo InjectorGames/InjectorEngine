@@ -1,76 +1,25 @@
 #pragma once
-#include <inject/window_size_event.hpp>
-#include <inject/persp_camera_component.hpp>
-#include <inject/ortho_camera_component.hpp>
+#include <injector/manager.hpp>
+#include <injector/camera_component.hpp>
 
-namespace INJECT_NAMESPACE
+namespace INJECTOR_NAMESPACE
 {
-	class CameraSystem final :
-		public entityx::System<CameraSystem>,
-		public entityx::Receiver<CameraSystem>
+	class CameraSystem : public System
 	{
-	private:
-		float newAspectRatio;
+	protected:
+		IntVector2 newWindowSize;
+		std::set<EntityHandle> cameras;
 	public:
-		CameraSystem() :
-			newAspectRatio()
-		{}
+		EntityHandle window;
 
-		void configure(entityx::EntityManager& entities,
-			entityx::EventManager& events) override
-		{
-			events.subscribe<WindowSizeEvent>(*this);
-		}
+		CameraSystem(const EntityHandle& window = nullptr);
+		virtual ~CameraSystem();
 
-		void update(entityx::EntityManager& entities,
-			entityx::EventManager& events,
-			entityx::TimeDelta deltaTime) override
-		{
-			entities.each<PerspCameraComponent>(
-				[](entityx::Entity entity, PerspCameraComponent& camera)
-				{
-					if (camera.changed)
-					{
-						camera.matrix = glm::perspective(
-							camera.fieldOfView, camera.aspectRatio,
-							camera.clipPlane.x, camera.clipPlane.y);
-						camera.changed = false;
-					}
-				});
+		void update() override;
 
-			entities.each<OrthoCameraComponent>(
-				[](entityx::Entity entity, OrthoCameraComponent& camera)
-				{
-					if (camera.changed)
-					{
-						camera.matrix = glm::ortho(
-							camera.frustum.x, camera.frustum.y,
-							camera.frustum.z, camera.frustum.w,
-							camera.clipPlane.x, camera.clipPlane.y);
-						camera.changed = false;
-					}
-				});
-
-			if (newAspectRatio != 0.0f)
-			{
-				auto aspectRatio = newAspectRatio;
-				newAspectRatio = 0.0f;
-
-				entities.each<PerspCameraComponent>(
-					[aspectRatio](entityx::Entity entity, PerspCameraComponent& camera)
-					{
-						if (camera.updateAspectRatio)
-						{
-							camera.aspectRatio = aspectRatio;
-							camera.changed = true;
-						}
-					});
-			}
-		}
-
-		void receive(const WindowSizeEvent& event)
-		{
-			newAspectRatio = event.size.x / float(event.size.y);
-		}
+		bool addCamera(const EntityHandle& entity) noexcept;
+		bool removeCamera(const EntityHandle& entity) noexcept;
+		void removeCameras() noexcept;
+		size_t getCameraCount() const noexcept;
 	};
 }

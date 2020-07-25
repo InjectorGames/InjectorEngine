@@ -1,4 +1,5 @@
 #pragma once
+#include <injector/matrix2.hpp>
 #include <injector/vector3.hpp>
 
 namespace INJECTOR_NAMESPACE
@@ -23,9 +24,6 @@ namespace INJECTOR_NAMESPACE
 		float getDeterminant() const noexcept;
 		Matrix3 getTransposed() const noexcept;
 		Matrix3 getInversed() const noexcept;
-		Matrix3 getMultiplied(const Matrix3& matrix) const noexcept;
-		Vector3 getMultiplied(const Vector3& vector) const noexcept;
-		Matrix3 getDivided(const Matrix3& matrix) const noexcept;
 
 		Vector3 getRow0() const noexcept;
 		Vector3 getRow1() const noexcept;
@@ -40,6 +38,37 @@ namespace INJECTOR_NAMESPACE
 		void setColumn0(const Vector3& vector) noexcept;
 		void setColumn1(const Vector3& vector) noexcept;
 		void setColumn2(const Vector3& vector) noexcept;
+
+		Matrix2 getMatrix2() const noexcept;
+
+		bool operator==(const Matrix3& matrix) const noexcept;
+		bool operator!=(const Matrix3& matrix) const noexcept;
+
+		Matrix3& operator--() noexcept;
+		Matrix3& operator++() noexcept;
+		Matrix3 operator--(int) noexcept;
+		Matrix3 operator++(int) noexcept;
+		Matrix3 operator-() const noexcept;
+
+		Matrix3 operator-(const Matrix3& matrix) const noexcept;
+		Matrix3 operator+(const Matrix3& matrix) const noexcept;
+		Matrix3 operator/(const Matrix3& matrix) const noexcept;
+		Vector3 operator/(const Vector3& vector) const noexcept;
+		Matrix3 operator*(const Matrix3& matrix) const noexcept;
+		Vector3 operator*(const Vector3& vector) const noexcept;
+		Matrix3& operator-=(const Matrix3& matrix) noexcept;
+		Matrix3& operator+=(const Matrix3& matrix) noexcept;
+		Matrix3& operator/=(const Matrix3& matrix) noexcept;
+		Matrix3& operator*=(const Matrix3& matrix) noexcept;
+
+		Matrix3 operator-(float value) const noexcept;
+		Matrix3 operator+(float value) const noexcept;
+		Matrix3 operator/(float value) const noexcept;
+		Matrix3 operator*(float value) const noexcept;
+		Matrix3& operator-=(float value) noexcept;
+		Matrix3& operator+=(float value) noexcept;
+		Matrix3& operator/=(float value) noexcept;
+		Matrix3& operator*=(float value) noexcept;
 
 		static const Matrix3 zero;
 		static const Matrix3 minusOne;

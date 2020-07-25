@@ -1,6 +1,4 @@
 #include <injector/window_system.hpp>
-#include <injector/window_component.hpp>
-#include <injector/transform_component.hpp>
 #include <injector/gl_window.hpp>
 #include <injector/engine.hpp>
 
@@ -24,47 +22,47 @@ namespace INJECTOR_NAMESPACE
 			{
 				WindowComponent* windowComponent;
 
-				if (window->getComponent(windowComponent))
-				{
-					auto window = windowComponent->window;
-					auto windowID = window->getID();
+				if (!window->getComponent(windowComponent))
+					continue;
 
-					if (event.type == SDL_WINDOWEVENT && event.window.windowID == windowID)
+				auto window = windowComponent->window;
+				auto windowID = window->getID();
+
+				if (event.type == SDL_WINDOWEVENT && event.window.windowID == windowID)
+				{
+					switch (event.window.event)
 					{
-						switch (event.window.event)
-						{
-						case SDL_WINDOWEVENT_HIDDEN:
-							//handleHiddenEvent(event.window);
-							break;
-						case SDL_WINDOWEVENT_SHOWN:
-							//handleShownEvent(event.window);
-							break;
-						case SDL_WINDOWEVENT_EXPOSED:
-							break;
-						case SDL_WINDOWEVENT_MOVED:
-							//handleMovedEvent(event.window);
-							break;
-						case SDL_WINDOWEVENT_SIZE_CHANGED:
-							//handleSizeChangedEvent(event.window);
-							break;
-						case SDL_WINDOWEVENT_MINIMIZED:
-							break;
-						case SDL_WINDOWEVENT_MAXIMIZED:
-							break;
-						case SDL_WINDOWEVENT_RESTORED:
-							break;
-						case SDL_WINDOWEVENT_ENTER:
-							break;
-						case SDL_WINDOWEVENT_LEAVE:
-							break;
-						case SDL_WINDOWEVENT_FOCUS_GAINED:
-							break;
-						case SDL_WINDOWEVENT_FOCUS_LOST:
-							break;
-						case SDL_WINDOWEVENT_CLOSE:
-							window->hide();
-							break;
-						}
+					case SDL_WINDOWEVENT_HIDDEN:
+						//handleHiddenEvent(event.window);
+						break;
+					case SDL_WINDOWEVENT_SHOWN:
+						//handleShownEvent(event.window);
+						break;
+					case SDL_WINDOWEVENT_EXPOSED:
+						break;
+					case SDL_WINDOWEVENT_MOVED:
+						//handleMovedEvent(event.window);
+						break;
+					case SDL_WINDOWEVENT_SIZE_CHANGED:
+						//handleSizeChangedEvent(event.window);
+						break;
+					case SDL_WINDOWEVENT_MINIMIZED:
+						break;
+					case SDL_WINDOWEVENT_MAXIMIZED:
+						break;
+					case SDL_WINDOWEVENT_RESTORED:
+						break;
+					case SDL_WINDOWEVENT_ENTER:
+						break;
+					case SDL_WINDOWEVENT_LEAVE:
+						break;
+					case SDL_WINDOWEVENT_FOCUS_GAINED:
+						break;
+					case SDL_WINDOWEVENT_FOCUS_LOST:
+						break;
+					case SDL_WINDOWEVENT_CLOSE:
+						window->hide();
+						break;
 					}
 				}
 				/*else if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.windowID == id)
@@ -88,23 +86,42 @@ namespace INJECTOR_NAMESPACE
 		{
 			WindowComponent* windowComponent;
 
-			if (window->getComponent(windowComponent))
-			{
-				if (windowComponent->window->getFlags() & SDL_WINDOW_SHOWN)
-					existsVisible = true;
-			}
+			if (window->getComponent(windowComponent) &&
+				windowComponent->window->getFlags() & SDL_WINDOW_SHOWN)
+				existsVisible = true;
 		}
 
 		if (!existsVisible)
 			Engine::stopUpdateLoop();
+	}
 
-		/*for (auto id : windows)
-		{
-			WindowComponent* windowComponent;
+	bool WindowSystem::addWindow(const EntityHandle& entity) noexcept
+	{
+		if (entity == nullptr || !entity->containsComponent<WindowComponent>())
+			return false;
 
-			if (manager.getComponent(id, windowComponent))
-				windowComponent->window->update();
-		}*/
+		return windows.emplace(entity).second;
+	}
+	bool WindowSystem::removeWindow(const EntityHandle& entity) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		auto iterator = windows.find(entity);
+
+		if (iterator == windows.end())
+			return false;
+
+		windows.erase(iterator);
+		return true;
+	}
+	void WindowSystem::removeWindows() noexcept
+	{
+		windows.clear();
+	}
+	size_t WindowSystem::getWindowCount() const noexcept
+	{
+		return windows.size();
 	}
 
 	bool WindowSystem::createWindowComponent(
@@ -126,38 +143,7 @@ namespace INJECTOR_NAMESPACE
 		else
 			return false;
 
-		WindowComponent* windowComponent;
-
-		if (!entity->createComponent(windowComponent, window))
-			return false;
-
-		windows.emplace(entity);
-		return true;
-	}
-	bool WindowSystem::destroyWindowComponent(
-		const EntityHandle& entity) noexcept
-	{
-		if (entity == nullptr)
-			return false;
-
-		auto iterator = windows.find(entity);
-
-		if (iterator == windows.end())
-			return false;
-
-		entity->destroyComponent<WindowComponent>();
-		windows.erase(iterator);
-		return true;
-	}
-	void WindowSystem::destroyWindowComponents() noexcept
-	{
-		for (auto& window : windows)
-			window->destroyComponent<WindowComponent>();
-
-		windows.clear();
-	}
-	size_t WindowSystem::windowComponentCount() const noexcept
-	{
-		return windows.size();
+		WindowComponent* component;
+		return entity->createComponent(component, window);
 	}
 }

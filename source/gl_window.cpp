@@ -50,11 +50,18 @@ namespace INJECTOR_NAMESPACE
 		context = nullptr;
 	}
 
-	void GlWindow::setContext()
+	void GlWindow::beginRender()
 	{
 		SDL_GL_MakeCurrent(window, context);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_STENCIL_TEST);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
-	void GlWindow::swapChain()
+	void GlWindow::endRender()
 	{
 		SDL_GL_SwapWindow(window);
 	}
