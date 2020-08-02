@@ -1,6 +1,6 @@
 #pragma once
 #include <injector/engine.hpp>
-#include <injector/matrix4.hpp>
+#include <injector/mathematics/matrix4.hpp>
 
 namespace INJECTOR_NAMESPACE
 {

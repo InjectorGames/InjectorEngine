@@ -1,5 +1,5 @@
 #pragma once
-#include <injector/vector3.hpp>
+#include <injector/mathematics/vector3.hpp>
 
 namespace INJECTOR_NAMESPACE
 {

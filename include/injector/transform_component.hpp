@@ -1,8 +1,8 @@
 #pragma once
 #include <injector/entity.hpp>
-#include <injector/vector3.hpp>
-#include <injector/matrix4.hpp>
-#include <injector/quaternion.hpp>
+#include <injector/mathematics/vector3.hpp>
+#include <injector/mathematics/matrix4.hpp>
+#include <injector/mathematics/quaternion.hpp>
 
 namespace INJECTOR_NAMESPACE
 {

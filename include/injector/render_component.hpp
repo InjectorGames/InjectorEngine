@@ -1,29 +1,24 @@
 #pragma once
-#include <injector/material.hpp>
+#include <injector/graphics/mesh.hpp>
+#include <injector/graphics/material.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
 	struct RenderComponent
 	{
-		enum class Order
-		{
-			Ascending,
-			Descending,
-			Front,
-			Back,
-		};
-
-		Order order;
+		MaterialHandle material;
+		MeshHandle mesh;
+		bool ascending;
 		int queue;
 		int offset;
-		MaterialHandle material;
 		bool render;
 
 		RenderComponent(
-			Order order = Order::Ascending,
+			const MaterialHandle& material = nullptr,
+			const MeshHandle& mesh = nullptr,
+			bool ascending = true,
 			int queue = 0,
 			int offset = 0,
-			const MaterialHandle& material = nullptr,
 			bool render = true);
 	};
 }

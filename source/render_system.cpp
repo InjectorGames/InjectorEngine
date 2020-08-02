@@ -1,10 +1,65 @@
 #include <injector/render_system.hpp>
+#include <injector/engine.hpp>
+#include <injector/graphics/gl_color_material.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
+	ShaderHandle RenderSystem::createShaderOpenGL(
+		ShaderStage stage, const std::string& path)
+	{
+		return std::make_shared<GlShader>(false, stage, path);
+	}
+	ShaderHandle RenderSystem::createShaderOpenGLES(
+		ShaderStage stage, const std::string& path)
+	{
+		return std::make_shared<GlShader>(true, stage, path);
+	}
+	ShaderHandle RenderSystem::createShaderVulkan(
+		ShaderStage stage, const std::string& path)
+	{
+		throw std::runtime_error("Not implemented yet");
+	}
+
+	MaterialHandle RenderSystem::createColorOpenGL(
+		const std::string& vertexPath, const std::string& fragmentPath)
+	{
+		auto vertexShader = GlShader(false, ShaderStage::Vertex, vertexPath);
+		auto fragmentShader = GlShader(false, ShaderStage::Fragment, fragmentPath);
+		return std::make_shared<GlColorMaterial>(vertexShader, fragmentShader);
+	}
+	MaterialHandle RenderSystem::createColorOpenGLES(
+		const std::string& vertexPath, const std::string& fragmentPath)
+	{
+		auto vertexShader = GlShader(true, ShaderStage::Vertex, vertexPath);
+		auto fragmentShader = GlShader(true, ShaderStage::Fragment, fragmentPath);
+		return std::make_shared<GlColorMaterial>(vertexShader, fragmentShader);
+	}
+	MaterialHandle RenderSystem::createColorVulkan(
+		const std::string& vertexPath, const std::string& fragmentPath)
+	{
+		throw std::runtime_error("Not implemented yet");
+	}
+
 	RenderSystem::RenderSystem(const EntityHandle& _window) :
 		window(_window)
-	{}
+	{
+		auto graphicsAPI = Engine::getGraphicsAPI();
+
+		if (graphicsAPI == GraphicsAPI::OpenGL || graphicsAPI == GraphicsAPI::OpenGLES)
+		{
+			createShaderPointer = createShaderOpenGL;
+			createColorPointer = createColorOpenGL;
+		}
+		else if (graphicsAPI == GraphicsAPI::Vulkan)
+		{
+			createShaderPointer = createShaderVulkan;
+			createColorPointer = createColorVulkan;
+		}
+		else
+		{
+			throw std::runtime_error("Unknown graphics API");
+		}
+	}
 	RenderSystem::~RenderSystem()
 	{}
 
@@ -52,47 +107,24 @@ namespace INJECTOR_NAMESPACE
 				if (!render->getComponent(renderComponent) ||
 					!render->getComponent(transformComponent) ||
 					!renderComponent->render || renderComponent->queue != queue ||
-					!renderComponent->material)
+					!renderComponent->material || !renderComponent->mesh)
 					continue;
-
-				auto& relative = transformComponent->parent;
-				auto transformPosition = Vector4(transformComponent->position, 1.0f);
-
-				while (relative)
-				{
-					TransformComponent* relativeTransform;
-
-					if (!relative->getComponent(relativeTransform))
-						break;
-
-					transformPosition = relativeTransform->matrix * transformPosition;
-					relative = relativeTransform->parent;
-				}
 
 				auto order = 0.0f;
 
-				switch (renderComponent->order)
+				if (renderComponent->ascending)
 				{
-				case RenderComponent::Order::Ascending:
-					order = transformPosition.getVector3().getDistance(
-						-cameraTransformComponent->position) + 
+					order = transformComponent->position.getDistance(
+						-cameraTransformComponent->position) +
 						clipPlane.y * renderComponent->offset;
 					//targetRenders.emplace(glm::distance(-cameraTransform.position, glm::vec3(transformPosition)) + clipPlane.y * draw.offset, entity);
-					break;
-				case RenderComponent::Order::Descending:
-					order = -transformPosition.getVector3().getDistance(
-						-cameraTransformComponent->position) + 
+				}
+				else
+				{
+					order = -transformComponent->position.getDistance(
+						-cameraTransformComponent->position) +
 						clipPlane.y * renderComponent->offset;
 					//targetRenders.emplace(-glm::distance(-cameraTransform.position, glm::vec3(transformPosition)) + clipPlane.y * draw.offset, entity);
-					break;
-				case RenderComponent::Order::Front:
-					order = -clipPlane.y + clipPlane.y * renderComponent->offset, render;
-					break;
-				case RenderComponent::Order::Back:
-					order = clipPlane.y + clipPlane.y * renderComponent->offset, render;
-					break;
-				default:
-					continue;
 				}
 
 				targetRenders.emplace(order, render);
@@ -103,22 +135,10 @@ namespace INJECTOR_NAMESPACE
 				auto renderComponent = render.second->getComponent<RenderComponent>();
 				auto transformComponent = render.second->getComponent<TransformComponent>();
 
-				auto& relative = transformComponent->parent;
-				auto modelMatrix = transformComponent->matrix;
-
-				while (relative)
-				{
-					TransformComponent* relativeTransform;
-
-					if (!relative->getComponent(relativeTransform))
-						break;
-
-					modelMatrix = relativeTransform->matrix * modelMatrix;
-					relative = relativeTransform->parent;
-				}
-
-				auto mvpMatrix = viewProjMatrix * modelMatrix;
 				auto& material = renderComponent->material;
+				auto& mesh = renderComponent->mesh;
+				auto& modelMatrix = transformComponent->matrix;
+				auto mvpMatrix = viewProjMatrix * modelMatrix;
 
 				material->use();
 
@@ -128,9 +148,7 @@ namespace INJECTOR_NAMESPACE
 				material->setViewProjMatrix(viewProjMatrix);
 				material->setMvpMatrix(mvpMatrix);
 
-				//draw.mesh->bind();
-				//draw.mesh->draw(draw.drawMode);
-				//draw.mesh->unbind();
+				mesh->draw();
 
 				material->unuse();
 				//drawCount++;
@@ -197,5 +215,21 @@ namespace INJECTOR_NAMESPACE
 	size_t RenderSystem::getRenderCount() const noexcept
 	{
 		return renders.size();
+	}
+
+	ShaderHandle RenderSystem::createShader(ShaderStage stage, const std::string& filePath)
+	{
+		return createShaderPointer(stage, filePath);
+	}
+
+	MaterialHandle RenderSystem::createColorMaterial(
+		const std::string& vertexPath, const std::string& fragmentPath)
+	{
+		return createColorPointer(vertexPath, fragmentPath);
+	}
+
+	MeshHandle RenderSystem::createCubeMesh()
+	{
+		return nullptr;
 	}
 }

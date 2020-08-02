@@ -1,20 +1,11 @@
 #pragma once
 #include <injector/manager.hpp>
+#include <injector/graphics/graphics_api.hpp>
 
 #include <chrono>
 
 namespace INJECTOR_NAMESPACE
 {
-	//constexpr bool isBigEndian = SDL_BYTEORDER == SDL_BIG_ENDIAN;
-
-	enum class GraphicsAPI
-	{
-		Unknown,
-		OpenGL,
-		OpenGLES,
-		Vulkan,
-	};
-
 	class Engine final
 	{
 	public:

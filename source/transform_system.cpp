@@ -41,19 +41,44 @@ namespace INJECTOR_NAMESPACE
 
 			if (transformComponent->type == TransformComponent::Type::Spin)
 			{
-				auto matrix = Matrix4::identity.getTranslated(
-					transformComponent->position);
+				auto matrix = Matrix4::identity.getTranslated(transformComponent->position);
 				matrix *= transformComponent->rotation.getNormalized().getMatrix4();
 				matrix *= Matrix4::identity.getScaled(transformComponent->scale);
+
+				auto& relative = transformComponent->parent;
+				while (relative)
+				{
+					TransformComponent* relativeTransform;
+
+					if (!relative->getComponent(relativeTransform))
+						break;
+
+					matrix = relativeTransform->matrix * matrix;
+					relative = relativeTransform->parent;
+				}
+
 				transformComponent->matrix = matrix;
 				transformComponent->changed = false;
 			}
 			else
 			{
-				/*transformComponent->matrix =
-					glm::scale(glm::mat4(1.0f), transform.scale) *
-					glm::mat4_cast(glm::normalize(transform.rotation)) *
-					glm::translate(glm::mat4(1.0f), transform.position);*/
+				auto matrix = Matrix4::identity.getScaled(transformComponent->scale);
+				matrix *= transformComponent->rotation.getNormalized().getMatrix4();
+				matrix *= Matrix4::identity.getTranslated(transformComponent->position);
+
+				auto& relative = transformComponent->parent;
+				while (relative)
+				{
+					TransformComponent* relativeTransform;
+
+					if (!relative->getComponent(relativeTransform))
+						break;
+
+					matrix = relativeTransform->matrix * matrix;
+					relative = relativeTransform->parent;
+				}
+
+				transformComponent->matrix = matrix;
 				transformComponent->changed = false;
 			}
 		}

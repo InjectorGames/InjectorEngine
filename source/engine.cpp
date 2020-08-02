@@ -1,12 +1,39 @@
 #include <injector/engine.hpp>
 
-
 #include <thread>
 #include <cstdlib>
 #include <iostream>
 
 #include <SDL.h>
 #include <SDL_vulkan.h>
+
+#if defined(_MSC_VER) && ( !defined(__clang__) || defined(__c2__) )
+
+#define BYTE_SWAP_16(x) _byteswap_ushort(x)
+#define BYTE_SWAP_32(x) _byteswap_ulong(x)
+#define BYTE_SWAP_64(x) _byteswap_uint64(x)
+
+#elif (defined(__clang__) && __has_builtin(__builtin_bswap32) && __has_builtin(__builtin_bswap64)) \
+	|| (defined(__GNUC__ ) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)))
+
+#if (defined(__clang__) && __has_builtin(__builtin_bswap16)) \
+	|| (defined(__GNUC__) &&(__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)))
+#define BYTE_SWAP_16(x) __builtin_bswap16(x)
+#else
+#define BYTE_SWAP_16(x) __builtin_bswap32((x) << 16)
+#endif
+
+#define BYTE_SWAP_32(x) __builtin_bswap32(x)
+#define BYTE_SWAP_64(x) __builtin_bswap64(x)
+
+#elif defined(__linux__)
+
+#include <byteswap.h>
+#define BYTE_SWAP_16(x) bswap_16(x)
+#define BYTE_SWAP_32(x) bswap_32(x)
+#define BYTE_SWAP_64(x) bswap_64(x)
+
+#endif
 
 namespace INJECTOR_NAMESPACE
 {
@@ -288,39 +315,39 @@ namespace INJECTOR_NAMESPACE
 
 	uint16_t Engine::swapEndian(uint16_t value) noexcept
 	{
-		return static_cast<uint16_t>(_byteswap_ushort(value));
+		return static_cast<uint16_t>(BYTE_SWAP_16(value));
 	}
 	int16_t Engine::swapEndian(int16_t value) noexcept
 	{
-		auto result = _byteswap_ushort(*reinterpret_cast<uint16_t*>(&value));
+		auto result = BYTE_SWAP_16(*reinterpret_cast<uint16_t*>(&value));
 		return *reinterpret_cast<int16_t*>(&result);
 	}
 	uint32_t Engine::swapEndian(uint32_t value) noexcept
 	{
-		return static_cast<uint32_t>(_byteswap_ulong(value));
+		return static_cast<uint32_t>(BYTE_SWAP_32(value));
 	}
 	int32_t Engine::swapEndian(int32_t value) noexcept
 	{
-		auto result = _byteswap_ulong(*reinterpret_cast<uint32_t*>(&value));
+		auto result = BYTE_SWAP_32(*reinterpret_cast<uint32_t*>(&value));
 		return *reinterpret_cast<int32_t*>(&result);
 	}
 	uint64_t Engine::swapEndian(uint64_t value) noexcept
 	{
-		return static_cast<uint64_t>(_byteswap_uint64(value));
+		return static_cast<uint64_t>(BYTE_SWAP_64(value));
 	}
 	int64_t Engine::swapEndian(int64_t value) noexcept
 	{
-		auto result = _byteswap_uint64(*reinterpret_cast<uint64_t*>(&value));
+		auto result = BYTE_SWAP_64(*reinterpret_cast<uint64_t*>(&value));
 		return *reinterpret_cast<int64_t*>(&result);
 	}
 	float Engine::swapEndian(float value) noexcept
 	{
-		auto result = _byteswap_ulong(*reinterpret_cast<uint32_t*>(&value));
+		auto result = BYTE_SWAP_32(*reinterpret_cast<uint32_t*>(&value));
 		return *reinterpret_cast<float*>(&result);
 	}
 	double Engine::swapEndian(double value) noexcept
 	{
-		auto result = _byteswap_uint64(*reinterpret_cast<uint64_t*>(&value));
+		auto result = BYTE_SWAP_64(*reinterpret_cast<uint64_t*>(&value));
 		return *reinterpret_cast<double*>(&result);
 	}
 	

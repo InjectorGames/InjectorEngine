@@ -1,6 +1,7 @@
 ## Requirements
 * C++17 comiler
 * [CMake 3.10+](https://cmake.org/)
+* [VulkanSDK](https://vulkan.lunarg.com/)
 
 ## Features
 - [x] Color material

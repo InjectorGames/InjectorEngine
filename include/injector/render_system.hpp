@@ -10,8 +10,26 @@ namespace INJECTOR_NAMESPACE
 	class RenderSystem : public System
 	{
 	protected:
+		ShaderHandle(*createShaderPointer)(ShaderStage, const std::string&);
+		MaterialHandle(*createColorPointer)(
+			const std::string& vertexPath, const std::string& fragmentPath);
+
 		std::set<EntityHandle> cameras;
 		std::set<EntityHandle> renders;
+
+		static ShaderHandle createShaderOpenGL(
+			ShaderStage stage, const std::string& path);
+		static ShaderHandle createShaderOpenGLES(
+			ShaderStage stage, const std::string& path);
+		static ShaderHandle createShaderVulkan(
+			ShaderStage stage, const std::string& path);
+
+		static MaterialHandle createColorOpenGL(
+			const std::string& vertexPath, const std::string& fragmentPath);
+		static MaterialHandle createColorOpenGLES(
+			const std::string& vertexPath, const std::string& fragmentPath);
+		static MaterialHandle createColorVulkan(
+			const std::string& vertexPath, const std::string& fragmentPath);
 	public:
 		EntityHandle window;
 
@@ -29,5 +47,12 @@ namespace INJECTOR_NAMESPACE
 		bool removeRender(const EntityHandle& entity) noexcept;
 		void removeRenders() noexcept;
 		size_t getRenderCount() const noexcept;
+
+		ShaderHandle createShader(ShaderStage stage, const std::string& filePath);
+
+		MaterialHandle createColorMaterial(
+			const std::string& vertexPath, const std::string& fragmentPath);
+
+		MeshHandle createCubeMesh();
 	};
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include <injector/window.hpp>
+#include <injector/graphics/window.hpp>
 #include <memory>
 
 namespace INJECTOR_NAMESPACE

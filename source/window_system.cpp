@@ -1,14 +1,75 @@
 #include <injector/window_system.hpp>
-#include <injector/gl_window.hpp>
 #include <injector/engine.hpp>
+#include <injector/graphics/gl_window.hpp>
+#include <injector/graphics/vk_window.hpp>
 
 #include <SDL_events.h>
 
 namespace INJECTOR_NAMESPACE
 {
+	bool WindowSystem::createWindowOpenGL(
+		const EntityHandle& entity,
+		const std::string& title,
+		const IntVector2& position,
+		const IntVector2& size,
+		uint32_t flags) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		WindowComponent* component;
+		auto window = std::make_shared<GlWindow>(false, title, position, size, flags);
+		return entity->createComponent(component, window);
+	}
+	bool WindowSystem::createWindowOpenGLES(
+		const EntityHandle& entity,
+		const std::string& title,
+		const IntVector2& position,
+		const IntVector2& size,
+		uint32_t flags) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		WindowComponent* component;
+		auto window = std::make_shared<GlWindow>(true, title, position, size, flags);
+		return entity->createComponent(component, window);
+	}
+	bool WindowSystem::createWindowVulkan(
+		const EntityHandle& entity,
+		const std::string& title,
+		const IntVector2& position,
+		const IntVector2& size,
+		uint32_t flags) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		WindowComponent* component;
+		auto window = std::make_shared<VkWindow>(title, position, size, flags);
+		return entity->createComponent(component, window);
+	}
+
 	WindowSystem::WindowSystem() :
 		windows()
-	{}
+	{
+		auto graphicsAPI = Engine::getGraphicsAPI();
+
+		switch (graphicsAPI)
+		{
+		case GraphicsAPI::OpenGL:
+			createWindowPointer = createWindowOpenGL;
+			break;
+		case GraphicsAPI::OpenGLES:
+			createWindowPointer = createWindowOpenGLES;
+			break;
+		case GraphicsAPI::Vulkan:
+			createWindowPointer = createWindowVulkan;
+			break;
+		default:
+			throw std::runtime_error("Unknown graphics API");
+		}
+	}
 	WindowSystem::~WindowSystem()
 	{}
 
@@ -131,19 +192,6 @@ namespace INJECTOR_NAMESPACE
 		const IntVector2& size,
 		uint32_t flags) noexcept
 	{
-		if (entity == nullptr)
-			return false;
-
-		auto graphicsAPI = Engine::getGraphicsAPI();
-
-		WindowHandle window;
-
-		if (graphicsAPI == GraphicsAPI::OpenGL || graphicsAPI == GraphicsAPI::OpenGLES)
-			window = std::make_shared<GlWindow>(title, position, size, flags);
-		else
-			return false;
-
-		WindowComponent* component;
-		return entity->createComponent(component, window);
+		return createWindowPointer(entity, title, position, size, flags);
 	}
 }

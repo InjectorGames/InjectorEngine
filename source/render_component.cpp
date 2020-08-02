@@ -3,15 +3,17 @@
 namespace INJECTOR_NAMESPACE
 {
 	RenderComponent::RenderComponent(
-		Order _order,
+		const MaterialHandle& _material,
+		const MeshHandle& _mesh,
+		bool _ascending,
 		int _queue,
 		int _offset,
-		const MaterialHandle& _material,
 		bool _render) :
-		order(_order),
+		material(_material),
+		mesh(_mesh),
+		ascending(_ascending),
 		queue(_queue),
 		offset(_offset),
-		material(_material),
 		render(_render)
 	{}
 }

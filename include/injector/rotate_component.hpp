@@ -1,5 +1,5 @@
 #pragma once
-#include <injector/quaternion.hpp>
+#include <injector/mathematics/quaternion.hpp>
 
 namespace INJECTOR_NAMESPACE
 {

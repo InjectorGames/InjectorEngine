@@ -11,7 +11,7 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		std::set<EntityHandle> entities;
-		std::vector<std::shared_ptr<System>> systems;
+		std::vector<System*> systems;
 	public:
 		Manager();
 		virtual ~Manager();
@@ -26,19 +26,18 @@ namespace INJECTOR_NAMESPACE
 		void removeEntities() noexcept;
 		size_t getEntityCount() const noexcept;
 
-		bool addSystem(const SystemHandle& system) noexcept;
-		bool removeSystem(const SystemHandle& system) noexcept;
-		bool containsSystem(const SystemHandle& system) noexcept;
-		void removeSystems() noexcept;
-		size_t getSystemCount() const noexcept;
-
 		template<class T, class ...Args>
-		std::shared_ptr<T> createSystem(Args... args) noexcept
+		T* createSystem(Args... args) noexcept
 		{
-			auto system = std::make_shared<T>(args...);
+			auto system = new T(args...);
 			systems.push_back(system);
 			return system;
 		}
+
+		bool removeSystem(const System* system) noexcept;
+		bool containsSystem(const System* system) noexcept;
+		void removeSystems() noexcept;
+		size_t getSystemCount() const noexcept;
 	};
 
 	using ManagerHandle = std::shared_ptr<Manager>;

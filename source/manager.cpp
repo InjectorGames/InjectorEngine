@@ -9,7 +9,10 @@ namespace INJECTOR_NAMESPACE
 		systems()
 	{}
 	Manager::~Manager()
-	{}
+	{
+		for (auto system : systems)
+			delete system;
+	}
 
 	void Manager::update()
 	{
@@ -72,15 +75,7 @@ namespace INJECTOR_NAMESPACE
 		return entities.size();
 	}
 
-	bool Manager::addSystem(const SystemHandle &system) noexcept
-	{
-		if (system == nullptr)
-			return false;
-
-		systems.push_back(system);
-		return true;
-	}
-	bool Manager::removeSystem(const SystemHandle& system) noexcept
+	bool Manager::removeSystem(const System* system) noexcept
 	{
 		if (system == nullptr)
 			return false;
@@ -96,7 +91,7 @@ namespace INJECTOR_NAMESPACE
 
 		return false;
 	}
-	bool Manager::containsSystem(const SystemHandle& system) noexcept
+	bool Manager::containsSystem(const System* system) noexcept
 	{
 		if (system == nullptr)
 			return false;
@@ -111,6 +106,9 @@ namespace INJECTOR_NAMESPACE
 	}
 	void Manager::removeSystems() noexcept
 	{
+		for (auto system : systems)
+			delete system;
+
 		systems.clear();
 	}
 	size_t Manager::getSystemCount() const noexcept

@@ -1,7 +1,5 @@
-#version 330
-
-out vec4 o_Color;
-uniform vec4 u_Color;
+out highp vec4 o_Color;
+uniform highp vec4 u_Color;
 
 void main()
 {

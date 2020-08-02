@@ -16,9 +16,10 @@ include(GNUInstallDirs)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-include (TestBigEndian)
+include(TestBigEndian)
 TEST_BIG_ENDIAN(INJECTOR_BIG_ENDIAN)
 
+include(FindVulkan)
 include(cmake/asio.cmake)
 
 set(BUILD_UTILS OFF CACHE BOOL "")
@@ -33,41 +34,46 @@ add_subdirectory(3rdparty/sdl)
 configure_file(cmake/defines.hpp.in injector/defines.hpp)
 
 add_library(InjectorEngine STATIC
+	source/graphics/gl_attribute.cpp
+	source/graphics/gl_batch.cpp
+	source/graphics/gl_buffer.cpp
+	source/graphics/gl_color_material.cpp
+	source/graphics/gl_material.cpp
+	source/graphics/gl_mesh.cpp
+	source/graphics/gl_primitives.cpp
+	source/graphics/gl_shader.cpp
+	source/graphics/gl_window.cpp
+	source/graphics/image.cpp
+	source/graphics/material.cpp
+	source/graphics/mesh.cpp
+	source/graphics/shader.cpp
+	source/graphics/vk_window.cpp
+	source/graphics/window.cpp
+
+	source/mathematics/int_vector2.cpp
+	source/mathematics/int_vector3.cpp
+	source/mathematics/int_vector4.cpp
+	source/mathematics/matrix2.cpp
+	source/mathematics/matrix3.cpp
+	source/mathematics/matrix4.cpp
+	source/mathematics/quaternion.cpp
+	source/mathematics/vector2.cpp
+	source/mathematics/vector3.cpp
+	source/mathematics/vector4.cpp
+
 	source/camera_component.cpp
 	source/camera_system.cpp
 	source/engine.cpp
 	source/entity.cpp
 	source/file_stream.cpp
-	source/gl_batch.cpp
-	source/gl_buffer.cpp
-	source/gl_color_material.cpp
-	source/gl_material.cpp
-	source/gl_mesh.cpp
-	source/gl_primitives.cpp
-	source/gl_shader.cpp
-	source/gl_window.cpp
-	source/int_vector2.cpp
-	source/int_vector3.cpp
-	source/int_vector4.cpp
 	source/manager.cpp
-	source/material.cpp
-	source/matrix2.cpp
-	source/matrix3.cpp
-	source/matrix4.cpp
-	source/mesh.cpp
-	source/quaternion.cpp
 	source/render_component.cpp
 	source/render_system.cpp
 	source/rotate_component.cpp
-	source/shader.cpp
 	source/system.cpp
 	source/transform_component.cpp
 	source/transform_system.cpp
 	source/translate_component.cpp
-	source/vector2.cpp
-	source/vector3.cpp
-	source/vector4.cpp
-	source/window.cpp
 	source/window_component.cpp
 	source/window_system.cpp
 )
@@ -77,12 +83,14 @@ target_link_libraries(InjectorEngine PUBLIC
 	glm::glm
 	SDL2main
 	SDL2-static
+	Vulkan::Vulkan
 	#zlibstatic
 )
 target_include_directories(InjectorEngine PUBLIC
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/3rdparty/glew/include
+	${Vulkan_INCLUDE_DIRS}
 	#${PROJECT_SOURCE_DIR}/3rdparty/zlib
 	#${PROJECT_BINARY_DIR}/3rdparty/zlib
 )
