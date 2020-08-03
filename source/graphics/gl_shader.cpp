@@ -115,7 +115,7 @@ namespace INJECTOR_NAMESPACE
 		auto fileStream = FileStream(path + extension, std::ios::in | std::ios::ate);
 
 		if (!fileStream.is_open())
-			throw std::runtime_error("Failed to open shader file");
+			throw std::runtime_error("Failed to open shader file: " + path + extension);
 
 		auto size = static_cast<size_t>(fileStream.tellg());
 		fileStream.seekg(0, fileStream.beg);

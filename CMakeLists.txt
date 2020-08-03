@@ -47,7 +47,13 @@ add_library(InjectorEngine STATIC
 	source/graphics/material.cpp
 	source/graphics/mesh.cpp
 	source/graphics/shader.cpp
+	source/graphics/vk_logical_device.cpp
+	source/graphics/vk_render_pass.cpp
+	source/graphics/vk_shader.cpp
+	source/graphics/vk_surface.cpp
+	source/graphics/vk_swapchain.cpp
 	source/graphics/vk_window.cpp
+	source/graphics/vk_window_instance.cpp
 	source/graphics/window.cpp
 
 	source/mathematics/int_vector2.cpp
@@ -61,6 +67,7 @@ add_library(InjectorEngine STATIC
 	source/mathematics/vector3.cpp
 	source/mathematics/vector4.cpp
 
+	source/byte_swap.cpp
 	source/camera_component.cpp
 	source/camera_system.cpp
 	source/component.cpp
@@ -118,6 +125,9 @@ set(INJECTOR_RESOURCES
 	shaders/opengl/diffuse.vert
 	shaders/opengl/gradient_sky.frag
 	shaders/opengl/gradient_sky.vert
+
+	shaders/vulkan/tutorial.vert.spv
+	shaders/vulkan/tutorial.frag.spv
 )
 
 foreach(FILE ${INJECTOR_RESOURCES})

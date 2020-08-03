@@ -1,5 +1,5 @@
 #include <injector/file_stream.hpp>
-#include <injector/engine.hpp>
+#include <injector/byte_swap.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -103,98 +103,98 @@ namespace INJECTOR_NAMESPACE
 	std::istream& FileStream::readBE(uint16_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(uint16_t));
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readBE(int16_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(int16_t));
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readBE(uint32_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(uint32_t));
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readBE(int32_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(int32_t));
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readBE(uint64_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(uint64_t));
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readBE(int64_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(int64_t));
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readBE(float& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(float));
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readBE(double& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(double));
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return stream;
 	}
 
 	std::istream& FileStream::readLE(uint16_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(uint16_t));
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readLE(int16_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(int16_t));
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readLE(uint32_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(uint32_t));
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readLE(int32_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(int32_t));
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readLE(uint64_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(uint64_t));
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readLE(int64_t& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(int64_t));
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readLE(float& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(float));
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return stream;
 	}
 	std::istream& FileStream::readLE(double& value)
 	{
 		auto& stream = std::fstream::read(reinterpret_cast<char*>(&value), sizeof(double));
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return stream;
 	}
 
@@ -285,83 +285,83 @@ namespace INJECTOR_NAMESPACE
 
 	std::ostream& FileStream::writeBE(uint16_t value)
 	{
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(uint16_t));
 	}
 	std::ostream& FileStream::writeBE(int16_t value)
 	{
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(int16_t));
 	}
 	std::ostream& FileStream::writeBE(uint32_t value)
 	{
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(uint32_t));
 	}
 	std::ostream& FileStream::writeBE(int32_t value)
 	{
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(int32_t));
 	}
 	std::ostream& FileStream::writeBE(uint64_t value)
 	{
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(uint64_t));
 	}
 	std::ostream& FileStream::writeBE(int64_t value)
 	{
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(int64_t));
 	}
 	std::ostream& FileStream::writeBE(float value)
 	{
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(float));
 	}
 	std::ostream& FileStream::writeBE(double value)
 	{
-		value = Engine::swapBigEndian(value);
+		value = ByteSwap::swapBigEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(double));
 	}
 
 	std::ostream& FileStream::writeLE(uint16_t value)
 	{
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(uint16_t));
 	}
 	std::ostream& FileStream::writeLE(int16_t value)
 	{
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(int16_t));
 	}
 	std::ostream& FileStream::writeLE(uint32_t value)
 	{
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(uint32_t));
 	}
 	std::ostream& FileStream::writeLE(int32_t value)
 	{
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(int32_t));
 	}
 	std::ostream& FileStream::writeLE(uint64_t value)
 	{
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(uint64_t));
 	}
 	std::ostream& FileStream::writeLE(int64_t value)
 	{
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(int64_t));
 	}
 	std::ostream& FileStream::writeLE(float value)
 	{
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(float));
 	}
 	std::ostream& FileStream::writeLE(double value)
 	{
-		value = Engine::swapLittleEndian(value);
+		value = ByteSwap::swapLittleEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(double));
 	}
 }
