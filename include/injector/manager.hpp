@@ -34,9 +34,9 @@ namespace INJECTOR_NAMESPACE
 			return system;
 		}
 
-		bool removeSystem(const System* system) noexcept;
+		bool destroySystem(const System* system) noexcept;
 		bool containsSystem(const System* system) noexcept;
-		void removeSystems() noexcept;
+		void destroySystems() noexcept;
 		size_t getSystemCount() const noexcept;
 	};
 

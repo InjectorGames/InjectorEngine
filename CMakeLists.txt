@@ -63,6 +63,7 @@ add_library(InjectorEngine STATIC
 
 	source/camera_component.cpp
 	source/camera_system.cpp
+	source/component.cpp
 	source/engine.cpp
 	source/entity.cpp
 	source/file_stream.cpp
@@ -109,14 +110,14 @@ if(INJECTOR_BUILD_EDITOR)
 endif()
 
 set(INJECTOR_RESOURCES
-	shaders/col_color.frag
-	shaders/col_color.vert
-	shaders/color.frag
-	shaders/color.vert
-	shaders/diffuse.frag
-	shaders/diffuse.vert
-	shaders/gradient_sky.frag
-	shaders/gradient_sky.vert
+	shaders/opengl/col_color.frag
+	shaders/opengl/col_color.vert
+	shaders/opengl/color.frag
+	shaders/opengl/color.vert
+	shaders/opengl/diffuse.frag
+	shaders/opengl/diffuse.vert
+	shaders/opengl/gradient_sky.frag
+	shaders/opengl/gradient_sky.vert
 )
 
 foreach(FILE ${INJECTOR_RESOURCES})

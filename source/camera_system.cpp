@@ -7,8 +7,6 @@ namespace INJECTOR_NAMESPACE
 		window(_window),
 		newWindowSize()
 	{}
-	CameraSystem::~CameraSystem()
-	{}
 
 	void CameraSystem::update()
 	{

@@ -8,14 +8,8 @@
 
 using namespace INJECTOR_NAMESPACE;
 
-int main(int argc, char* args[])
+void init()
 {
-	Engine::initializeVideo(GraphicsAPI::Vulkan);
-	Engine::initializeEngine();
-
-	//auto mat = glm::mat4(0);
-	//glm::perspective
-
 	auto manager = Engine::createManager<Manager>();
 	auto windowSystem = manager->createSystem<WindowSystem>();
 	auto transformSystem = manager->createSystem<TransformSystem>();
@@ -26,10 +20,10 @@ int main(int argc, char* args[])
 
 	windowSystem->createWindowComponent(window);
 	windowSystem->addWindow(window);
-	cameraSystem->window = window;
-	renderSystem->window = window;
+	//cameraSystem->window = window;
+	//renderSystem->window = window;
 
-	auto camera = manager->createEntity();
+	/*auto camera = manager->createEntity();
 	camera->createComponent<TransformComponent>();
 	camera->createComponent<CameraComponent>();
 	transformSystem->addTransform(camera);
@@ -43,9 +37,19 @@ int main(int argc, char* args[])
 
 	testCube->createComponent<RenderComponent>();
 	transformSystem->addTransform(testCube);
-	renderSystem->addRender(testCube);
+	renderSystem->addRender(testCube);*/
+}
+
+int main(int argc, char* args[])
+{
+	Engine::initializeEvents();
+	Engine::initializeVideo(GraphicsAPI::Vulkan);
+	Engine::initializeEngine();
+
+	init();
 
 	Engine::startUpdateLoop();
 	Engine::terminateEngine();
+
 	return 0;
 }

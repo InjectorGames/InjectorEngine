@@ -5,13 +5,13 @@
 namespace INJECTOR_NAMESPACE
 {
 	Manager::Manager() :
-		entities(),
+		entities(), 
 		systems()
 	{}
 	Manager::~Manager()
 	{
-		for (auto system : systems)
-			delete system;
+		removeEntities();
+		destroySystems();
 	}
 
 	void Manager::update()
@@ -75,7 +75,7 @@ namespace INJECTOR_NAMESPACE
 		return entities.size();
 	}
 
-	bool Manager::removeSystem(const System* system) noexcept
+	bool Manager::destroySystem(const System* system) noexcept
 	{
 		if (system == nullptr)
 			return false;
@@ -104,7 +104,7 @@ namespace INJECTOR_NAMESPACE
 
 		return false;
 	}
-	void Manager::removeSystems() noexcept
+	void Manager::destroySystems() noexcept
 	{
 		for (auto system : systems)
 			delete system;

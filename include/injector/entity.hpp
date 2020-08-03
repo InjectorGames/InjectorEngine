@@ -1,5 +1,6 @@
 #pragma once
 #include <injector/system.hpp>
+#include <injector/component.hpp>
 
 #include <map>
 #include <memory>
@@ -10,8 +11,8 @@ namespace INJECTOR_NAMESPACE
 {
 	class Entity final
 	{
-	protected:
-		std::map<std::type_index, void*> components;
+	private:
+		std::map<std::type_index, Component*> components;
 	public:
 		Entity();
 		~Entity();

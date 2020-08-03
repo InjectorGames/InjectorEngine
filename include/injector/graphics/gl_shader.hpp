@@ -5,6 +5,9 @@
 #include <string>
 #include <cstdint>
 
+#include <GL/glew.h>
+#include <SDL_opengl.h>
+
 namespace INJECTOR_NAMESPACE
 {
 	class GlShader : public Shader

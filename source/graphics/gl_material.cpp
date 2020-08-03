@@ -1,9 +1,5 @@
 #include <injector/graphics/gl_material.hpp>
-
 #include <stdexcept>
-
-#include <GL/glew.h>
-#include <SDL_opengl.h>
 
 namespace INJECTOR_NAMESPACE
 {

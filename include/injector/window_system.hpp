@@ -4,9 +4,9 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	class WindowSystem : public System
+	class WindowSystem final : public System
 	{
-	protected:
+	private:
 		bool (*createWindowPointer)(const EntityHandle&, const std::string&,
 			const IntVector2&, const IntVector2&, uint32_t) noexcept;
 
@@ -29,7 +29,6 @@ namespace INJECTOR_NAMESPACE
 			uint32_t flags = Window::defaultFlags) noexcept;
 	public:
 		WindowSystem();
-		virtual ~WindowSystem();
 
 		void update() override;
 

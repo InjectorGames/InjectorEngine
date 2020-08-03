@@ -1,10 +1,10 @@
 #pragma once
+#include <injector/component.hpp>
 #include <injector/graphics/window.hpp>
-#include <memory>
 
 namespace INJECTOR_NAMESPACE
 {
-	struct WindowComponent
+	struct WindowComponent final : public Component
 	{
 		WindowHandle window;
 		WindowComponent(const WindowHandle& window = nullptr);

@@ -2,7 +2,8 @@
 #include <injector/graphics/material.hpp>
 #include <injector/graphics/gl_shader.hpp>
 
-#include <memory>
+#include <GL/glew.h>
+#include <SDL_opengl.h>
 
 namespace INJECTOR_NAMESPACE
 {

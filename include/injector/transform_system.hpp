@@ -6,13 +6,12 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	class TransformSystem : public System
+	class TransformSystem final : public System
 	{
-	protected:
+	private:
 		std::set<EntityHandle> transforms;
 	public:
 		TransformSystem();
-		virtual ~TransformSystem();
 
 		void update() override;
 

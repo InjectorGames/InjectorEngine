@@ -6,8 +6,6 @@ namespace INJECTOR_NAMESPACE
 	TransformSystem::TransformSystem() :
 		transforms()
 	{}
-	TransformSystem::~TransformSystem()
-	{}
 
 	void TransformSystem::update()
 	{

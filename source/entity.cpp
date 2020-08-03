@@ -7,8 +7,7 @@ namespace INJECTOR_NAMESPACE
 	{}
 	Entity::~Entity()
 	{
-		for (auto pair : components)
-			delete pair.second;
+		destroyComponents();
 	}
 
 	void Entity::destroyComponents() noexcept

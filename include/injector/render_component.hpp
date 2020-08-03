@@ -1,10 +1,11 @@
 #pragma once
+#include <injector/component.hpp>
 #include <injector/graphics/mesh.hpp>
 #include <injector/graphics/material.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
-	struct RenderComponent
+	struct RenderComponent final : public Component
 	{
 		MaterialHandle material;
 		MeshHandle mesh;

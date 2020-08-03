@@ -1,6 +1,8 @@
 #include <injector/graphics/window.hpp>
 #include <stdexcept>
 
+#include <iostream>
+
 namespace INJECTOR_NAMESPACE
 {
 	Window::Window(const std::string& title,

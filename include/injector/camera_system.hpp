@@ -4,16 +4,15 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	class CameraSystem : public System
+	class CameraSystem final : public System
 	{
-	protected:
+	private:
 		IntVector2 newWindowSize;
 		std::set<EntityHandle> cameras;
 	public:
 		EntityHandle window;
 
 		CameraSystem(const EntityHandle& window = nullptr);
-		virtual ~CameraSystem();
 
 		void update() override;
 

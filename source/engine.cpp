@@ -96,6 +96,8 @@ namespace INJECTOR_NAMESPACE
 		if (!engineInitialized)
 			throw std::runtime_error("Engine is already terminated");
 
+		managers.clear();
+
 		if (videoInitialized)
 			terminateVideo();
 		if (eventsInitialized)

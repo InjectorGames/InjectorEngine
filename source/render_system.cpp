@@ -60,8 +60,6 @@ namespace INJECTOR_NAMESPACE
 			throw std::runtime_error("Unknown graphics API");
 		}
 	}
-	RenderSystem::~RenderSystem()
-	{}
 
 	void RenderSystem::update()
 	{

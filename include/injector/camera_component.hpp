@@ -1,10 +1,11 @@
 #pragma once
-#include <injector/engine.hpp>
+#include <injector/component.hpp>
 #include <injector/mathematics/matrix4.hpp>
+#include <injector/engine.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
-	struct CameraComponent
+	struct CameraComponent final : public Component
 	{
 		enum class Type
 		{

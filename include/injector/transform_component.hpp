@@ -1,4 +1,5 @@
 #pragma once
+#include <injector/component.hpp>
 #include <injector/entity.hpp>
 #include <injector/mathematics/vector3.hpp>
 #include <injector/mathematics/matrix4.hpp>
@@ -6,7 +7,7 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	struct TransformComponent
+	struct TransformComponent final : public Component
 	{
 		enum class Type
 		{

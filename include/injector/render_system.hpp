@@ -7,9 +7,9 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	class RenderSystem : public System
+	class RenderSystem final : public System
 	{
-	protected:
+	private:
 		ShaderHandle(*createShaderPointer)(ShaderStage, const std::string&);
 		MaterialHandle(*createColorPointer)(
 			const std::string& vertexPath, const std::string& fragmentPath);
@@ -34,7 +34,6 @@ namespace INJECTOR_NAMESPACE
 		EntityHandle window;
 
 		RenderSystem(const EntityHandle& window = nullptr);
-		virtual ~RenderSystem();
 
 		void update() override;
 
