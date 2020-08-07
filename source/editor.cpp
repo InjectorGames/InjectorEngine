@@ -20,8 +20,8 @@ void init()
 
 	windowSystem->createWindowComponent(window);
 	windowSystem->addWindow(window);
-	//cameraSystem->window = window;
-	//renderSystem->window = window;
+	cameraSystem->window = window;
+	renderSystem->window = window;
 
 	/*auto camera = manager->createEntity();
 	camera->createComponent<TransformComponent>();

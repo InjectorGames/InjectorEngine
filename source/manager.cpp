@@ -10,8 +10,10 @@ namespace INJECTOR_NAMESPACE
 	{}
 	Manager::~Manager()
 	{
-		removeEntities();
-		destroySystems();
+		entities.clear();
+
+		for (auto system : systems)
+			delete system;
 	}
 
 	void Manager::update()

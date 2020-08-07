@@ -47,13 +47,13 @@ add_library(InjectorEngine STATIC
 	source/graphics/material.cpp
 	source/graphics/mesh.cpp
 	source/graphics/shader.cpp
-	source/graphics/vk_logical_device.cpp
-	source/graphics/vk_render_pass.cpp
+	
+	
 	source/graphics/vk_shader.cpp
-	source/graphics/vk_surface.cpp
-	source/graphics/vk_swapchain.cpp
+	
+	
 	source/graphics/vk_window.cpp
-	source/graphics/vk_window_instance.cpp
+	
 	source/graphics/window.cpp
 
 	source/mathematics/int_vector2.cpp

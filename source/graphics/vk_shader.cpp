@@ -8,10 +8,8 @@ namespace INJECTOR_NAMESPACE
 	vk::ShaderModule VkShader::createShaderModule(
 		const vk::Device& device, const std::vector<char>& code)
 	{
-		auto shaderModuleCreateInfo = vk::ShaderModuleCreateInfo();
-		shaderModuleCreateInfo.codeSize = code.size();
-		shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
+		auto shaderModuleCreateInfo = vk::ShaderModuleCreateInfo(
+			{}, code.size(), reinterpret_cast<const uint32_t*>(code.data()));
 		auto shaderModule = device.createShaderModule(shaderModuleCreateInfo);
 
 		if (!shaderModule)
@@ -29,10 +27,10 @@ namespace INJECTOR_NAMESPACE
 		switch (stage)
 		{
 		case ShaderStage::Vertex:
-			extension = ".vert";
+			extension = ".vert.spv";
 			break;
 		case ShaderStage::TessellationControl:
-			extension = ".tesc";
+			extension = ".tesc.spv";
 			break;
 		case ShaderStage::TessellationEvaluation:
 			extension = ".tese.spv";
