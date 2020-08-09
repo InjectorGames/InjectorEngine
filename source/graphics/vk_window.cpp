@@ -54,11 +54,6 @@ namespace INJECTOR_NAMESPACE
 		if (instanceLayerProperties.size() == 0)
 			throw std::runtime_error("Failed to get Vulkan instance layer properties");
 
-		std::cout << "VULKAN INSTANCE LAYER PROPERTIES:\n";
-		for (auto& properties : instanceLayerProperties)
-			std::cout << "   name: " << properties.layerName <<
-			", description: " << properties.description << "\n";
-
 		for (auto layer : instanceLayers)
 		{
 			auto found = false;
@@ -96,10 +91,6 @@ namespace INJECTOR_NAMESPACE
 
 		if (instanceExtensionProperties.size() == 0)
 			throw std::runtime_error("Failed to get Vulkan instance extension properties");
-
-		std::cout << "VULKAN INSTANCE EXTENSION PROPERTIES:\n";
-		for (auto& properties : instanceExtensionProperties)
-			std::cout << "   name: " << properties.extensionName << "\n";
 
 		for (auto extension : instanceExtensions)
 		{
@@ -192,7 +183,6 @@ namespace INJECTOR_NAMESPACE
 
 		auto targetPhysicalDevices = std::multimap<int, vk::PhysicalDevice>();
 
-		std::cout << "VULKAN PHYSICAL DEVICES:\n";
 		for (auto& device : physicalDevices)
 		{
 			auto score = 0;
@@ -207,12 +197,8 @@ namespace INJECTOR_NAMESPACE
 			else if (properties.deviceType == vk::PhysicalDeviceType::eCpu)
 				score += 250;
 
-			// TODO: add other tests
-
 			targetPhysicalDevices.emplace(score, device);
-			std::cout << "   name: " << properties.deviceName <<
-				", type: " << vk::to_string(properties.deviceType) <<
-				", score: " << score << "\n";
+			// TODO: add other tests
 		}
 
 		return targetPhysicalDevices.rbegin()->second;
@@ -255,7 +241,8 @@ namespace INJECTOR_NAMESPACE
 				if (graphicsQueueFamilyIndex == UINT32_MAX)
 					graphicsQueueFamilyIndex = i;
 			}
-			if (physicalDevice.getSurfaceSupportKHR(i, surface))
+			// FOR TEST: && graphicsQueueFamilyIndex != i
+			if (physicalDevice.getSurfaceSupportKHR(i, surface) )
 			{
 				if (presentQueueFamilyIndex == UINT32_MAX)
 					presentQueueFamilyIndex = i;
@@ -282,10 +269,6 @@ namespace INJECTOR_NAMESPACE
 
 		if (deviceExtensionProperties.size() == 0)
 			throw std::runtime_error("Failed to get Vulkan device extension properties");
-
-		std::cout << "VULKAN PHYSICAL DEVICE EXTENSIONS:\n";
-		for (auto& properties : deviceExtensionProperties)
-			std::cout << "   name: " << properties.extensionName << "\n";
 
 		// TODO: create extension request mechanism
 		auto deviceExtensions = std::vector<const char*>() =
@@ -341,6 +324,34 @@ namespace INJECTOR_NAMESPACE
 
 		return device;
 	}
+	vk::Fence VkWindow::createFence(
+		vk::Device device,
+		vk::FenceCreateFlags flags)
+	{
+		vk::Fence fence;
+
+		auto fenceCreateInfo = vk::FenceCreateInfo(flags);
+		auto result = device.createFence(&fenceCreateInfo, nullptr, &fence);
+
+		if (result != vk::Result::eSuccess)
+			throw std::runtime_error("Failed to create Vulkan fence");
+
+		return fence;
+	}
+	vk::Semaphore VkWindow::createSemaphore(
+		vk::Device device,
+		vk::SemaphoreCreateFlags flags)
+	{
+		vk::Semaphore semaphore;
+
+		auto fenceCreateInfo = vk::SemaphoreCreateInfo(flags);
+		auto result = device.createSemaphore(&fenceCreateInfo, nullptr, &semaphore);
+
+		if (result != vk::Result::eSuccess)
+			throw std::runtime_error("Failed to create Vulkan fence");
+
+		return semaphore;
+	}
 	vk::Queue VkWindow::getQueue(
 		const vk::Device& device,
 		uint32_t queueFamilyIndex,
@@ -373,11 +384,6 @@ namespace INJECTOR_NAMESPACE
 		if (surfaceFormats.size() == 0)
 			throw std::runtime_error("Failed to get Vulkan surface formats");
 
-		std::cout << "VULKAN PHYSICAL DEVICE SURFACE FORMATS:\n";
-		for (auto& foramt : surfaceFormats)
-			std::cout << "   format: " << vk::to_string(foramt.format) <<
-			", color_space: " << vk::to_string(foramt.colorSpace) << "\n";
-
 		auto surfaceFormat = surfaceFormats[0];
 
 		for (auto& format : surfaceFormats)
@@ -403,10 +409,6 @@ namespace INJECTOR_NAMESPACE
 
 		if (surfacePresentModes.size() == 0)
 			throw std::runtime_error("Failed to get Vulkan surface present modes");
-
-		std::cout << "VULKAN PHYSICAL DEVICE SURFACE PRESENT MODES:\n";
-		for (auto mode : surfacePresentModes)
-			std::cout << "   mode: " << vk::to_string(mode) << "\n";
 
 		auto presentMode = vk::PresentModeKHR::eFifo;
 
@@ -818,6 +820,33 @@ namespace INJECTOR_NAMESPACE
 
 		return swapchainDatas;
 	}
+	void VkWindow::destroySwapchainDatas(
+		vk::Device device,
+		vk::CommandPool graphicsCommandPool,
+		vk::CommandPool presentCommandPool,
+		const std::vector<VkSwapchainData>& swapchainDatas)
+	{
+		for (size_t i = 0; i < swapchainDatas.size(); i++)
+		{
+			auto& swapchainData = swapchainDatas[i];
+
+			if (graphicsCommandPool != presentCommandPool)
+			{
+				device.freeCommandBuffers(
+					graphicsCommandPool, swapchainData.graphicsCommandBuffer);
+				device.freeCommandBuffers(
+					presentCommandPool, swapchainData.presentCommandBuffer);
+			}
+			else
+			{
+				device.freeCommandBuffers(
+					graphicsCommandPool, swapchainData.graphicsCommandBuffer);
+			}
+
+			device.destroyFramebuffer(swapchainData.framebuffer);
+			device.destroyImageView(swapchainData.imageView);
+		}
+	}
 	void VkWindow::recordCommandBuffers(
 		const vk::RenderPass& renderPass,
 		const vk::Pipeline& pipeline,
@@ -834,44 +863,59 @@ namespace INJECTOR_NAMESPACE
 			renderPass, nullptr,
 			vk::Rect2D({ 0, 0 }, surfaceExtent),
 			1, &clearValues);
+		auto imageMemoryBarrier = vk::ImageMemoryBarrier({}, {},
+			vk::ImageLayout::ePresentSrcKHR,
+			vk::ImageLayout::ePresentSrcKHR,
+			graphicsQueueFamilyIndex,
+			presentQueueFamilyIndex,
+			nullptr,
+			vk::ImageSubresourceRange(
+				vk::ImageAspectFlagBits::eColor,
+				0, 1, 0, 1));
 
 		for (size_t i = 0; i < swapchainDatas.size(); i++)
 		{
 			auto& swapchainData = swapchainDatas[i];
-			auto& commandBuffer = swapchainData.graphicsCommandBuffer;
-			
-			auto result = commandBuffer.begin(&commandBufferBeginInfo);
+			auto& graphicsCommandBuffer = swapchainData.graphicsCommandBuffer;
+			auto result = graphicsCommandBuffer.begin(&commandBufferBeginInfo);
 
 			if (result != vk::Result::eSuccess)
 				throw std::runtime_error("Failed to begin Vulkan command buffer");
 
 			renderPassBeginInfo.framebuffer = swapchainData.framebuffer;
 
-			commandBuffer.beginRenderPass(
+			graphicsCommandBuffer.beginRenderPass(
 				&renderPassBeginInfo, vk::SubpassContents::eInline);
-			commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
-			commandBuffer.draw(3, 1, 0, 0);
-			commandBuffer.endRenderPass();
+			graphicsCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
+			graphicsCommandBuffer.draw(3, 1, 0, 0);
+			graphicsCommandBuffer.endRenderPass();
 
 			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 			{
-				auto imageMemoryBarrier = vk::ImageMemoryBarrier({}, {},
-					vk::ImageLayout::ePresentSrcKHR,
-					vk::ImageLayout::ePresentSrcKHR,
-					graphicsQueueFamilyIndex,
-					presentQueueFamilyIndex,
-					swapchainData.image,
-					vk::ImageSubresourceRange(
-						vk::ImageAspectFlagBits::eColor,
-						0, 1, 0, 1));
-
-				commandBuffer.pipelineBarrier(
+				imageMemoryBarrier.image = swapchainData.image;
+				graphicsCommandBuffer.pipelineBarrier(
 					vk::PipelineStageFlagBits::eBottomOfPipe, 
 					vk::PipelineStageFlagBits::eBottomOfPipe,
 					{}, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
 			}
 
-			commandBuffer.end();
+			graphicsCommandBuffer.end();
+
+			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+			{
+				auto& presentCommandBuffer = swapchainData.presentCommandBuffer;
+				result = presentCommandBuffer.begin(&commandBufferBeginInfo);
+
+				if (result != vk::Result::eSuccess)
+					throw std::runtime_error("Failed to begin Vulkan command buffer");
+
+				presentCommandBuffer.pipelineBarrier(
+					vk::PipelineStageFlagBits::eBottomOfPipe, 
+					vk::PipelineStageFlagBits::eBottomOfPipe, 
+					{}, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
+
+				presentCommandBuffer.end();
+			}
 		}
 	}
 
@@ -900,8 +944,32 @@ namespace INJECTOR_NAMESPACE
 			device = createDevice(physicalDevice,
 				graphicsQueueFamilyIndex, presentQueueFamilyIndex);
 
+			fences = std::vector<vk::Fence>(FRAME_LAG);
+			imageAcquiredSemaphores = std::vector<vk::Semaphore>(FRAME_LAG);
+			drawCompleteSemaphores = std::vector<vk::Semaphore>(FRAME_LAG);
+			imageOwnershipSemaphores = std::vector<vk::Semaphore>(FRAME_LAG);
+
+			for (size_t i = 0; i < FRAME_LAG; i++)
+			{
+				fences[i] = createFence(device, vk::FenceCreateFlagBits::eSignaled);
+				imageAcquiredSemaphores[i] = createSemaphore(device, {});
+				drawCompleteSemaphores[i] = createSemaphore(device, {});
+				imageOwnershipSemaphores[i] = createSemaphore(device, {});
+			}
+
 			graphicsQueue = getQueue(device, graphicsQueueFamilyIndex, 0);
 			presentQueue = getQueue(device, presentQueueFamilyIndex, 0);
+
+			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+			{
+				graphicsCommandPool = createCommandPool(device, graphicsQueueFamilyIndex);
+				presentCommandPool = createCommandPool(device, presentQueueFamilyIndex);
+			}
+			else
+			{
+				graphicsCommandPool = presentCommandPool =
+					createCommandPool(device, graphicsQueueFamilyIndex);
+			}
 
 			auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
 			auto surfaceImageCount = getBestSurfaceImageCount(surfaceCapabilities);
@@ -925,17 +993,6 @@ namespace INJECTOR_NAMESPACE
 			pipelineLayout = createPipelineLayout(device);
 			pipeline = createPipeline(device, surfaceExtent, renderPass, pipelineLayout);
 
-			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
-			{
-				graphicsCommandPool = createCommandPool(device, graphicsQueueFamilyIndex);
-				presentCommandPool = createCommandPool(device, presentQueueFamilyIndex);
-			}
-			else
-			{
-				graphicsCommandPool = presentCommandPool = 
-					createCommandPool(device, graphicsQueueFamilyIndex);
-			}
-
 			swapchainDatas = createSwapchainDatas(
 				device,
 				swapchain,
@@ -954,21 +1011,6 @@ namespace INJECTOR_NAMESPACE
 				swapchainDatas);
 
 			frameIndex = 0;
-			fences = std::vector<vk::Fence>(FRAME_LAG);
-			imageAcquiredSemaphores = std::vector<vk::Semaphore>(FRAME_LAG);
-			drawCompleteSemaphores = std::vector<vk::Semaphore>(FRAME_LAG);
-			imageOwnershipSemaphores = std::vector<vk::Semaphore>(FRAME_LAG);
-
-			auto fenceCreateInfo = vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled);
-			auto semaphoreCreateInfo = vk::SemaphoreCreateInfo();
-
-			for (size_t i = 0; i < FRAME_LAG; i++)
-			{
-				fences[i] = device.createFence(fenceCreateInfo);
-				imageAcquiredSemaphores[i] = device.createSemaphore(semaphoreCreateInfo);
-				drawCompleteSemaphores[i] = device.createSemaphore(semaphoreCreateInfo);
-				imageOwnershipSemaphores[i] = device.createSemaphore(semaphoreCreateInfo);
-			}
 		}
 		catch (const std::exception& exception)
 		{
@@ -982,25 +1024,44 @@ namespace INJECTOR_NAMESPACE
 	}
 	VkWindow::~VkWindow()
 	{
-		// TODO: cleanup swapchain datas
 		// TODO: check pipeline creation in demo
 		// TODO: swapchain recreation
 
-		/*device.freeCommandBuffers(commandPool, commandBuffers.size(), commandBuffers.data());
-		device.destroyCommandPool(commandPool);
+		device.waitIdle();
 
-		for (auto& framebuffer : framebuffers)
-			device.destroyFramebuffer(framebuffer);
+		destroySwapchainDatas(
+			device,
+			graphicsCommandPool,
+			presentCommandPool,
+			swapchainDatas);
 
 		device.destroyPipeline(pipeline);
 		device.destroyPipelineLayout(pipelineLayout);
 		device.destroyRenderPass(renderPass);
-
-		for (auto& imageView : imageViews)
-			device.destroyImageView(imageView);*/
-
 		device.destroySwapchainKHR(swapchain);
+
+		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+		{
+			device.destroyCommandPool(graphicsCommandPool);
+			device.destroyCommandPool(presentCommandPool);
+		}
+		else
+		{
+			device.destroyCommandPool(graphicsCommandPool);
+		}
+
+		for (uint32_t i = 0; i < FRAME_LAG; i++)
+		{
+			device.waitForFences(1, &fences[i], VK_TRUE, UINT64_MAX);
+			device.destroyFence(fences[i]);
+			device.destroySemaphore(imageAcquiredSemaphores[i]);
+			device.destroySemaphore(drawCompleteSemaphores[i]);
+			device.destroySemaphore(imageOwnershipSemaphores[i]);
+		}
+
+		device.waitIdle();
 		device.destroy();
+
 		instance.destroySurfaceKHR(surface);
 
 #if !defined(NDEBUG)
@@ -1013,7 +1074,7 @@ namespace INJECTOR_NAMESPACE
 	void VkWindow::beginRender()
 	{
 		device.waitForFences(1, &fences[frameIndex], true, UINT64_MAX);
-		device.resetFences({ fences[frameIndex] });
+		device.resetFences({fences[frameIndex]});
 
 		vk::Result result;
 		uint32_t imageIndex;
@@ -1025,23 +1086,18 @@ namespace INJECTOR_NAMESPACE
 
 			if (result == vk::Result::eErrorOutOfDateKHR)
 			{
-				// demo->swapchain is out of date (e.g. the window was resized) and
-				// must be recreated:
-				break;
-				//resize();
+				auto size = getSize();
+				onResize(size);
 			}
 			else if (result == vk::Result::eErrorSurfaceLostKHR)
 			{
-				break;
-				//inst.destroySurfaceKHR(surface, nullptr);
-				//create_surface();
-				//resize();
+				instance.destroySurfaceKHR(surface);
+				surface = createSurface(instance, window);
+
+				auto size = getSize();
+				onResize(size);
 			}
-			else if (result == vk::Result::eSuboptimalKHR)
-			{
-				break;
-			}
-			else if(result != vk::Result::eSuccess)
+			else if(result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
 			{
 				throw std::runtime_error("Failed to acquire next Vulkan image");
 			}
@@ -1088,22 +1144,18 @@ namespace INJECTOR_NAMESPACE
 		
 		if (result == vk::Result::eErrorOutOfDateKHR)
 		{
-			// swapchain is out of date (e.g. the window was resized) and
-			// must be recreated:
-			//resize();
-		}
-		else if (result == vk::Result::eSuboptimalKHR)
-		{
-			// swapchain is not as optimal as it could be, but the platform's
-			// presentation engine will still present the image correctly.
+			auto size = getSize();
+			onResize(size);
 		}
 		else if (result == vk::Result::eErrorSurfaceLostKHR)
 		{
-			/*inst.destroySurfaceKHR(surface, nullptr);
-			create_surface();
-			resize();*/
+			instance.destroySurfaceKHR(surface);
+			surface = createSurface(instance, window);
+
+			auto size = getSize();
+			onResize(size);
 		}
-		else if (result != vk::Result::eSuccess)
+		else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
 		{
 			throw std::runtime_error("Failed to present next Vulkan image");
 		}
@@ -1111,5 +1163,61 @@ namespace INJECTOR_NAMESPACE
 	void VkWindow::endRender()
 	{
 
+	}
+	void VkWindow::onResize(const IntVector2& size)
+	{
+		device.waitIdle();
+
+		destroySwapchainDatas(
+			device,
+			graphicsCommandPool,
+			presentCommandPool,
+			swapchainDatas);
+
+		device.destroyPipeline(pipeline);
+		device.destroyPipelineLayout(pipelineLayout);
+		device.destroyRenderPass(renderPass);
+		device.destroySwapchainKHR(swapchain);
+
+		auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+		auto surfaceImageCount = getBestSurfaceImageCount(surfaceCapabilities);
+		auto surfaceFormat = getBestSurfaceFormat(physicalDevice, surface);
+		auto surfaceExtent = getBestSurfaceExtent(surfaceCapabilities, size);
+		auto surfaceTransform = getBestSurfaceTransform(surfaceCapabilities);
+		auto surfaceCompositeAlpha = getBestSurfaceCompositeAlpha(surfaceCapabilities);
+		auto surfacePresentMode = getBestSurfacePresentMode(physicalDevice, surface);
+
+		swapchain = createSwapchain(
+			device,
+			surface,
+			surfaceImageCount,
+			surfaceFormat,
+			surfaceExtent,
+			surfaceTransform,
+			surfaceCompositeAlpha,
+			surfacePresentMode);
+
+		renderPass = createRenderPass(device, surfaceFormat.format);
+		pipelineLayout = createPipelineLayout(device);
+		pipeline = createPipeline(device, surfaceExtent, renderPass, pipelineLayout);
+
+		swapchainDatas = createSwapchainDatas(
+			device,
+			swapchain,
+			renderPass,
+			graphicsCommandPool,
+			presentCommandPool,
+			surfaceFormat.format,
+			surfaceExtent);
+
+		recordCommandBuffers(
+			renderPass,
+			pipeline,
+			surfaceExtent,
+			graphicsQueueFamilyIndex,
+			presentQueueFamilyIndex,
+			swapchainDatas);
+
+		frameIndex = 0;
 	}
 }

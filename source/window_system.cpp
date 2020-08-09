@@ -103,7 +103,7 @@ namespace INJECTOR_NAMESPACE
 						//handleMovedEvent(event.window);
 						break;
 					case SDL_WINDOWEVENT_SIZE_CHANGED:
-						//handleSizeChangedEvent(event.window);
+						window->onResize(IntVector2(event.window.data1, event.window.data2));
 						break;
 					case SDL_WINDOWEVENT_MINIMIZED:
 						break;

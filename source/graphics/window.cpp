@@ -5,6 +5,12 @@
 
 namespace INJECTOR_NAMESPACE
 {
+	const std::string Window::defaultTitle = "Injector Engine";
+	const IntVector2 Window::defaultPosition = IntVector2(
+		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
+	const IntVector2 Window::defaultSize = IntVector2(800, 600);
+	const uint32_t Window::defaultFlags = SDL_WINDOW_RESIZABLE;
+
 	Window::Window(const std::string& title,
 		const IntVector2& position,
 		const IntVector2& size,
@@ -27,24 +33,42 @@ namespace INJECTOR_NAMESPACE
 	{}
 	void Window::endRender()
 	{}
+	void Window::onResize(const IntVector2& size)
+	{}
 
-	uint32_t Window::getID() noexcept
+	uint32_t Window::getID() const noexcept
 	{
 		return SDL_GetWindowID(window);
 	}
-	uint32_t Window::getFlags() noexcept
+	uint32_t Window::getFlags() const noexcept
 	{
 		return SDL_GetWindowFlags(window);
+	}
+	bool Window::getShown() const noexcept
+	{
+		return SDL_GetWindowFlags(window) & SDL_WINDOW_SHOWN;
+	}
+	IntVector2 Window::getSize() const noexcept
+	{
+		auto size = IntVector2();
+		SDL_GetWindowSize(window, &size.x, &size.y);
+		return size;
 	}
 
 	void Window::hide() noexcept
 	{
 		SDL_HideWindow(window);
 	}
-
-	const std::string Window::defaultTitle = "Injector Engine";
-	const IntVector2 Window::defaultPosition = IntVector2(
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
-	const IntVector2 Window::defaultSize = IntVector2(800, 600);
-	const uint32_t Window::defaultFlags = SDL_WINDOW_RESIZABLE;
+	void Window::show() noexcept
+	{
+		SDL_ShowWindow(window);
+	}
+	void Window::minimize() noexcept
+	{
+		SDL_MinimizeWindow(window);
+	}
+	void Window::maximize() noexcept
+	{
+		SDL_MaximizeWindow(window);
+	}
 }

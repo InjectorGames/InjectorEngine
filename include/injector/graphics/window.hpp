@@ -14,6 +14,11 @@ namespace INJECTOR_NAMESPACE
 	protected:
 		SDL_Window* window;
 	public:
+		static const std::string defaultTitle;
+		static const IntVector2 defaultPosition;
+		static const IntVector2 defaultSize;
+		static const uint32_t defaultFlags;
+
 		Window(const std::string& title = defaultTitle,
 			const IntVector2& position = defaultPosition,
 			const IntVector2& size = defaultSize,
@@ -22,16 +27,17 @@ namespace INJECTOR_NAMESPACE
 
 		virtual void beginRender();
 		virtual void endRender();
+		virtual void onResize(const IntVector2& size);
 
-		uint32_t getID() noexcept;
-		uint32_t getFlags() noexcept;
+		uint32_t getID() const noexcept;
+		uint32_t getFlags() const noexcept;
+		bool getShown() const noexcept;
+		IntVector2 getSize() const noexcept;
 
 		void hide() noexcept;
-
-		static const std::string defaultTitle;
-		static const IntVector2 defaultPosition;
-		static const IntVector2 defaultSize;
-		static const uint32_t defaultFlags;
+		void show() noexcept;
+		void minimize() noexcept;
+		void maximize() noexcept;
 	};
 
 	using WindowHandle = std::shared_ptr<Window>;

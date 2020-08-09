@@ -23,24 +23,23 @@ namespace INJECTOR_NAMESPACE
 		vk::DebugUtilsMessengerEXT debugMessenger;
 		vk::PhysicalDevice physicalDevice;
 		vk::SurfaceKHR surface;
-		vk::Device device;
 		uint32_t graphicsQueueFamilyIndex;
 		uint32_t presentQueueFamilyIndex;
-		vk::Queue graphicsQueue;
-		vk::Queue presentQueue;
-		vk::SwapchainKHR swapchain;
-		vk::RenderPass renderPass;
-		vk::PipelineLayout pipelineLayout;
-		vk::Pipeline pipeline;
-		vk::CommandPool graphicsCommandPool;
-		vk::CommandPool presentCommandPool;
-		std::vector<VkSwapchainData> swapchainDatas;
-
-		uint32_t frameIndex;
+		vk::Device device;
 		std::vector<vk::Fence> fences;
 		std::vector<vk::Semaphore> imageAcquiredSemaphores;
 		std::vector<vk::Semaphore> drawCompleteSemaphores;
 		std::vector<vk::Semaphore> imageOwnershipSemaphores;
+		vk::Queue graphicsQueue;
+		vk::Queue presentQueue;
+		vk::CommandPool graphicsCommandPool;
+		vk::CommandPool presentCommandPool;
+		vk::SwapchainKHR swapchain;
+		vk::RenderPass renderPass;
+		vk::PipelineLayout pipelineLayout;
+		vk::Pipeline pipeline;
+		std::vector<VkSwapchainData> swapchainDatas;
+		uint32_t frameIndex;
 
 		static VkBool32 VKAPI_CALL debugMessengerCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -69,6 +68,12 @@ namespace INJECTOR_NAMESPACE
 			const vk::PhysicalDevice& physicalDevice,
 			uint32_t graphicsQueueFamilyIndex,
 			uint32_t presentQueueFamilyIndex);
+		static vk::Fence createFence(
+			vk::Device device,
+			vk::FenceCreateFlags flags);
+		static vk::Semaphore createSemaphore(
+			vk::Device device,
+			vk::SemaphoreCreateFlags flags);
 		static vk::Queue getQueue(
 			const vk::Device& device,
 			uint32_t queueFamilyIndex,
@@ -118,6 +123,11 @@ namespace INJECTOR_NAMESPACE
 			const vk::CommandPool& presentCommandPool,
 			const vk::Format& surfaceFormat,
 			const vk::Extent2D& surfaceExtent);
+		static void destroySwapchainDatas(
+			vk::Device device,
+			vk::CommandPool graphicsCommandPool,
+			vk::CommandPool presentCommandPool,
+			const std::vector<VkSwapchainData>& swapchainDatas);
 		static void recordCommandBuffers(
 			const vk::RenderPass& renderPass,
 			const vk::Pipeline& pipeline,
@@ -134,5 +144,6 @@ namespace INJECTOR_NAMESPACE
 
 		void beginRender() override;
 		void endRender() override;
+		void onResize(const IntVector2& size) override;
 	};
 }
