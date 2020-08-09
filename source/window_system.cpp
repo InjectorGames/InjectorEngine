@@ -139,18 +139,17 @@ namespace INJECTOR_NAMESPACE
 			}
 		}
 
-		bool existsVisible = false;
+		bool existsShown = false;
 
 		for (auto& window : windows)
 		{
 			WindowComponent* windowComponent;
 
-			if (window->getComponent(windowComponent) &&
-				windowComponent->window->getFlags() & SDL_WINDOW_SHOWN)
-				existsVisible = true;
+			if (window->getComponent(windowComponent) && windowComponent->window->isShown())
+				existsShown = true;
 		}
 
-		if (!existsVisible)
+		if (!existsShown)
 			Engine::stopUpdateLoop();
 	}
 

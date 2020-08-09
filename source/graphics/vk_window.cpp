@@ -241,8 +241,8 @@ namespace INJECTOR_NAMESPACE
 				if (graphicsQueueFamilyIndex == UINT32_MAX)
 					graphicsQueueFamilyIndex = i;
 			}
-			// FOR TEST: && graphicsQueueFamilyIndex != i
-			if (physicalDevice.getSurfaceSupportKHR(i, surface) )
+			// TODO ONLY TEST: && graphicsQueueFamilyIndex != i
+			if (physicalDevice.getSurfaceSupportKHR(i, surface))
 			{
 				if (presentQueueFamilyIndex == UINT32_MAX)
 					presentQueueFamilyIndex = i;
@@ -1024,9 +1024,6 @@ namespace INJECTOR_NAMESPACE
 	}
 	VkWindow::~VkWindow()
 	{
-		// TODO: check pipeline creation in demo
-		// TODO: swapchain recreation
-
 		device.waitIdle();
 
 		destroySwapchainDatas(

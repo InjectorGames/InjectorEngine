@@ -65,7 +65,8 @@ namespace INJECTOR_NAMESPACE
 	{
 		WindowComponent* windowComponent;
 
-		if (window == nullptr || !window->getComponent<WindowComponent>(windowComponent))
+		if (window == nullptr || !window->getComponent<WindowComponent>(windowComponent) ||
+			windowComponent->window->isMinimized())
 			return;
 
 		auto windowHandle = windowComponent->window;

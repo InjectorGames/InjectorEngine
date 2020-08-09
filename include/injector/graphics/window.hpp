@@ -31,8 +31,11 @@ namespace INJECTOR_NAMESPACE
 
 		uint32_t getID() const noexcept;
 		uint32_t getFlags() const noexcept;
-		bool getShown() const noexcept;
 		IntVector2 getSize() const noexcept;
+		bool isHidden() const noexcept;
+		bool isShown() const noexcept;
+		bool isMinimized() const noexcept;
+		bool isMaximized() const noexcept;
 
 		void hide() noexcept;
 		void show() noexcept;

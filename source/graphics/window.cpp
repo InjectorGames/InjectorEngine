@@ -22,6 +22,8 @@ namespace INJECTOR_NAMESPACE
 		if (!window)
 			throw std::runtime_error(
 				"Failed to create SDL window: " + std::string(SDL_GetError()));
+
+		SDL_SetWindowMinimumSize(window, 1, 1);
 	}
 	Window::~Window()
 	{
@@ -44,16 +46,29 @@ namespace INJECTOR_NAMESPACE
 	{
 		return SDL_GetWindowFlags(window);
 	}
-	bool Window::getShown() const noexcept
-	{
-		return SDL_GetWindowFlags(window) & SDL_WINDOW_SHOWN;
-	}
 	IntVector2 Window::getSize() const noexcept
 	{
 		auto size = IntVector2();
 		SDL_GetWindowSize(window, &size.x, &size.y);
 		return size;
 	}
+	bool Window::isHidden() const noexcept
+	{
+		return SDL_GetWindowFlags(window) & SDL_WINDOW_HIDDEN;
+	}
+	bool Window::isShown() const noexcept
+	{
+		return SDL_GetWindowFlags(window) & SDL_WINDOW_SHOWN;
+	}
+	bool Window::isMinimized() const noexcept
+	{
+		return SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED;
+	}
+	bool Window::isMaximized() const noexcept
+	{
+		return SDL_GetWindowFlags(window) & SDL_WINDOW_MAXIMIZED;
+	}
+	
 
 	void Window::hide() noexcept
 	{
