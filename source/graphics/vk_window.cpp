@@ -42,6 +42,8 @@ namespace INJECTOR_NAMESPACE
 		const std::string& appName,
 		uint32_t appVersion)
 	{
+		vk::Instance instance;
+
 		auto instanceLayers = std::vector<const char*>();
 
 #if !defined(NDEBUG)
@@ -146,10 +148,9 @@ namespace INJECTOR_NAMESPACE
 
 		instanceCreateInfo.pNext = &debugUtilsMessengerCreateInfo;
 #endif
+		auto reslut = vk::createInstance(&instanceCreateInfo, nullptr, &instance);
 
-		auto instance = vk::createInstance(instanceCreateInfo);
-
-		if (!instance)
+		if (reslut != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to create Vulkan instance");
 
 		return instance;
@@ -159,6 +160,8 @@ namespace INJECTOR_NAMESPACE
 		const vk::DispatchLoaderDynamic& dispatchDynamic)
 	{
 #if !defined(NDEBUG)
+		vk::DebugUtilsMessengerEXT debugMessenger;
+
 		auto debugUtilsMessengerCreateInfo = vk::DebugUtilsMessengerCreateInfoEXT({},
 			vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
 			vk::DebugUtilsMessageSeverityFlagBitsEXT::eError |
@@ -168,10 +171,10 @@ namespace INJECTOR_NAMESPACE
 			vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation,
 			static_cast<PFN_vkDebugUtilsMessengerCallbackEXT>(debugMessengerCallback));
 
-		auto debugMessenger = instance.createDebugUtilsMessengerEXT(
-			debugUtilsMessengerCreateInfo, nullptr, dispatchDynamic);
+		auto result = instance.createDebugUtilsMessengerEXT(
+			&debugUtilsMessengerCreateInfo, nullptr, &debugMessenger, dispatchDynamic);
 
-		if (!debugMessenger)
+		if (result != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to create Vulkan debug report");
 
 		return debugMessenger;
@@ -223,7 +226,7 @@ namespace INJECTOR_NAMESPACE
 		auto result = SDL_Vulkan_CreateSurface(window,
 			static_cast<VkInstance>(instance), &surfaceHandle);
 
-		if (!result)
+		if (result == SDL_FALSE)
 			throw std::runtime_error("Failed to create Vulkan surface: " +
 				std::string(SDL_GetError()));
 
@@ -273,6 +276,8 @@ namespace INJECTOR_NAMESPACE
 		uint32_t graphicsQueueFamilyIndex,
 		uint32_t presentQueueFamilyIndex)
 	{
+		vk::Device device;
+
 		auto deviceExtensionProperties = physicalDevice.enumerateDeviceExtensionProperties();
 
 		if (deviceExtensionProperties.size() == 0)
@@ -321,15 +326,17 @@ namespace INJECTOR_NAMESPACE
 			deviceQueueCreateInfos.push_back(deviceQueueCreateInfo);
 		}
 
+		// TODO: use device features
+
 		auto deviceCreateInfo = vk::DeviceCreateInfo({},
 			deviceQueueCreateInfos.size(), deviceQueueCreateInfos.data(),
 			0, nullptr,
 			deviceExtensions.size(), deviceExtensions.data(),
 			nullptr);
 
-		auto device = physicalDevice.createDevice(deviceCreateInfo);
+		auto result = physicalDevice.createDevice(&deviceCreateInfo, nullptr, &device);
 
-		if (!device)
+		if (result != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to create Vulkan logical device");
 
 		return device;
@@ -345,6 +352,17 @@ namespace INJECTOR_NAMESPACE
 			throw std::runtime_error("Failed to get Vulkan queue");
 
 		return queue;
+	}
+	uint32_t VkWindow::getBestSurfaceImageCount(
+		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities)
+	{
+		auto imageCount = surfaceCapabilities.minImageCount + 1;
+
+		if (surfaceCapabilities.maxImageCount > 0 &&
+			imageCount > surfaceCapabilities.maxImageCount)
+			imageCount = surfaceCapabilities.maxImageCount;
+
+		return imageCount;
 	}
 	vk::SurfaceFormatKHR VkWindow::getBestSurfaceFormat(
 		const vk::PhysicalDevice& physicalDevice,
@@ -377,7 +395,7 @@ namespace INJECTOR_NAMESPACE
 
 		return surfaceFormat;
 	}
-	vk::PresentModeKHR VkWindow::getBestPresentMode(
+	vk::PresentModeKHR VkWindow::getBestSurfacePresentMode(
 		const vk::PhysicalDevice& physicalDevice,
 		const vk::SurfaceKHR& surface)
 	{
@@ -420,7 +438,7 @@ namespace INJECTOR_NAMESPACE
 
 		return presentMode;
 	}
-	vk::Extent2D VkWindow::getBestExtent(
+	vk::Extent2D VkWindow::getBestSurfaceExtent(
 		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
 		const IntVector2& size)
 	{
@@ -437,117 +455,77 @@ namespace INJECTOR_NAMESPACE
 			return surfaceCapabilities.currentExtent;
 		}
 	}
-	uint32_t VkWindow::getBestImageCount(
+	vk::SurfaceTransformFlagBitsKHR VkWindow::getBestSurfaceTransform(
 		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities)
 	{
-		auto imageCount = surfaceCapabilities.minImageCount + 1;
-
-		if (surfaceCapabilities.maxImageCount > 0 &&
-			imageCount > surfaceCapabilities.maxImageCount)
-			imageCount = surfaceCapabilities.maxImageCount;
-
-		return imageCount;
+		if (surfaceCapabilities.supportedTransforms & 
+			vk::SurfaceTransformFlagBitsKHR::eIdentity)
+		{
+			return vk::SurfaceTransformFlagBitsKHR::eIdentity;
+		}
+		else
+		{
+			return surfaceCapabilities.currentTransform;
+		}
+	}
+	vk::CompositeAlphaFlagBitsKHR VkWindow::getBestSurfaceCompositeAlpha(
+		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities)
+	{
+		if (surfaceCapabilities.supportedCompositeAlpha &
+			vk::CompositeAlphaFlagBitsKHR::eOpaque)
+			return vk::CompositeAlphaFlagBitsKHR::eOpaque;
+		else if (surfaceCapabilities.supportedCompositeAlpha &
+			vk::CompositeAlphaFlagBitsKHR::ePreMultiplied)
+			return vk::CompositeAlphaFlagBitsKHR::ePreMultiplied;
+		else if (surfaceCapabilities.supportedCompositeAlpha &
+			vk::CompositeAlphaFlagBitsKHR::ePostMultiplied)
+			return vk::CompositeAlphaFlagBitsKHR::ePostMultiplied;
+		else if (surfaceCapabilities.supportedCompositeAlpha &
+			vk::CompositeAlphaFlagBitsKHR::eInherit)
+			return vk::CompositeAlphaFlagBitsKHR::eInherit;
+		else
+			throw std::runtime_error("Failed to get Vulkan surface composite alpha");
 	}
 	vk::SwapchainKHR VkWindow::createSwapchain(
 		const vk::Device& device,
 		const vk::SurfaceKHR& surface,
-		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
-		uint32_t graphicsQueueFamilyIndex,
-		uint32_t presentQueueFamilyIndex,
+		uint32_t surfaceImageCount,
 		const vk::SurfaceFormatKHR& surfaceFormat,
-		const vk::PresentModeKHR& presentMode,
-		const vk::Extent2D& extent,
-		uint32_t imageCount)
+		const vk::Extent2D& surfaceExtent,
+		const vk::SurfaceTransformFlagBitsKHR& surfaceTransform,
+		const vk::CompositeAlphaFlagBitsKHR& surfaceCompositeAlpha,
+		const vk::PresentModeKHR& surfacePresentMode)
 	{
-		vk::SharingMode sharingMode;
-
-		auto queueFamilyIndices = std::vector<uint32_t>
-		{
-			graphicsQueueFamilyIndex, presentQueueFamilyIndex,
-		};
-
-		if (graphicsQueueFamilyIndex == presentQueueFamilyIndex)
-		{
-			sharingMode = vk::SharingMode::eExclusive;
-		}
-		else
-		{
-			sharingMode = vk::SharingMode::eConcurrent;
-			queueFamilyIndices.push_back(graphicsQueueFamilyIndex);
-			queueFamilyIndices.push_back(presentQueueFamilyIndex);
-		}
+		vk::SwapchainKHR swapchain;
 
 		auto swapchainCreateInfo = vk::SwapchainCreateInfoKHR({},
 			surface,
-			imageCount,
+			surfaceImageCount,
 			surfaceFormat.format,
 			surfaceFormat.colorSpace,
-			extent,
-			1,
-			vk::ImageUsageFlagBits::eColorAttachment,
-			sharingMode,
-			queueFamilyIndices.size(),
-			queueFamilyIndices.data(),
-			surfaceCapabilities.currentTransform,
-			vk::CompositeAlphaFlagBitsKHR::eOpaque,
-			presentMode,
+			surfaceExtent,
+			1, vk::ImageUsageFlagBits::eColorAttachment,
+			vk::SharingMode::eExclusive,
+			0, nullptr,
+			surfaceTransform,
+			surfaceCompositeAlpha,
+			surfacePresentMode,
 			true,
 			nullptr);
 
-		auto swapchain = device.createSwapchainKHR(swapchainCreateInfo);
+		auto result = device.createSwapchainKHR(&swapchainCreateInfo, nullptr, &swapchain);
 
-		if (!swapchain)
+		if (result != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to create Vulkan swapchain");
 
 		return swapchain;
-	}
-	std::vector<vk::Image> VkWindow::getImages(
-		const vk::Device& device,
-		const vk::SwapchainKHR& swapchain)
-	{
-		auto images = device.getSwapchainImagesKHR(swapchain);
-
-		if (images.size() == 0)
-			throw std::runtime_error("Failed to get Vulkan swapchain images");
-
-		return images;
-	}
-	std::vector<vk::ImageView> VkWindow::createImageViews(
-		const vk::Device& device,
-		const vk::Format& format,
-		const std::vector<vk::Image>& images)
-	{
-		auto imageViewCreateInfo = vk::ImageViewCreateInfo({},
-			nullptr, vk::ImageViewType::e2D, format,
-			vk::ComponentMapping(
-				vk::ComponentSwizzle::eIdentity,
-				vk::ComponentSwizzle::eIdentity,
-				vk::ComponentSwizzle::eIdentity,
-				vk::ComponentSwizzle::eIdentity),
-			vk::ImageSubresourceRange(
-				vk::ImageAspectFlagBits::eColor,
-				0, 1, 0, 1)
-			);
-
-		auto imageViews = std::vector<vk::ImageView>(images.size());
-
-		for (size_t i = 0; i < images.size(); i++)
-		{
-			imageViewCreateInfo.image = images[i];
-			auto newImageView = device.createImageView(imageViewCreateInfo);
-
-			if (!newImageView)
-				throw std::runtime_error("Failed to get Vulkan swapchain image view");
-
-			imageViews[i] = newImageView;
-		}
-
-		return imageViews;
 	}
 	vk::RenderPass VkWindow::createRenderPass(
 		const vk::Device& device,
 		const vk::Format& format)
 	{
+		vk::RenderPass renderPass;
+
 		auto colorAttachmentDescription = vk::AttachmentDescription({},
 			format,
 			vk::SampleCountFlagBits::e1,
@@ -581,9 +559,9 @@ namespace INJECTOR_NAMESPACE
 			1, &subpassDescription, 
 			1, &dependency);
 
-		auto renderPass = device.createRenderPass(renderPassCreateInfo);
+		auto result = device.createRenderPass(&renderPassCreateInfo, nullptr, &renderPass);
 
-		if (!renderPass)
+		if (result != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to create Vulkan render pass");
 
 		return renderPass;
@@ -591,12 +569,15 @@ namespace INJECTOR_NAMESPACE
 	vk::PipelineLayout VkWindow::createPipelineLayout(
 		const vk::Device& device)
 	{
+		vk::PipelineLayout pipelineLayout;
+
 		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo(
 			{}, 0, nullptr, 0, nullptr);
 
-		auto pipelineLayout = device.createPipelineLayout(pipelineLayoutCreateInfo);
+		auto result = device.createPipelineLayout(
+			&pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
 
-		if (!pipelineLayout)
+		if (result != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to create Vulkan pipeline layout");
 
 		return pipelineLayout;
@@ -716,94 +697,124 @@ namespace INJECTOR_NAMESPACE
 			nullptr,
 			-1);
 
-		auto pipeline = device.createGraphicsPipeline(
-			nullptr, graphicsPipelineCreateInfo).value;
+		auto result = device.createGraphicsPipeline(
+			nullptr, graphicsPipelineCreateInfo);
 
-		if (!pipeline)
+		if (result.result != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to create Vulkan graphics pipeline");
 
-		return pipeline;
-	}
-	std::vector<vk::Framebuffer> VkWindow::createFramebuffers(
-		const vk::Device& device,
-		const vk::RenderPass renderPass,
-		const std::vector<vk::ImageView>& imageViews,
-		const vk::Extent2D& extent)
-	{
-		auto framebuffers = std::vector<vk::Framebuffer>(imageViews.size());
-
-		auto framebufferCreateInfo = vk::FramebufferCreateInfo({},
-			renderPass,
-			1,
-			nullptr,
-			extent.width,
-			extent.height,
-			1);
-
-		for (size_t i = 0; i < imageViews.size(); i++)
-		{
-			framebufferCreateInfo.pAttachments = &imageViews[i];
-			auto framebuffer = device.createFramebuffer(framebufferCreateInfo);
-
-			if(!framebuffer)
-				throw std::runtime_error("Failed to create Vulkan framebuffer");
-
-			framebuffers[i] = framebuffer;
-		}
-
-		return framebuffers;
+		return result.value;
 	}
 	vk::CommandPool VkWindow::createCommandPool(
 		const vk::Device& device,
-		uint32_t graphicsQueueFamilyIndex)
+		uint32_t queueFamilyIndex)
 	{
-		auto commandPoolCreateInfo = vk::CommandPoolCreateInfo(
-			{}, graphicsQueueFamilyIndex);
-		auto commandPool = device.createCommandPool(commandPoolCreateInfo);
+		vk::CommandPool commandPool;
 
-		if (!commandPool)
-			throw std::runtime_error("failed to create command pool!");
+		auto commandPoolCreateInfo = vk::CommandPoolCreateInfo(
+			{}, queueFamilyIndex);
+		auto result = device.createCommandPool(
+			&commandPoolCreateInfo, nullptr, &commandPool);
+
+		if (result != vk::Result::eSuccess)
+			throw std::runtime_error("Failed to create Vulkan command pool");
 
 		return commandPool;
 	}
-	std::vector<vk::CommandBuffer> VkWindow::allocateCommandBuffers(
+	std::vector<VkSwapchainData> VkWindow::createSwapchainDatas(
 		const vk::Device& device,
-		const vk::Extent2D& extent,
-		const vk::CommandPool& commandPool,
+		const vk::SwapchainKHR& swapchain,
 		const vk::RenderPass& renderPass,
-		const vk::Pipeline& pipeline,
-		const std::vector<vk::Framebuffer>& framebuffers)
+		const vk::CommandPool& graphicsCommandPool,
+		const vk::CommandPool& presentCommandPool,
+		const vk::Format& surfaceFormat,
+		const vk::Extent2D& surfaceExtent)
 	{
+		auto images = device.getSwapchainImagesKHR(swapchain);
+
+		if (images.size() == 0)
+			throw std::runtime_error("Failed to get Vulkan swapchain images");
+
+		auto swapchainDatas = std::vector<VkSwapchainData>(images.size());
+
+		auto imageViewCreateInfo = vk::ImageViewCreateInfo({},
+			nullptr, vk::ImageViewType::e2D, surfaceFormat,
+			vk::ComponentMapping(
+				vk::ComponentSwizzle::eIdentity,
+				vk::ComponentSwizzle::eIdentity,
+				vk::ComponentSwizzle::eIdentity,
+				vk::ComponentSwizzle::eIdentity),
+			vk::ImageSubresourceRange(
+				vk::ImageAspectFlagBits::eColor,
+				0, 1, 0, 1));
+
+		auto framebufferCreateInfo = vk::FramebufferCreateInfo({},
+			renderPass,
+			1, nullptr,
+			surfaceExtent.width,
+			surfaceExtent.height,
+			1);
+
 		auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo(
-			commandPool, vk::CommandBufferLevel::ePrimary, framebuffers.size());
+			nullptr, vk::CommandBufferLevel::ePrimary, 1);
 
-		auto commandBuffers = device.allocateCommandBuffers(commandBufferAllocateInfo);
-
-		if (commandBuffers.size() == 0)
-			throw std::runtime_error("Failed to allocate Vulkan command buffers");
-
-		auto clearValue = vk::ClearValue(vk::ClearColorValue(
-			std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f}));
-		auto renderPassBeginInfo = vk::RenderPassBeginInfo(
-			renderPass, nullptr,
-			vk::Rect2D({0, 0}, extent),
-			1, &clearValue);
-
-		for (size_t i = 0; i < framebuffers.size(); i++)
+		for (size_t i = 0; i < images.size(); i++)
 		{
-			auto commandBuffer = commandBuffers[i];
-			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo({}, nullptr);
-			commandBuffer.begin(commandBufferBeginInfo);
+			auto image = images[i];
+			swapchainDatas[i].image = image;
 
-			renderPassBeginInfo.framebuffer = framebuffers[i];
-			commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
-			commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
-			commandBuffer.draw(3, 1, 0, 0);
-			commandBuffer.endRenderPass();
-			commandBuffer.end();
+			vk::ImageView imageView;
+			imageViewCreateInfo.image = image;
+			
+			auto result = device.createImageView(
+				&imageViewCreateInfo, nullptr, &imageView);
+
+			if (result != vk::Result::eSuccess)
+				throw std::runtime_error("Failed to create Vulkan swapchain image view");
+
+			swapchainDatas[i].imageView = imageView;
+
+			vk::Framebuffer framebuffer;
+			framebufferCreateInfo.pAttachments = &imageView;
+
+			result = device.createFramebuffer(
+				&framebufferCreateInfo, nullptr, &framebuffer);
+
+			if (result != vk::Result::eSuccess)
+				throw std::runtime_error("Failed to create Vulkan framebuffer");
+
+			swapchainDatas[i].framebuffer = framebuffer;
+
+			vk::CommandBuffer commandBuffer;
+			commandBufferAllocateInfo.commandPool = graphicsCommandPool;
+
+			result = device.allocateCommandBuffers(
+				&commandBufferAllocateInfo, &commandBuffer);
+
+			if (result != vk::Result::eSuccess)
+				throw std::runtime_error("Failed to allocate Vulkan command buffers");
+
+			swapchainDatas[i].graphicsCommandBuffer = commandBuffer;
+
+			if (graphicsCommandPool != presentCommandPool)
+			{
+				commandBufferAllocateInfo.commandPool = presentCommandPool;
+
+				result = device.allocateCommandBuffers(
+					&commandBufferAllocateInfo, &commandBuffer);
+
+				if (result != vk::Result::eSuccess)
+					throw std::runtime_error("Failed to allocate Vulkan command buffers");
+
+				swapchainDatas[i].presentCommandBuffer = commandBuffer;
+			}
+			else
+			{
+				swapchainDatas[i].presentCommandBuffer = commandBuffer;
+			}
 		}
 
-		return commandBuffers;
+		return swapchainDatas;
 	}
 
 	VkWindow::VkWindow(
@@ -834,37 +845,64 @@ namespace INJECTOR_NAMESPACE
 			graphicsQueue = getQueue(device, graphicsQueueFamilyIndex, 0);
 			presentQueue = getQueue(device, presentQueueFamilyIndex, 0);
 
-			surfaceFormat = getBestSurfaceFormat(physicalDevice, surface);
-			presentMode = getBestPresentMode(physicalDevice, surface);
-
 			auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
-			extent = getBestExtent(surfaceCapabilities, size);
-			imageCount = getBestImageCount(surfaceCapabilities);
-
+			auto surfaceImageCount = getBestSurfaceImageCount(surfaceCapabilities);
+			auto surfaceFormat = getBestSurfaceFormat(physicalDevice, surface);
+			auto surfaceExtent = getBestSurfaceExtent(surfaceCapabilities, size);
+			auto surfaceTransform = getBestSurfaceTransform(surfaceCapabilities);
+			auto surfaceCompositeAlpha = getBestSurfaceCompositeAlpha(surfaceCapabilities);
+			auto surfacePresentMode = getBestSurfacePresentMode(physicalDevice, surface);
+			
 			swapchain = createSwapchain(
 				device,
 				surface,
-				surfaceCapabilities,
-				graphicsQueueFamilyIndex,
-				presentQueueFamilyIndex,
+				surfaceImageCount,
 				surfaceFormat,
-				presentMode,
-				extent,
-				imageCount);
+				surfaceExtent,
+				surfaceTransform,
+				surfaceCompositeAlpha,
+				surfacePresentMode);
 
-			images = getImages(device, swapchain);
-			imageViews = createImageViews(device, surfaceFormat.format, images);
 			renderPass = createRenderPass(device, surfaceFormat.format);
 			pipelineLayout = createPipelineLayout(device);
-			pipeline = createPipeline(device, extent, renderPass, pipelineLayout);
-			framebuffers = createFramebuffers(device, renderPass, imageViews, extent);
-			commandPool = createCommandPool(device, graphicsQueueFamilyIndex);
-			commandBuffers = allocateCommandBuffers(
-				device, extent, commandPool, renderPass, pipeline, framebuffers);
+			pipeline = createPipeline(device, surfaceExtent, renderPass, pipelineLayout);
 
+			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+			{
+				graphicsCommandPool = createCommandPool(device, graphicsQueueFamilyIndex);
+				presentCommandPool = createCommandPool(device, presentQueueFamilyIndex);
+			}
+			else
+			{
+				graphicsCommandPool = presentCommandPool = 
+					createCommandPool(device, graphicsQueueFamilyIndex);
+			}
+
+			swapchainDatas = createSwapchainDatas(
+				device,
+				swapchain,
+				renderPass,
+				graphicsCommandPool,
+				presentCommandPool,
+				surfaceFormat.format,
+				surfaceExtent);
+
+			frameIndex = 0;
+			fences = std::vector<vk::Fence>(FRAME_LAG);
+			imageAcquiredSemaphores = std::vector<vk::Semaphore>(FRAME_LAG);
+			drawCompleteSemaphores = std::vector<vk::Semaphore>(FRAME_LAG);
+			imageOwnershipSemaphores = std::vector<vk::Semaphore>(FRAME_LAG);
+
+			auto fenceCreateInfo = vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled);
 			auto semaphoreCreateInfo = vk::SemaphoreCreateInfo();
-			imageAvailableSemaphore = device.createSemaphore(semaphoreCreateInfo);
-			renderFinishedSemaphore = device.createSemaphore(semaphoreCreateInfo);
+
+			for (size_t i = 0; i < FRAME_LAG; i++)
+			{
+				fences[i] = device.createFence(fenceCreateInfo);
+				imageAcquiredSemaphores[i] = device.createSemaphore(semaphoreCreateInfo);
+				drawCompleteSemaphores[i] = device.createSemaphore(semaphoreCreateInfo);
+				imageOwnershipSemaphores[i] = device.createSemaphore(semaphoreCreateInfo);
+			}
 		}
 		catch (const std::exception& exception)
 		{
@@ -878,7 +916,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	VkWindow::~VkWindow()
 	{
-		device.freeCommandBuffers(commandPool, commandBuffers.size(), commandBuffers.data());
+		/*device.freeCommandBuffers(commandPool, commandBuffers.size(), commandBuffers.data());
 		device.destroyCommandPool(commandPool);
 
 		for (auto& framebuffer : framebuffers)
@@ -889,7 +927,7 @@ namespace INJECTOR_NAMESPACE
 		device.destroyRenderPass(renderPass);
 
 		for (auto& imageView : imageViews)
-			device.destroyImageView(imageView);
+			device.destroyImageView(imageView);*/
 
 		device.destroySwapchainKHR(swapchain);
 		device.destroy();
@@ -904,33 +942,101 @@ namespace INJECTOR_NAMESPACE
 
 	void VkWindow::beginRender()
 	{
-		auto imageIndex = device.acquireNextImageKHR(
-			swapchain, UINT64_MAX, imageAvailableSemaphore, nullptr).value;
+		device.waitForFences(1, &fences[frameIndex], true, UINT64_MAX);
+		device.resetFences({ fences[frameIndex] });
 
-		vk::SubmitInfo submitInfo {};
-		vk::Semaphore waitSemaphores[] = { imageAvailableSemaphore };
-		vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-		submitInfo.waitSemaphoreCount = 1;
-		submitInfo.pWaitSemaphores = waitSemaphores;
-		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
+		vk::Result result;
+		uint32_t imageIndex;
 
-		vk::Semaphore signalSemaphores[] = { renderFinishedSemaphore };
-		submitInfo.signalSemaphoreCount = 1;
-		submitInfo.pSignalSemaphores = signalSemaphores;
-		graphicsQueue.submit(1, &submitInfo, nullptr);
+		do
+		{
+			result = device.acquireNextImageKHR(swapchain, UINT64_MAX,
+				imageAcquiredSemaphores[frameIndex], vk::Fence(), &imageIndex);
 
-		vk::PresentInfoKHR presentInfo {};
-		presentInfo.waitSemaphoreCount = 1;
-		presentInfo.pWaitSemaphores = signalSemaphores;
+			if (result == vk::Result::eErrorOutOfDateKHR)
+			{
+				// demo->swapchain is out of date (e.g. the window was resized) and
+				// must be recreated:
+				break;
+				//resize();
+			}
+			else if (result == vk::Result::eErrorSurfaceLostKHR)
+			{
+				break;
+				//inst.destroySurfaceKHR(surface, nullptr);
+				//create_surface();
+				//resize();
+			}
+			else if (result == vk::Result::eSuboptimalKHR)
+			{
+				break;
+			}
+			else if(result != vk::Result::eSuccess)
+			{
+				throw std::runtime_error("Failed to acquire next Vulkan image");
+			}
+		}
+		while (result != vk::Result::eSuccess);
 
-		vk::SwapchainKHR swapChains[] = { swapchain };
-		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = swapChains;
-		presentInfo.pImageIndices = &imageIndex;
-		presentInfo.pResults = nullptr; // Optional
-		presentQueue.presentKHR(&presentInfo);
+		vk::PipelineStageFlags waitDestinationStageMask =
+			vk::PipelineStageFlagBits::eColorAttachmentOutput;
+
+		auto submitInfo = vk::SubmitInfo(
+			1, &imageAcquiredSemaphores[frameIndex],
+			&waitDestinationStageMask,
+			1, &swapchainDatas[imageIndex].graphicsCommandBuffer,
+			1, &drawCompleteSemaphores[frameIndex]);
+
+		result = graphicsQueue.submit(1, &submitInfo, fences[frameIndex]);
+
+		if (result != vk::Result::eSuccess)
+			throw std::runtime_error("Failed to submit Vulkan graphics queue");
+
+		auto presentInfo = vk::PresentInfoKHR(
+			1, &drawCompleteSemaphores[frameIndex],
+			1, &swapchain,
+			&imageIndex);
+
+		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+		{
+			submitInfo.pWaitSemaphores = &drawCompleteSemaphores[frameIndex];
+			submitInfo.pCommandBuffers = &swapchainDatas[imageIndex].presentCommandBuffer;
+			submitInfo.pSignalSemaphores = &imageOwnershipSemaphores[frameIndex];
+
+			result = presentQueue.submit(1, &submitInfo, vk::Fence());
+
+			if (result != vk::Result::eSuccess)
+				throw std::runtime_error("Failed to submit Vulkan graphics queue");
+
+			presentInfo.pWaitSemaphores = &imageOwnershipSemaphores[frameIndex];
+		}
+
+		frameIndex += 1;
+		frameIndex %= FRAME_LAG;
+
+		result = presentQueue.presentKHR(&presentInfo);
+		
+		if (result == vk::Result::eErrorOutOfDateKHR)
+		{
+			// swapchain is out of date (e.g. the window was resized) and
+			// must be recreated:
+			//resize();
+		}
+		else if (result == vk::Result::eSuboptimalKHR)
+		{
+			// swapchain is not as optimal as it could be, but the platform's
+			// presentation engine will still present the image correctly.
+		}
+		else if (result == vk::Result::eErrorSurfaceLostKHR)
+		{
+			/*inst.destroySurfaceKHR(surface, nullptr);
+			create_surface();
+			resize();*/
+		}
+		else if (result != vk::Result::eSuccess)
+		{
+			throw std::runtime_error("Failed to present next Vulkan image");
+		}
 	}
 	void VkWindow::endRender()
 	{

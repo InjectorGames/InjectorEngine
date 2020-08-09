@@ -6,6 +6,15 @@
 
 namespace INJECTOR_NAMESPACE
 {
+	struct VkSwapchainData
+	{
+		vk::Image image;
+		vk::ImageView imageView;
+		vk::Framebuffer framebuffer;
+		vk::CommandBuffer graphicsCommandBuffer;
+		vk::CommandBuffer presentCommandBuffer;
+	};
+
 	class VkWindow : public Window
 	{
 	protected:
@@ -19,22 +28,16 @@ namespace INJECTOR_NAMESPACE
 		uint32_t presentQueueFamilyIndex;
 		vk::Queue graphicsQueue;
 		vk::Queue presentQueue;
-		vk::SurfaceFormatKHR surfaceFormat;
-		vk::PresentModeKHR presentMode;
-		vk::Extent2D extent;
-		uint32_t imageCount;
 		vk::SwapchainKHR swapchain;
-		std::vector<vk::Image> images;
-		std::vector<vk::ImageView> imageViews;
 		vk::RenderPass renderPass;
 		vk::PipelineLayout pipelineLayout;
 		vk::Pipeline pipeline;
-		std::vector<vk::Framebuffer> framebuffers;
-		vk::CommandPool commandPool;
-		std::vector<vk::CommandBuffer> commandBuffers;
-		vk::Semaphore imageAvailableSemaphore;
-		vk::Semaphore renderFinishedSemaphore;
+		vk::CommandPool graphicsCommandPool;
+		vk::CommandPool presentCommandPool;
+		std::vector<VkSwapchainData> swapchainDatas;
 
+		uint32_t frameIndex;
+		std::vector<vk::Fence> fences;
 		std::vector<vk::Semaphore> imageAcquiredSemaphores;
 		std::vector<vk::Semaphore> drawCompleteSemaphores;
 		std::vector<vk::Semaphore> imageOwnershipSemaphores;
@@ -70,34 +73,30 @@ namespace INJECTOR_NAMESPACE
 			const vk::Device& device,
 			uint32_t queueFamilyIndex,
 			uint32_t queueIndex);
+		static uint32_t getBestSurfaceImageCount(
+			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
 		static vk::SurfaceFormatKHR getBestSurfaceFormat(
 			const vk::PhysicalDevice& physicalDevice,
 			const vk::SurfaceKHR& surface);
-		static vk::PresentModeKHR getBestPresentMode(
+		static vk::PresentModeKHR getBestSurfacePresentMode(
 			const vk::PhysicalDevice& physicalDevice,
 			const vk::SurfaceKHR& surface);
-		static vk::Extent2D getBestExtent(
+		static vk::Extent2D getBestSurfaceExtent(
 			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
 			const IntVector2& size);
-		static uint32_t getBestImageCount(
+		static vk::SurfaceTransformFlagBitsKHR getBestSurfaceTransform(
+			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
+		static vk::CompositeAlphaFlagBitsKHR getBestSurfaceCompositeAlpha(
 			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
 		static vk::SwapchainKHR createSwapchain(
 			const vk::Device& device,
 			const vk::SurfaceKHR& surface,
-			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
-			uint32_t graphicsQueueFamilyIndex,
-			uint32_t presentQueueFamilyIndex,
+			uint32_t surfaceImageCount,
 			const vk::SurfaceFormatKHR& surfaceFormat,
-			const vk::PresentModeKHR& presentMode,
-			const vk::Extent2D& extent,
-			uint32_t imageCount);
-		static std::vector<vk::Image> getImages(
-			const vk::Device& device,
-			const vk::SwapchainKHR& swapchain);
-		static std::vector<vk::ImageView> createImageViews(
-			const vk::Device& device,
-			const vk::Format& format,
-			const std::vector<vk::Image>& images);
+			const vk::Extent2D& surfaceExtent,
+			const vk::SurfaceTransformFlagBitsKHR& surfaceTransform,
+			const vk::CompositeAlphaFlagBitsKHR& surfaceCompositeAlpha,
+			const vk::PresentModeKHR& surfacePresentMode);
 		static vk::RenderPass createRenderPass(
 			const vk::Device& device,
 			const vk::Format& format);
@@ -108,21 +107,17 @@ namespace INJECTOR_NAMESPACE
 			const vk::Extent2D& extent,
 			const vk::RenderPass& renderPass,
 			const vk::PipelineLayout& pipelineLayout);
-		static std::vector<vk::Framebuffer> createFramebuffers(
-			const vk::Device& device,
-			const vk::RenderPass renderPass,
-			const std::vector<vk::ImageView>& imageViews,
-			const vk::Extent2D& extent);
 		static vk::CommandPool createCommandPool(
 			const vk::Device& device,
-			uint32_t graphicsQueueFamilyIndex);
-		static std::vector<vk::CommandBuffer> allocateCommandBuffers(
+			uint32_t queueFamilyIndex);
+		static std::vector<VkSwapchainData> createSwapchainDatas(
 			const vk::Device& device,
-			const vk::Extent2D& extent,
-			const vk::CommandPool& commandPool,
+			const vk::SwapchainKHR& swapchain,
 			const vk::RenderPass& renderPass,
-			const vk::Pipeline& pipeline,
-			const std::vector<vk::Framebuffer>& framebuffers);
+			const vk::CommandPool& graphicsCommandPool,
+			const vk::CommandPool& presentCommandPool,
+			const vk::Format& surfaceFormat,
+			const vk::Extent2D& surfaceExtent);
 	public:
 		VkWindow(const std::string& title = defaultTitle,
 			const IntVector2& position = defaultPosition,
