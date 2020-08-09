@@ -760,8 +760,10 @@ namespace INJECTOR_NAMESPACE
 
 		for (size_t i = 0; i < images.size(); i++)
 		{
+			auto& swapchainData = swapchainDatas[i];
+
 			auto image = images[i];
-			swapchainDatas[i].image = image;
+			swapchainData.image = image;
 
 			vk::ImageView imageView;
 			imageViewCreateInfo.image = image;
@@ -772,7 +774,7 @@ namespace INJECTOR_NAMESPACE
 			if (result != vk::Result::eSuccess)
 				throw std::runtime_error("Failed to create Vulkan swapchain image view");
 
-			swapchainDatas[i].imageView = imageView;
+			swapchainData.imageView = imageView;
 
 			vk::Framebuffer framebuffer;
 			framebufferCreateInfo.pAttachments = &imageView;
@@ -783,7 +785,7 @@ namespace INJECTOR_NAMESPACE
 			if (result != vk::Result::eSuccess)
 				throw std::runtime_error("Failed to create Vulkan framebuffer");
 
-			swapchainDatas[i].framebuffer = framebuffer;
+			swapchainData.framebuffer = framebuffer;
 
 			vk::CommandBuffer commandBuffer;
 			commandBufferAllocateInfo.commandPool = graphicsCommandPool;
@@ -794,7 +796,7 @@ namespace INJECTOR_NAMESPACE
 			if (result != vk::Result::eSuccess)
 				throw std::runtime_error("Failed to allocate Vulkan command buffers");
 
-			swapchainDatas[i].graphicsCommandBuffer = commandBuffer;
+			swapchainData.graphicsCommandBuffer = commandBuffer;
 
 			if (graphicsCommandPool != presentCommandPool)
 			{
@@ -806,15 +808,71 @@ namespace INJECTOR_NAMESPACE
 				if (result != vk::Result::eSuccess)
 					throw std::runtime_error("Failed to allocate Vulkan command buffers");
 
-				swapchainDatas[i].presentCommandBuffer = commandBuffer;
+				swapchainData.presentCommandBuffer = commandBuffer;
 			}
 			else
 			{
-				swapchainDatas[i].presentCommandBuffer = commandBuffer;
+				swapchainData.presentCommandBuffer = commandBuffer;
 			}
 		}
 
 		return swapchainDatas;
+	}
+	void VkWindow::recordCommandBuffers(
+		const vk::RenderPass& renderPass,
+		const vk::Pipeline& pipeline,
+		const vk::Extent2D& surfaceExtent,
+		uint32_t graphicsQueueFamilyIndex,
+		uint32_t presentQueueFamilyIndex,
+		const std::vector<VkSwapchainData>& swapchainDatas)
+	{
+		auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
+			vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
+		auto clearValues = vk::ClearValue(vk::ClearColorValue(
+			std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f}));
+		auto renderPassBeginInfo = vk::RenderPassBeginInfo(
+			renderPass, nullptr,
+			vk::Rect2D({ 0, 0 }, surfaceExtent),
+			1, &clearValues);
+
+		for (size_t i = 0; i < swapchainDatas.size(); i++)
+		{
+			auto& swapchainData = swapchainDatas[i];
+			auto& commandBuffer = swapchainData.graphicsCommandBuffer;
+			
+			auto result = commandBuffer.begin(&commandBufferBeginInfo);
+
+			if (result != vk::Result::eSuccess)
+				throw std::runtime_error("Failed to begin Vulkan command buffer");
+
+			renderPassBeginInfo.framebuffer = swapchainData.framebuffer;
+
+			commandBuffer.beginRenderPass(
+				&renderPassBeginInfo, vk::SubpassContents::eInline);
+			commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
+			commandBuffer.draw(3, 1, 0, 0);
+			commandBuffer.endRenderPass();
+
+			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+			{
+				auto imageMemoryBarrier = vk::ImageMemoryBarrier({}, {},
+					vk::ImageLayout::ePresentSrcKHR,
+					vk::ImageLayout::ePresentSrcKHR,
+					graphicsQueueFamilyIndex,
+					presentQueueFamilyIndex,
+					swapchainData.image,
+					vk::ImageSubresourceRange(
+						vk::ImageAspectFlagBits::eColor,
+						0, 1, 0, 1));
+
+				commandBuffer.pipelineBarrier(
+					vk::PipelineStageFlagBits::eBottomOfPipe, 
+					vk::PipelineStageFlagBits::eBottomOfPipe,
+					{}, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
+			}
+
+			commandBuffer.end();
+		}
 	}
 
 	VkWindow::VkWindow(
@@ -887,6 +945,14 @@ namespace INJECTOR_NAMESPACE
 				surfaceFormat.format,
 				surfaceExtent);
 
+			recordCommandBuffers(
+				renderPass,
+				pipeline,
+				surfaceExtent,
+				graphicsQueueFamilyIndex,
+				presentQueueFamilyIndex,
+				swapchainDatas);
+
 			frameIndex = 0;
 			fences = std::vector<vk::Fence>(FRAME_LAG);
 			imageAcquiredSemaphores = std::vector<vk::Semaphore>(FRAME_LAG);
@@ -916,6 +982,10 @@ namespace INJECTOR_NAMESPACE
 	}
 	VkWindow::~VkWindow()
 	{
+		// TODO: cleanup swapchain datas
+		// TODO: check pipeline creation in demo
+		// TODO: swapchain recreation
+
 		/*device.freeCommandBuffers(commandPool, commandBuffers.size(), commandBuffers.data());
 		device.destroyCommandPool(commandPool);
 

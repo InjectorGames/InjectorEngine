@@ -118,6 +118,13 @@ namespace INJECTOR_NAMESPACE
 			const vk::CommandPool& presentCommandPool,
 			const vk::Format& surfaceFormat,
 			const vk::Extent2D& surfaceExtent);
+		static void recordCommandBuffers(
+			const vk::RenderPass& renderPass,
+			const vk::Pipeline& pipeline,
+			const vk::Extent2D& surfaceExtent,
+			uint32_t graphicsQueueFamilyIndex,
+			uint32_t presentQueueFamilyIndex,
+			const std::vector<VkSwapchainData>& swapchainDatas);
 	public:
 		VkWindow(const std::string& title = defaultTitle,
 			const IntVector2& position = defaultPosition,
