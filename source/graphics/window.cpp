@@ -68,7 +68,10 @@ namespace INJECTOR_NAMESPACE
 	{
 		return SDL_GetWindowFlags(window) & SDL_WINDOW_MAXIMIZED;
 	}
-	
+	bool Window::isResizable() const noexcept
+	{
+		return SDL_GetWindowFlags(window) & SDL_WINDOW_RESIZABLE;
+	}
 
 	void Window::hide() noexcept
 	{
@@ -85,5 +88,9 @@ namespace INJECTOR_NAMESPACE
 	void Window::maximize() noexcept
 	{
 		SDL_MaximizeWindow(window);
+	}
+	void Window::setResizable(bool value) noexcept
+	{
+		SDL_SetWindowResizable(window, static_cast<SDL_bool>(value));
 	}
 }

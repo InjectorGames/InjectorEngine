@@ -615,8 +615,20 @@ namespace INJECTOR_NAMESPACE
 			),
 		};
 
-		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo(
-			{}, 0, nullptr, 0, nullptr);
+		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
+			0, sizeof(float) * 5, vk::VertexInputRate::eVertex);
+		auto vertexInputAttributeDescriptions =
+			std::vector<vk::VertexInputAttributeDescription>
+		{
+			vk::VertexInputAttributeDescription(
+				0, 0, vk::Format::eR32G32Sfloat, 0),
+			vk::VertexInputAttributeDescription(
+				0, 0, vk::Format::eR32G32Sfloat, sizeof(float) * 3),
+		};
+		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo({},
+			1, &vertexInputBindingDescription, 
+			vertexInputAttributeDescriptions.size(),
+			vertexInputAttributeDescriptions.data());
 
 		auto pipelineInputAssemblyStateCreateInfo =
 			vk::PipelineInputAssemblyStateCreateInfo({}, vk::PrimitiveTopology::eTriangleList, false);

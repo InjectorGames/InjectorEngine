@@ -36,11 +36,13 @@ namespace INJECTOR_NAMESPACE
 		bool isShown() const noexcept;
 		bool isMinimized() const noexcept;
 		bool isMaximized() const noexcept;
+		bool isResizable() const noexcept;
 
 		void hide() noexcept;
 		void show() noexcept;
 		void minimize() noexcept;
 		void maximize() noexcept;
+		void setResizable(bool value) noexcept;
 	};
 
 	using WindowHandle = std::shared_ptr<Window>;
