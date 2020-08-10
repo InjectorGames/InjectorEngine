@@ -10,6 +10,6 @@
 [submodule "glew"]
 	path = 3rdparty/glew
 	url = https://github.com/InjectorGames/glew
-[submodule "vma"]
-	path = 3rdparty/vma
+[submodule "3rdparty/VulkanMemoryAllocator"]
+	path = 3rdparty/VulkanMemoryAllocator
 	url = https://github.com/InjectorGames/VulkanMemoryAllocator

@@ -449,7 +449,7 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 
-# Visual Studio CMake ouptu
+# Visual Studio CMake ouptut
 out/
 
 # End of https://www.gitignore.io/api/c,c++,cmake,visualstudio,visualstudiocode
