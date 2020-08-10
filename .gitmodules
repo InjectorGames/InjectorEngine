@@ -1,15 +1,9 @@
-[submodule "asio"]
+[submodule "3rdparty/asio"]
 	path = 3rdparty/asio
 	url = https://github.com/InjectorGames/asio
-[submodule "glm"]
+[submodule "3rdparty/glm"]
 	path = 3rdparty/glm
 	url = https://github.com/InjectorGames/glm
-[submodule "sdl"]
-	path = 3rdparty/sdl
-	url = https://github.com/InjectorGames/SDL
-[submodule "glew"]
+[submodule "3rdparty/glew"]
 	path = 3rdparty/glew
 	url = https://github.com/InjectorGames/glew
-[submodule "vma"]
-	path = 3rdparty/vma
-	url = https://github.com/InjectorGames/VulkanMemoryAllocator
