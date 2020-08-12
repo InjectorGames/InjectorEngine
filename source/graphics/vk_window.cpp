@@ -329,6 +329,7 @@ namespace INJECTOR_NAMESPACE
 		vk::Device device)
 	{
 		VmaAllocatorCreateInfo allocatorInfo = {};
+		allocatorInfo.flags = VMA_ALLOCATOR_CREATE_EXTERNALLY_SYNCHRONIZED_BIT;
 		allocatorInfo.physicalDevice = static_cast<VkPhysicalDevice>(physicalDevice);
 		allocatorInfo.device = static_cast<VkDevice>(device);
 		allocatorInfo.instance = static_cast<VkInstance>(instance);
@@ -666,7 +667,7 @@ namespace INJECTOR_NAMESPACE
 			false,
 			false,
 			vk::PolygonMode::eFill,
-			vk::CullModeFlagBits::eBack,
+			vk::CullModeFlagBits::eFront,
 			vk::FrontFace::eClockwise,
 			false,
 			0.0f,
@@ -707,6 +708,7 @@ namespace INJECTOR_NAMESPACE
 		pipelineColorBlendStateCreateInfo.blendConstants[1] = 0.0f; // Optional
 		pipelineColorBlendStateCreateInfo.blendConstants[2] = 0.0f; // Optional
 		pipelineColorBlendStateCreateInfo.blendConstants[3] = 0.0f; // Optional
+
 
 		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo({},
 			static_cast<uint32_t>(pipelineShaderStageCreateInfos.size()),
@@ -931,38 +933,12 @@ namespace INJECTOR_NAMESPACE
 					createCommandPool(device, graphicsQueueFamilyIndex);
 			}
 
-			auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
-			auto surfaceImageCount = getBestSurfaceImageCount(surfaceCapabilities);
-			auto surfaceFormat = getBestSurfaceFormat(physicalDevice, surface);
-			auto surfaceTransform = getBestSurfaceTransform(surfaceCapabilities);
-			auto surfaceCompositeAlpha = getBestSurfaceCompositeAlpha(surfaceCapabilities);
-			auto surfacePresentMode = getBestSurfacePresentMode(physicalDevice, surface);
-
-			surfaceExtent = getBestSurfaceExtent(
-				surfaceCapabilities, size);
-			swapchain = createSwapchain(
-				device,
-				surface,
-				surfaceImageCount,
-				surfaceFormat,
-				surfaceExtent,
-				surfaceTransform,
-				surfaceCompositeAlpha,
-				surfacePresentMode);
-
-			renderPass = createRenderPass(device, surfaceFormat.format);
-			pipelineLayout = createPipelineLayout(device);
-			pipeline = createPipeline(device, surfaceExtent, renderPass, pipelineLayout);
-
-			swapchainDatas = createSwapchainDatas(
-				device,
-				swapchain,
-				renderPass,
-				graphicsCommandPool,
-				presentCommandPool,
-				surfaceFormat.format,
-				surfaceExtent);
-
+			surfaceExtent = {};
+			swapchain = nullptr;
+			renderPass = nullptr;
+			pipelineLayout = nullptr;
+			pipeline = nullptr;
+			swapchainDatas = {};
 			frameIndex = 0;
 		}
 		catch (const std::exception& exception)
@@ -1045,7 +1021,7 @@ namespace INJECTOR_NAMESPACE
 		auto surfaceCompositeAlpha = getBestSurfaceCompositeAlpha(surfaceCapabilities);
 		auto surfacePresentMode = getBestSurfacePresentMode(physicalDevice, surface);
 
-		surfaceExtent =getBestSurfaceExtent(
+		surfaceExtent = getBestSurfaceExtent(
 			surfaceCapabilities, size);
 		swapchain = createSwapchain(
 			device,
@@ -1173,7 +1149,7 @@ namespace INJECTOR_NAMESPACE
 		auto graphicsCommandBuffer = swapchainData.graphicsCommandBuffer;
 
 		auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
-			vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
+			vk::CommandBufferUsageFlagBits::eOneTimeSubmit, nullptr);
 		auto result = graphicsCommandBuffer.begin(&commandBufferBeginInfo);
 
 		if (result != vk::Result::eSuccess)
@@ -1257,7 +1233,7 @@ namespace INJECTOR_NAMESPACE
 		auto indexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
 			Primitive::squareIndices.size() * sizeof(uint16_t),
 			vk::BufferUsageFlagBits::eIndexBuffer);
-		vertexBuffer->setData(Primitive::squareIndices.data(),
+		indexBuffer->setData(Primitive::squareIndices.data(),
 			Primitive::squareIndices.size() * sizeof(uint16_t));
 
 		return std::make_shared<VkMesh>(vk::IndexType::eUint16, 
