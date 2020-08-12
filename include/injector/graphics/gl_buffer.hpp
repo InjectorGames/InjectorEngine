@@ -12,20 +12,6 @@ namespace INJECTOR_NAMESPACE
 	class GlBuffer : public Buffer
 	{
 	public:
-		enum class Type : GLenum
-		{
-			Array = GL_ARRAY_BUFFER, // GL 2.0
-			AtomicCounter = GL_ATOMIC_COUNTER_BUFFER, // GL 4.3
-			CopyRead = GL_COPY_READ_BUFFER, // GL 3.1
-			CopyWrite = GL_COPY_WRITE_BUFFER, // GL 2.0
-			DrawIndirect = GL_DRAW_INDIRECT_BUFFER, // GL 2.0
-			ElementArray = GL_ELEMENT_ARRAY_BUFFER, // GL 2.0
-			PixelPack = GL_PIXEL_PACK_BUFFER, // GL 2.0
-			PixelUnpack = GL_PIXEL_UNPACK_BUFFER, // GL 2.0
-			Texture = GL_TEXTURE_BUFFER, // GL 3.1
-			TransformFeedback = GL_TRANSFORM_FEEDBACK_BUFFER, // GL 2.0
-			Uniform = GL_UNIFORM_BUFFER, // GL 3.1
-		};
 		enum class Usage : GLenum
 		{
 			// STREAM: The data store contents will be modified once and used at most a few times.
@@ -47,13 +33,15 @@ namespace INJECTOR_NAMESPACE
 		};
 	protected:
 		GLuint buffer;
-		GLenum type;
-		GLenum usage;
+		GLuint usage;
 
 		static GLbitfield getGlAccess(BufferAccess access);
 	public:
-		GlBuffer(GLenum type, GLenum usage, size_t size);
+		GlBuffer(size_t size, GLenum usage);
 		virtual ~GlBuffer();
+
+		BufferUsage getUsage() const override;
+		GLuint getBuffer() const noexcept;
 
 		void* map(BufferAccess access) override;
 		void* map(BufferAccess access, size_t size, size_t offset) override;
@@ -62,9 +50,8 @@ namespace INJECTOR_NAMESPACE
 		void setData(const void* data, size_t size) override;
 		void setData(const void* data, size_t size, size_t offset) override;
 
-		GLuint getBuffer() const noexcept;
-		GLenum getType() const noexcept;
-		GLenum getUsage() const noexcept;
+		static GLenum toGlUsage(BufferUsage usage);
+		static BufferUsage toUsage(GLenum usage);
 	};
 
 	using GlBufferHandle = std::shared_ptr<GlBuffer>;

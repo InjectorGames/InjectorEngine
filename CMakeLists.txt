@@ -125,6 +125,8 @@ set(INJECTOR_RESOURCES
 	shaders/opengl/gradient_sky.frag
 	shaders/opengl/gradient_sky.vert
 
+	shaders/vulkan/color.frag.spv
+	shaders/vulkan/color.vert.spv
 	shaders/vulkan/tutorial.vert.spv
 	shaders/vulkan/tutorial.frag.spv
 )

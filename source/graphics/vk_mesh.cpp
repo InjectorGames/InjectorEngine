@@ -4,8 +4,10 @@
 namespace INJECTOR_NAMESPACE
 {
 	VkMesh::VkMesh(vk::IndexType _index,
+		size_t indexCount,
 		const VkBufferHandle& _vertexBuffer,
 		const VkBufferHandle& _indexBuffer) :
+		Mesh(indexCount),
 		index(_index),
 		vertexBuffer(_vertexBuffer),
 		indexBuffer(_indexBuffer)
@@ -36,7 +38,7 @@ namespace INJECTOR_NAMESPACE
 		VkDeviceSize offset = 0;
 		commandBuffer.bindVertexBuffers(0, 1, &vertexBuffer->getBuffer(), &offset);
 		commandBuffer.bindIndexBuffer(indexBuffer->getBuffer(), 0, index);
-		commandBuffer.drawIndexed(indexBuffer->getSize(), 1, 0, 0, 0);
+		commandBuffer.drawIndexed(indexCount, 1, 0, 0, 0);
 	}
 
 	vk::IndexType VkMesh::toVkIndex(MeshIndex index)

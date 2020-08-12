@@ -34,12 +34,6 @@ namespace INJECTOR_NAMESPACE
 		case GL_VERTEX_SHADER:
 			extension = ".vert";
 			break;
-		case GL_TESS_CONTROL_SHADER:
-			extension = ".tesc";
-			break;
-		case GL_TESS_EVALUATION_SHADER:
-			extension = ".tese";
-			break;
 		case GL_GEOMETRY_SHADER:
 			extension = ".geom";
 			break;
@@ -112,10 +106,6 @@ namespace INJECTOR_NAMESPACE
 		{
 		case ShaderStage::Vertex:
 			return GL_VERTEX_SHADER;
-		case ShaderStage::TessellationControl:
-			return GL_TESS_CONTROL_SHADER;
-		case ShaderStage::TessellationEvaluation:
-			return GL_TESS_EVALUATION_SHADER;
 		case ShaderStage::Geometry:
 			return GL_GEOMETRY_SHADER;
 		case ShaderStage::Fragment:
@@ -132,10 +122,6 @@ namespace INJECTOR_NAMESPACE
 		{
 		case GL_VERTEX_SHADER:
 			return ShaderStage::Vertex;
-		case GL_TESS_CONTROL_SHADER:
-			return ShaderStage::TessellationControl;
-		case GL_TESS_EVALUATION_SHADER:
-			return ShaderStage::TessellationEvaluation;
 		case GL_GEOMETRY_SHADER:
 			return ShaderStage::Geometry;
 		case GL_FRAGMENT_SHADER:

@@ -6,8 +6,13 @@ namespace INJECTOR_NAMESPACE
 {
 	class Mesh
 	{
+	protected:
+		size_t indexCount;
 	public:
+		Mesh(size_t indexCount);
 		virtual ~Mesh();
+
+		size_t getIndexCount() const noexcept;
 
 		virtual MeshIndex getIndex() const;
 		virtual void setIndex(MeshIndex index);

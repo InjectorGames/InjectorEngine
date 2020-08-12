@@ -88,7 +88,7 @@ namespace INJECTOR_NAMESPACE
 
 	ShaderStage VkShader::getStage() const
 	{
-		return toStage(stage)
+		return toStage(stage);
 	}
 
 	const vk::Device& VkShader::getDevice() const noexcept

@@ -19,63 +19,71 @@ namespace INJECTOR_NAMESPACE
 			throw std::runtime_error("Unsupported OpenGL buffer access type");
 	}
 
-	GlBuffer::GlBuffer(GLenum _type, GLenum _usage, size_t size) :
+	GlBuffer::GlBuffer(size_t size, GLenum _usage) :
 		Buffer(size),
-		type(_type),
 		usage(_usage)
 	{
 		glGenBuffers(GL_ONE, &buffer);
-		glBindBuffer(type, buffer);
-		glBufferData(type, static_cast<GLsizeiptr>(size), nullptr, usage);
-		glBindBuffer(type, GL_ZERO);
+		glBindBuffer(_usage, buffer);
+		glBufferData(_usage, static_cast<GLsizeiptr>(size), nullptr, GL_DYNAMIC_DRAW);
+		glBindBuffer(_usage, GL_ZERO);
 	}
 	GlBuffer::~GlBuffer()
 	{
 		glDeleteBuffers(GL_ONE, &buffer);
 	}
 
+	BufferUsage GlBuffer::getUsage() const
+	{
+		return toUsage(usage);
+	}
+	GLuint GlBuffer::getBuffer() const noexcept
+	{
+		return buffer;
+	}
+
 	void* GlBuffer::map(BufferAccess access)
 	{
 		Buffer::map(access);
 
-		glBindBuffer(type, buffer);
-		auto mappedData = glMapBufferRange(type,
+		glBindBuffer(usage, buffer);
+		auto mappedData = glMapBufferRange(usage,
 			static_cast<GLintptr>(0),
 			static_cast<GLsizeiptr>(size),
 			getGlAccess(access));
 		if (!mappedData)
 			throw std::runtime_error("Failed to map OpenGL buffer");
-		glBindBuffer(type, GL_ZERO);
+		glBindBuffer(usage, GL_ZERO);
 		return mappedData;
 	}
 	void* GlBuffer::map(BufferAccess access, size_t size, size_t offset)
 	{
 		Buffer::map(access);
 
-		glBindBuffer(type, buffer);
-		auto mappedData = glMapBufferRange(type,
+		glBindBuffer(usage, buffer);
+		auto mappedData = glMapBufferRange(usage,
 			static_cast<GLintptr>(offset),
 			static_cast<GLsizeiptr>(size),
 			getGlAccess(access));
 		if (!mappedData)
 			throw std::runtime_error("Failed to map OpenGL buffer");
-		glBindBuffer(type, GL_ZERO);
+		glBindBuffer(usage, GL_ZERO);
 		return mappedData;
 	}
 	void GlBuffer::unmap()
 	{
-		glBindBuffer(type, buffer);
+		glBindBuffer(usage, buffer);
 
 		if (mapAccess == BufferAccess::WriteOnly || mapAccess == BufferAccess::ReadWrite)
 		{
-			glFlushMappedBufferRange(type,
+			glFlushMappedBufferRange(usage,
 				static_cast<GLintptr>(mapOffset), 
 				static_cast<GLsizeiptr>(mapSize));
 		}
 		
-		if(glUnmapBuffer(type) == GL_FALSE)
+		if(glUnmapBuffer(usage) == GL_FALSE)
 			throw std::runtime_error("Failed to unmap OpenGL buffer");
-		glBindBuffer(type, GL_ZERO);
+		glBindBuffer(usage, GL_ZERO);
 	}
 
 	void GlBuffer::setData(const void* data, size_t _size)
@@ -83,36 +91,57 @@ namespace INJECTOR_NAMESPACE
 		if (_size > size)
 			throw std::runtime_error("Out of OpenGL buffer range");
 
-		glBindBuffer(type, buffer);
-		glBufferSubData(type,
+		glBindBuffer(usage, buffer);
+		glBufferSubData(usage,
 			static_cast<GLintptr>(0),
 			static_cast<GLsizeiptr>(_size),
 			static_cast<const GLvoid*>(data));
-		glBindBuffer(type, GL_ZERO);
+		glBindBuffer(usage, GL_ZERO);
 	}
 	void GlBuffer::setData(const void* data, size_t _size, size_t offset)
 	{
 		if (_size + offset > size)
 			throw std::runtime_error("Out of OpenGL buffer range");
 
-		glBindBuffer(type, buffer);
-		glBufferSubData(type,
+		glBindBuffer(usage, buffer);
+		glBufferSubData(usage,
 			static_cast<GLintptr>(offset),
 			static_cast<GLsizeiptr>(_size),
 			static_cast<const GLvoid*>(data));
-		glBindBuffer(type, GL_ZERO);
+		glBindBuffer(usage, GL_ZERO);
 	}
 
-	GLuint GlBuffer::getBuffer() const noexcept
+	GLenum GlBuffer::toGlUsage(BufferUsage usage)
 	{
-		return buffer;
+		// TODO: add other buffer types
+		switch (usage)
+		{
+		case BufferUsage::Uniform:
+			return GL_UNIFORM_BUFFER;
+		case BufferUsage::Index:
+			return GL_ELEMENT_ARRAY_BUFFER;
+		case BufferUsage::Vertex:
+			return GL_ARRAY_BUFFER;
+		case BufferUsage::TransformFeedback:
+			return GL_TRANSFORM_FEEDBACK_BUFFER;
+		default:
+			throw std::runtime_error("Unsupported OpenGL buffer usage");
+		}
 	}
-	GLenum GlBuffer::getType() const noexcept
+	BufferUsage GlBuffer::toUsage(GLenum usage)
 	{
-		return type;
-	}
-	GLenum GlBuffer::getUsage() const noexcept
-	{
-		return usage;
+		switch (usage)
+		{
+		case GL_UNIFORM_BUFFER:
+			return BufferUsage::Uniform;
+		case GL_ELEMENT_ARRAY_BUFFER:
+			return BufferUsage::Index;
+		case GL_ARRAY_BUFFER:
+			return BufferUsage::Vertex;
+		case GL_TRANSFORM_FEEDBACK_BUFFER:
+			return BufferUsage::TransformFeedback;
+		default:
+			throw std::runtime_error("Unsupported OpenGL buffer usage");
+		}
 	}
 }

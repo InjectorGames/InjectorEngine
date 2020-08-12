@@ -1,7 +1,9 @@
 #pragma once
 #include <injector/graphics/buffer_usage.hpp>
 #include <injector/graphics/buffer_access.hpp>
+
 #include <memory>
+#include <cstdint>
 
 namespace INJECTOR_NAMESPACE
 {

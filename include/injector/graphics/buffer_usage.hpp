@@ -5,8 +5,28 @@ namespace INJECTOR_NAMESPACE
 {
     enum class BufferUsage
     {
-
+        UniformTexel,
+        StorageTexel,
+        Uniform,
+        Storage,
+        Index,
+        Vertex,
+        Indirect,
+        TransformFeedback,
+        TransformFeedbackCounterBuffer,
     };
+
+    /*Array = GL_ARRAY_BUFFER, // GL 2.0
+        AtomicCounter = GL_ATOMIC_COUNTER_BUFFER, // GL 4.3
+        CopyRead = GL_COPY_READ_BUFFER, // GL 3.1
+        CopyWrite = GL_COPY_WRITE_BUFFER, // GL 2.0
+        DrawIndirect = GL_DRAW_INDIRECT_BUFFER, // GL 2.0
+        ElementArray = GL_ELEMENT_ARRAY_BUFFER, // GL 2.0
+        PixelPack = GL_PIXEL_PACK_BUFFER, // GL 2.0
+        PixelUnpack = GL_PIXEL_UNPACK_BUFFER, // GL 2.0
+        Texture = GL_TEXTURE_BUFFER, // GL 3.1
+        TransformFeedback = GL_TRANSFORM_FEEDBACK_BUFFER, // GL 2.0
+        Uniform = GL_UNIFORM_BUFFER, // GL 3.1*/
 
    /* VK_BUFFER_USAGE_TRANSFER_SRC_BIT = 0x00000001,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT = 0x00000002,

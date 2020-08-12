@@ -8,16 +8,14 @@
 namespace INJECTOR_NAMESPACE
 {
 	GlMesh::GlMesh(GLenum _index,
+		size_t indexCount,
 		const GlBufferHandle& _vertexBuffer,
 		const GlBufferHandle& _indexBuffer,
-		const std::vector<GlAttribute>& _attributes,
-		uint32_t _drawType,
-		uint32_t _indexCount) :
+		const std::vector<GlAttribute>& _attributes) :
+		Mesh(indexCount),
 		index(_index),
 		vertexBuffer(_vertexBuffer),
-		indexBuffer(_indexBuffer),
-		drawType(_drawType),
-		indexCount(_indexCount)
+		indexBuffer(_indexBuffer)
 	{
 		glGenVertexArrays(GL_ONE, &vertexArray);
 
@@ -40,15 +38,12 @@ namespace INJECTOR_NAMESPACE
 		glDeleteVertexArrays(GL_ONE, &vertexArray);
 	}
 
-	/*void GlMesh::draw(size_t frameIndex)
+	void GlMesh::draw(GLuint mode)
 	{
-		glBindVertexArray(static_cast<GLuint>(vertexArray));
-
-		glDrawElements(static_cast<GLenum>(drawMode), static_cast<GLsizei>(indexCount),
-			static_cast<GLenum>(drawType), nullptr);
-
+		glBindVertexArray(vertexArray);
+		glDrawElements(mode, indexCount, index, nullptr);
 		glBindVertexArray(GL_ZERO);
-	}*/
+	}
 
 	uint32_t GlMesh::getVertexArray() const noexcept
 	{

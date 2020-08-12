@@ -29,15 +29,11 @@ namespace INJECTOR_NAMESPACE
 		GlBufferHandle vertexBuffer;
 		GlBufferHandle indexBuffer;
 	public:
-		uint32_t drawType;
-		uint32_t indexCount;
-
 		GlMesh(GLenum _indexType,
+			size_t indexCount,
 			const GlBufferHandle& vertexBuffer,
 			const GlBufferHandle& indexBuffer,
-			const std::vector<GlAttribute>& attributes,
-			uint32_t drawType,
-			uint32_t indexCount);
+			const std::vector<GlAttribute>& attributes);
 		virtual ~GlMesh();
 
 		uint32_t getVertexArray() const noexcept;
@@ -47,6 +43,8 @@ namespace INJECTOR_NAMESPACE
 
 		const BufferHandle& getVertexBuffer() const override;
 		const BufferHandle& getIndexBuffer() const override;
+
+		void draw(GLuint mode);
 
 		static GLenum toGlIndex(MeshIndex index);
 		static MeshIndex toIndex(GLenum index);

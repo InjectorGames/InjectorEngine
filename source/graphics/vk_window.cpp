@@ -608,9 +608,9 @@ namespace INJECTOR_NAMESPACE
 		vk::PipelineLayout pipelineLayout)
 	{
 		auto vertexShader = VkShader(device, vk::ShaderStageFlagBits::eVertex,
-			"resources/shaders/vulkan/tutorial");
+			"resources/shaders/vulkan/color");
 		auto fragmentShader = VkShader(device, vk::ShaderStageFlagBits::eFragment,
-			"resources/shaders/vulkan/tutorial");
+			"resources/shaders/vulkan/color");
 
 		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>
 		{
@@ -633,14 +633,12 @@ namespace INJECTOR_NAMESPACE
 		};
 
 		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
-			0, sizeof(float) * 5, vk::VertexInputRate::eVertex);
+			0, sizeof(float) * 3, vk::VertexInputRate::eVertex);
 		auto vertexInputAttributeDescriptions =
 			std::vector<vk::VertexInputAttributeDescription>
 		{
 			vk::VertexInputAttributeDescription(
-				0, 0, vk::Format::eR32G32Sfloat, 0),
-			vk::VertexInputAttributeDescription(
-				0, 0, vk::Format::eR32G32Sfloat, sizeof(float) * 3),
+				0, 0, vk::Format::eR32G32B32Sfloat, 0),
 		};
 		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo({},
 			1, &vertexInputBindingDescription, 
@@ -743,7 +741,9 @@ namespace INJECTOR_NAMESPACE
 		vk::CommandPool commandPool;
 
 		auto commandPoolCreateInfo = vk::CommandPoolCreateInfo(
-			vk::CommandPoolCreateFlagBits::eTransient, queueFamilyIndex);
+			vk::CommandPoolCreateFlagBits::eTransient | 
+			vk::CommandPoolCreateFlagBits::eResetCommandBuffer, 
+			queueFamilyIndex);
 		auto result = device.createCommandPool(
 			&commandPoolCreateInfo, nullptr, &commandPool);
 
@@ -1249,15 +1249,18 @@ namespace INJECTOR_NAMESPACE
 	MeshHandle VkWindow::createCubeMesh()
 	{
 		auto vertexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
-			Primitive::cubeVertices.size() * sizeof(float));
-		vertexBuffer->setData(Primitive::cubeVertices.data(),
-			Primitive::cubeVertices.size() * sizeof(float));
+			Primitive::squareVertices.size() * sizeof(float),
+			vk::BufferUsageFlagBits::eVertexBuffer);
+		vertexBuffer->setData(Primitive::squareVertices.data(),
+			Primitive::squareVertices.size() * sizeof(float));
 
 		auto indexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
-			Primitive::cubeIndices.size() * sizeof(uint16_t));
-		vertexBuffer->setData(Primitive::cubeIndices.data(),
-			Primitive::cubeIndices.size() * sizeof(uint16_t));
+			Primitive::squareIndices.size() * sizeof(uint16_t),
+			vk::BufferUsageFlagBits::eIndexBuffer);
+		vertexBuffer->setData(Primitive::squareIndices.data(),
+			Primitive::squareIndices.size() * sizeof(uint16_t));
 
-		return std::make_shared<VkMesh>(vk::IndexType::eUint16, vertexBuffer, indexBuffer);
+		return std::make_shared<VkMesh>(vk::IndexType::eUint16, 
+			Primitive::squareIndices.size(), vertexBuffer, indexBuffer);
 	}
 }

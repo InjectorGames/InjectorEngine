@@ -6,7 +6,8 @@ namespace INJECTOR_NAMESPACE
 {
 	VkBuffer::VkBuffer(VmaAllocator _allocator,
 		size_t size,
-		vk::BufferUsageFlagBits _usage) :
+		vk::BufferUsageFlagBits _usage,
+		vk::BufferUsageFlags usageFlags) :
 		Buffer(size),
 		allocator(_allocator),
 		usage(_usage)
@@ -14,8 +15,7 @@ namespace INJECTOR_NAMESPACE
 		VkBufferCreateInfo bufferCreateInfo = {};
 		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		bufferCreateInfo.size = size;
-		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(_usage) |
-			VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(_usage | usageFlags);
 
 		VmaAllocationCreateInfo allocationCreateInfo = {};
 		// TODO: make universal buffer usage type
@@ -26,7 +26,10 @@ namespace INJECTOR_NAMESPACE
 		auto result = vmaCreateBuffer(allocator, &bufferCreateInfo, &allocationCreateInfo,
 			&bufferHandle, &allocation, nullptr);
 
-		buffer = bufferHandle;
+		if(result != VK_SUCCESS)
+			throw std::runtime_error("Failed to create Vulkan buffer");
+
+		buffer = vk::Buffer(bufferHandle);
 	}
 	VkBuffer::~VkBuffer()
 	{
@@ -35,7 +38,7 @@ namespace INJECTOR_NAMESPACE
 
 	BufferUsage VkBuffer::getUsage() const
 	{
-		return tousa
+		return toUsage(usage);
 	}
 
 	VmaAllocator VkBuffer::getAllocator() const noexcept
@@ -143,10 +146,54 @@ namespace INJECTOR_NAMESPACE
 
 	vk::BufferUsageFlagBits VkBuffer::toVkUsage(BufferUsage usage)
 	{
-
+		switch (usage)
+		{
+		case BufferUsage::UniformTexel:
+			return vk::BufferUsageFlagBits::eUniformTexelBuffer;
+		case BufferUsage::StorageTexel:
+			return vk::BufferUsageFlagBits::eStorageTexelBuffer;
+		case BufferUsage::Uniform:
+			return vk::BufferUsageFlagBits::eUniformBuffer;
+		case BufferUsage::Storage:
+			return vk::BufferUsageFlagBits::eStorageBuffer;
+		case BufferUsage::Index:
+			return vk::BufferUsageFlagBits::eIndexBuffer;
+		case BufferUsage::Vertex:
+			return vk::BufferUsageFlagBits::eVertexBuffer;
+		case BufferUsage::Indirect:
+			return vk::BufferUsageFlagBits::eIndirectBuffer;
+		case BufferUsage::TransformFeedback:
+			return vk::BufferUsageFlagBits::eTransformFeedbackBufferEXT;
+		case BufferUsage::TransformFeedbackCounterBuffer:
+			return vk::BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT;
+		default:
+			throw std::runtime_error("Unsupported Vulkan buffer usage");
+		}
 	}
 	BufferUsage VkBuffer::toUsage(vk::BufferUsageFlagBits usage)
 	{
-
+		switch (usage)
+		{
+		case vk::BufferUsageFlagBits::eUniformTexelBuffer:
+			return BufferUsage::UniformTexel;
+		case vk::BufferUsageFlagBits::eStorageTexelBuffer:
+			return BufferUsage::StorageTexel;
+		case vk::BufferUsageFlagBits::eUniformBuffer:
+			return BufferUsage::Uniform;
+		case vk::BufferUsageFlagBits::eStorageBuffer:
+			return BufferUsage::Storage;
+		case vk::BufferUsageFlagBits::eIndexBuffer:
+			return BufferUsage::Index;
+		case vk::BufferUsageFlagBits::eVertexBuffer:
+			return BufferUsage::Vertex;
+		case vk::BufferUsageFlagBits::eIndirectBuffer:
+			return BufferUsage::Indirect;
+		case vk::BufferUsageFlagBits::eTransformFeedbackBufferEXT:
+			return BufferUsage::TransformFeedback;
+		case vk::BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT:
+			return BufferUsage::TransformFeedbackCounterBuffer;
+		default:
+			throw std::runtime_error("Unsupported Vulkan buffer usage");
+		}
 	}
 }

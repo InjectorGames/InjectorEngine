@@ -3,8 +3,16 @@
 
 namespace INJECTOR_NAMESPACE
 {
+	Mesh::Mesh(size_t _indexCount) :
+		indexCount(_indexCount)
+	{}
 	Mesh::~Mesh()
 	{}
+
+	size_t Mesh::getIndexCount() const noexcept
+	{
+		return indexCount;
+	}
 
 	MeshIndex Mesh::getIndex() const
 	{
