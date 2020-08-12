@@ -4,22 +4,31 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	Manager::Manager() :
+	Manager::Manager(bool _active) :
+		active(_active),
 		entities(), 
 		systems()
 	{}
 	Manager::~Manager()
-	{
-		entities.clear();
-
-		for (auto system : systems)
-			delete system;
-	}
+	{}
 
 	void Manager::update()
 	{
 		for (auto system : systems)
 			system->update();
+	}
+
+	bool Manager::isActive() const noexcept
+	{
+		return active;
+	}
+	size_t Manager::getEntityCount() const noexcept
+	{
+		return entities.size();
+	}
+	size_t Manager::getSystemCount() const noexcept
+	{
+		return systems.size();
 	}
 
 	EntityHandle Manager::createEntity()
@@ -31,16 +40,6 @@ namespace INJECTOR_NAMESPACE
 
 		return entity;
 	}
-	bool Manager::createEntity(EntityHandle& _entity) noexcept
-	{
-		auto entity = std::make_shared<Entity>();
-
-		if (!entities.emplace(entity).second)
-			return false;
-
-		_entity = entity;
-		return true;
-	}
 	bool Manager::addEntity(const EntityHandle& entity) noexcept
 	{
 		if (entity == nullptr)
@@ -48,6 +47,7 @@ namespace INJECTOR_NAMESPACE
 
 		return entities.emplace(entity).second;
 	}
+
 	bool Manager::removeEntity(const EntityHandle& entity) noexcept
 	{
 		if (entity == nullptr)
@@ -61,23 +61,7 @@ namespace INJECTOR_NAMESPACE
 		entities.erase(iterator);
 		return true;
 	}
-	bool Manager::containsEntity(const EntityHandle& entity) const noexcept
-	{
-		if (entity == nullptr)
-			return false;
-
-		return entities.find(entity) != entities.end();
-	}
-	void Manager::removeEntities() noexcept
-	{
-		entities.clear();
-	}
-	size_t Manager::getEntityCount() const noexcept
-	{
-		return entities.size();
-	}
-
-	bool Manager::destroySystem(const System* system) noexcept
+	bool Manager::destroySystem(const SystemHandle& system) noexcept
 	{
 		if (system == nullptr)
 			return false;
@@ -93,7 +77,15 @@ namespace INJECTOR_NAMESPACE
 
 		return false;
 	}
-	bool Manager::containsSystem(const System* system) noexcept
+
+	bool Manager::containsEntity(const EntityHandle& entity) const noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		return entities.find(entity) != entities.end();
+	}
+	bool Manager::containsSystem(const SystemHandle& system) noexcept
 	{
 		if (system == nullptr)
 			return false;
@@ -106,15 +98,13 @@ namespace INJECTOR_NAMESPACE
 
 		return false;
 	}
+
+	void Manager::removeEntities() noexcept
+	{
+		entities.clear();
+	}
 	void Manager::destroySystems() noexcept
 	{
-		for (auto system : systems)
-			delete system;
-
 		systems.clear();
-	}
-	size_t Manager::getSystemCount() const noexcept
-	{
-		return systems.size();
 	}
 }

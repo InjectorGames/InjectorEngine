@@ -133,9 +133,9 @@ namespace INJECTOR_NAMESPACE
 	GlMaterial::GlMaterial(const GlShader& shader)
 	{
 		instance = create();
-		attach(instance, shader.getInstance());
+		attach(instance, shader.getShader());
 		link(instance);
-		detach(instance, shader.getInstance());
+		detach(instance, shader.getShader());
 
 		if (!getLinkStatus(instance))
 		{
@@ -148,11 +148,11 @@ namespace INJECTOR_NAMESPACE
 		const GlShader& shader2)
 	{
 		instance = create();
-		attach(instance, shader1.getInstance());
-		attach(instance, shader2.getInstance());
+		attach(instance, shader1.getShader());
+		attach(instance, shader2.getShader());
 		link(instance);
-		detach(instance, shader2.getInstance());
-		detach(instance, shader1.getInstance());
+		detach(instance, shader2.getShader());
+		detach(instance, shader1.getShader());
 
 		if (!getLinkStatus(instance))
 		{
@@ -166,13 +166,13 @@ namespace INJECTOR_NAMESPACE
 		const GlShader& shader3)
 	{
 		instance = create();
-		attach(instance, shader1.getInstance());
-		attach(instance, shader2.getInstance());
-		attach(instance, shader3.getInstance());
+		attach(instance, shader1.getShader());
+		attach(instance, shader2.getShader());
+		attach(instance, shader3.getShader());
 		link(instance);
-		detach(instance, shader3.getInstance());
-		detach(instance, shader2.getInstance());
-		detach(instance, shader1.getInstance());
+		detach(instance, shader3.getShader());
+		detach(instance, shader2.getShader());
+		detach(instance, shader1.getShader());
 
 		if (!getLinkStatus(instance))
 		{
@@ -187,15 +187,15 @@ namespace INJECTOR_NAMESPACE
 		const GlShader& shader4)
 	{
 		instance = create();
-		attach(instance, shader1.getInstance());
-		attach(instance, shader2.getInstance());
-		attach(instance, shader3.getInstance());
-		attach(instance, shader4.getInstance());
+		attach(instance, shader1.getShader());
+		attach(instance, shader2.getShader());
+		attach(instance, shader3.getShader());
+		attach(instance, shader4.getShader());
 		link(instance);
-		detach(instance, shader4.getInstance());
-		detach(instance, shader3.getInstance());
-		detach(instance, shader2.getInstance());
-		detach(instance, shader1.getInstance());
+		detach(instance, shader4.getShader());
+		detach(instance, shader3.getShader());
+		detach(instance, shader2.getShader());
+		detach(instance, shader1.getShader());
 
 		if (!getLinkStatus(instance))
 		{

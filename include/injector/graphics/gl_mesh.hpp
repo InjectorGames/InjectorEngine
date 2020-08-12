@@ -1,6 +1,5 @@
 #pragma once
 #include <injector/graphics/mesh.hpp>
-#include <injector/graphics/gl_batch.hpp>
 #include <injector/graphics/gl_buffer.hpp>
 #include <injector/graphics/gl_attribute.hpp>
 
@@ -24,37 +23,33 @@ namespace INJECTOR_NAMESPACE
 			TrianglesAdjacency = GL_TRIANGLES_ADJACENCY, // GL 3.2
 			Patches = GL_PATCHES,
 		};
-		enum class DrawType : GLenum
-		{
-			UnsignedByte = GL_UNSIGNED_BYTE,
-			UnsignedShort = GL_UNSIGNED_SHORT,
-			UnsignedInt = GL_UNSIGNED_INT,
-		};
 	protected:
-		GlBatch batch;
+		GLuint vertexArray;
+		GLenum index;
 		GlBufferHandle vertexBuffer;
 		GlBufferHandle indexBuffer;
-
-		static void draw(const uint32_t mode,
-			const uint32_t type, const size_t count) noexcept;
 	public:
-		uint32_t drawMode;
 		uint32_t drawType;
 		uint32_t indexCount;
 
-		GlMesh(const GlBufferHandle& vertexBuffer,
+		GlMesh(GLenum _indexType,
+			const GlBufferHandle& vertexBuffer,
 			const GlBufferHandle& indexBuffer,
 			const std::vector<GlAttribute>& attributes,
-			uint32_t drawMode,
 			uint32_t drawType,
 			uint32_t indexCount);
 		virtual ~GlMesh();
 
-		void draw() override;
+		uint32_t getVertexArray() const noexcept;
 
-		const GlBatch& getBatch() const noexcept;
-		const GlBufferHandle& getVertexBuffer() const noexcept;
-		const GlBufferHandle& getIndexBuffer() const noexcept;
+		MeshIndex getIndex() const override;
+		void setIndex(MeshIndex indexType) override;
+
+		const BufferHandle& getVertexBuffer() const override;
+		const BufferHandle& getIndexBuffer() const override;
+
+		static GLenum toGlIndex(MeshIndex index);
+		static MeshIndex toIndex(GLenum index);
 
 		/*template<class TV, class TI>
 		inline static const std::shared_ptr<GlMesh> Create(

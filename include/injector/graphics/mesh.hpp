@@ -1,6 +1,6 @@
 #pragma once
-#include <injector/defines.hpp>
-#include <memory>
+#include <injector/graphics/buffer.hpp>
+#include <injector/graphics/mesh_index.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -8,7 +8,12 @@ namespace INJECTOR_NAMESPACE
 	{
 	public:
 		virtual ~Mesh();
-		virtual void draw();
+
+		virtual MeshIndex getIndex() const;
+		virtual void setIndex(MeshIndex index);
+
+		virtual const BufferHandle& getVertexBuffer() const;
+		virtual const BufferHandle& getIndexBuffer() const;
 	};
 
 	using MeshHandle = std::shared_ptr<Mesh>;

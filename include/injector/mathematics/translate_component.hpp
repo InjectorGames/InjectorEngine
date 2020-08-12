@@ -4,9 +4,11 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	struct TranslateComponent final : public Component
+	struct TranslateComponent : public Component
 	{
 		Vector3 translation;
+
 		TranslateComponent(const Vector3& translation);
+		virtual ~TranslateComponent();
 	};
 }

@@ -5,8 +5,8 @@ namespace INJECTOR_NAMESPACE
 {
 	GlWindow::GlWindow(bool _gles,
 		const std::string& title,
-		const IntVector2& position,
-		const IntVector2& size,
+		IntVector2 position,
+		IntVector2 size,
 		uint32_t flags) :
 		Window(title, position, size, flags | SDL_WINDOW_OPENGL),
 		gles(_gles)
@@ -51,7 +51,7 @@ namespace INJECTOR_NAMESPACE
 		return context;
 	}
 
-	void GlWindow::beginRender()
+	/*size_t GlWindow::beginFrame()
 	{
 		SDL_GL_MakeCurrent(window, context);
 
@@ -61,9 +61,11 @@ namespace INJECTOR_NAMESPACE
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_STENCIL_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+		return 0;
 	}
-	void GlWindow::endRender()
+	void GlWindow::endFrame()
 	{
 		SDL_GL_SwapWindow(window);
-	}
+	}*/
 }

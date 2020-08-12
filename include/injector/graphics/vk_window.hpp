@@ -2,10 +2,12 @@
 #include <injector/graphics/window.hpp>
 
 #include <vulkan/vulkan.hpp>
+#include <vk_mem_alloc.h>
 #include <SDL_vulkan.h>
 
 namespace INJECTOR_NAMESPACE
 {
+	// TODO: move to separate file
 	struct VkSwapchainData
 	{
 		vk::Image image;
@@ -26,6 +28,7 @@ namespace INJECTOR_NAMESPACE
 		uint32_t graphicsQueueFamilyIndex;
 		uint32_t presentQueueFamilyIndex;
 		vk::Device device;
+		VmaAllocator memoryAllocator;
 		std::vector<vk::Fence> fences;
 		std::vector<vk::Semaphore> imageAcquiredSemaphores;
 		std::vector<vk::Semaphore> drawCompleteSemaphores;
@@ -34,6 +37,7 @@ namespace INJECTOR_NAMESPACE
 		vk::Queue presentQueue;
 		vk::CommandPool graphicsCommandPool;
 		vk::CommandPool presentCommandPool;
+		vk::Extent2D surfaceExtent;
 		vk::SwapchainKHR swapchain;
 		vk::RenderPass renderPass;
 		vk::PipelineLayout pipelineLayout;
@@ -52,22 +56,26 @@ namespace INJECTOR_NAMESPACE
 			const std::string& appName,
 			uint32_t appVersion);
 		static vk::DebugUtilsMessengerEXT createDebugMessenger(
-			const vk::Instance& instance,
+			vk::Instance instance,
 			const vk::DispatchLoaderDynamic& dispatchDynamic);
 		static vk::PhysicalDevice getBestPhysicalDevice(
-			const vk::Instance& instance);
+			vk::Instance instance);
 		static vk::SurfaceKHR createSurface(
-			const vk::Instance& instance,
+			vk::Instance instance,
 			SDL_Window* window);
 		static void getQueueFamilyIndices(
-			const vk::PhysicalDevice& physicalDevice,
-			const vk::SurfaceKHR& surface,
+			vk::PhysicalDevice physicalDevice,
+			vk::SurfaceKHR surface,
 			uint32_t& graphicsQueueFamilyIndex,
 			uint32_t& presentQueueFamilyIndex);
 		static vk::Device createDevice(
-			const vk::PhysicalDevice& physicalDevice,
+			vk::PhysicalDevice physicalDevice,
 			uint32_t graphicsQueueFamilyIndex,
 			uint32_t presentQueueFamilyIndex);
+		static VmaAllocator createMemoryAllocator(
+			vk::Instance instance,
+			vk::PhysicalDevice physicalDevice,
+			vk::Device device);
 		static vk::Fence createFence(
 			vk::Device device,
 			vk::FenceCreateFlags flags);
@@ -75,75 +83,80 @@ namespace INJECTOR_NAMESPACE
 			vk::Device device,
 			vk::SemaphoreCreateFlags flags);
 		static vk::Queue getQueue(
-			const vk::Device& device,
+			vk::Device device,
 			uint32_t queueFamilyIndex,
 			uint32_t queueIndex);
 		static uint32_t getBestSurfaceImageCount(
 			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
 		static vk::SurfaceFormatKHR getBestSurfaceFormat(
-			const vk::PhysicalDevice& physicalDevice,
-			const vk::SurfaceKHR& surface);
+			vk::PhysicalDevice physicalDevice,
+			vk::SurfaceKHR surface);
 		static vk::PresentModeKHR getBestSurfacePresentMode(
-			const vk::PhysicalDevice& physicalDevice,
-			const vk::SurfaceKHR& surface);
-		static vk::Extent2D getBestSurfaceExtent(
-			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
-			const IntVector2& size);
+			vk::PhysicalDevice physicalDevice,
+			vk::SurfaceKHR surface);
 		static vk::SurfaceTransformFlagBitsKHR getBestSurfaceTransform(
 			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
 		static vk::CompositeAlphaFlagBitsKHR getBestSurfaceCompositeAlpha(
 			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
+		static vk::Extent2D getBestSurfaceExtent(
+			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
+			IntVector2 surfaceSize);
 		static vk::SwapchainKHR createSwapchain(
-			const vk::Device& device,
-			const vk::SurfaceKHR& surface,
+			vk::Device device,
+			vk::SurfaceKHR surface,
 			uint32_t surfaceImageCount,
-			const vk::SurfaceFormatKHR& surfaceFormat,
-			const vk::Extent2D& surfaceExtent,
-			const vk::SurfaceTransformFlagBitsKHR& surfaceTransform,
-			const vk::CompositeAlphaFlagBitsKHR& surfaceCompositeAlpha,
-			const vk::PresentModeKHR& surfacePresentMode);
+			vk::SurfaceFormatKHR surfaceFormat,
+			vk::Extent2D surfaceExtent,
+			vk::SurfaceTransformFlagBitsKHR surfaceTransform,
+			vk::CompositeAlphaFlagBitsKHR surfaceCompositeAlpha,
+			vk::PresentModeKHR surfacePresentMode);
 		static vk::RenderPass createRenderPass(
-			const vk::Device& device,
-			const vk::Format& format);
+			vk::Device device,
+			vk::Format format);
 		static vk::PipelineLayout createPipelineLayout(
-			const vk::Device& device);
+			vk::Device device);
 		static vk::Pipeline createPipeline(
-			const vk::Device& device,
-			const vk::Extent2D& extent,
-			const vk::RenderPass& renderPass,
-			const vk::PipelineLayout& pipelineLayout);
+			vk::Device device,
+			vk::Extent2D extent,
+			vk::RenderPass renderPass,
+			vk::PipelineLayout pipelineLayout);
 		static vk::CommandPool createCommandPool(
-			const vk::Device& device,
+			vk::Device device,
 			uint32_t queueFamilyIndex);
 		static std::vector<VkSwapchainData> createSwapchainDatas(
-			const vk::Device& device,
-			const vk::SwapchainKHR& swapchain,
-			const vk::RenderPass& renderPass,
-			const vk::CommandPool& graphicsCommandPool,
-			const vk::CommandPool& presentCommandPool,
-			const vk::Format& surfaceFormat,
-			const vk::Extent2D& surfaceExtent);
+			vk::Device device,
+			vk::SwapchainKHR swapchain,
+			vk::RenderPass renderPass,
+			vk::CommandPool graphicsCommandPool,
+			vk::CommandPool presentCommandPool,
+			vk::Format surfaceFormat,
+			vk::Extent2D surfaceExtent);
 		static void destroySwapchainDatas(
 			vk::Device device,
 			vk::CommandPool graphicsCommandPool,
 			vk::CommandPool presentCommandPool,
 			const std::vector<VkSwapchainData>& swapchainDatas);
-		static void recordCommandBuffers(
-			const vk::RenderPass& renderPass,
-			const vk::Pipeline& pipeline,
-			const vk::Extent2D& surfaceExtent,
-			uint32_t graphicsQueueFamilyIndex,
-			uint32_t presentQueueFamilyIndex,
-			const std::vector<VkSwapchainData>& swapchainDatas);
 	public:
 		VkWindow(const std::string& title = defaultTitle,
-			const IntVector2& position = defaultPosition,
-			const IntVector2& size = defaultSize,
+			IntVector2 position = defaultPosition,
+			IntVector2 size = defaultSize,
 			uint32_t flags = defaultFlags);
 		virtual ~VkWindow();
 
-		void beginRender() override;
-		void endRender() override;
-		void onResize(const IntVector2& size) override;
+		void onResize(IntVector2 size) override;
+
+		uint32_t beginImage();
+		void endImage(uint32_t imageIndex);
+
+		void beginRecord(uint32_t imageIndex);
+		void endRecord(uint32_t imageIndex);
+
+		vk::CommandBuffer getGraphicsCommandBuffer(uint32_t imageIndex) const;
+		vk::CommandBuffer getPresentCommandBuffer(uint32_t imageIndex) const;
+
+		ShaderHandle createShader(ShaderStage stage, const std::string& path) override;
+		MeshHandle createCubeMesh() override;
 	};
+
+	using VkWindowHandle = std::shared_ptr<VkWindow>;
 }

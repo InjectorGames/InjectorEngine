@@ -10,34 +10,39 @@ namespace INJECTOR_NAMESPACE
 	class Manager
 	{
 	protected:
+		bool active;
+		bool initialized;
 		std::set<EntityHandle> entities;
-		std::vector<System*> systems;
+		std::vector<SystemHandle> systems;
 	public:
-		Manager();
+		Manager(bool active = true);
 		virtual ~Manager();
 
 		virtual void update();
 
-		EntityHandle createEntity();
-		bool createEntity(EntityHandle& entity) noexcept;
-		bool addEntity(const EntityHandle& entity) noexcept;
-		bool removeEntity(const EntityHandle& entity) noexcept;
-		bool containsEntity(const EntityHandle& entity) const noexcept;
-		void removeEntities() noexcept;
+		bool isActive() const noexcept;
 		size_t getEntityCount() const noexcept;
+		size_t getSystemCount() const noexcept;
+
+		EntityHandle createEntity();
+		bool addEntity(const EntityHandle& entity) noexcept;
 
 		template<class T, class ...Args>
-		T* createSystem(Args... args) noexcept
+		std::shared_ptr<T> createSystem(Args... args) noexcept
 		{
-			auto system = new T(args...);
+			auto system = std::make_shared<T>(args...);
 			systems.push_back(system);
 			return system;
 		}
+		
+		bool removeEntity(const EntityHandle& entity) noexcept;
+		bool destroySystem(const SystemHandle& system) noexcept;
 
-		bool destroySystem(const System* system) noexcept;
-		bool containsSystem(const System* system) noexcept;
+		bool containsEntity(const EntityHandle& entity) const noexcept;
+		bool containsSystem(const SystemHandle& system) noexcept;
+
+		void removeEntities() noexcept;
 		void destroySystems() noexcept;
-		size_t getSystemCount() const noexcept;
 	};
 
 	using ManagerHandle = std::shared_ptr<Manager>;

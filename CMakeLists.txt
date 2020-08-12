@@ -21,6 +21,7 @@ TEST_BIG_ENDIAN(INJECTOR_BIG_ENDIAN)
 
 include(FindVulkan)
 include(cmake/asio.cmake)
+include(cmake/vma.cmake)
 
 set(BUILD_UTILS OFF CACHE BOOL "")
 set(GLEW_REGAL OFF CACHE BOOL "")
@@ -34,28 +35,31 @@ add_subdirectory(3rdparty/sdl)
 configure_file(cmake/defines.hpp.in injector/defines.hpp)
 
 add_library(InjectorEngine STATIC
+	source/graphics/buffer.cpp
 	source/graphics/gl_attribute.cpp
-	source/graphics/gl_batch.cpp
 	source/graphics/gl_buffer.cpp
 	source/graphics/gl_color_material.cpp
 	source/graphics/gl_material.cpp
 	source/graphics/gl_mesh.cpp
-	source/graphics/gl_primitives.cpp
 	source/graphics/gl_shader.cpp
 	source/graphics/gl_window.cpp
 	source/graphics/image.cpp
 	source/graphics/material.cpp
 	source/graphics/mesh.cpp
+	source/graphics/primitive.cpp
+	source/graphics/render_component.cpp
+	source/graphics/render_system.cpp
 	source/graphics/shader.cpp
-	
-	
+	source/graphics/vk_buffer.cpp
+	source/graphics/vk_mesh.cpp
+	source/graphics/vk_render_system.cpp
 	source/graphics/vk_shader.cpp
-	
-	
 	source/graphics/vk_window.cpp
-	
 	source/graphics/window.cpp
 
+	source/mathematics/camera_component.cpp
+	source/mathematics/camera_system.cpp
+	source/mathematics/converter.cpp
 	source/mathematics/int_vector2.cpp
 	source/mathematics/int_vector3.cpp
 	source/mathematics/int_vector4.cpp
@@ -63,27 +67,21 @@ add_library(InjectorEngine STATIC
 	source/mathematics/matrix3.cpp
 	source/mathematics/matrix4.cpp
 	source/mathematics/quaternion.cpp
+	source/mathematics/rotate_component.cpp
+	source/mathematics/transform_component.cpp
+	source/mathematics/transform_system.cpp
+	source/mathematics/translate_component.cpp
 	source/mathematics/vector2.cpp
 	source/mathematics/vector3.cpp
 	source/mathematics/vector4.cpp
 
 	source/byte_swap.cpp
-	source/camera_component.cpp
-	source/camera_system.cpp
 	source/component.cpp
 	source/engine.cpp
 	source/entity.cpp
 	source/file_stream.cpp
 	source/manager.cpp
-	source/render_component.cpp
-	source/render_system.cpp
-	source/rotate_component.cpp
 	source/system.cpp
-	source/transform_component.cpp
-	source/transform_system.cpp
-	source/translate_component.cpp
-	source/window_component.cpp
-	source/window_system.cpp
 )
 target_link_libraries(InjectorEngine PUBLIC
 	asio
@@ -91,6 +89,7 @@ target_link_libraries(InjectorEngine PUBLIC
 	glm::glm
 	SDL2main
 	SDL2-static
+	vma
 	Vulkan::Vulkan
 	#zlibstatic
 )

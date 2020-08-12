@@ -14,30 +14,25 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		bool gles;
-		uint32_t instance;
+		GLenum stage;
+		GLuint shader;
 
 		static const std::string glHeader;
 		static const std::string glesHeader;
 
-		static uint32_t stageToEnum(ShaderStage stage);
-
-		static uint32_t create(ShaderStage stage);
-		static void destroy(uint32_t shader) noexcept;
-
-		static void setSource(uint32_t shader, const char* source) noexcept;
-		static void setSource(uint32_t shader,
-			const std::vector<const char*>& sources) noexcept;
-
-		static void compile(uint32_t shader) noexcept;
-		static bool getCompileStatus(uint32_t shader) noexcept;
-		static std::string getInfoLog(uint32_t shader) noexcept;
+		static bool getCompileStatus(GLuint shader) noexcept;
+		static std::string getInfoLog(GLuint shader) noexcept;
 	public:
-		GlShader(ShaderStage stage, const std::vector<const char*>& sources);
-		GlShader(bool gles, ShaderStage stage, const std::string& path);
+		GlShader(bool gles, GLenum stage, const std::string& path);
 		virtual ~GlShader();
 
+		ShaderStage getStage() const override;
+
 		bool getGLES() const noexcept;
-		uint32_t getInstance() const noexcept;
+		GLuint getShader() const noexcept;
+
+		static GLenum toGlStage(ShaderStage stage);
+		static ShaderStage toStage(GLenum stage);
 	};
 
 	using GlShaderHandle = std::shared_ptr<GlShader>;

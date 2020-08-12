@@ -8,104 +8,45 @@ namespace INJECTOR_NAMESPACE
 	const std::string GlShader::glHeader = "#version 300 es\n";
 	const std::string GlShader::glesHeader = "#version 330 core\n\n#define highp \n#define mediump \n#define lowp \n";
 
-	uint32_t GlShader::stageToEnum(ShaderStage stage)
-	{
-		switch (stage)
-		{
-		case ShaderStage::Vertex:
-			return GL_VERTEX_SHADER;
-		case ShaderStage::TessellationControl:
-			return GL_TESS_CONTROL_SHADER;
-		case ShaderStage::TessellationEvaluation:
-			return GL_TESS_EVALUATION_SHADER;
-		case ShaderStage::Geometry:
-			return GL_GEOMETRY_SHADER;
-		case ShaderStage::Fragment:
-			return GL_FRAGMENT_SHADER;
-		case ShaderStage::Compute:
-			return GL_COMPUTE_SHADER;
-		default:
-			throw std::runtime_error("Unsupported OpenGL shader stage");
-		}
-	}
-
-	uint32_t GlShader::create(ShaderStage stage)
-	{
-		auto type = static_cast<GLenum>(stageToEnum(stage));
-		return static_cast<uint32_t>(glCreateShader(type));
-	}
-	void GlShader::destroy(uint32_t shader) noexcept
-	{
-		glDeleteShader(static_cast<GLuint>(shader));
-	}
-
-	void GlShader::setSource(uint32_t shader, const char* source) noexcept
-	{
-		glShaderSource(static_cast<GLuint>(shader), GL_ONE,
-			static_cast<const GLchar* const*>(&source), nullptr);
-	}
-	void GlShader::setSource(uint32_t shader,
-		const std::vector<const char*>& sources) noexcept
-	{
-		glShaderSource(static_cast<GLuint>(shader), static_cast<GLsizei>(sources.size()), static_cast<const GLchar* const*>(sources.data()), nullptr);
-	}
-
-	void GlShader::compile(uint32_t shader) noexcept
-	{
-		glCompileShader(static_cast<GLuint>(shader));
-	}
-	bool GlShader::getCompileStatus(uint32_t shader) noexcept
+	bool GlShader::getCompileStatus(GLuint shader) noexcept
 	{
 		GLint success;
-		glGetShaderiv(static_cast<GLuint>(shader), GL_COMPILE_STATUS, &success);
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 		return success == GL_TRUE;
 	}
-	std::string GlShader::getInfoLog(uint32_t shader) noexcept
+	std::string GlShader::getInfoLog(GLuint shader) noexcept
 	{
 		GLint length;
-		glGetShaderiv(static_cast<GLuint>(shader), GL_INFO_LOG_LENGTH, &length);
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
 		std::string infoLog(static_cast<size_t>(length), ' ');
-		glGetShaderInfoLog(static_cast<GLuint>(shader), length, &length, static_cast<GLchar*>(infoLog.data()));
+		glGetShaderInfoLog(shader, length, &length, static_cast<GLchar*>(infoLog.data()));
 		return infoLog;
 	}
 
-	GlShader::GlShader(ShaderStage stage, const std::vector<const char*>& sources) :
-		Shader(stage)
-	{
-		instance = create(stage);
-		setSource(instance, sources);
-		compile(instance);
-
-		if (!getCompileStatus(instance))
-		{
-			destroy(instance);
-			throw std::runtime_error("Failed to compile OpenGL shader: " + getInfoLog(instance));
-		}
-	}
-	GlShader::GlShader(bool _gles, ShaderStage stage, const std::string& path) :
-		Shader(stage),
-		gles(_gles)
+	GlShader::GlShader(bool _gles, GLenum _stage, const std::string& path) :
+		gles(_gles),
+		stage(_stage)
 	{
 		std::string extension;
 
-		switch (stage)
+		switch (_stage)
 		{
-		case ShaderStage::Vertex:
+		case GL_VERTEX_SHADER:
 			extension = ".vert";
 			break;
-		case ShaderStage::TessellationControl:
+		case GL_TESS_CONTROL_SHADER:
 			extension = ".tesc";
 			break;
-		case ShaderStage::TessellationEvaluation:
+		case GL_TESS_EVALUATION_SHADER:
 			extension = ".tese";
 			break;
-		case ShaderStage::Geometry:
+		case GL_GEOMETRY_SHADER:
 			extension = ".geom";
 			break;
-		case ShaderStage::Fragment:
+		case GL_FRAGMENT_SHADER:
 			extension = ".frag";
 			break;
-		case ShaderStage::Compute:
+		case GL_COMPUTE_SHADER:
 			extension = ".comp";
 			break;
 		default:
@@ -132,27 +73,77 @@ namespace INJECTOR_NAMESPACE
 
 		sources.push_back(source.c_str());
 
-		instance = create(stage);
-		setSource(instance, sources);
-		compile(instance);
+		shader = glCreateShader(stage);
 
-		if (!getCompileStatus(instance))
+		glShaderSource(shader, static_cast<GLsizei>(sources.size()), 
+			static_cast<const GLchar* const*>(sources.data()), nullptr);
+
+		glCompileShader(shader);
+
+		if (!getCompileStatus(shader))
 		{
-			destroy(instance);
-			throw std::runtime_error("Failed to compile OpenGL shader. " + getInfoLog(instance));
+			glDeleteShader(shader);
+			throw std::runtime_error("Failed to compile OpenGL shader. " +
+				getInfoLog(shader));
 		}
 	}
 	GlShader::~GlShader()
 	{
-		destroy(instance);
+		glDeleteShader(shader);
+	}
+
+	ShaderStage GlShader::getStage() const
+	{
+		return toStage(stage);
 	}
 
 	bool GlShader::getGLES() const noexcept
 	{
 		return gles;
 	}
-	uint32_t GlShader::getInstance() const noexcept
+	uint32_t GlShader::getShader() const noexcept
 	{
-		return instance;
+		return shader;
+	}
+
+	GLenum GlShader::toGlStage(ShaderStage stage)
+	{
+		switch (stage)
+		{
+		case ShaderStage::Vertex:
+			return GL_VERTEX_SHADER;
+		case ShaderStage::TessellationControl:
+			return GL_TESS_CONTROL_SHADER;
+		case ShaderStage::TessellationEvaluation:
+			return GL_TESS_EVALUATION_SHADER;
+		case ShaderStage::Geometry:
+			return GL_GEOMETRY_SHADER;
+		case ShaderStage::Fragment:
+			return GL_FRAGMENT_SHADER;
+		case ShaderStage::Compute:
+			return GL_COMPUTE_SHADER;
+		default:
+			throw std::runtime_error("Unsupported OpenGL shader stage");
+		}
+	}
+	ShaderStage GlShader::toStage(GLenum stage)
+	{
+		switch (stage)
+		{
+		case GL_VERTEX_SHADER:
+			return ShaderStage::Vertex;
+		case GL_TESS_CONTROL_SHADER:
+			return ShaderStage::TessellationControl;
+		case GL_TESS_EVALUATION_SHADER:
+			return ShaderStage::TessellationEvaluation;
+		case GL_GEOMETRY_SHADER:
+			return ShaderStage::Geometry;
+		case GL_FRAGMENT_SHADER:
+			return ShaderStage::Fragment;
+		case GL_COMPUTE_SHADER:
+			return ShaderStage::Compute;
+		default:
+			throw std::runtime_error("Unsupported OpenGL shader stage");
+		}
 	}
 }

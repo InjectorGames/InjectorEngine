@@ -5,67 +5,56 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	vk::ShaderModule VkShader::createShaderModule(
-		const vk::Device& device, const std::vector<char>& code)
-	{
-		auto shaderModuleCreateInfo = vk::ShaderModuleCreateInfo(
-			{}, code.size(), reinterpret_cast<const uint32_t*>(code.data()));
-		auto shaderModule = device.createShaderModule(shaderModuleCreateInfo);
-
-		if (!shaderModule)
-			throw std::runtime_error("Failed to create Vulkan shader module");
-
-		return shaderModule;
-	}
-
-	VkShader::VkShader(ShaderStage stage, 
-		const vk::Device& _device, const std::string& path) :
-		Shader(stage), device(_device)
+	VkShader::VkShader(const vk::Device& _device, 
+		vk::ShaderStageFlagBits _stage,
+		const std::string& path) :
+		device(_device),
+		stage(_stage)
 	{
 		std::string extension;
 
-		switch (stage)
+		switch (_stage)
 		{
-		case ShaderStage::Vertex:
+		case vk::ShaderStageFlagBits::eVertex:
 			extension = ".vert.spv";
 			break;
-		case ShaderStage::TessellationControl:
+		case vk::ShaderStageFlagBits::eTessellationControl:
 			extension = ".tesc.spv";
 			break;
-		case ShaderStage::TessellationEvaluation:
+		case vk::ShaderStageFlagBits::eTessellationEvaluation:
 			extension = ".tese.spv";
 			break;
-		case ShaderStage::Geometry:
+		case vk::ShaderStageFlagBits::eGeometry:
 			extension = ".geom.spv";
 			break;
-		case ShaderStage::Fragment:
+		case vk::ShaderStageFlagBits::eFragment:
 			extension = ".frag.spv";
 			break;
-		case ShaderStage::Compute:
+		case vk::ShaderStageFlagBits::eCompute:
 			extension = ".comp.spv";
 			break;
-		case ShaderStage::Raygen:
+		case vk::ShaderStageFlagBits::eRaygenKHR:
 			extension = ".rgen.spv";
 			break;
-		case ShaderStage::AnyHit:
+		case vk::ShaderStageFlagBits::eAnyHitKHR:
 			extension = ".rahit.spv";
 			break;
-		case ShaderStage::ClosestHit:
+		case vk::ShaderStageFlagBits::eClosestHitKHR:
 			extension = ".rchit.spv";
 			break;
-		case ShaderStage::Miss:
+		case vk::ShaderStageFlagBits::eMissKHR:
 			extension = ".rmiss.spv";
 			break;
-		case ShaderStage::Intersection:
+		case vk::ShaderStageFlagBits::eIntersectionKHR:
 			extension = ".rint.spv";
 			break;
-		case ShaderStage::Callable:
+		case vk::ShaderStageFlagBits::eCallableKHR:
 			extension = ".rcall.spv";
 			break;
-		case ShaderStage::Task:
+		case vk::ShaderStageFlagBits::eTaskNV:
 			extension = ".task.spv";
 			break;
-		case ShaderStage::Mesh:
+		case vk::ShaderStageFlagBits::eMeshNV:
 			extension = ".mesh.spv";
 			break;
 		default:
@@ -84,12 +73,22 @@ namespace INJECTOR_NAMESPACE
 		auto code = std::vector<char>(size);
 		fileStream.read(code.data(), size);
 
-		shaderModule = createShaderModule(_device, code);
+		auto shaderModuleCreateInfo = vk::ShaderModuleCreateInfo(
+			{}, code.size(), reinterpret_cast<const uint32_t*>(code.data()));
+		shaderModule = device.createShaderModule(shaderModuleCreateInfo);
+
+		if (!shaderModule)
+			throw std::runtime_error("Failed to create Vulkan shader module");
 	}
 	VkShader::~VkShader()
 	{
 		device.destroyShaderModule(shaderModule);
 		device = nullptr;
+	}
+
+	ShaderStage VkShader::getStage() const
+	{
+		return toStage(stage)
 	}
 
 	const vk::Device& VkShader::getDevice() const noexcept
@@ -99,5 +98,78 @@ namespace INJECTOR_NAMESPACE
 	const vk::ShaderModule& VkShader::getShaderModule() const noexcept
 	{
 		return shaderModule;
+	}
+
+	vk::ShaderStageFlagBits VkShader::toVkStage(ShaderStage stage)
+	{
+		switch (stage)
+		{
+		case ShaderStage::Vertex:
+			return vk::ShaderStageFlagBits::eVertex;
+		case ShaderStage::TessellationControl:
+			return vk::ShaderStageFlagBits::eTessellationControl;
+		case ShaderStage::TessellationEvaluation:
+			return vk::ShaderStageFlagBits::eTessellationEvaluation;
+		case ShaderStage::Geometry:
+			return vk::ShaderStageFlagBits::eGeometry;
+		case ShaderStage::Fragment:
+			return vk::ShaderStageFlagBits::eFragment;
+		case ShaderStage::Compute:
+			return vk::ShaderStageFlagBits::eCompute;
+		case ShaderStage::Raygen:
+			return vk::ShaderStageFlagBits::eRaygenKHR;
+		case ShaderStage::AnyHit:
+			return vk::ShaderStageFlagBits::eAnyHitKHR;
+		case ShaderStage::ClosestHit:
+			return vk::ShaderStageFlagBits::eClosestHitKHR;
+		case ShaderStage::Miss:
+			return vk::ShaderStageFlagBits::eMissKHR;
+		case ShaderStage::Intersection:
+			return vk::ShaderStageFlagBits::eIntersectionKHR;
+		case ShaderStage::Callable:
+			return vk::ShaderStageFlagBits::eCallableKHR;
+		case ShaderStage::Task:
+			return vk::ShaderStageFlagBits::eTaskNV;
+		case ShaderStage::Mesh:
+			return vk::ShaderStageFlagBits::eMeshNV;
+		default:
+			throw std::runtime_error("Unsupported Vulkan shader stage");
+		}
+	}
+	ShaderStage VkShader::toStage(vk::ShaderStageFlagBits stage)
+	{
+		switch (stage)
+		{
+		case vk::ShaderStageFlagBits::eVertex:
+			return ShaderStage::Vertex;
+		case vk::ShaderStageFlagBits::eTessellationControl:
+			return ShaderStage::TessellationControl;
+		case vk::ShaderStageFlagBits::eTessellationEvaluation:
+			return ShaderStage::TessellationEvaluation;
+		case vk::ShaderStageFlagBits::eGeometry:
+			return ShaderStage::Geometry;
+		case vk::ShaderStageFlagBits::eFragment:
+			return ShaderStage::Fragment;
+		case vk::ShaderStageFlagBits::eCompute:
+			return ShaderStage::Compute;
+		case vk::ShaderStageFlagBits::eRaygenKHR:
+			return ShaderStage::Raygen;
+		case vk::ShaderStageFlagBits::eAnyHitKHR:
+			return ShaderStage::AnyHit;
+		case vk::ShaderStageFlagBits::eClosestHitKHR:
+			return ShaderStage::ClosestHit;
+		case vk::ShaderStageFlagBits::eMissKHR:
+			return ShaderStage::Miss;
+		case vk::ShaderStageFlagBits::eIntersectionKHR:
+			return ShaderStage::Intersection;
+		case vk::ShaderStageFlagBits::eCallableKHR:
+			return ShaderStage::Callable;
+		case vk::ShaderStageFlagBits::eTaskNV:
+			return ShaderStage::Task;
+		case vk::ShaderStageFlagBits::eMeshNV:
+			return ShaderStage::Mesh;
+		default:
+			throw std::runtime_error("Unsupported Vulkan shader stage");
+		}
 	}
 }

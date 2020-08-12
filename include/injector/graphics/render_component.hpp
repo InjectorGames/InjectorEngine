@@ -5,7 +5,7 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	struct RenderComponent final : public Component
+	struct RenderComponent : public Component
 	{
 		MaterialHandle material;
 		MeshHandle mesh;
@@ -21,5 +21,6 @@ namespace INJECTOR_NAMESPACE
 			int queue = 0,
 			int offset = 0,
 			bool render = true);
+		virtual ~RenderComponent();
 	};
 }

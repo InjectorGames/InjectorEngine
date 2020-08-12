@@ -1,15 +1,17 @@
 #pragma once
+#include <injector/manager.hpp>
 #include <injector/mathematics/int_vector2.hpp>
-
-#include <string>
-#include <memory>
-#include <cstdint>
+#include <injector/graphics/mesh.hpp>
+#include <injector/graphics/shader.hpp>
 
 #include <SDL.h>
 
+#include <string>
+#include <cstdint>
+
 namespace INJECTOR_NAMESPACE
 {
-	class Window
+	class Window : public Manager
 	{
 	protected:
 		SDL_Window* window;
@@ -20,14 +22,13 @@ namespace INJECTOR_NAMESPACE
 		static const uint32_t defaultFlags;
 
 		Window(const std::string& title = defaultTitle,
-			const IntVector2& position = defaultPosition,
-			const IntVector2& size = defaultSize,
+			IntVector2 position = defaultPosition,
+			IntVector2 size = defaultSize,
 			uint32_t flags = defaultFlags);
 		virtual ~Window();
 
-		virtual void beginRender();
-		virtual void endRender();
-		virtual void onResize(const IntVector2& size);
+		void update() override;
+		virtual void onResize(IntVector2 size);
 
 		uint32_t getID() const noexcept;
 		uint32_t getFlags() const noexcept;
@@ -43,6 +44,15 @@ namespace INJECTOR_NAMESPACE
 		void minimize() noexcept;
 		void maximize() noexcept;
 		void setResizable(bool value) noexcept;
+
+		virtual ShaderHandle createShader(ShaderStage stage, const std::string& path);
+		virtual MeshHandle createCubeMesh();
+
+		static std::shared_ptr<Window> create(
+			const std::string& title = Window::defaultTitle,
+			IntVector2 position = Window::defaultPosition,
+			IntVector2 size = Window::defaultSize,
+			uint32_t flags = Window::defaultFlags);
 	};
 
 	using WindowHandle = std::shared_ptr<Window>;

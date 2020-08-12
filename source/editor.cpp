@@ -1,8 +1,7 @@
 #include <injector/engine.hpp>
-#include <injector/window_system.hpp>
-#include <injector/render_system.hpp>
-#include <injector/camera_system.hpp>
-#include <injector/transform_system.hpp>
+#include <injector/mathematics/transform_system.hpp>
+#include <injector/mathematics/camera_system.hpp>
+#include <injector/graphics/render_system.hpp>
 
 #include <injector/glm_defines.hpp>
 
@@ -10,34 +9,29 @@ using namespace INJECTOR_NAMESPACE;
 
 void init()
 {
-	auto manager = Engine::createManager<Manager>();
-	auto windowSystem = manager->createSystem<WindowSystem>();
-	auto transformSystem = manager->createSystem<TransformSystem>();
-	auto cameraSystem = manager->createSystem<CameraSystem>();
-	auto renderSystem = manager->createSystem<RenderSystem>();
+	auto window = Window::create();
 
-	auto window = manager->createEntity();
+	auto transformSystem = window->createSystem<TransformSystem>();
+	auto cameraSystem = CameraSystem::create(window);
+	auto renderSystem = RenderSystem::create(window);
 
-	windowSystem->createWindowComponent(window);
-	windowSystem->addWindow(window);
-	cameraSystem->window = window;
-	renderSystem->window = window;
-
-	/*auto camera = manager->createEntity();
+	auto camera = window->createEntity();
 	camera->createComponent<TransformComponent>();
-	camera->createComponent<CameraComponent>();
 	transformSystem->addTransform(camera);
+
+	camera->createComponent<CameraComponent>();
 	cameraSystem->addCamera(camera);
 	renderSystem->addCamera(camera);
 
-	auto testCube = manager->createEntity();
+	auto testCube = window->createEntity();
 	testCube->createComponent<TransformComponent>();
+	transformSystem->addTransform(testCube);
+
 	//auto colorMaterial = renderSystem->createColorMaterial(
 	//  	"resources/shaders/color", "resources/shaders/color");
-
-	testCube->createComponent<RenderComponent>();
-	transformSystem->addTransform(testCube);
-	renderSystem->addRender(testCube);*/
+	auto cubeMesh = window->createCubeMesh();
+	testCube->createComponent<RenderComponent>(nullptr, cubeMesh);
+	renderSystem->addRender(testCube);
 }
 
 int main(int argc, char* args[])

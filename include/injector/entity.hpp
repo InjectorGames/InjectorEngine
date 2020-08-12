@@ -1,5 +1,4 @@
 #pragma once
-#include <injector/system.hpp>
 #include <injector/component.hpp>
 
 #include <map>

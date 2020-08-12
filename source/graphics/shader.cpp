@@ -1,15 +1,13 @@
 #include <injector/graphics/shader.hpp>
+#include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
-	Shader::Shader(ShaderStage _stage) :
-		stage(_stage)
-	{}
 	Shader::~Shader()
 	{}
 
-	ShaderStage Shader::getStage() const noexcept
+	ShaderStage Shader::getStage() const
 	{
-		return stage;
+		throw std::runtime_error("Not implemented shader function");
 	}
 }

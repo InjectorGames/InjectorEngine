@@ -1,4 +1,6 @@
 #include <injector/engine.hpp>
+#include <injector/graphics/gl_window.hpp>
+#include <injector/graphics/vk_window.hpp>
 
 #include <thread>
 #include <iostream>
@@ -186,6 +188,20 @@ namespace INJECTOR_NAMESPACE
 			for (auto& manager : managers)
 				manager->update();
 
+			bool existActive = false;
+
+			for (auto& manager : managers)
+			{
+				if (manager->isActive())
+				{
+					existActive = true;
+					break;
+				}	
+			}
+
+			if (!existActive)
+				updateRunning = false;
+
 			if (capUpdateRate)
 			{
 				tick = std::chrono::high_resolution_clock::now();
@@ -267,22 +283,5 @@ namespace INJECTOR_NAMESPACE
 	size_t Engine::getManagerCount() noexcept
 	{
 		return managers.size();
-	}
-
-	float Engine::toDegrees(float value)
-	{
-		return value * (static_cast<float>(M_PI) / 180.0f);
-	}
-	double Engine::toDegrees(double value)
-	{
-		return value * (M_PI / 180.0);
-	}
-	float Engine::toRadians(float value)
-	{
-		return value * (180.0f / static_cast<float>(M_PI));
-	}
-	double Engine::toRadians(double value)
-	{
-		return value * (180.0 / M_PI);
 	}
 }

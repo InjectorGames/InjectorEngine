@@ -1,4 +1,4 @@
-#include <injector/camera_component.hpp>
+#include <injector/mathematics/camera_component.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -6,6 +6,7 @@ namespace INJECTOR_NAMESPACE
 		int _queue,
 		Type _type,
 		float _aspectRatio,
+		bool _updateAspect,
 		float _fieldOfView,
 		const Vector4& _frustum,
 		const Vector2& _clipPlane,
@@ -14,10 +15,13 @@ namespace INJECTOR_NAMESPACE
 		queue(_queue),
 		type(_type),
 		aspectRatio(_aspectRatio),
+		updateAspect(_updateAspect),
 		fieldOfView(_fieldOfView),
 		frustum(_frustum),
 		clipPlane(_clipPlane),
 		matrix(_matrix),
 		changed(_changed)
+	{}
+	CameraComponent::~CameraComponent()
 	{}
 }

@@ -1,16 +1,15 @@
 #pragma once
-#include <injector/defines.hpp>
-
-#include <vector>
-#include <memory>
-#include <cstdint>
+#include <injector/graphics/buffer.hpp>
 
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 
+#include <vector>
+#include <cstdint>
+
 namespace INJECTOR_NAMESPACE
 {
-	class GlBuffer
+	class GlBuffer : public Buffer
 	{
 	public:
 		enum class Type : GLenum
@@ -19,13 +18,10 @@ namespace INJECTOR_NAMESPACE
 			AtomicCounter = GL_ATOMIC_COUNTER_BUFFER, // GL 4.3
 			CopyRead = GL_COPY_READ_BUFFER, // GL 3.1
 			CopyWrite = GL_COPY_WRITE_BUFFER, // GL 2.0
-			DispatchIndirect = GL_DISPATCH_INDIRECT_BUFFER, // GL 4.3
 			DrawIndirect = GL_DRAW_INDIRECT_BUFFER, // GL 2.0
 			ElementArray = GL_ELEMENT_ARRAY_BUFFER, // GL 2.0
 			PixelPack = GL_PIXEL_PACK_BUFFER, // GL 2.0
 			PixelUnpack = GL_PIXEL_UNPACK_BUFFER, // GL 2.0
-			Query = GL_QUERY_BUFFER, // GL 4.4
-			ShaderStorage = GL_SHADER_STORAGE_BUFFER, // GL 4.3
 			Texture = GL_TEXTURE_BUFFER, // GL 3.1
 			TransformFeedback = GL_TRANSFORM_FEEDBACK_BUFFER, // GL 2.0
 			Uniform = GL_UNIFORM_BUFFER, // GL 3.1
@@ -50,51 +46,25 @@ namespace INJECTOR_NAMESPACE
 			DynamicCopy = GL_DYNAMIC_COPY,
 		};
 	protected:
-		uint32_t instance;
-		size_t size;
-		Type type;
-		Usage usage;
+		GLuint buffer;
+		GLenum type;
+		GLenum usage;
 
-		static uint32_t create() noexcept;
-		static void destroy(uint32_t buffer) noexcept;
-		static void bind(Type type, uint32_t buffer) noexcept;
-
-		static void setData(Type type, Usage usage,
-			const void* data, size_t size) noexcept;
-		static void setSubData(Type type,
-			const void* data, size_t size, size_t offset) noexcept;
+		static GLbitfield getGlAccess(BufferAccess access);
 	public:
-		GlBuffer(Type type, Usage usage);
+		GlBuffer(GLenum type, GLenum usage, size_t size);
 		virtual ~GlBuffer();
 
-		uint32_t getInstance() const noexcept;
-		size_t getSize() const noexcept;
-		Type getType() const noexcept;
-		Usage getUsage() const noexcept;
+		void* map(BufferAccess access) override;
+		void* map(BufferAccess access, size_t size, size_t offset) override;
+		void unmap() override;
 
-		void bind() noexcept;
-		void unbind() noexcept;
+		void setData(const void* data, size_t size) override;
+		void setData(const void* data, size_t size, size_t offset) override;
 
-		template<class TData>
-		void setData(const std::vector<TData>& data) noexcept
-		{
-			size = data.size() * sizeof(TData);
-			setData(type, usage, data.data(), size);
-		}
-		template<class TData>
-		void setData(Usage _usage, const std::vector<TData>& data) noexcept
-		{
-			usage = _usage;
-			size = data.size() * sizeof(TData);
-			setData(type, _usage, data.data(), size);
-		}
-
-		template<class TData>
-		void setSubData(const std::vector<TData>& data, uint64_t offset) noexcept
-		{
-			auto size = data.size() * sizeof(TData);
-			setSubData(type, data.data(), size, offset);
-		}
+		GLuint getBuffer() const noexcept;
+		GLenum getType() const noexcept;
+		GLenum getUsage() const noexcept;
 	};
 
 	using GlBufferHandle = std::shared_ptr<GlBuffer>;

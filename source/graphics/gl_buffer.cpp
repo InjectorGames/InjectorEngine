@@ -1,74 +1,118 @@
 #include <injector/graphics/gl_buffer.hpp>
+#include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
-	uint32_t GlBuffer::create() noexcept
+	GLbitfield GlBuffer::getGlAccess(BufferAccess access)
 	{
-		GLuint buffer;
+		if (access == BufferAccess::ReadOnly)
+			return GL_MAP_READ_BIT;
+		else if (access == BufferAccess::WriteOnly)
+			return GL_MAP_WRITE_BIT |
+			GL_MAP_FLUSH_EXPLICIT_BIT | 
+			GL_MAP_INVALIDATE_RANGE_BIT; //TODO: Check if this correct
+		else if (access == BufferAccess::ReadWrite)
+			return GL_MAP_READ_BIT | 
+			GL_MAP_WRITE_BIT | 
+			GL_MAP_FLUSH_EXPLICIT_BIT;
+		else
+			throw std::runtime_error("Unsupported OpenGL buffer access type");
+	}
+
+	GlBuffer::GlBuffer(GLenum _type, GLenum _usage, size_t size) :
+		Buffer(size),
+		type(_type),
+		usage(_usage)
+	{
 		glGenBuffers(GL_ONE, &buffer);
-		return static_cast<uint32_t>(buffer);
-	}
-	void GlBuffer::destroy(uint32_t buffer) noexcept
-	{
-		glDeleteBuffers(GL_ONE, static_cast<const GLuint*>(&buffer));
-	}
-	void GlBuffer::bind(Type type, uint32_t buffer) noexcept
-	{
-		glBindBuffer(static_cast<GLenum>(type), static_cast<GLuint>(buffer));
-	}
-
-	void GlBuffer::setData(Type type, Usage usage,
-	const void* data, size_t size) noexcept
-	{
-		glBufferData(static_cast<GLenum>(type),
-			static_cast<GLsizeiptr>(size),
-			static_cast<const GLvoid*>(data),
-			static_cast<GLenum>(usage));
-	}
-	void GlBuffer::setSubData(Type type,
-		const void* data, size_t size, size_t offset) noexcept
-	{
-		// TODO: add range check
-
-		glBufferSubData(static_cast<GLenum>(type),
-			static_cast<GLintptr>(offset),
-			static_cast<GLsizeiptr>(size),
-			static_cast<const GLvoid*>(data));
-	}
-
-	GlBuffer::GlBuffer(Type _type, Usage _usage) :
-		size(), type(_type), usage(_usage)
-	{
-		instance = create();
+		glBindBuffer(type, buffer);
+		glBufferData(type, static_cast<GLsizeiptr>(size), nullptr, usage);
+		glBindBuffer(type, GL_ZERO);
 	}
 	GlBuffer::~GlBuffer()
 	{
-		destroy(instance);
+		glDeleteBuffers(GL_ONE, &buffer);
 	}
 
-	uint32_t GlBuffer::getInstance() const noexcept
+	void* GlBuffer::map(BufferAccess access)
 	{
-		return instance;
+		Buffer::map(access);
+
+		glBindBuffer(type, buffer);
+		auto mappedData = glMapBufferRange(type,
+			static_cast<GLintptr>(0),
+			static_cast<GLsizeiptr>(size),
+			getGlAccess(access));
+		if (!mappedData)
+			throw std::runtime_error("Failed to map OpenGL buffer");
+		glBindBuffer(type, GL_ZERO);
+		return mappedData;
 	}
-	size_t GlBuffer::getSize() const noexcept
+	void* GlBuffer::map(BufferAccess access, size_t size, size_t offset)
 	{
-		return size;
+		Buffer::map(access);
+
+		glBindBuffer(type, buffer);
+		auto mappedData = glMapBufferRange(type,
+			static_cast<GLintptr>(offset),
+			static_cast<GLsizeiptr>(size),
+			getGlAccess(access));
+		if (!mappedData)
+			throw std::runtime_error("Failed to map OpenGL buffer");
+		glBindBuffer(type, GL_ZERO);
+		return mappedData;
 	}
-	GlBuffer::Type GlBuffer::getType() const noexcept
+	void GlBuffer::unmap()
+	{
+		glBindBuffer(type, buffer);
+
+		if (mapAccess == BufferAccess::WriteOnly || mapAccess == BufferAccess::ReadWrite)
+		{
+			glFlushMappedBufferRange(type,
+				static_cast<GLintptr>(mapOffset), 
+				static_cast<GLsizeiptr>(mapSize));
+		}
+		
+		if(glUnmapBuffer(type) == GL_FALSE)
+			throw std::runtime_error("Failed to unmap OpenGL buffer");
+		glBindBuffer(type, GL_ZERO);
+	}
+
+	void GlBuffer::setData(const void* data, size_t _size)
+	{
+		if (_size > size)
+			throw std::runtime_error("Out of OpenGL buffer range");
+
+		glBindBuffer(type, buffer);
+		glBufferSubData(type,
+			static_cast<GLintptr>(0),
+			static_cast<GLsizeiptr>(_size),
+			static_cast<const GLvoid*>(data));
+		glBindBuffer(type, GL_ZERO);
+	}
+	void GlBuffer::setData(const void* data, size_t _size, size_t offset)
+	{
+		if (_size + offset > size)
+			throw std::runtime_error("Out of OpenGL buffer range");
+
+		glBindBuffer(type, buffer);
+		glBufferSubData(type,
+			static_cast<GLintptr>(offset),
+			static_cast<GLsizeiptr>(_size),
+			static_cast<const GLvoid*>(data));
+		glBindBuffer(type, GL_ZERO);
+	}
+
+	GLuint GlBuffer::getBuffer() const noexcept
+	{
+		return buffer;
+	}
+	GLenum GlBuffer::getType() const noexcept
 	{
 		return type;
 	}
-	GlBuffer::Usage GlBuffer::getUsage() const noexcept
+	GLenum GlBuffer::getUsage() const noexcept
 	{
 		return usage;
-	}
-
-	void GlBuffer::bind() noexcept
-	{
-		bind(type, instance);
-	}
-	void GlBuffer::unbind() noexcept
-	{
-		bind(type, GL_ZERO);
 	}
 }

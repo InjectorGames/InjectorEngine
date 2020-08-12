@@ -14,15 +14,12 @@ namespace INJECTOR_NAMESPACE
 	public:
 		GlWindow(bool gles = false,
 			const std::string& title = defaultTitle,
-			const IntVector2& position = defaultPosition,
-			const IntVector2& size = defaultSize,
+			IntVector2 position = defaultPosition,
+			IntVector2 size = defaultSize,
 			uint32_t flags = defaultFlags);
 		virtual ~GlWindow();
 
 		bool getGLES() const noexcept;
 		SDL_GLContext getContext() const noexcept;
-
-		void beginRender() override;
-		void endRender() override;
 	};
 }

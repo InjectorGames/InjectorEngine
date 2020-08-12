@@ -1,10 +1,12 @@
-#include <injector/transform_system.hpp>
+#include <injector/mathematics/transform_system.hpp>
 #include <injector/engine.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
 	TransformSystem::TransformSystem() :
 		transforms()
+	{}
+	TransformSystem::~TransformSystem()
 	{}
 
 	void TransformSystem::update()
@@ -82,6 +84,11 @@ namespace INJECTOR_NAMESPACE
 		}
 	}
 
+	size_t TransformSystem::getTransformCount() const noexcept
+	{
+		return transforms.size();
+	}
+
 	bool TransformSystem::addTransform(const EntityHandle& entity) noexcept
 	{
 		if (entity == nullptr || !entity->containsComponent<TransformComponent>())
@@ -105,9 +112,5 @@ namespace INJECTOR_NAMESPACE
 	void TransformSystem::removeTransforms() noexcept
 	{
 		transforms.clear();
-	}
-	size_t TransformSystem::getTransformCount() const noexcept
-	{
-		return transforms.size();
 	}
 }

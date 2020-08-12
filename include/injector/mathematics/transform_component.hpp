@@ -7,7 +7,7 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	struct TransformComponent final : public Component
+	struct TransformComponent : public Component
 	{
 		enum class Type
 		{
@@ -31,5 +31,6 @@ namespace INJECTOR_NAMESPACE
 			Type type = Type::Spin,
 			const Matrix4& matrix = Matrix4::identity,
 			const bool changed = true);
+		virtual ~TransformComponent();
 	};
 }

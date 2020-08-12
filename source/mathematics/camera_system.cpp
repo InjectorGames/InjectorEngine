@@ -1,11 +1,16 @@
-#include <injector/camera_system.hpp>
+#include <injector/mathematics/camera_system.hpp>
+#include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
-	CameraSystem::CameraSystem(
-		const EntityHandle& _window) :
+	CameraSystem::CameraSystem(const WindowHandle& _window) :
 		window(_window),
-		newWindowSize()
+		lastWindowSize()
+	{
+		if (!window)
+			throw std::runtime_error("Camera system window is null");
+	}
+	CameraSystem::~CameraSystem()
 	{}
 
 	void CameraSystem::update()
@@ -34,26 +39,27 @@ namespace INJECTOR_NAMESPACE
 			}
 		}
 
-		/*if (newAspectRatio != 0.0f)
+		auto windowSize = window->getSize(); 
+
+		if (lastWindowSize != windowSize)
 		{
-			auto aspectRatio = newAspectRatio;
-			newAspectRatio = 0.0f;
+			auto aspectRatio = windowSize.x / float(windowSize.y);
+			lastWindowSize = windowSize;
 
-			entities.each<PerspCameraComponent>(
-				[aspectRatio](entityx::Entity entity, PerspCameraComponent& camera)
+			for (auto& camera : cameras)
+			{
+				CameraComponent* cameraComponent;
+
+				if (!camera->getComponent(cameraComponent))
+					continue;
+
+				if (cameraComponent->updateAspect)
 				{
-					if (camera.updateAspectRatio)
-					{
-						camera.aspectRatio = aspectRatio;
-						camera.changed = true;
-					}
-				});
-		}*/
-	}
-
-	void receive()
-	{
-		//newAspectRatio = event.size.x / float(event.size.y);
+					cameraComponent->aspectRatio = aspectRatio;
+					cameraComponent->changed = true;
+				}
+			}
+		}
 	}
 
 	bool CameraSystem::addCamera(const EntityHandle& entity) noexcept
@@ -83,5 +89,10 @@ namespace INJECTOR_NAMESPACE
 	size_t CameraSystem::getCameraCount() const noexcept
 	{
 		return cameras.size();
+	}
+
+	std::shared_ptr<CameraSystem> CameraSystem::create(const WindowHandle& window)
+	{
+		return window->createSystem<CameraSystem>(window);
 	}
 }

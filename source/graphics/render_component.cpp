@@ -1,4 +1,4 @@
-#include <injector/render_component.hpp>
+#include <injector/graphics/render_component.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -15,5 +15,7 @@ namespace INJECTOR_NAMESPACE
 		queue(_queue),
 		offset(_offset),
 		render(_render)
+	{}
+	RenderComponent::~RenderComponent()
 	{}
 }

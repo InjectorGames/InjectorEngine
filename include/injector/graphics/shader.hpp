@@ -8,13 +8,9 @@ namespace INJECTOR_NAMESPACE
 {
 	class Shader
 	{
-	protected:
-		ShaderStage stage;
 	public:
-		Shader(ShaderStage stage);
 		virtual ~Shader();
-
-		ShaderStage getStage() const noexcept;
+		virtual ShaderStage getStage() const;
 	};
 
 	using ShaderHandle = std::shared_ptr<Shader>;

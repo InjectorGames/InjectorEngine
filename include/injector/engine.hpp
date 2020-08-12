@@ -68,10 +68,5 @@ namespace INJECTOR_NAMESPACE
 			managers.push_back(manager);
 			return manager;
 		}
-
-		static float toDegrees(float value);
-		static double toDegrees(double value);
-		static float toRadians(float value);
-		static double toRadians(double value);
 	};
 }

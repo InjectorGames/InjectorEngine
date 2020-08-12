@@ -6,23 +6,23 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	class GlPrimitives
+	class Primitive
 	{
 	public:
 		static const std::vector<float> squareVertices;
 		static const std::vector<float> squareNormals;
-		static const std::vector<uint8_t> squareIndices;
+		static const std::vector<uint16_t> squareIndices;
 
 		static const std::vector<float> cubeVertices;
 		static const std::vector<float> cubeNormals;
-		static const std::vector<uint8_t> cubeIndices;
+		static const std::vector<uint16_t> cubeIndices;
 
 		static const std::vector<float> axisVertices;
 		static const std::vector<float> axisColors;
-		static const std::vector<uint8_t> axisIndices;
+		static const std::vector<uint16_t> axisIndices;
 
 		// TODO: replace with sphere skybox
 		static const std::vector<float> gradientSkyVertices;
-		static const std::vector<uint8_t> gradientSkyIndices;
+		static const std::vector<uint16_t> gradientSkyIndices;
 	};
 }

@@ -4,9 +4,11 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	struct RotateComponent final : public Component
+	struct RotateComponent : public Component
 	{
 		Quaternion rotation;
+
 		RotateComponent(const Quaternion& rotation);
+		virtual ~RotateComponent();
 	};
 }

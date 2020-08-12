@@ -1,4 +1,4 @@
-#include <injector/transform_component.hpp>
+#include <injector/mathematics/transform_component.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -17,5 +17,7 @@ namespace INJECTOR_NAMESPACE
 		type(_type),
 		matrix(_matrix),
 		changed(_changed)
+	{}
+	TransformComponent::~TransformComponent()
 	{}
 }

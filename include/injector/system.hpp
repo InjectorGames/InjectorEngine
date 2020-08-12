@@ -4,8 +4,6 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	class Manager;
-
 	class System
 	{
 	public:
