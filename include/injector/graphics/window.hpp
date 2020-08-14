@@ -46,7 +46,6 @@ namespace INJECTOR_NAMESPACE
 		void maximize() noexcept;
 		void setResizable(bool value) noexcept;
 
-		virtual ShaderHandle createShader(ShaderStage stage, const std::string& path);
 		virtual PipelineHandle createColorPipeline(
 			const std::string& vertexPath, const std::string& fragmentPath);
 		virtual MeshHandle createSquareMesh();

@@ -158,10 +158,6 @@ namespace INJECTOR_NAMESPACE
 		SDL_SetWindowResizable(window, static_cast<SDL_bool>(value));
 	}
 
-	ShaderHandle Window::createShader(ShaderStage stage, const std::string& path)
-	{
-		throw std::runtime_error("Not implemented window function");
-	}
 	PipelineHandle Window::createColorPipeline(
 		const std::string& vertexPath, const std::string& fragmentPath)
 	{

@@ -21,4 +21,8 @@ namespace INJECTOR_NAMESPACE
 	{
 		throw std::runtime_error("Not implemented Vulkan pipeline function");
 	}
+	void VkPipeline::recreate(vk::RenderPass renderPass, vk::Extent2D surfaceExtent)
+	{
+		throw std::runtime_error("Not implemented Vulkan pipeline function");
+	}
 }

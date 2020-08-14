@@ -1,6 +1,9 @@
 #pragma once
 #include <injector/graphics/window.hpp>
+#include <injector/graphics/vk_pipeline.hpp>
 #include <injector/graphics/vk_swapchain_data.hpp>
+
+#include <set>
 
 namespace INJECTOR_NAMESPACE
 {
@@ -27,8 +30,9 @@ namespace INJECTOR_NAMESPACE
 		vk::Extent2D surfaceExtent;
 		vk::SwapchainKHR swapchain;
 		vk::RenderPass renderPass;
-		std::vector<std::shared_ptr<VkSwapchainData>> swapchainDatas;
 		uint32_t frameIndex;
+		std::vector<std::shared_ptr<VkSwapchainData>> swapchainDatas;
+		std::set<VkPipelineHandle> pipelines;
 
 		static VkBool32 VKAPI_CALL debugMessengerCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -119,7 +123,6 @@ namespace INJECTOR_NAMESPACE
 		vk::CommandBuffer getGraphicsCommandBuffer(uint32_t imageIndex) const;
 		vk::CommandBuffer getPresentCommandBuffer(uint32_t imageIndex) const;
 
-		ShaderHandle createShader(ShaderStage stage, const std::string& path) override;
 		PipelineHandle createColorPipeline(
 			const std::string& vertexPath, const std::string& fragmentPath) override;
 		MeshHandle createSquareMesh() override;

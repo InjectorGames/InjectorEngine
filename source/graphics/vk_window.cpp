@@ -1,6 +1,5 @@
 #include <injector/graphics/vk_window.hpp>
 #include <injector/graphics/vk_mesh.hpp>
-#include <injector/graphics/vk_shader.hpp>
 #include <injector/graphics/vk_color_pipeline.hpp>
 #include <injector/graphics/primitive.hpp>
 
@@ -746,6 +745,8 @@ namespace INJECTOR_NAMESPACE
 		renderPass = createRenderPass(
 			device, surfaceFormat.format);
 
+		frameIndex = 0;
+
 		auto images = device.getSwapchainImagesKHR(swapchain);
 		swapchainDatas = std::vector<std::shared_ptr<VkSwapchainData>>(images.size());
 
@@ -754,7 +755,6 @@ namespace INJECTOR_NAMESPACE
 			swapchainDatas[i] = std::make_shared<VkSwapchainData>(
 				device,
 				images[i],
-				swapchain,
 				renderPass,
 				graphicsCommandPool,
 				presentCommandPool,
@@ -762,7 +762,26 @@ namespace INJECTOR_NAMESPACE
 				surfaceExtent);
 		}
 
-		frameIndex = 0;
+		while (true)
+		{
+			repeat:
+
+			for (auto i = pipelines.begin(); i != pipelines.end(); i++)
+			{
+				auto& pipeline = *i;
+
+				if (pipeline.use_count() <= 1)
+				{
+					pipelines.erase(i);
+					goto repeat;
+				}
+			}
+
+			break;
+		}
+
+		for (auto& pipeline : pipelines)
+			pipeline->recreate(renderPass, surfaceExtent);
 	}
 
 	uint32_t VkWindow::beginImage()
@@ -932,28 +951,28 @@ namespace INJECTOR_NAMESPACE
 		return swapchainDatas[imageIndex]->presentCommandBuffer;
 	}
 
-	ShaderHandle VkWindow::createShader(ShaderStage stage, const std::string& path)
-	{
-		return std::make_shared<VkShader>(device, VkShader::toVkStage(stage), path);
-	}
 	PipelineHandle VkWindow::createColorPipeline(
 		const std::string& vertexPath, const std::string& fragmentPath)
 	{
-		return std::make_shared<VkColorPipeline>(device, renderPass, surfaceExtent);
+		auto pipeline = std::make_shared<VkColorPipeline>(
+			device, renderPass, surfaceExtent);
+		if(!pipelines.emplace(pipeline).second)
+			throw std::runtime_error("Failed to add created Vulkan color pipeline");
+		return pipeline;
 	}
 	MeshHandle VkWindow::createSquareMesh()
 	{
 		auto vertexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
-			Primitive::squareVertices.size() * sizeof(float),
+			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]),
 			vk::BufferUsageFlagBits::eVertexBuffer);
 		vertexBuffer->setData(Primitive::squareVertices.data(),
-			Primitive::squareVertices.size() * sizeof(float));
+			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]));
 
 		auto indexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
-			Primitive::squareIndices.size() * sizeof(uint16_t),
+			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]),
 			vk::BufferUsageFlagBits::eIndexBuffer);
 		indexBuffer->setData(Primitive::squareIndices.data(),
-			Primitive::squareIndices.size() * sizeof(uint16_t));
+			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]));
 
 		return std::make_shared<VkMesh>(vk::IndexType::eUint16, 
 			Primitive::squareIndices.size(), vertexBuffer, indexBuffer);

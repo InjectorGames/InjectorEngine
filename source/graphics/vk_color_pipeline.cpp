@@ -1,6 +1,4 @@
 #include <injector/graphics/vk_color_pipeline.hpp>
-
-// TODO: TMP
 #include <injector/graphics/vk_shader.hpp>
 
 namespace INJECTOR_NAMESPACE
@@ -20,14 +18,37 @@ namespace INJECTOR_NAMESPACE
 		};
 
 		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo({},
-			0, nullptr, 
-			pushConstantRanges.size(),
-			pushConstantRanges.data());
+			0, nullptr, pushConstantRanges.size(), pushConstantRanges.data());
 		auto result = device.createPipelineLayout(
 			&pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
 
 		if (result != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to create Vulkan pipeline layout");
+
+		pipeline = nullptr;
+		recreate(renderPass, surfaceExtent);
+	}
+	VkColorPipeline::~VkColorPipeline()
+	{
+		device.destroyPipeline(pipeline);
+		device.destroyPipelineLayout(pipelineLayout);
+	}
+
+	void VkColorPipeline::bind(
+		vk::CommandBuffer commandBuffer)
+	{
+		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
+		commandBuffer.pushConstants(pipelineLayout,
+			vk::ShaderStageFlagBits::eVertex, 0, sizeof(Matrix4), &mvp);
+		commandBuffer.pushConstants(pipelineLayout,
+			vk::ShaderStageFlagBits::eFragment, sizeof(Matrix4), sizeof(Vector4), &color);
+	}
+	void VkColorPipeline::recreate(
+		vk::RenderPass renderPass,
+		vk::Extent2D surfaceExtent)
+	{
+		if(pipeline)
+			device.destroyPipeline(pipeline);
 
 		auto vertexShader = VkShader(device, vk::ShaderStageFlagBits::eVertex,
 			"resources/shaders/vulkan/color");
@@ -38,19 +59,15 @@ namespace INJECTOR_NAMESPACE
 		{
 			vk::PipelineShaderStageCreateInfo
 			(
-				{},
-				vk::ShaderStageFlagBits::eVertex,
+				{}, vk::ShaderStageFlagBits::eVertex,
 				vertexShader.getShaderModule(),
-				"main",
-				nullptr
+				"main", nullptr
 			),
 			vk::PipelineShaderStageCreateInfo
 			(
-				{},
-				vk::ShaderStageFlagBits::eFragment,
+				{}, vk::ShaderStageFlagBits::eFragment,
 				fragmentShader.getShaderModule(),
-				"main",
-				nullptr
+				"main", nullptr
 			),
 		};
 
@@ -64,7 +81,7 @@ namespace INJECTOR_NAMESPACE
 		};
 		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo({},
 			1, &vertexInputBindingDescription,
-			static_cast<uint32_t>(vertexInputAttributeDescriptions.size()),
+			vertexInputAttributeDescriptions.size(),
 			vertexInputAttributeDescriptions.data());
 
 		auto pipelineInputAssemblyStateCreateInfo =
@@ -72,11 +89,12 @@ namespace INJECTOR_NAMESPACE
 
 		auto viewport = vk::Viewport(
 			0.0f, 0.0f,
-			static_cast<float>(surfaceExtent.width),
-			static_cast<float>(surfaceExtent.height),
+			surfaceExtent.width,
+			surfaceExtent.height,
 			0.0f, 1.0f);
 
-		auto scissor = vk::Rect2D(vk::Offset2D(0, 0), surfaceExtent);
+		auto scissor = vk::Rect2D(
+			vk::Offset2D(0, 0), surfaceExtent);
 
 		auto pipelineViewportStateCreateInfo = vk::PipelineViewportStateCreateInfo(
 			{}, 1, &viewport, 1, &scissor);
@@ -103,18 +121,9 @@ namespace INJECTOR_NAMESPACE
 			vk::ColorComponentFlagBits::eA);
 
 		// TODO: rewrite
-		auto pipelineColorBlendStateCreateInfo = 
-			vk::PipelineColorBlendStateCreateInfo({}, false);
-		pipelineColorBlendStateCreateInfo.logicOpEnable = VK_FALSE;
-		pipelineColorBlendStateCreateInfo.logicOp = vk::LogicOp::eCopy;
-		pipelineColorBlendStateCreateInfo.attachmentCount = 1;
-		pipelineColorBlendStateCreateInfo.pAttachments =
-			&pielineColorBlendAttacmentStateCreateInfo;
-		pipelineColorBlendStateCreateInfo.blendConstants[0] = 0.0f; // Optional
-		pipelineColorBlendStateCreateInfo.blendConstants[1] = 0.0f; // Optional
-		pipelineColorBlendStateCreateInfo.blendConstants[2] = 0.0f; // Optional
-		pipelineColorBlendStateCreateInfo.blendConstants[3] = 0.0f; // Optional
-
+		auto pipelineColorBlendStateCreateInfo =
+			vk::PipelineColorBlendStateCreateInfo({}, false, vk::LogicOp::eCopy,
+				1, &pielineColorBlendAttacmentStateCreateInfo);
 
 		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo({},
 			static_cast<uint32_t>(pipelineShaderStageCreateInfos.size()),
@@ -141,19 +150,5 @@ namespace INJECTOR_NAMESPACE
 			throw std::runtime_error("Failed to create Vulkan pipeline");
 
 		pipeline = resultValue.value;
-	}
-	VkColorPipeline::~VkColorPipeline()
-	{
-		device.destroyPipeline(pipeline);
-		device.destroyPipelineLayout(pipelineLayout);
-	}
-
-	void VkColorPipeline::bind(vk::CommandBuffer commandBuffer)
-	{
-		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
-		commandBuffer.pushConstants(pipelineLayout,
-			vk::ShaderStageFlagBits::eVertex, 0, sizeof(Matrix4), &mvp);
-		commandBuffer.pushConstants(pipelineLayout,
-			vk::ShaderStageFlagBits::eFragment, sizeof(Matrix4), sizeof(Vector4), &color);
 	}
 }

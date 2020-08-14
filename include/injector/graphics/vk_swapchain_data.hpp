@@ -21,7 +21,6 @@ namespace INJECTOR_NAMESPACE
 		VkSwapchainData(
 			vk::Device device,
 			vk::Image image,
-			vk::SwapchainKHR swapchain,
 			vk::RenderPass renderPass,
 			vk::CommandPool graphicsCommandPool,
 			vk::CommandPool presentCommandPool,

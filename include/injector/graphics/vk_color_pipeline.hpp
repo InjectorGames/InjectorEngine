@@ -16,7 +16,11 @@ namespace INJECTOR_NAMESPACE
 			vk::Extent2D surfaceExtent);
 		virtual ~VkColorPipeline();
 
-		void bind(vk::CommandBuffer commandBuffer) override;
+		void bind(
+			vk::CommandBuffer commandBuffer) override;
+		void recreate(
+			vk::RenderPass renderPass,
+			vk::Extent2D surfaceExtent) override;
 	};
 
 	using VkPipelineHandle = std::shared_ptr<VkPipeline>;
