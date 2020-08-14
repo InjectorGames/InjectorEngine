@@ -1,7 +1,10 @@
 #include <injector/graphics/vk_window.hpp>
 #include <injector/graphics/vk_mesh.hpp>
 #include <injector/graphics/vk_shader.hpp>
+#include <injector/graphics/vk_color_pipeline.hpp>
 #include <injector/graphics/primitive.hpp>
+
+#include <SDL_vulkan.h>
 
 #include <map>
 #include <vector>
@@ -586,156 +589,6 @@ namespace INJECTOR_NAMESPACE
 
 		return renderPass;
 	}
-	vk::PipelineLayout VkWindow::createPipelineLayout(
-		vk::Device device)
-	{
-		vk::PipelineLayout pipelineLayout;
-
-		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo(
-			{}, 0, nullptr, 0, nullptr);
-
-		auto result = device.createPipelineLayout(
-			&pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
-
-		if (result != vk::Result::eSuccess)
-			throw std::runtime_error("Failed to create Vulkan pipeline layout");
-
-		return pipelineLayout;
-	}
-	vk::Pipeline VkWindow::createPipeline(
-		vk::Device device,
-		vk::Extent2D extent,
-		vk::RenderPass renderPass,
-		vk::PipelineLayout pipelineLayout)
-	{
-		auto vertexShader = VkShader(device, vk::ShaderStageFlagBits::eVertex,
-			"resources/shaders/vulkan/color");
-		auto fragmentShader = VkShader(device, vk::ShaderStageFlagBits::eFragment,
-			"resources/shaders/vulkan/color");
-
-		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>
-		{
-			vk::PipelineShaderStageCreateInfo
-			(
-				{},
-				vk::ShaderStageFlagBits::eVertex,
-				vertexShader.getShaderModule(),
-				"main",
-				nullptr
-			),
-			vk::PipelineShaderStageCreateInfo
-			(
-				{},
-				vk::ShaderStageFlagBits::eFragment,
-				fragmentShader.getShaderModule(),
-				"main",
-				nullptr
-			),
-		};
-
-		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
-			0, sizeof(float) * 3, vk::VertexInputRate::eVertex);
-		auto vertexInputAttributeDescriptions =
-			std::vector<vk::VertexInputAttributeDescription>
-		{
-			vk::VertexInputAttributeDescription(
-				0, 0, vk::Format::eR32G32B32Sfloat, 0),
-		};
-		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo({},
-			1, &vertexInputBindingDescription, 
-			static_cast<uint32_t>(vertexInputAttributeDescriptions.size()),
-			vertexInputAttributeDescriptions.data());
-
-		auto pipelineInputAssemblyStateCreateInfo =
-			vk::PipelineInputAssemblyStateCreateInfo({}, vk::PrimitiveTopology::eTriangleList, false);
-
-		auto viewport = vk::Viewport(
-			0.0f, 0.0f,
-			static_cast<float>(extent.width),
-			static_cast<float>(extent.height),
-			0.0f, 1.0f);
-
-		auto scissor = vk::Rect2D();
-		scissor.offset = vk::Offset2D(0, 0);
-		scissor.extent = extent;
-
-		auto pipelineViewportStateCreateInfo = vk::PipelineViewportStateCreateInfo(
-			{}, 1, &viewport, 1, &scissor);
-
-		auto pipelineRasterizationStateCreateInfo = vk::PipelineRasterizationStateCreateInfo(
-			{},
-			false,
-			false,
-			vk::PolygonMode::eFill,
-			vk::CullModeFlagBits::eFront,
-			vk::FrontFace::eClockwise,
-			false,
-			0.0f,
-			0.0f,
-			0.0f,
-			1.0f);
-
-		auto pipelineMultisampleStateCreateInfo = vk::PipelineMultisampleStateCreateInfo(
-			{},
-			vk::SampleCountFlagBits::e1,
-			false,
-			1.0f,
-			nullptr,
-			false,
-			false);
-
-		auto pielineColorBlendAttacmentStateCreateInfo = vk::PipelineColorBlendAttachmentState(
-			false,
-			vk::BlendFactor::eOne,
-			vk::BlendFactor::eZero,
-			vk::BlendOp::eAdd,
-			vk::BlendFactor::eOne,
-			vk::BlendFactor::eZero,
-			vk::BlendOp::eAdd,
-			vk::ColorComponentFlagBits::eR |
-			vk::ColorComponentFlagBits::eG |
-			vk::ColorComponentFlagBits::eB |
-			vk::ColorComponentFlagBits::eA);
-
-		// TODO: rewrite
-		auto pipelineColorBlendStateCreateInfo = vk::PipelineColorBlendStateCreateInfo();
-		pipelineColorBlendStateCreateInfo.logicOpEnable = VK_FALSE;
-		pipelineColorBlendStateCreateInfo.logicOp = vk::LogicOp::eCopy;
-		pipelineColorBlendStateCreateInfo.attachmentCount = 1;
-		pipelineColorBlendStateCreateInfo.pAttachments =
-			&pielineColorBlendAttacmentStateCreateInfo;
-		pipelineColorBlendStateCreateInfo.blendConstants[0] = 0.0f; // Optional
-		pipelineColorBlendStateCreateInfo.blendConstants[1] = 0.0f; // Optional
-		pipelineColorBlendStateCreateInfo.blendConstants[2] = 0.0f; // Optional
-		pipelineColorBlendStateCreateInfo.blendConstants[3] = 0.0f; // Optional
-
-
-		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo({},
-			static_cast<uint32_t>(pipelineShaderStageCreateInfos.size()),
-			pipelineShaderStageCreateInfos.data(),
-			&pipelineVertexInputStateCreateInfo,
-			&pipelineInputAssemblyStateCreateInfo,
-			nullptr,
-			&pipelineViewportStateCreateInfo,
-			&pipelineRasterizationStateCreateInfo,
-			&pipelineMultisampleStateCreateInfo,
-			nullptr,
-			&pipelineColorBlendStateCreateInfo,
-			nullptr,
-			pipelineLayout,
-			renderPass,
-			0,
-			nullptr,
-			-1);
-
-		auto result = device.createGraphicsPipeline(
-			nullptr, graphicsPipelineCreateInfo);
-
-		if (result.result != vk::Result::eSuccess)
-			throw std::runtime_error("Failed to create Vulkan graphics pipeline");
-
-		return result.value;
-	}
 	vk::CommandPool VkWindow::createCommandPool(
 		vk::Device device,
 		uint32_t queueFamilyIndex)
@@ -753,130 +606,6 @@ namespace INJECTOR_NAMESPACE
 			throw std::runtime_error("Failed to create Vulkan command pool");
 
 		return commandPool;
-	}
-	std::vector<VkSwapchainData> VkWindow::createSwapchainDatas(
-		vk::Device device,
-		vk::SwapchainKHR swapchain,
-		vk::RenderPass renderPass,
-		vk::CommandPool graphicsCommandPool,
-		vk::CommandPool presentCommandPool,
-		vk::Format surfaceFormat,
-		vk::Extent2D surfaceExtent)
-	{
-		auto images = device.getSwapchainImagesKHR(swapchain);
-
-		if (images.size() == 0)
-			throw std::runtime_error("Failed to get Vulkan swapchain images");
-
-		auto swapchainDatas = std::vector<VkSwapchainData>(images.size());
-
-		auto imageViewCreateInfo = vk::ImageViewCreateInfo({},
-			nullptr, vk::ImageViewType::e2D, surfaceFormat,
-			vk::ComponentMapping(
-				vk::ComponentSwizzle::eIdentity,
-				vk::ComponentSwizzle::eIdentity,
-				vk::ComponentSwizzle::eIdentity,
-				vk::ComponentSwizzle::eIdentity),
-			vk::ImageSubresourceRange(
-				vk::ImageAspectFlagBits::eColor,
-				0, 1, 0, 1));
-
-		auto framebufferCreateInfo = vk::FramebufferCreateInfo({},
-			renderPass,
-			1, nullptr,
-			surfaceExtent.width,
-			surfaceExtent.height,
-			1);
-
-		auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo(
-			nullptr, vk::CommandBufferLevel::ePrimary, 1);
-
-		for (size_t i = 0; i < images.size(); i++)
-		{
-			auto& swapchainData = swapchainDatas[i];
-
-			auto image = images[i];
-			swapchainData.image = image;
-
-			vk::ImageView imageView;
-			imageViewCreateInfo.image = image;
-			
-			auto result = device.createImageView(
-				&imageViewCreateInfo, nullptr, &imageView);
-
-			if (result != vk::Result::eSuccess)
-				throw std::runtime_error("Failed to create Vulkan swapchain image view");
-
-			swapchainData.imageView = imageView;
-
-			vk::Framebuffer framebuffer;
-			framebufferCreateInfo.pAttachments = &imageView;
-
-			result = device.createFramebuffer(
-				&framebufferCreateInfo, nullptr, &framebuffer);
-
-			if (result != vk::Result::eSuccess)
-				throw std::runtime_error("Failed to create Vulkan framebuffer");
-
-			swapchainData.framebuffer = framebuffer;
-
-			vk::CommandBuffer commandBuffer;
-			commandBufferAllocateInfo.commandPool = graphicsCommandPool;
-
-			result = device.allocateCommandBuffers(
-				&commandBufferAllocateInfo, &commandBuffer);
-
-			if (result != vk::Result::eSuccess)
-				throw std::runtime_error("Failed to allocate Vulkan command buffers");
-
-			swapchainData.graphicsCommandBuffer = commandBuffer;
-
-			if (graphicsCommandPool != presentCommandPool)
-			{
-				commandBufferAllocateInfo.commandPool = presentCommandPool;
-
-				result = device.allocateCommandBuffers(
-					&commandBufferAllocateInfo, &commandBuffer);
-
-				if (result != vk::Result::eSuccess)
-					throw std::runtime_error("Failed to allocate Vulkan command buffers");
-
-				swapchainData.presentCommandBuffer = commandBuffer;
-			}
-			else
-			{
-				swapchainData.presentCommandBuffer = commandBuffer;
-			}
-		}
-
-		return swapchainDatas;
-	}
-	void VkWindow::destroySwapchainDatas(
-		vk::Device device,
-		vk::CommandPool graphicsCommandPool,
-		vk::CommandPool presentCommandPool,
-		const std::vector<VkSwapchainData>& swapchainDatas)
-	{
-		for (size_t i = 0; i < swapchainDatas.size(); i++)
-		{
-			auto& swapchainData = swapchainDatas[i];
-
-			if (graphicsCommandPool != presentCommandPool)
-			{
-				device.freeCommandBuffers(
-					graphicsCommandPool, swapchainData.graphicsCommandBuffer);
-				device.freeCommandBuffers(
-					presentCommandPool, swapchainData.presentCommandBuffer);
-			}
-			else
-			{
-				device.freeCommandBuffers(
-					graphicsCommandPool, swapchainData.graphicsCommandBuffer);
-			}
-
-			device.destroyFramebuffer(swapchainData.framebuffer);
-			device.destroyImageView(swapchainData.imageView);
-		}
 	}
 
 	VkWindow::VkWindow(
@@ -933,13 +662,7 @@ namespace INJECTOR_NAMESPACE
 					createCommandPool(device, graphicsQueueFamilyIndex);
 			}
 
-			surfaceExtent = {};
-			swapchain = nullptr;
-			renderPass = nullptr;
-			pipelineLayout = nullptr;
-			pipeline = nullptr;
-			swapchainDatas = {};
-			frameIndex = 0;
+			onResize(size);
 		}
 		catch (const std::exception& exception)
 		{
@@ -955,14 +678,8 @@ namespace INJECTOR_NAMESPACE
 	{
 		device.waitIdle();
 
-		destroySwapchainDatas(
-			device,
-			graphicsCommandPool,
-			presentCommandPool,
-			swapchainDatas);
+		swapchainDatas.clear();
 
-		device.destroyPipeline(pipeline);
-		device.destroyPipelineLayout(pipelineLayout);
 		device.destroyRenderPass(renderPass);
 		device.destroySwapchainKHR(swapchain);
 
@@ -1003,14 +720,8 @@ namespace INJECTOR_NAMESPACE
 	{
 		device.waitIdle();
 
-		destroySwapchainDatas(
-			device,
-			graphicsCommandPool,
-			presentCommandPool,
-			swapchainDatas);
+		swapchainDatas.clear();
 
-		device.destroyPipeline(pipeline);
-		device.destroyPipelineLayout(pipelineLayout);
 		device.destroyRenderPass(renderPass);
 		device.destroySwapchainKHR(swapchain);
 
@@ -1032,19 +743,24 @@ namespace INJECTOR_NAMESPACE
 			surfaceTransform,
 			surfaceCompositeAlpha,
 			surfacePresentMode);
+		renderPass = createRenderPass(
+			device, surfaceFormat.format);
 
-		renderPass = createRenderPass(device, surfaceFormat.format);
-		pipelineLayout = createPipelineLayout(device);
-		pipeline = createPipeline(device, surfaceExtent, renderPass, pipelineLayout);
+		auto images = device.getSwapchainImagesKHR(swapchain);
+		swapchainDatas = std::vector<std::shared_ptr<VkSwapchainData>>(images.size());
 
-		swapchainDatas = createSwapchainDatas(
-			device,
-			swapchain,
-			renderPass,
-			graphicsCommandPool,
-			presentCommandPool,
-			surfaceFormat.format,
-			surfaceExtent);
+		for (size_t i = 0; i < images.size(); i++)
+		{
+			swapchainDatas[i] = std::make_shared<VkSwapchainData>(
+				device,
+				images[i],
+				swapchain,
+				renderPass,
+				graphicsCommandPool,
+				presentCommandPool,
+				surfaceFormat.format,
+				surfaceExtent);
+		}
 
 		frameIndex = 0;
 	}
@@ -1092,7 +808,7 @@ namespace INJECTOR_NAMESPACE
 		auto submitInfo = vk::SubmitInfo(
 			1, &imageAcquiredSemaphores[frameIndex],
 			&waitDestinationStageMask,
-			1, &swapchainDatas[imageIndex].graphicsCommandBuffer,
+			1, &swapchainDatas[imageIndex]->graphicsCommandBuffer,
 			1, &drawCompleteSemaphores[frameIndex]);
 
 		auto result = graphicsQueue.submit(1, &submitInfo, fences[frameIndex]);
@@ -1108,7 +824,7 @@ namespace INJECTOR_NAMESPACE
 		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 		{
 			submitInfo.pWaitSemaphores = &drawCompleteSemaphores[frameIndex];
-			submitInfo.pCommandBuffers = &swapchainDatas[imageIndex].presentCommandBuffer;
+			submitInfo.pCommandBuffers = &swapchainDatas[imageIndex]->presentCommandBuffer;
 			submitInfo.pSignalSemaphores = &imageOwnershipSemaphores[frameIndex];
 
 			result = presentQueue.submit(1, &submitInfo, vk::Fence());
@@ -1146,7 +862,7 @@ namespace INJECTOR_NAMESPACE
 	void VkWindow::beginRecord(uint32_t imageIndex)
 	{
 		auto& swapchainData = swapchainDatas[imageIndex];
-		auto graphicsCommandBuffer = swapchainData.graphicsCommandBuffer;
+		auto graphicsCommandBuffer = swapchainData->graphicsCommandBuffer;
 
 		auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
 			vk::CommandBufferUsageFlagBits::eOneTimeSubmit, nullptr);
@@ -1158,25 +874,23 @@ namespace INJECTOR_NAMESPACE
 		auto clearValues = vk::ClearValue(vk::ClearColorValue(
 			std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f}));
 		auto renderPassBeginInfo = vk::RenderPassBeginInfo(
-			renderPass, swapchainData.framebuffer,
+			renderPass, swapchainData->framebuffer,
 			vk::Rect2D({ 0, 0 }, surfaceExtent),
 			1, &clearValues);
 		graphicsCommandBuffer.beginRenderPass(
 			&renderPassBeginInfo, vk::SubpassContents::eInline);
-
-		graphicsCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
 	}
 	void VkWindow::endRecord(uint32_t imageIndex)
 	{
 		auto& swapchainData = swapchainDatas[imageIndex];
-		auto graphicsCommandBuffer = swapchainData.graphicsCommandBuffer;
+		auto graphicsCommandBuffer = swapchainData->graphicsCommandBuffer;
 		graphicsCommandBuffer.endRenderPass();
 
 		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 		{
 			auto imageMemoryBarrier = vk::ImageMemoryBarrier({}, {},
 				vk::ImageLayout::ePresentSrcKHR, vk::ImageLayout::ePresentSrcKHR,
-				graphicsQueueFamilyIndex, presentQueueFamilyIndex, swapchainData.image,
+				graphicsQueueFamilyIndex, presentQueueFamilyIndex, swapchainData->image,
 				vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
 			graphicsCommandBuffer.pipelineBarrier(
 				vk::PipelineStageFlagBits::eBottomOfPipe,
@@ -1188,7 +902,7 @@ namespace INJECTOR_NAMESPACE
 
 		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 		{
-			auto presentCommandBuffer = swapchainData.presentCommandBuffer;
+			auto presentCommandBuffer = swapchainData->presentCommandBuffer;
 			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
 				vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
 			auto result = presentCommandBuffer.begin(&commandBufferBeginInfo);
@@ -1198,7 +912,7 @@ namespace INJECTOR_NAMESPACE
 
 			auto imageMemoryBarrier = vk::ImageMemoryBarrier({}, {},
 				vk::ImageLayout::ePresentSrcKHR, vk::ImageLayout::ePresentSrcKHR,
-				graphicsQueueFamilyIndex, presentQueueFamilyIndex, swapchainData.image,
+				graphicsQueueFamilyIndex, presentQueueFamilyIndex, swapchainData->image,
 				vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
 			presentCommandBuffer.pipelineBarrier(
 				vk::PipelineStageFlagBits::eBottomOfPipe,
@@ -1211,18 +925,23 @@ namespace INJECTOR_NAMESPACE
 
 	vk::CommandBuffer VkWindow::getGraphicsCommandBuffer(uint32_t imageIndex) const
 	{
-		return swapchainDatas[imageIndex].graphicsCommandBuffer;
+		return swapchainDatas[imageIndex]->graphicsCommandBuffer;
 	}
 	vk::CommandBuffer VkWindow::getPresentCommandBuffer(uint32_t imageIndex) const
 	{
-		return swapchainDatas[imageIndex].presentCommandBuffer;
+		return swapchainDatas[imageIndex]->presentCommandBuffer;
 	}
 
 	ShaderHandle VkWindow::createShader(ShaderStage stage, const std::string& path)
 	{
 		return std::make_shared<VkShader>(device, VkShader::toVkStage(stage), path);
 	}
-	MeshHandle VkWindow::createCubeMesh()
+	PipelineHandle VkWindow::createColorPipeline(
+		const std::string& vertexPath, const std::string& fragmentPath)
+	{
+		return std::make_shared<VkColorPipeline>(device, renderPass, surfaceExtent);
+	}
+	MeshHandle VkWindow::createSquareMesh()
 	{
 		auto vertexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
 			Primitive::squareVertices.size() * sizeof(float),

@@ -3,13 +3,13 @@
 namespace INJECTOR_NAMESPACE
 {
 	RenderComponent::RenderComponent(
-		const MaterialHandle& _material,
+		const PipelineHandle& _pipeline,
 		const MeshHandle& _mesh,
 		bool _ascending,
 		int _queue,
 		int _offset,
 		bool _render) :
-		material(_material),
+		pipeline(_pipeline),
 		mesh(_mesh),
 		ascending(_ascending),
 		queue(_queue),

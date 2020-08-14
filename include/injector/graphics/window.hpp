@@ -3,6 +3,7 @@
 #include <injector/mathematics/int_vector2.hpp>
 #include <injector/graphics/mesh.hpp>
 #include <injector/graphics/shader.hpp>
+#include <injector/graphics/pipeline.hpp>
 
 #include <SDL.h>
 
@@ -46,7 +47,9 @@ namespace INJECTOR_NAMESPACE
 		void setResizable(bool value) noexcept;
 
 		virtual ShaderHandle createShader(ShaderStage stage, const std::string& path);
-		virtual MeshHandle createCubeMesh();
+		virtual PipelineHandle createColorPipeline(
+			const std::string& vertexPath, const std::string& fragmentPath);
+		virtual MeshHandle createSquareMesh();
 
 		static std::shared_ptr<Window> create(
 			const std::string& title = Window::defaultTitle,

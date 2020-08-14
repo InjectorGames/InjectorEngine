@@ -162,7 +162,12 @@ namespace INJECTOR_NAMESPACE
 	{
 		throw std::runtime_error("Not implemented window function");
 	}
-	MeshHandle Window::createCubeMesh()
+	PipelineHandle Window::createColorPipeline(
+		const std::string& vertexPath, const std::string& fragmentPath)
+	{
+		throw std::runtime_error("Not implemented window function");
+	}
+	MeshHandle Window::createSquareMesh()
 	{
 		throw std::runtime_error("Not implemented window function");
 	}

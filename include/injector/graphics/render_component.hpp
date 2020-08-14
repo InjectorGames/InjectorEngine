@@ -1,13 +1,13 @@
 #pragma once
 #include <injector/component.hpp>
 #include <injector/graphics/mesh.hpp>
-#include <injector/graphics/material.hpp>
+#include <injector/graphics/pipeline.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
 	struct RenderComponent : public Component
 	{
-		MaterialHandle material;
+		PipelineHandle pipeline;
 		MeshHandle mesh;
 		bool ascending;
 		int queue;
@@ -15,7 +15,7 @@ namespace INJECTOR_NAMESPACE
 		bool render;
 
 		RenderComponent(
-			const MaterialHandle& material = nullptr,
+			const PipelineHandle& pipeline = nullptr,
 			const MeshHandle& mesh = nullptr,
 			bool ascending = true,
 			int queue = 0,

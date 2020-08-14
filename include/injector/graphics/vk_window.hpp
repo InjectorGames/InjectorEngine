@@ -1,22 +1,9 @@
 #pragma once
 #include <injector/graphics/window.hpp>
-
-#include <vulkan/vulkan.hpp>
-#include <vk_mem_alloc.h>
-#include <SDL_vulkan.h>
+#include <injector/graphics/vk_swapchain_data.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
-	// TODO: move to separate file
-	struct VkSwapchainData
-	{
-		vk::Image image;
-		vk::ImageView imageView;
-		vk::Framebuffer framebuffer;
-		vk::CommandBuffer graphicsCommandBuffer;
-		vk::CommandBuffer presentCommandBuffer;
-	};
-
 	class VkWindow : public Window
 	{
 	protected:
@@ -40,9 +27,7 @@ namespace INJECTOR_NAMESPACE
 		vk::Extent2D surfaceExtent;
 		vk::SwapchainKHR swapchain;
 		vk::RenderPass renderPass;
-		vk::PipelineLayout pipelineLayout;
-		vk::Pipeline pipeline;
-		std::vector<VkSwapchainData> swapchainDatas;
+		std::vector<std::shared_ptr<VkSwapchainData>> swapchainDatas;
 		uint32_t frameIndex;
 
 		static VkBool32 VKAPI_CALL debugMessengerCallback(
@@ -113,29 +98,9 @@ namespace INJECTOR_NAMESPACE
 		static vk::RenderPass createRenderPass(
 			vk::Device device,
 			vk::Format format);
-		static vk::PipelineLayout createPipelineLayout(
-			vk::Device device);
-		static vk::Pipeline createPipeline(
-			vk::Device device,
-			vk::Extent2D extent,
-			vk::RenderPass renderPass,
-			vk::PipelineLayout pipelineLayout);
 		static vk::CommandPool createCommandPool(
 			vk::Device device,
 			uint32_t queueFamilyIndex);
-		static std::vector<VkSwapchainData> createSwapchainDatas(
-			vk::Device device,
-			vk::SwapchainKHR swapchain,
-			vk::RenderPass renderPass,
-			vk::CommandPool graphicsCommandPool,
-			vk::CommandPool presentCommandPool,
-			vk::Format surfaceFormat,
-			vk::Extent2D surfaceExtent);
-		static void destroySwapchainDatas(
-			vk::Device device,
-			vk::CommandPool graphicsCommandPool,
-			vk::CommandPool presentCommandPool,
-			const std::vector<VkSwapchainData>& swapchainDatas);
 	public:
 		VkWindow(const std::string& title = defaultTitle,
 			IntVector2 position = defaultPosition,
@@ -155,7 +120,9 @@ namespace INJECTOR_NAMESPACE
 		vk::CommandBuffer getPresentCommandBuffer(uint32_t imageIndex) const;
 
 		ShaderHandle createShader(ShaderStage stage, const std::string& path) override;
-		MeshHandle createCubeMesh() override;
+		PipelineHandle createColorPipeline(
+			const std::string& vertexPath, const std::string& fragmentPath) override;
+		MeshHandle createSquareMesh() override;
 	};
 
 	using VkWindowHandle = std::shared_ptr<VkWindow>;

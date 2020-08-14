@@ -10,7 +10,7 @@ using namespace INJECTOR_NAMESPACE;
 void init()
 {
 	auto window = Window::create();
-
+	
 	auto transformSystem = window->createSystem<TransformSystem>();
 	auto cameraSystem = CameraSystem::create(window);
 	auto renderSystem = RenderSystem::create(window);
@@ -27,10 +27,10 @@ void init()
 	testCube->createComponent<TransformComponent>();
 	transformSystem->addTransform(testCube);
 
-	//auto colorMaterial = renderSystem->createColorMaterial(
-	//  	"resources/shaders/color", "resources/shaders/color");
-	auto cubeMesh = window->createCubeMesh();
-	testCube->createComponent<RenderComponent>(nullptr, cubeMesh);
+	auto colorPipeline = window->createColorPipeline(
+		"resources/shaders/color", "resources/shaders/color");
+	auto squareMesh = window->createSquareMesh();
+	testCube->createComponent<RenderComponent>(colorPipeline, squareMesh);
 	renderSystem->addRender(testCube);
 }
 

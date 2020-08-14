@@ -1,5 +1,6 @@
 #include <injector/graphics/vk_render_system.hpp>
 #include <injector/graphics/vk_window.hpp>
+#include <injector/graphics/vk_pipeline.hpp>
 #include <injector/graphics/vk_mesh.hpp>
 
 #include <stdexcept>
@@ -27,19 +28,27 @@ namespace INJECTOR_NAMESPACE
 		auto commandBuffer = window->getGraphicsCommandBuffer(imageIndex);
 		window->beginRecord(imageIndex);
 
+		// TODO: sort renders by pipeline and check for repeats
+
 		for (auto& render : renders)
 		{
 			RenderComponent* renderComponent;
 
 			if (!render->getComponent<RenderComponent>(renderComponent) ||
-				!renderComponent->render || !renderComponent->mesh)
+				!renderComponent->render ||
+				!renderComponent->pipeline ||
+				!renderComponent->mesh)
 				continue;
 
-			auto vkMesh = std::dynamic_pointer_cast<VkMesh>(renderComponent->mesh);
+			auto vkPipeline = std::dynamic_pointer_cast<VkPipeline>(
+				renderComponent->pipeline);
+			auto vkMesh = std::dynamic_pointer_cast<VkMesh>(
+				renderComponent->mesh);
 
-			if (!vkMesh)
+			if (!vkPipeline || !vkMesh)
 				continue;
 
+			vkPipeline->bind(commandBuffer);
 			vkMesh->draw(commandBuffer);
 		}
 

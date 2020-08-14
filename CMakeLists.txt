@@ -36,6 +36,7 @@ configure_file(cmake/defines.hpp.in injector/defines.hpp)
 
 add_library(InjectorEngine STATIC
 	source/graphics/buffer.cpp
+	source/graphics/color_pipeline.cpp
 	source/graphics/gl_attribute.cpp
 	source/graphics/gl_buffer.cpp
 	source/graphics/gl_color_material.cpp
@@ -46,14 +47,18 @@ add_library(InjectorEngine STATIC
 	source/graphics/image.cpp
 	source/graphics/material.cpp
 	source/graphics/mesh.cpp
+	source/graphics/pipeline.cpp
 	source/graphics/primitive.cpp
 	source/graphics/render_component.cpp
 	source/graphics/render_system.cpp
 	source/graphics/shader.cpp
 	source/graphics/vk_buffer.cpp
+	source/graphics/vk_color_pipeline.cpp
 	source/graphics/vk_mesh.cpp
+	source/graphics/vk_pipeline.cpp
 	source/graphics/vk_render_system.cpp
 	source/graphics/vk_shader.cpp
+	source/graphics/vk_swapchain_data.cpp
 	source/graphics/vk_window.cpp
 	source/graphics/window.cpp
 
@@ -127,8 +132,6 @@ set(INJECTOR_RESOURCES
 
 	shaders/vulkan/color.frag.spv
 	shaders/vulkan/color.vert.spv
-	shaders/vulkan/tutorial.vert.spv
-	shaders/vulkan/tutorial.frag.spv
 )
 
 foreach(FILE ${INJECTOR_RESOURCES})
