@@ -72,6 +72,7 @@ namespace INJECTOR_NAMESPACE
 
 		auto code = std::vector<char>(size);
 		fileStream.read(code.data(), size);
+		fileStream.close();
 
 		auto shaderModuleCreateInfo = vk::ShaderModuleCreateInfo(
 			{}, code.size(), reinterpret_cast<const uint32_t*>(code.data()));

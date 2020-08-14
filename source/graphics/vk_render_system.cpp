@@ -3,69 +3,103 @@
 #include <injector/graphics/vk_pipeline.hpp>
 #include <injector/graphics/vk_mesh.hpp>
 
+#include <map>
 #include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
 	VkRenderSystem::VkRenderSystem(
-		const VkWindowHandle& _window) :
+		VkWindow& _window) :
 		window(_window)
 	{
-		if (!window)
-			throw std::runtime_error("Vulkan render system window is null");
 	}
 	VkRenderSystem::~VkRenderSystem()
 	{}
 
-	WindowHandle VkRenderSystem::getWindow() const
-	{
-		return window;
-	}
-
 	void VkRenderSystem::update()
 	{
-		auto imageIndex = window->beginImage();
-		auto commandBuffer = window->getGraphicsCommandBuffer(imageIndex);
-		window->beginRecord(imageIndex);
+		struct CameraData
+		{
+			CameraComponent* camera;
+			TransformComponent* transform;
+		};
 
-		// TODO: sort renders by pipeline and check for repeats
+		auto renderCameras = std::multimap<int, CameraData>();
+
+		for (auto& camera : cameras)
+		{
+			auto data = CameraData();
+
+			if (!camera->getComponent(data.camera) ||
+				!camera->getComponent(data.transform))
+				continue;
+
+			renderCameras.emplace(data.camera->queue, data);
+		}
+
+		struct RenderData
+		{
+			VkMeshHandle mesh;
+			TransformComponent* transform;
+		};
+
+		auto renderPairs = std::multimap<VkPipelineHandle, RenderData>();
 
 		for (auto& render : renders)
 		{
 			RenderComponent* renderComponent;
+			auto data = RenderData();
 
 			if (!render->getComponent<RenderComponent>(renderComponent) ||
+				!render->getComponent<TransformComponent>(data.transform) ||
 				!renderComponent->render ||
 				!renderComponent->pipeline ||
 				!renderComponent->mesh)
 				continue;
 
-			auto vkPipeline = std::dynamic_pointer_cast<VkPipeline>(
+			auto pipeline = std::dynamic_pointer_cast<VkPipeline>(
 				renderComponent->pipeline);
-			auto vkMesh = std::dynamic_pointer_cast<VkMesh>(
+			data.mesh = std::dynamic_pointer_cast<VkMesh>(
 				renderComponent->mesh);
 
-			if (!vkPipeline || !vkMesh)
+			if (!pipeline || !data.mesh)
 				continue;
 
-			vkPipeline->bind(commandBuffer);
-			vkMesh->draw(commandBuffer);
+			renderPairs.emplace(pipeline, data);
 		}
 
-		window->endRecord(imageIndex);
-		window->endImage(imageIndex);
-		
+		auto imageIndex = window.beginImage();
+		auto commandBuffer = window.getGraphicsCommandBuffer(imageIndex);
+		window.beginRecord(imageIndex);
 
-		/*std::multimap<int, EntityHandle> targetCameras;
-
-		for (auto& camera : cameras)
+		for (auto cameraPair : renderCameras)
 		{
-			CameraComponent* cameraComponent;
+			auto& viewMatrix = cameraPair.second.transform->matrix;
+			auto& projMatrix = cameraPair.second.camera->matrix;
+			auto viewProjMatrix = projMatrix * viewMatrix;
 
-			if (camera->getComponent(cameraComponent) &&
-				camera->containsComponent<TransformComponent>())
-				targetCameras.emplace(cameraComponent->queue, camera);
+			VkPipelineHandle lastPipeline = nullptr;
+
+			for (auto renderPair : renderPairs)
+			{
+				auto& modelMatrix = renderPair.second.transform->matrix;
+				auto mvpMatrix = modelMatrix;
+
+				if (lastPipeline != renderPair.first)
+				{
+					lastPipeline = renderPair.first;
+					renderPair.first->setMVP(mvpMatrix);
+					renderPair.first->bind(commandBuffer);
+				}
+
+				renderPair.second.mesh->draw(commandBuffer);
+			}
 		}
+
+		window.endRecord(imageIndex);
+		window.endImage(imageIndex);
+
+		/*
 
 		for (auto& pair : targetCameras)
 		{

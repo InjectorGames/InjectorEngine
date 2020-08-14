@@ -1,7 +1,8 @@
 #include <injector/graphics/vk_window.hpp>
-#include <injector/graphics/vk_mesh.hpp>
-#include <injector/graphics/vk_color_pipeline.hpp>
 #include <injector/graphics/primitive.hpp>
+#include <injector/graphics/vk_mesh.hpp>
+#include <injector/graphics/vk_render_system.hpp>
+#include <injector/graphics/vk_color_pipeline.hpp>
 
 #include <SDL_vulkan.h>
 
@@ -951,8 +952,13 @@ namespace INJECTOR_NAMESPACE
 		return swapchainDatas[imageIndex]->presentCommandBuffer;
 	}
 
-	PipelineHandle VkWindow::createColorPipeline(
-		const std::string& vertexPath, const std::string& fragmentPath)
+	RenderSystemHandle VkWindow::createRenderSystem()
+	{
+		auto system = std::make_shared<VkRenderSystem>(*this);
+		systems.push_back(system);
+		return system;
+	}
+	PipelineHandle VkWindow::createColorPipeline()
 	{
 		auto pipeline = std::make_shared<VkColorPipeline>(
 			device, renderPass, surfaceExtent);

@@ -51,7 +51,8 @@ namespace INJECTOR_NAMESPACE
 			t = a.getCrossProduct(b);
 		}
 
-		*this = Quaternion(real, t.x, t.y, t.z).getNormalized();
+		// TODO: NOT SURE ABOUT ORDER
+		*this = Quaternion(t.x, t.y, t.z, real).getNormalized();
 	}
 	Quaternion::Quaternion(const Matrix3& matrix)
 	{
@@ -166,8 +167,9 @@ namespace INJECTOR_NAMESPACE
 
 	float Quaternion::getDotProduct(const Quaternion& quaternion) const noexcept
 	{
-		auto result = *this * quaternion;
-		return (result.x + result.y) + (result.z + result.w);
+		auto l = Vector4(x, y, z, w);
+		auto r = Vector4(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+		return l.getDotProduct(r);
 	}
 	Quaternion Quaternion::getCrossProduct(const Quaternion& quaternion) const noexcept
 	{
@@ -352,10 +354,12 @@ namespace INJECTOR_NAMESPACE
 	}
 	Quaternion& Quaternion::operator*=(const Quaternion& quaternion) noexcept
 	{
-		x = w * quaternion.x + x * quaternion.w + y * quaternion.z - z * quaternion.y;
-		y = w * quaternion.y + y * quaternion.w + z * quaternion.x - x * quaternion.z;
-		z = w * quaternion.z + z * quaternion.w + x * quaternion.y - y * quaternion.x;
-		w = w * quaternion.w - x * quaternion.x - y * quaternion.y - z * quaternion.z;
+		auto l = Quaternion(*this);
+		auto r = Quaternion(quaternion);
+		x = l.w * r.x + l.x * r.w + l.y * r.z - l.z * r.y;
+		y = l.w * r.y + l.y * r.w + l.z * r.x - l.x * r.z;
+		z = l.w * r.z + l.z * r.w + l.x * r.y - l.y * r.x;
+		w = l.w * r.w - l.x * r.x - l.y * r.y - l.z * r.z;
 		return *this;
 	}
 

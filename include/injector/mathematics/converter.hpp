@@ -6,9 +6,9 @@ namespace INJECTOR_NAMESPACE
 	class Converter
 	{
 	public:
-		static float toDegrees(float value);
-		static double toDegrees(double value);
-		static float toRadians(float value);
-		static double toRadians(double value);
+		static float toDegrees(float radians);
+		static double toDegrees(double radians);
+		static float toRadians(float degrees);
+		static double toRadians(double degrees);
 	};
 }

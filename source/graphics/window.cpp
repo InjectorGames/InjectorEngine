@@ -14,7 +14,7 @@ namespace INJECTOR_NAMESPACE
 	const IntVector2 Window::defaultPosition = IntVector2(
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
 	const IntVector2 Window::defaultSize = IntVector2(800, 600);
-	const uint32_t Window::defaultFlags = SDL_WINDOW_RESIZABLE;
+	const uint32_t Window::defaultFlags = SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE;
 
 	Window::Window(const std::string& title,
 		IntVector2 position,
@@ -158,8 +158,11 @@ namespace INJECTOR_NAMESPACE
 		SDL_SetWindowResizable(window, static_cast<SDL_bool>(value));
 	}
 
-	PipelineHandle Window::createColorPipeline(
-		const std::string& vertexPath, const std::string& fragmentPath)
+	RenderSystemHandle Window::createRenderSystem()
+	{
+		throw std::runtime_error("Not implemented window function");
+	}
+	PipelineHandle Window::createColorPipeline()
 	{
 		throw std::runtime_error("Not implemented window function");
 	}

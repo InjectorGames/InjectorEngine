@@ -5,20 +5,20 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	float Converter::toDegrees(float value)
+	float Converter::toDegrees(float radians)
 	{
-		return value * (static_cast<float>(M_PI) / 180.0f);
+		return radians * (180.0f / static_cast<float>(M_PI));
 	}
-	double Converter::toDegrees(double value)
+	double Converter::toDegrees(double radians)
 	{
-		return value * (M_PI / 180.0);
+		return radians * (180.0 / M_PI);
 	}
-	float Converter::toRadians(float value)
+	float Converter::toRadians(float degrees)
 	{
-		return value * (180.0f / static_cast<float>(M_PI));
+		return degrees * (static_cast<float>(M_PI) / 180.0f);
 	}
-	double Converter::toRadians(double value)
+	double Converter::toRadians(double degrees)
 	{
-		return value * (180.0 / M_PI);
+		return degrees * (M_PI / 180.0);
 	}
 }

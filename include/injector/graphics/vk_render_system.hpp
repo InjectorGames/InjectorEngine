@@ -7,12 +7,11 @@ namespace INJECTOR_NAMESPACE
 	class VkRenderSystem : public RenderSystem
 	{
 	protected:
-		VkWindowHandle window;
+		VkWindow& window;
 	public:
-		VkRenderSystem(const VkWindowHandle& window);
+		VkRenderSystem(VkWindow& window);
 		virtual ~VkRenderSystem();
 
-		WindowHandle getWindow() const override;
 		void update() override;
 	};
 }

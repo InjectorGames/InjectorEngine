@@ -1,6 +1,8 @@
 #include <injector/mathematics/transform_system.hpp>
 #include <injector/engine.hpp>
 
+#include <iostream>
+
 namespace INJECTOR_NAMESPACE
 {
 	TransformSystem::TransformSystem() :
@@ -33,6 +35,8 @@ namespace INJECTOR_NAMESPACE
 			{
 				transformComponent->rotation *=
 					rotateComponent->rotation * deltaTime;
+				transformComponent->rotation =
+					transformComponent->rotation.getNormalized();
 				transformComponent->changed = true;
 			}
 

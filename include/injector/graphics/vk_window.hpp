@@ -123,8 +123,8 @@ namespace INJECTOR_NAMESPACE
 		vk::CommandBuffer getGraphicsCommandBuffer(uint32_t imageIndex) const;
 		vk::CommandBuffer getPresentCommandBuffer(uint32_t imageIndex) const;
 
-		PipelineHandle createColorPipeline(
-			const std::string& vertexPath, const std::string& fragmentPath) override;
+		RenderSystemHandle createRenderSystem() override;
+		PipelineHandle createColorPipeline() override;
 		MeshHandle createSquareMesh() override;
 	};
 

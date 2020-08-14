@@ -13,7 +13,7 @@ void init()
 	
 	auto transformSystem = window->createSystem<TransformSystem>();
 	auto cameraSystem = CameraSystem::create(window);
-	auto renderSystem = RenderSystem::create(window);
+	auto renderSystem = window->createRenderSystem();
 
 	auto camera = window->createEntity();
 	camera->createComponent<TransformComponent>();
@@ -25,13 +25,21 @@ void init()
 
 	auto testCube = window->createEntity();
 	testCube->createComponent<TransformComponent>();
+	testCube->createComponent<RotateComponent>(
+		Quaternion(Vector3(0.0f, 0.0f, Converter::toRadians(1.0f))));
 	transformSystem->addTransform(testCube);
+	auto kek = Quaternion(Vector3(0.0f, 10.0f, 0.0f)) * 0.5f;
+	auto sek = glm::quat(glm::vec3(0.0f, 10.0f, 0.0f)) * 0.5f;
 
-	auto colorPipeline = window->createColorPipeline(
-		"resources/shaders/color", "resources/shaders/color");
+	kek = kek.getNormalized();
+	sek = glm::normalize(sek);
+
+	auto colorPipeline = window->createColorPipeline();
 	auto squareMesh = window->createSquareMesh();
 	testCube->createComponent<RenderComponent>(colorPipeline, squareMesh);
 	renderSystem->addRender(testCube);
+
+	window->show();
 }
 
 int main(int argc, char* args[])

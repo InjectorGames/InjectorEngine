@@ -1,6 +1,5 @@
 #include <injector/graphics/render_system.hpp>
 #include <injector/engine.hpp>
-#include <injector/graphics/vk_render_system.hpp>
 
 #include <stdexcept>
 
@@ -8,11 +7,6 @@ namespace INJECTOR_NAMESPACE
 {
 	RenderSystem::~RenderSystem()
 	{}
-
-	WindowHandle RenderSystem::getWindow() const
-	{
-		throw std::runtime_error("Not implemented render system function");
-	}
 
 	size_t RenderSystem::getCameraCount() const noexcept
 	{
@@ -73,20 +67,5 @@ namespace INJECTOR_NAMESPACE
 	void RenderSystem::removeRenders() noexcept
 	{
 		renders.clear();
-	}
-
-	std::shared_ptr<RenderSystem> RenderSystem::create(const WindowHandle& window)
-	{
-		auto graphicsAPI = Engine::getGraphicsAPI();
-
-		if (graphicsAPI == GraphicsAPI::OpenGL)
-			return nullptr;
-		else if (graphicsAPI == GraphicsAPI::OpenGLES)
-			return nullptr;
-		else if (graphicsAPI == GraphicsAPI::Vulkan)
-			return window->createSystem<VkRenderSystem>(
-				std::dynamic_pointer_cast<VkWindow>(window));
-		else
-			throw std::runtime_error("Failed to create render system, unknown graphics API");
 	}
 }

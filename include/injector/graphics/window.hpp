@@ -4,6 +4,7 @@
 #include <injector/graphics/mesh.hpp>
 #include <injector/graphics/shader.hpp>
 #include <injector/graphics/pipeline.hpp>
+#include <injector/graphics/render_system.hpp>
 
 #include <SDL.h>
 
@@ -46,8 +47,8 @@ namespace INJECTOR_NAMESPACE
 		void maximize() noexcept;
 		void setResizable(bool value) noexcept;
 
-		virtual PipelineHandle createColorPipeline(
-			const std::string& vertexPath, const std::string& fragmentPath);
+		virtual RenderSystemHandle createRenderSystem();
+		virtual PipelineHandle createColorPipeline();
 		virtual MeshHandle createSquareMesh();
 
 		static std::shared_ptr<Window> create(

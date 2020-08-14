@@ -1,8 +1,8 @@
 #pragma once
 #include <injector/graphics/buffer.hpp>
+#include <injector/graphics/vma_defines.hpp>
 
 #include <vulkan/vulkan.hpp>
-#include <vk_mem_alloc.h>
 
 namespace INJECTOR_NAMESPACE
 {
