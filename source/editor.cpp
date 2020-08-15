@@ -1,9 +1,8 @@
 #include <injector/engine.hpp>
-#include <injector/graphics/window.hpp>
 #include <injector/graphics/camera_system.hpp>
 #include <injector/graphics/render_system.hpp>
-#include <injector/graphics/fly_camera_system.hpp>
 #include <injector/mathematics/transform_system.hpp>
+#include <injector/graphics/fly_transform_system.hpp>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <injector/glm_defines.hpp>
@@ -13,8 +12,8 @@ using namespace INJECTOR_NAMESPACE;
 void init()
 {
 	auto window = Window::create();
-	
-	auto flyCameraSystem = window->createSystem<FlyCameraSystem>();
+
+	auto flyTransformSystem = window->createSystem<FlyTransformSystem>(window);
 	auto transformSystem = window->createSystem<TransformSystem>();
 	auto cameraSystem = window->createCameraSystem();
 	auto renderSystem = window->createRenderSystem();
@@ -24,7 +23,7 @@ void init()
 	transformSystem->addTransform(camera);
 
 	camera->createComponent<CameraComponent>();
-	flyCameraSystem->camera = camera;
+	flyTransformSystem->transform = camera;
 	cameraSystem->addCamera(camera);
 	renderSystem->addCamera(camera);
 

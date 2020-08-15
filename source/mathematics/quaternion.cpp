@@ -15,6 +15,14 @@ namespace INJECTOR_NAMESPACE
 	Quaternion::Quaternion(const Vector3& vector, float _w) :
 		x(vector.x), y(vector.y), z(vector.z), w(_w)
 	{}
+	Quaternion::Quaternion(float angle, const Vector3& vector)
+	{
+		auto v = vector * std::sin(angle * 0.5f);
+		x = v.x;
+		y = v.y;
+		z = v.z;
+		w = std::cos(angle * 0.5f);
+	}
 	Quaternion::Quaternion(const Vector3& eulerAngles)
 	{
 		auto s = eulerAngles * 0.5f;
@@ -204,6 +212,12 @@ namespace INJECTOR_NAMESPACE
 		return Quaternion(Matrix3(c0, direction.getCrossProduct(c0), direction));
 	}
 
+	float Quaternion::getAngle() const noexcept
+	{
+		if (std::abs(w) > static_cast<float>(0.877582561890372716130286068203503191))
+			return std::asin(std::sqrt(x * x + y * y + z * z)) * 2.0f;
+		return std::acos(w) * 2.0f;
+	}
 	float Quaternion::getRoll() const noexcept
 	{
 		return std::atan2(2.0f * (x * y + w * z), w * w + x * x - y * y - z * z);
@@ -222,6 +236,16 @@ namespace INJECTOR_NAMESPACE
 	float Quaternion::getYaw() const noexcept
 	{
 		return std::asin(std::fminf(std::fmaxf(-2.0f * (x * z - w * y), -1.0f), 1.0f));
+	}
+	Vector3 Quaternion::getAxis() const noexcept
+	{
+		auto tmp = 1.0f - w * w;
+
+		if (tmp <= 0.0f)
+			return Vector3(0.0f, 0.0f, 1.0f);
+
+		tmp = 1.0f / std::sqrt(tmp);
+		return Vector3(x * tmp, y * tmp, z * tmp);
 	}
 	Vector3 Quaternion::getEulerAngles() const noexcept
 	{

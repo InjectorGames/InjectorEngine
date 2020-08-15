@@ -3,6 +3,7 @@
 #include <injector/graphics/mesh.hpp>
 #include <injector/graphics/shader.hpp>
 #include <injector/graphics/pipeline.hpp>
+#include <injector/graphics/mouse_button.hpp>
 #include <injector/graphics/render_system.hpp>
 #include <injector/graphics/camera_system.hpp>
 
@@ -17,6 +18,7 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		SDL_Window* window;
+		IntVector2 deltaMousePosition;
 	public:
 		static const std::string defaultTitle;
 		static const IntVector2 defaultPosition;
@@ -35,6 +37,13 @@ namespace INJECTOR_NAMESPACE
 		uint32_t getID() const noexcept;
 		uint32_t getFlags() const noexcept;
 		IntVector2 getSize() const noexcept;
+		IntVector2 getMousePosition() const noexcept;
+		IntVector2 getGlobalMousePosition() const noexcept;
+		IntVector2 getDeltaMousePosition() const noexcept;
+		uint32_t getMouseButtons() const noexcept;
+		uint32_t getGlobalMouseButtons() const noexcept;
+		void getMouseState(IntVector2& position, uint32_t& buttons) const noexcept;
+		void getGlobalMouseState(IntVector2& position, uint32_t& buttons) const noexcept;
 		bool isHidden() const noexcept;
 		bool isShown() const noexcept;
 		bool isMinimized() const noexcept;
@@ -45,7 +54,8 @@ namespace INJECTOR_NAMESPACE
 		void show() noexcept;
 		void minimize() noexcept;
 		void maximize() noexcept;
-		void setResizable(bool value) noexcept;
+		void setResizable(bool resizable) noexcept;
+		bool setMouseMode(bool realtive) noexcept;
 
 		virtual CameraSystemHandle createCameraSystem();
 		virtual RenderSystemHandle createRenderSystem();

@@ -12,6 +12,7 @@ namespace INJECTOR_NAMESPACE
 		Quaternion();
 		Quaternion(float x, float y, float z, float w);
 		Quaternion(const Vector3& vector, float w);
+		Quaternion(float angle, const Vector3& vector);
 		Quaternion(const Vector3& eulerAngles);
 		Quaternion(const Vector3& a, const Vector3& b);
 		Quaternion(const Matrix3& matrix);
@@ -25,9 +26,11 @@ namespace INJECTOR_NAMESPACE
 		Quaternion getInversed() const noexcept;
 		Quaternion getLookedAt(const Vector3& direction, const Vector3& up) const noexcept;
 
+		float getAngle() const noexcept;
 		float getRoll() const noexcept;
 		float getPitch() const noexcept;
 		float getYaw() const noexcept;
+		Vector3 getAxis() const noexcept;
 		Vector3 getEulerAngles() const noexcept;
 
 		Matrix3 getMatrix3() const noexcept;

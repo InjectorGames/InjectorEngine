@@ -40,6 +40,8 @@ namespace INJECTOR_NAMESPACE
 	{
 		SDL_Event event;
 
+		deltaMousePosition = IntVector2::zero;
+
 		while (SDL_PollEvent(&event) != 0)
 		{
 			auto windowID = getID();
@@ -48,47 +50,23 @@ namespace INJECTOR_NAMESPACE
 			{
 				switch (event.window.event)
 				{
-				case SDL_WINDOWEVENT_HIDDEN:
-					//handleHiddenEvent(event.window);
-					break;
-				case SDL_WINDOWEVENT_SHOWN:
-					//handleShownEvent(event.window);
-					break;
-				case SDL_WINDOWEVENT_EXPOSED:
-					break;
-				case SDL_WINDOWEVENT_MOVED:
-					//handleMovedEvent(event.window);
-					break;
 				case SDL_WINDOWEVENT_SIZE_CHANGED:
 					onResize(IntVector2(event.window.data1, event.window.data2));
-					break;
-				case SDL_WINDOWEVENT_MINIMIZED:
-					break;
-				case SDL_WINDOWEVENT_MAXIMIZED:
-					break;
-				case SDL_WINDOWEVENT_RESTORED:
-					break;
-				case SDL_WINDOWEVENT_ENTER:
-					break;
-				case SDL_WINDOWEVENT_LEAVE:
-					break;
-				case SDL_WINDOWEVENT_FOCUS_GAINED:
-					break;
-				case SDL_WINDOWEVENT_FOCUS_LOST:
 					break;
 				case SDL_WINDOWEVENT_CLOSE:
 					active = false;
 					break;
 				}
 			}
+			else if (event.type == SDL_MOUSEMOTION && event.motion.windowID == windowID)
+			{
+				deltaMousePosition += IntVector2(event.motion.xrel, event.motion.yrel);
+			}
 			/*else if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.windowID == id)
 			{
 				events.emit<KeyboardEvent>(event.key);
 			}
-			else if (event.type == SDL_MOUSEMOTION && event.motion.windowID == id)
-			{
-				events.emit<MouseMotionEvent>(event.motion);
-			}
+			
 			else if ((event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) && event.button.windowID == id)
 			{
 				events.emit<MouseButtonEvent>(event.button);
@@ -115,6 +93,38 @@ namespace INJECTOR_NAMESPACE
 		auto size = IntVector2();
 		SDL_GetWindowSize(window, &size.x, &size.y);
 		return size;
+	}
+	IntVector2 Window::getMousePosition() const noexcept
+	{
+		auto position = IntVector2();
+		SDL_GetMouseState(&position.x, &position.y);
+		return position;
+	}
+	IntVector2 Window::getGlobalMousePosition() const noexcept
+	{
+		auto position = IntVector2();
+		SDL_GetGlobalMouseState(&position.x, &position.y);
+		return position;
+	}
+	IntVector2 Window::getDeltaMousePosition() const noexcept
+	{
+		return deltaMousePosition;
+	}
+	uint32_t Window::getMouseButtons() const noexcept
+	{
+		return static_cast<uint32_t>(SDL_GetMouseState(nullptr, nullptr));
+	}
+	uint32_t Window::getGlobalMouseButtons() const noexcept
+	{
+		return static_cast<uint32_t>(SDL_GetGlobalMouseState(nullptr, nullptr));
+	}
+	void Window::getMouseState(IntVector2& position, uint32_t& buttons) const noexcept
+	{
+		buttons = static_cast<uint32_t>(SDL_GetMouseState(&position.x, &position.y));
+	}
+	void Window::getGlobalMouseState(IntVector2& position, uint32_t& buttons) const noexcept
+	{
+		buttons = static_cast<uint32_t>(SDL_GetGlobalMouseState(&position.x, &position.y));
 	}
 	bool Window::isHidden() const noexcept
 	{
@@ -153,9 +163,13 @@ namespace INJECTOR_NAMESPACE
 	{
 		SDL_MaximizeWindow(window);
 	}
-	void Window::setResizable(bool value) noexcept
+	void Window::setResizable(bool resizable) noexcept
 	{
-		SDL_SetWindowResizable(window, static_cast<SDL_bool>(value));
+		SDL_SetWindowResizable(window, static_cast<SDL_bool>(resizable));
+	}
+	bool Window::setMouseMode(bool realtive) noexcept
+	{
+		return SDL_SetRelativeMouseMode(static_cast<SDL_bool>(realtive)) == 0;
 	}
 
 	CameraSystemHandle Window::createCameraSystem()

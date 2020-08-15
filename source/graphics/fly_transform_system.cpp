@@ -1,8 +1,11 @@
-#include <injector/graphics/fly_camera_system.hpp>
+#include <injector/graphics/fly_transform_system.hpp>
+#include <algorithm>
 
 namespace INJECTOR_NAMESPACE
 {
-	FlyCameraSystem::FlyCameraSystem() :
+	FlyTransformSystem::FlyTransformSystem(
+		const WindowHandle& _window) :
+		window(_window),
 		rotating(false),
 		eulerAngles(),
 		rotation(),
@@ -10,14 +13,53 @@ namespace INJECTOR_NAMESPACE
 		clampPitch(true),
 		speed(2.0f),
 		sensitivity(0.0025f),
-		camera()
-	{}
-	FlyCameraSystem::~FlyCameraSystem()
-	{}
-
-	void FlyCameraSystem::update()
+		transform()
 	{
+		if (!_window)
+			throw std::runtime_error("Fly transform system window is null");
+	}
+	FlyTransformSystem::~FlyTransformSystem()
+	{}
 
+	void FlyTransformSystem::update()
+	{
+		TransformComponent* transformComponent;
+
+		if (!transform || !transform->getComponent(transformComponent))
+			return;
+
+		uint32_t mouseButtons;
+		IntVector2 mousePosition;
+		window->getMouseState(mousePosition, mouseButtons);
+
+		if (mouseButtons & MouseButton::Right)
+		{
+			if (!rotating)
+			{
+				rotating = true;
+				window->setMouseMode(true);
+			}
+
+			auto deltaMousePosition = window->getDeltaMousePosition();
+			eulerAngles += Vector3(
+				-deltaMousePosition.y * sensitivity,
+				deltaMousePosition.x * sensitivity, 0.0f);
+
+			if (clampPitch)
+				eulerAngles.x = std::clamp(eulerAngles.x, -1.57f, 1.57f);
+
+			transformComponent->rotation =
+				Quaternion(eulerAngles.x, Vector3(1.0f, 0.0f, 0.0f)) *
+				Quaternion(eulerAngles.y, Vector3(0.0f, 1.0f, 0.0f));
+		}
+		else
+		{
+			if (rotating)
+			{
+				rotating = false;
+				window->setMouseMode(false);
+			}
+		}
 	}
 
 	/*void configure(entityx::EntityManager& entities,

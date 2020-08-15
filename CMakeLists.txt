@@ -39,7 +39,7 @@ add_library(InjectorEngine STATIC
 	source/graphics/camera_component.cpp
 	source/graphics/camera_system.cpp
 	source/graphics/color_pipeline.cpp
-	source/graphics/fly_camera_system.cpp
+	source/graphics/fly_transform_system.cpp
 	source/graphics/gl_attribute.cpp
 	source/graphics/gl_buffer.cpp
 	source/graphics/gl_camera_system.cpp
