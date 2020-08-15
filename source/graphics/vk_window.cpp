@@ -1,6 +1,7 @@
 #include <injector/graphics/vk_window.hpp>
 #include <injector/graphics/primitive.hpp>
 #include <injector/graphics/vk_mesh.hpp>
+#include <injector/graphics/vk_camera_system.hpp>
 #include <injector/graphics/vk_render_system.hpp>
 #include <injector/graphics/vk_color_pipeline.hpp>
 
@@ -678,6 +679,8 @@ namespace INJECTOR_NAMESPACE
 	{
 		device.waitIdle();
 
+		entities.clear();
+		systems.clear();
 		swapchainDatas.clear();
 
 		device.destroyRenderPass(renderPass);
@@ -952,6 +955,12 @@ namespace INJECTOR_NAMESPACE
 		return swapchainDatas[imageIndex]->presentCommandBuffer;
 	}
 
+	CameraSystemHandle VkWindow::createCameraSystem()
+	{
+		auto system = std::make_shared<VkCameraSystem>(*this);
+		systems.push_back(system);
+		return system;
+	}
 	RenderSystemHandle VkWindow::createRenderSystem()
 	{
 		auto system = std::make_shared<VkRenderSystem>(*this);
@@ -970,13 +979,13 @@ namespace INJECTOR_NAMESPACE
 	{
 		auto vertexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
 			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]),
-			vk::BufferUsageFlagBits::eVertexBuffer);
+			vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst);
 		vertexBuffer->setData(Primitive::squareVertices.data(),
 			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]));
 
 		auto indexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
 			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]),
-			vk::BufferUsageFlagBits::eIndexBuffer);
+			vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst);
 		indexBuffer->setData(Primitive::squareIndices.data(),
 			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]));
 

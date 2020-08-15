@@ -6,24 +6,23 @@ namespace INJECTOR_NAMESPACE
 {
 	VkBuffer::VkBuffer(VmaAllocator _allocator,
 		size_t size,
-		vk::BufferUsageFlagBits _usage,
-		vk::BufferUsageFlags usageFlags) :
+		vk::BufferUsageFlags usage) :
 		Buffer(size),
-		allocator(_allocator),
-		usage(_usage)
+		allocator(_allocator)
 	{
 		VkBufferCreateInfo bufferCreateInfo = {};
 		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		bufferCreateInfo.size = size;
-		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(_usage | usageFlags);
+		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(usage);
 
 		VmaAllocationCreateInfo allocationCreateInfo = {};
 		// TODO: make universal buffer usage type
 		allocationCreateInfo.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
 
 		VkBuffer_T* bufferHandle;
+		allocation = nullptr;
 
-		auto result = vmaCreateBuffer(allocator, &bufferCreateInfo, &allocationCreateInfo,
+		auto result = vmaCreateBuffer(_allocator, &bufferCreateInfo, &allocationCreateInfo,
 			&bufferHandle, &allocation, nullptr);
 
 		if(result != VK_SUCCESS)
@@ -34,11 +33,6 @@ namespace INJECTOR_NAMESPACE
 	VkBuffer::~VkBuffer()
 	{
 		vmaDestroyBuffer(allocator, static_cast<VkBuffer_T*>(buffer), allocation);
-	}
-
-	BufferUsage VkBuffer::getUsage() const
-	{
-		return toUsage(usage);
 	}
 
 	VmaAllocator VkBuffer::getAllocator() const noexcept

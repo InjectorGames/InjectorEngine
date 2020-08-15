@@ -40,7 +40,6 @@ namespace INJECTOR_NAMESPACE
 		GlBuffer(size_t size, GLenum usage);
 		virtual ~GlBuffer();
 
-		BufferUsage getUsage() const override;
 		GLuint getBuffer() const noexcept;
 
 		void* map(BufferAccess access) override;

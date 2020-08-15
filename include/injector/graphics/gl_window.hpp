@@ -19,7 +19,17 @@ namespace INJECTOR_NAMESPACE
 			uint32_t flags = defaultFlags);
 		virtual ~GlWindow();
 
-		bool getGLES() const noexcept;
+		bool isGLES() const noexcept;
 		SDL_GLContext getContext() const noexcept;
+
+		void makeCurrent() noexcept;
+		void swapBuffers() noexcept;
+
+		void onResize(IntVector2 size) override;
+
+		CameraSystemHandle createCameraSystem() override;
+		RenderSystemHandle createRenderSystem() override;
+		PipelineHandle createColorPipeline() override;
+		MeshHandle createSquareMesh() override;
 	};
 }

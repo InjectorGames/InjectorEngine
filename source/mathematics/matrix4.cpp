@@ -6,36 +6,36 @@
 namespace INJECTOR_NAMESPACE
 {
 	Matrix4::Matrix4() :
-		m00(0.0f), m10(0.0f), m20(0.0f), m30(0.0f),
-		m01(0.0f), m11(0.0f), m21(0.0f), m31(0.0f),
-		m02(0.0f), m12(0.0f), m22(0.0f), m32(0.0f),
-		m03(0.0f), m13(0.0f), m23(0.0f), m33(0.0f)
+		m00(0.0f), m01(0.0f), m02(0.0f), m03(0.0f),
+		m10(0.0f), m11(0.0f), m12(0.0f), m13(0.0f),
+		m20(0.0f), m21(0.0f), m22(0.0f), m23(0.0f),
+		m30(0.0f), m31(0.0f), m32(0.0f), m33(0.0f)
 	{}
 	Matrix4::Matrix4(float value) :
-		m00(value), m10(value), m20(value), m30(value),
-		m01(value), m11(value), m21(value), m31(value),
-		m02(value), m12(value), m22(value), m32(value),
-		m03(value), m13(value), m23(value), m33(value)
+		m00(value), m01(value), m02(value), m03(value),
+		m10(value), m11(value), m12(value), m13(value),
+		m20(value), m21(value), m22(value), m23(value),
+		m30(value), m31(value), m32(value), m33(value)
 	{}
 	Matrix4::Matrix4(
-		float _m00, float _m10, float _m20, float _m30,
-		float _m01, float _m11, float _m21, float _m31,
-		float _m02, float _m12, float _m22, float _m32,
-		float _m03, float _m13, float _m23, float _m33) :
-		m00(_m00), m10(_m10), m20(_m20), m30(_m30),
-		m01(_m01), m11(_m11), m21(_m21), m31(_m31),
-		m02(_m02), m12(_m12), m22(_m22), m32(_m32),
-		m03(_m03), m13(_m13), m23(_m23), m33(_m33)
+		float _m00, float _m01, float _m02, float _m03,
+		float _m10, float _m11, float _m12, float _m13,
+		float _m20, float _m21, float _m22, float _m23,
+		float _m30, float _m31, float _m32, float _m33) :
+		m00(_m00), m01(_m01), m02(_m02), m03(_m03),
+		m10(_m10), m11(_m11), m12(_m12), m13(_m13),
+		m20(_m20), m21(_m21), m22(_m22), m23(_m23),
+		m30(_m30), m31(_m31), m32(_m32), m33(_m33)
 	{}
 	Matrix4::Matrix4(
 		const Vector4& column0,
 		const Vector4& column1,
 		const Vector4& column2,
 		const Vector4& column3) :
-		m00(column0.x), m10(column0.y), m20(column0.z), m30(column0.w),
-		m01(column1.x), m11(column1.y), m21(column1.z), m31(column1.w),
-		m02(column2.x), m12(column2.y), m22(column2.z), m32(column2.w),
-		m03(column3.x), m13(column3.y), m23(column3.z), m33(column3.w)
+		m00(column0.x), m01(column0.y), m02(column0.z), m03(column0.w),
+		m10(column1.x), m11(column1.y), m12(column1.z), m13(column1.w),
+		m20(column2.x), m21(column2.y), m22(column2.z), m23(column2.w),
+		m30(column3.x), m31(column3.y), m32(column3.z), m33(column3.w)
 	{}
 
 	float Matrix4::getDeterminant() const noexcept
@@ -59,10 +59,10 @@ namespace INJECTOR_NAMESPACE
 	Matrix4 Matrix4::getTransposed() const noexcept
 	{
 		return Matrix4(
-			m00, m01, m02, m03,
-			m10, m11, m12, m13,
-			m20, m21, m22, m23,
-			m30, m31, m32, m33);
+			m00, m10, m20, m30,
+			m01, m11, m21, m31,
+			m02, m12, m22, m32,
+			m03, m13, m23, m33);
 	}
 	Matrix4 Matrix4::getInversed() const noexcept
 	{
@@ -111,9 +111,7 @@ namespace INJECTOR_NAMESPACE
 		auto b = Vector4(-1.0f, 1.0f, -1.0f, 1.0f);
 		auto inverse = Matrix4(i0 * a, i1 * b, i2 * a, i3 * b);
 
-		auto row = Vector4(inverse.m00, inverse.m10, inverse.m20, inverse.m30);
-
-		auto dot0 = getColumn0() * row;
+		auto dot0 = getColumn0() * inverse.getRow0();
 		auto dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
 
 		auto determinant = 1.0f / dot1;
@@ -122,15 +120,18 @@ namespace INJECTOR_NAMESPACE
 	}
 	Matrix4 Matrix4::getScaled(const Vector3& vector) const noexcept
 	{
-		return Matrix4(getColumn0() * vector.x,
-			getColumn1() * vector.y,
-			getColumn2() * vector.z,
-			getColumn3());
+		auto matrix = Matrix4();
+		matrix.setColumn0(getColumn0() * vector.x);
+		matrix.setColumn1(getColumn1() * vector.y);
+		matrix.setColumn2(getColumn2() * vector.z);
+		matrix.setColumn3(getColumn3());
+		return matrix;
 	}
 	Matrix4 Matrix4::getTranslated(const Vector3& vector) const noexcept
 	{
 		auto result = Matrix4(*this);
-		result.setColumn3(getColumn0() * vector.x +
+		result.setColumn3(
+			getColumn0() * vector.x +
 			getColumn1() * vector.y +
 			getColumn2() * vector.z +
 			getColumn3());
@@ -157,8 +158,8 @@ namespace INJECTOR_NAMESPACE
 		auto r22 = c + temp.z * axis.z;
 
 		auto c0 = getColumn0();
-		auto c1 = getColumn0();
-		auto c2 = getColumn0();
+		auto c1 = getColumn1();
+		auto c2 = getColumn2();
 
 		return Matrix4(
 			c0 * r00 + c1 * r01 + c2 * r02,
@@ -185,87 +186,42 @@ namespace INJECTOR_NAMESPACE
 
 	Vector4 Matrix4::getRow0() const noexcept
 	{
-		return Vector4(m00, m01, m02, m03);
+		return Vector4(m00, m10, m20, m30);
 	}
 	Vector4 Matrix4::getRow1() const noexcept
 	{
-		return Vector4(m10, m11, m12, m13);
+		return Vector4(m01, m11, m21, m31);
 	}
 	Vector4 Matrix4::getRow2() const noexcept
 	{
-		return Vector4(m20, m21, m22, m23);
+		return Vector4(m02, m12, m22, m31);
 	}
 	Vector4 Matrix4::getRow3() const noexcept
 	{
-		return Vector4(m30, m31, m32, m33);
-	}
-	void Matrix4::setRow0(const Vector4& vector) noexcept
-	{
-		m00 = vector.x;
-		m01 = vector.y;
-		m02 = vector.z;
-		m03 = vector.w;
-	}
-	void Matrix4::setRow1(const Vector4& vector) noexcept
-	{
-		m10 = vector.x;
-		m11 = vector.y;
-		m12 = vector.z;
-		m13 = vector.w;
-	}
-	void Matrix4::setRow2(const Vector4& vector) noexcept
-	{
-		m20 = vector.x;
-		m21 = vector.y;
-		m22 = vector.z;
-		m23 = vector.w;
-	}
-	void Matrix4::setRow3(const Vector4& vector) noexcept
-	{
-		m30 = vector.x;
-		m31 = vector.y;
-		m32 = vector.z;
-		m33 = vector.w;
-	}
-
-	Vector4 Matrix4::getColumn0() const noexcept
-	{
-		return Vector4(m00, m10, m20, m30);
-	}
-	Vector4 Matrix4::getColumn1() const noexcept
-	{
-		return Vector4(m01, m11, m21, m31);
-	}
-	Vector4 Matrix4::getColumn2() const noexcept
-	{
-		return Vector4(m02, m12, m22, m32);
-	}
-	Vector4 Matrix4::getColumn3() const noexcept
-	{
 		return Vector4(m03, m13, m23, m33);
 	}
-	void Matrix4::setColumn0(const Vector4& vector) noexcept
+	void Matrix4::setRow0(const Vector4& vector) noexcept
 	{
 		m00 = vector.x;
 		m10 = vector.y;
 		m20 = vector.z;
 		m30 = vector.w;
 	}
-	void Matrix4::setColumn1(const Vector4& vector) noexcept
+	void Matrix4::setRow1(const Vector4& vector) noexcept
 	{
 		m01 = vector.x;
 		m11 = vector.y;
 		m21 = vector.z;
 		m31 = vector.w;
 	}
-	void Matrix4::setColumn2(const Vector4& vector) noexcept
+	void Matrix4::setRow2(const Vector4& vector) noexcept
 	{
 		m02 = vector.x;
 		m12 = vector.y;
 		m22 = vector.z;
 		m32 = vector.w;
 	}
-	void Matrix4::setColumn3(const Vector4& vector) noexcept
+	void Matrix4::setRow3(const Vector4& vector) noexcept
 	{
 		m03 = vector.x;
 		m13 = vector.y;
@@ -273,23 +229,69 @@ namespace INJECTOR_NAMESPACE
 		m33 = vector.w;
 	}
 
+	Vector4 Matrix4::getColumn0() const noexcept
+	{
+		return Vector4(m00, m01, m02, m03);
+	}
+	Vector4 Matrix4::getColumn1() const noexcept
+	{
+		return Vector4(m10, m11, m12, m13);
+	}
+	Vector4 Matrix4::getColumn2() const noexcept
+	{
+		return Vector4(m20, m21, m22, m23);
+	}
+	Vector4 Matrix4::getColumn3() const noexcept
+	{
+		return Vector4(m30, m31, m32, m33);
+	}
+	void Matrix4::setColumn0(const Vector4& vector) noexcept
+	{
+		m00 = vector.x;
+		m01 = vector.y;
+		m02 = vector.z;
+		m03 = vector.w;
+	}
+	void Matrix4::setColumn1(const Vector4& vector) noexcept
+	{
+		m10 = vector.x;
+		m11 = vector.y;
+		m12 = vector.z;
+		m13 = vector.w;
+	}
+	void Matrix4::setColumn2(const Vector4& vector) noexcept
+	{
+		m20 = vector.x;
+		m21 = vector.y;
+		m22 = vector.z;
+		m23 = vector.w;
+	}
+	void Matrix4::setColumn3(const Vector4& vector) noexcept
+	{
+		m30 = vector.x;
+		m31 = vector.y;
+		m32 = vector.z;
+		m33 = vector.w;
+	}
+
 	Matrix2 Matrix4::getMatrix2() const noexcept
 	{
 		return Matrix2(
-			m00, m10,
-			m01, m11);
+			m00, m01,
+			m10, m11);
 	}
 	Matrix3 Matrix4::getMatrix3() const noexcept
 	{
 		return Matrix3(
-			m00, m10, m20,
-			m01, m11, m21,
-			m02, m12, m22);
+			m00, m01, m02,
+			m10, m11, m12,
+			m20, m21, m22);
 	}
 
 	bool Matrix4::operator==(const Matrix4& matrix) const noexcept
 	{
-		return getColumn0() == matrix.getColumn0() &&
+		return 
+			getColumn0() == matrix.getColumn0() &&
 			getColumn1() == matrix.getColumn1() &&
 			getColumn2() == matrix.getColumn2() &&
 			getColumn3() == matrix.getColumn3();
@@ -344,14 +346,16 @@ namespace INJECTOR_NAMESPACE
 
 	Matrix4 Matrix4::operator-(const Matrix4& matrix) const noexcept
 	{
-		return Matrix4(getColumn0() - matrix.getColumn0(),
+		return Matrix4(
+			getColumn0() - matrix.getColumn0(),
 			getColumn1() - matrix.getColumn1(),
 			getColumn2() - matrix.getColumn2(),
 			getColumn3() - matrix.getColumn3());
 	}
 	Matrix4 Matrix4::operator+(const Matrix4& matrix) const noexcept
 	{
-		return Matrix4(getColumn0() + matrix.getColumn0(),
+		return Matrix4(
+			getColumn0() + matrix.getColumn0(),
 			getColumn1() + matrix.getColumn1(),
 			getColumn2() + matrix.getColumn2(),
 			getColumn3() + matrix.getColumn3());
@@ -384,7 +388,8 @@ namespace INJECTOR_NAMESPACE
 	}
 	Vector4 Matrix4::operator*(const Vector4& vector) const noexcept
 	{
-		return getColumn0() * Vector4(vector.x) +
+		return 
+			getColumn0() * Vector4(vector.x) +
 			getColumn1() * Vector4(vector.y) +
 			getColumn2() * Vector4(vector.z) +
 			getColumn3() * Vector4(vector.w);
@@ -433,7 +438,8 @@ namespace INJECTOR_NAMESPACE
 	{
 		auto vector = Vector4(value);
 
-		return Matrix4(getColumn0() - vector,
+		return Matrix4(
+			getColumn0() - vector,
 			getColumn1() - vector,
 			getColumn2() - vector,
 			getColumn3() - vector);
@@ -442,7 +448,8 @@ namespace INJECTOR_NAMESPACE
 	{
 		auto vector = Vector4(value);
 
-		return Matrix4(getColumn0() + vector,
+		return Matrix4(
+			getColumn0() + vector,
 			getColumn1() + vector,
 			getColumn2() + vector,
 			getColumn3() + vector);
@@ -451,7 +458,8 @@ namespace INJECTOR_NAMESPACE
 	{
 		auto vector = Vector4(value);
 
-		return Matrix4(getColumn0() / vector,
+		return Matrix4(
+			getColumn0() / vector,
 			getColumn1() / vector,
 			getColumn2() / vector,
 			getColumn3() / vector);
@@ -460,7 +468,8 @@ namespace INJECTOR_NAMESPACE
 	{
 		auto vector = Vector4(value);
 
-		return Matrix4(getColumn0() * vector,
+		return Matrix4(
+			getColumn0() * vector,
 			getColumn1() * vector,
 			getColumn2() * vector,
 			getColumn3() * vector);
@@ -513,8 +522,8 @@ namespace INJECTOR_NAMESPACE
 			1.0f / (tanHalfFov),
 			0.0f, 0.0f, 0.0f, 0.0f,
 			farClipPlane / (farClipPlane - nearClipPlane),
-			-(farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane),
-			0.0f, 0.0f, 1.0f, 0.0f);
+			1.0f, 0.0f, 0.0f, 
+			-(farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane), 0.0f);
 	}
 	Matrix4 Matrix4::createPerspectiveNO(float fieldOfView, float aspectRatio,
 		float nearClipPlane, float farClipPlane)

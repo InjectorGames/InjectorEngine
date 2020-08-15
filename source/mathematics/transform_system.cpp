@@ -35,57 +35,59 @@ namespace INJECTOR_NAMESPACE
 			{
 				transformComponent->rotation *=
 					rotateComponent->rotation * deltaTime;
-				transformComponent->rotation =
-					transformComponent->rotation.getNormalized();
 				transformComponent->changed = true;
 			}
 
 			if (!transformComponent->changed)
 				continue;
 
+			transformComponent->rotation = transformComponent->rotation.getNormalized();
+
+			Matrix4 matrix;
+
 			if (transformComponent->type == TransformComponent::Type::Spin)
 			{
-				auto matrix = Matrix4::identity.getTranslated(transformComponent->position);
-				matrix *= transformComponent->rotation.getNormalized().getMatrix4();
+				matrix = Matrix4::identity.getTranslated(transformComponent->position);
+				matrix *= transformComponent->rotation.getMatrix4();
 				matrix *= Matrix4::identity.getScaled(transformComponent->scale);
-
-				auto& relative = transformComponent->parent;
-				while (relative)
-				{
-					TransformComponent* relativeTransform;
-
-					if (!relative->getComponent(relativeTransform))
-						break;
-
-					matrix = relativeTransform->matrix * matrix;
-					relative = relativeTransform->parent;
-				}
-
-				transformComponent->matrix = matrix;
-				transformComponent->changed = false;
 			}
 			else
 			{
-				auto matrix = Matrix4::identity.getScaled(transformComponent->scale);
-				matrix *= transformComponent->rotation.getNormalized().getMatrix4();
+				matrix = transformComponent->rotation.getMatrix4();
 				matrix *= Matrix4::identity.getTranslated(transformComponent->position);
-
-				auto& relative = transformComponent->parent;
-				while (relative)
-				{
-					TransformComponent* relativeTransform;
-
-					if (!relative->getComponent(relativeTransform))
-						break;
-
-					matrix = relativeTransform->matrix * matrix;
-					relative = relativeTransform->parent;
-				}
-
-				transformComponent->matrix = matrix;
-				transformComponent->changed = false;
+				matrix *= Matrix4::identity.getScaled(transformComponent->scale);
 			}
+
+			transformComponent->matrix = matrix;
 		}
+
+		// TODO: make parent childrens pair
+
+		/*for (auto& transform : transforms)
+		{
+			TransformComponent* transformComponent;
+
+			if (!transform->getComponent(transformComponent) ||
+				!transformComponent->changed)
+				continue;
+
+			auto matrix = transformComponent->matrix;
+			auto relative = transformComponent->parent;
+
+			while (relative)
+			{
+				TransformComponent* relativeTransform;
+
+				if (!relative->getComponent(relativeTransform))
+					break;
+
+				matrix = relativeTransform->matrix * matrix;
+				relative = relativeTransform->parent;
+			}
+
+			transformComponent->matrix = matrix;
+			transformComponent->changed = false;
+		}*/
 	}
 
 	size_t TransformSystem::getTransformCount() const noexcept

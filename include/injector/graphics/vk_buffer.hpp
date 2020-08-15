@@ -12,15 +12,11 @@ namespace INJECTOR_NAMESPACE
 		VmaAllocator allocator;
 		vk::Buffer buffer;
 		VmaAllocation allocation;
-		vk::BufferUsageFlagBits usage;
 	public:
 		VkBuffer(VmaAllocator allocator,
 			size_t size,
-			vk::BufferUsageFlagBits usage,
-			vk::BufferUsageFlags usageFlags = vk::BufferUsageFlagBits::eTransferDst);
+			vk::BufferUsageFlags usage);
 		virtual ~VkBuffer();
-
-		BufferUsage getUsage() const override;
 
 		VmaAllocator getAllocator() const noexcept;
 		vk::Buffer getBuffer() const noexcept;

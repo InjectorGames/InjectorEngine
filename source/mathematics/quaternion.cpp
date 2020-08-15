@@ -177,7 +177,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	float Quaternion::getLength() const noexcept
 	{
-		return std::sqrtf(getDotProduct(*this));
+		return std::sqrt(getDotProduct(*this));
 	}
 	Quaternion Quaternion::getNormalized() const noexcept
 	{

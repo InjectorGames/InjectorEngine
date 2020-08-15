@@ -1,4 +1,6 @@
 #include <injector/graphics/gl_window.hpp>
+#include <injector/graphics/gl_camera_system.hpp>
+#include <injector/graphics/gl_render_system.hpp>
 #include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
@@ -31,10 +33,13 @@ namespace INJECTOR_NAMESPACE
 				"Failed to create window OpenGL context: " + std::string(SDL_GetError()));
 
 		SDL_GL_MakeCurrent(window, context);
-		SDL_GL_SetSwapInterval(0);
 
 		if (glewInit() != GLEW_OK)
 			throw std::runtime_error("Failed to initialize window GLEW.");
+
+		SDL_GL_SetSwapInterval(0);
+		//glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_STENCIL_TEST);
 	}
 	GlWindow::~GlWindow()
 	{
@@ -42,7 +47,7 @@ namespace INJECTOR_NAMESPACE
 		context = nullptr;
 	}
 
-	bool GlWindow::getGLES() const noexcept
+	bool GlWindow::isGLES() const noexcept
 	{
 		return gles;
 	}
@@ -51,21 +56,39 @@ namespace INJECTOR_NAMESPACE
 		return context;
 	}
 
-	/*size_t GlWindow::beginFrame()
+	void GlWindow::makeCurrent() noexcept
 	{
 		SDL_GL_MakeCurrent(window, context);
-
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_STENCIL_TEST);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-		return 0;
 	}
-	void GlWindow::endFrame()
+	void GlWindow::swapBuffers() noexcept
 	{
 		SDL_GL_SwapWindow(window);
-	}*/
+	}
+
+	void GlWindow::onResize(IntVector2 size)
+	{
+		makeCurrent();
+		glViewport(0, 0, size.x, size.y);
+	}
+
+	CameraSystemHandle GlWindow::createCameraSystem()
+	{
+		auto system = std::make_shared<GlCameraSystem>(*this);
+		systems.push_back(system);
+		return system;
+	}
+	RenderSystemHandle GlWindow::createRenderSystem()
+	{
+		auto system = std::make_shared<GlRenderSystem>(*this);
+		systems.push_back(system);
+		return system;
+	}
+	PipelineHandle GlWindow::createColorPipeline()
+	{
+		return nullptr;
+	}
+	MeshHandle GlWindow::createSquareMesh()
+	{
+		return nullptr;
+	}
 }

@@ -1,10 +1,10 @@
 #pragma once
 #include <injector/manager.hpp>
-#include <injector/mathematics/int_vector2.hpp>
 #include <injector/graphics/mesh.hpp>
 #include <injector/graphics/shader.hpp>
 #include <injector/graphics/pipeline.hpp>
 #include <injector/graphics/render_system.hpp>
+#include <injector/graphics/camera_system.hpp>
 
 #include <SDL.h>
 
@@ -47,6 +47,7 @@ namespace INJECTOR_NAMESPACE
 		void maximize() noexcept;
 		void setResizable(bool value) noexcept;
 
+		virtual CameraSystemHandle createCameraSystem();
 		virtual RenderSystemHandle createRenderSystem();
 		virtual PipelineHandle createColorPipeline();
 		virtual MeshHandle createSquareMesh();

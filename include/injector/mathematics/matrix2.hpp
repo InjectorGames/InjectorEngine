@@ -5,14 +5,14 @@ namespace INJECTOR_NAMESPACE
 {
 	struct Matrix2
 	{
-		float m00, m10;
-		float m01, m11;
+		float m00, m01;
+		float m10, m11;
 
 		Matrix2();
 		Matrix2(float value);
 		Matrix2(
-			float m00, float m10,
-			float m01, float m11);
+			float m00, float m01,
+			float m10, float m11);
 		Matrix2(
 			const Vector2& column0,
 			const Vector2& column1);

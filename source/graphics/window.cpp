@@ -158,6 +158,10 @@ namespace INJECTOR_NAMESPACE
 		SDL_SetWindowResizable(window, static_cast<SDL_bool>(value));
 	}
 
+	CameraSystemHandle Window::createCameraSystem()
+	{
+		throw std::runtime_error("Not implemented window function");
+	}
 	RenderSystemHandle Window::createRenderSystem()
 	{
 		throw std::runtime_error("Not implemented window function");

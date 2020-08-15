@@ -11,7 +11,6 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		bool active;
-		bool initialized;
 		std::set<EntityHandle> entities;
 		std::vector<SystemHandle> systems;
 	public:

@@ -18,8 +18,6 @@ namespace INJECTOR_NAMESPACE
 	public:
 		Buffer(size_t size);
 		virtual ~Buffer();
-
-		virtual BufferUsage getUsage() const;
 		
 		size_t getSize() const noexcept;
 		bool isMapped() const noexcept;

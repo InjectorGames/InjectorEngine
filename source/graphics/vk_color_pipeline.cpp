@@ -101,7 +101,7 @@ namespace INJECTOR_NAMESPACE
 
 		auto pipelineRasterizationStateCreateInfo = vk::PipelineRasterizationStateCreateInfo(
 			{}, false, false,
-			vk::PolygonMode::eFill, vk::CullModeFlagBits::eFront, vk::FrontFace::eClockwise,
+			vk::PolygonMode::eFill, vk::CullModeFlagBits::eNone, vk::FrontFace::eClockwise,
 			false, 0.0f, 0.0f, 0.0f, 1.0f);
 
 		auto pipelineMultisampleStateCreateInfo = vk::PipelineMultisampleStateCreateInfo(

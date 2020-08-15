@@ -13,11 +13,6 @@ namespace INJECTOR_NAMESPACE
 	Buffer::~Buffer()
 	{}
 
-	BufferUsage Buffer::getUsage() const
-	{
-		throw std::runtime_error("Not implemented buffer function");
-	}
-
 	size_t Buffer::getSize() const noexcept
 	{
 		return size;

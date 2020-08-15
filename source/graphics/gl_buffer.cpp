@@ -33,10 +33,6 @@ namespace INJECTOR_NAMESPACE
 		glDeleteBuffers(GL_ONE, &buffer);
 	}
 
-	BufferUsage GlBuffer::getUsage() const
-	{
-		return toUsage(usage);
-	}
 	GLuint GlBuffer::getBuffer() const noexcept
 	{
 		return buffer;

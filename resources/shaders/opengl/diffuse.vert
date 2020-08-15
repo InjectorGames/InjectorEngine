@@ -1,12 +1,10 @@
-#version 330
+in highp vec3 v_Position;
+in highp vec3 v_Normal;
 
-in vec3 v_Position;
-in vec3 v_Normal;
+out highp vec3 f_Normal;
 
-out vec3 f_Normal;
-
-uniform mat4 u_MvpMatrix;
-uniform mat3 u_NormalMatrix;
+uniform highp mat4 u_MvpMatrix;
+uniform highp mat3 u_NormalMatrix;
 
 void main()
 {

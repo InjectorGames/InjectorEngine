@@ -6,16 +6,16 @@ namespace INJECTOR_NAMESPACE
 {
 	struct Matrix3
 	{
-		float m00, m10, m20;
-		float m01, m11, m21;
-		float m02, m12, m22;
+		float m00, m01, m02;
+		float m10, m11, m12;
+		float m20, m21, m22;
 
 		Matrix3();
 		Matrix3(float value);
 		Matrix3(
-			float m00, float m10, float m20,
-			float m01, float m11, float m21,
-			float m02, float m12, float m22);
+			float m00, float m01, float m02,
+			float m10, float m11, float m12,
+			float m20, float m21, float m22);
 		Matrix3(
 			const Vector3& column0,
 			const Vector3& column1,

@@ -1,31 +1,27 @@
 #pragma once
-#include <injector/graphics/window.hpp>
-#include <injector/mathematics/camera_component.hpp>
+#include <injector/system.hpp>
+#include <injector/entity.hpp>
+#include <injector/graphics/camera_component.hpp>
+
+#include <set>
 
 namespace INJECTOR_NAMESPACE
 {
-
-	// TODO: make gl and vk system to use different camera perspective funstions
-
-
 	class CameraSystem : public System
 	{
 	protected:
-		WindowHandle window;
-		IntVector2 lastWindowSize;
+		float lastAspectRatio;
 		std::set<EntityHandle> cameras;
 	public:
-		CameraSystem(const WindowHandle& _window);
+		CameraSystem();
 		virtual ~CameraSystem();
 
-		void update() override;
+		void updateAspecRatio(float aspectRatio);
 
 		bool addCamera(const EntityHandle& entity) noexcept;
 		bool removeCamera(const EntityHandle& entity) noexcept;
 		void removeCameras() noexcept;
 		size_t getCameraCount() const noexcept;
-		
-		static std::shared_ptr<CameraSystem> create(const WindowHandle& window);
 	};
 
 	using CameraSystemHandle = std::shared_ptr<CameraSystem>;

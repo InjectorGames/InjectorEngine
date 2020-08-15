@@ -83,7 +83,7 @@ namespace INJECTOR_NAMESPACE
 			for (auto renderPair : renderPairs)
 			{
 				auto& modelMatrix = renderPair.second.transform->matrix;
-				auto mvpMatrix = modelMatrix;
+				auto mvpMatrix = viewProjMatrix * modelMatrix;
 
 				if (lastPipeline != renderPair.first)
 				{

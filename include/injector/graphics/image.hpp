@@ -5,6 +5,7 @@ namespace INJECTOR_NAMESPACE
 {
 	class Image
 	{
-
+	public:
+		virtual ~Image();
 	};
 }

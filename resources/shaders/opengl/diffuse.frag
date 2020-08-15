@@ -1,12 +1,10 @@
-#version 330
+in highp vec3 f_Normal;
+out highp vec4 o_Color;
 
-in vec3 f_Normal;
-out vec4 o_Color;
-
-uniform vec4 u_ObjectColor;
-uniform vec4 u_AmbientColor;
-uniform vec4 u_LightColor;
-uniform vec3 u_LightDirection;
+uniform highp vec4 u_ObjectColor;
+uniform highp vec4 u_AmbientColor;
+uniform highp vec4 u_LightColor;
+uniform highp vec3 u_LightDirection;
 
 void main()
 {

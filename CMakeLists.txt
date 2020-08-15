@@ -36,12 +36,17 @@ configure_file(cmake/defines.hpp.in injector/defines.hpp)
 
 add_library(InjectorEngine STATIC
 	source/graphics/buffer.cpp
+	source/graphics/camera_component.cpp
+	source/graphics/camera_system.cpp
 	source/graphics/color_pipeline.cpp
+	source/graphics/fly_camera_system.cpp
 	source/graphics/gl_attribute.cpp
 	source/graphics/gl_buffer.cpp
+	source/graphics/gl_camera_system.cpp
 	source/graphics/gl_color_material.cpp
 	source/graphics/gl_material.cpp
 	source/graphics/gl_mesh.cpp
+	source/graphics/gl_render_system.cpp
 	source/graphics/gl_shader.cpp
 	source/graphics/gl_window.cpp
 	source/graphics/image.cpp
@@ -53,7 +58,9 @@ add_library(InjectorEngine STATIC
 	source/graphics/render_system.cpp
 	source/graphics/shader.cpp
 	source/graphics/vk_buffer.cpp
+	source/graphics/vk_camera_system.cpp
 	source/graphics/vk_color_pipeline.cpp
+	source/graphics/vk_image.cpp
 	source/graphics/vk_mesh.cpp
 	source/graphics/vk_pipeline.cpp
 	source/graphics/vk_render_system.cpp
@@ -62,8 +69,6 @@ add_library(InjectorEngine STATIC
 	source/graphics/vk_window.cpp
 	source/graphics/window.cpp
 
-	source/mathematics/camera_component.cpp
-	source/mathematics/camera_system.cpp
 	source/mathematics/converter.cpp
 	source/mathematics/int_vector2.cpp
 	source/mathematics/int_vector3.cpp

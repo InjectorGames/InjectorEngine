@@ -1,4 +1,4 @@
-#include <injector/mathematics/camera_component.hpp>
+#include <injector/graphics/camera_component.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
