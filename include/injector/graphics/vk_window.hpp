@@ -127,6 +127,7 @@ namespace INJECTOR_NAMESPACE
 		RenderSystemHandle createRenderSystem() override;
 		PipelineHandle createColorPipeline() override;
 		MeshHandle createSquareMesh() override;
+		MeshHandle createCubeMesh() override;
 	};
 
 	using VkWindowHandle = std::shared_ptr<VkWindow>;

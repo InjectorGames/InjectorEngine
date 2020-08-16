@@ -5,9 +5,6 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	TransformSystem::TransformSystem() :
-		transforms()
-	{}
 	TransformSystem::~TransformSystem()
 	{}
 
@@ -15,37 +12,47 @@ namespace INJECTOR_NAMESPACE
 	{
 		auto deltaTime = static_cast<float>(Engine::getUpdateDeltaTime());
 
+		for (auto& translate : translates)
+		{
+			TransformComponent* transformComponent;
+			TranslateComponent* translateComponent;
+
+			if (!translate->getComponent(transformComponent) ||
+				!translate->getComponent(translateComponent))
+				continue;
+
+			transformComponent->position +=
+				translateComponent->translation * deltaTime;
+			transformComponent->changed = true;
+		}
+
+		for (auto& rotate : rotates)
+		{
+			TransformComponent* transformComponent;
+			RotateComponent* rotateComponent;
+
+			if (!rotate->getComponent(transformComponent) ||
+				!rotate->getComponent(rotateComponent))
+				continue;
+
+			transformComponent->rotation *=
+				rotateComponent->rotation * deltaTime;
+			transformComponent->changed = true;
+		}
+
 		for (auto& transform : transforms)
 		{
 			TransformComponent* transformComponent;
 
-			if (!transform->getComponent(transformComponent))
-				continue;
-
-			TranslateComponent* translateComponent;
-			if (transform->getComponent(translateComponent))
-			{
-				transformComponent->position +=
-					translateComponent->translation * deltaTime;
-				transformComponent->changed = true;
-			}
-
-			RotateComponent* rotateComponent;
-			if (transform->getComponent(rotateComponent))
-			{
-				transformComponent->rotation *=
-					rotateComponent->rotation * deltaTime;
-				transformComponent->changed = true;
-			}
-
-			if (!transformComponent->changed)
+			if (!transform->getComponent(transformComponent) ||
+				!transformComponent->changed)
 				continue;
 
 			transformComponent->rotation = transformComponent->rotation.getNormalized();
 
 			Matrix4 matrix;
 
-			if (transformComponent->type == TransformComponent::Type::Spin)
+			if (transformComponent->origin == RotationOrigin::Spin)
 			{
 				matrix = Matrix4::identity.getTranslated(transformComponent->position);
 				matrix *= transformComponent->rotation.getMatrix4();
@@ -61,33 +68,41 @@ namespace INJECTOR_NAMESPACE
 			transformComponent->matrix = matrix;
 		}
 
-		// TODO: make parent childrens pair
-
-		/*for (auto& transform : transforms)
+		for (auto& transform : transforms)
 		{
 			TransformComponent* transformComponent;
 
-			if (!transform->getComponent(transformComponent) ||
-				!transformComponent->changed)
+			if (!transform->getComponent(transformComponent))
+				continue;
+		}
+
+		for (auto& attach : attaches)
+		{
+			TransformComponent* transformComponent;
+			AttachComponent* attachComponent;
+
+			if (!attach->getComponent(transformComponent) ||
+				!attach->getComponent(attachComponent))
 				continue;
 
 			auto matrix = transformComponent->matrix;
-			auto relative = transformComponent->parent;
+			auto target = attachComponent->target;
 
-			while (relative)
+			while (target)
 			{
-				TransformComponent* relativeTransform;
+				TransformComponent* targetTransformComponent;
+				AttachComponent* targetAttachComponent;
 
-				if (!relative->getComponent(relativeTransform))
+				if (!target->getComponent(targetTransformComponent) ||
+					!target->getComponent(targetAttachComponent))
 					break;
 
-				matrix = relativeTransform->matrix * matrix;
-				relative = relativeTransform->parent;
+				matrix *= targetTransformComponent->matrix;
+				target = targetAttachComponent->target;
 			}
 
 			transformComponent->matrix = matrix;
-			transformComponent->changed = false;
-		}*/
+		}
 	}
 
 	size_t TransformSystem::getTransformCount() const noexcept
@@ -97,9 +112,6 @@ namespace INJECTOR_NAMESPACE
 
 	bool TransformSystem::addTransform(const EntityHandle& entity) noexcept
 	{
-		if (entity == nullptr || !entity->containsComponent<TransformComponent>())
-			return false;
-
 		return transforms.emplace(entity).second;
 	}
 	bool TransformSystem::removeTransform(const EntityHandle& entity) noexcept
@@ -118,5 +130,71 @@ namespace INJECTOR_NAMESPACE
 	void TransformSystem::removeTransforms() noexcept
 	{
 		transforms.clear();
+	}
+
+	bool TransformSystem::addTranslate(const EntityHandle& entity) noexcept
+	{
+		return translates.emplace(entity).second;
+	}
+	bool TransformSystem::removeTranslate(const EntityHandle& entity) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		auto iterator = translates.find(entity);
+
+		if (iterator == translates.end())
+			return false;
+
+		translates.erase(iterator);
+		return true;
+	}
+	void TransformSystem::removeTranslates() noexcept
+	{
+		translates.clear();
+	}
+
+	bool TransformSystem::addRotate(const EntityHandle& entity) noexcept
+	{
+		return rotates.emplace(entity).second;
+	}
+	bool TransformSystem::removeRotate(const EntityHandle& entity) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		auto iterator = rotates.find(entity);
+
+		if (iterator == rotates.end())
+			return false;
+
+		rotates.erase(iterator);
+		return true;
+	}
+	void TransformSystem::removeRotates() noexcept
+	{
+		rotates.clear();
+	}
+
+	bool TransformSystem::addAttach(const EntityHandle& entity) noexcept
+	{
+		return attaches.emplace(entity).second;
+	}
+	bool TransformSystem::removeAttach(const EntityHandle& entity) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		auto iterator = attaches.find(entity);
+
+		if (iterator == attaches.end())
+			return false;
+
+		attaches.erase(iterator);
+		return true;
+	}
+	void TransformSystem::removeAttaches() noexcept
+	{
+		attaches.clear();
 	}
 }

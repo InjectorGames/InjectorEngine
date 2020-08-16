@@ -992,4 +992,21 @@ namespace INJECTOR_NAMESPACE
 		return std::make_shared<VkMesh>(vk::IndexType::eUint16, 
 			Primitive::squareIndices.size(), vertexBuffer, indexBuffer);
 	}
+	MeshHandle VkWindow::createCubeMesh()
+	{
+		auto vertexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
+			Primitive::cubeVertices.size() * sizeof(Primitive::cubeVertices[0]),
+			vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst);
+		vertexBuffer->setData(Primitive::cubeVertices.data(),
+			Primitive::cubeVertices.size() * sizeof(Primitive::cubeVertices[0]));
+
+		auto indexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
+			Primitive::cubeIndices.size() * sizeof(Primitive::cubeIndices[0]),
+			vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst);
+		indexBuffer->setData(Primitive::cubeIndices.data(),
+			Primitive::cubeIndices.size() * sizeof(Primitive::cubeIndices[0]));
+
+		return std::make_shared<VkMesh>(vk::IndexType::eUint16,
+			Primitive::cubeIndices.size(), vertexBuffer, indexBuffer);
+	}
 }

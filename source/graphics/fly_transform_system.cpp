@@ -10,10 +10,9 @@ namespace INJECTOR_NAMESPACE
 		eulerAngles(),
 		rotation(),
 		translation(),
-		clampPitch(true),
+		transform(),
 		speed(2.0f),
-		sensitivity(0.0025f),
-		transform()
+		sensitivity(0.0025f)
 	{
 		if (!_window)
 			throw std::runtime_error("Fly transform system window is null");
@@ -40,17 +39,16 @@ namespace INJECTOR_NAMESPACE
 				window->setMouseMode(true);
 			}
 
-			auto deltaMousePosition = window->getDeltaMousePosition();
+			auto mouseMotion = window->getMouseMotion();
+
 			eulerAngles += Vector3(
-				-deltaMousePosition.y * sensitivity,
-				deltaMousePosition.x * sensitivity, 0.0f);
+				-mouseMotion.y * sensitivity,
+				mouseMotion.x * sensitivity, 0.0f);
 
-			if (clampPitch)
-				eulerAngles.x = std::clamp(eulerAngles.x, -1.57f, 1.57f);
+			eulerAngles.x = std::clamp(eulerAngles.x,
+				-Converter::toRadians(89.9f), Converter::toRadians(89.9f));
 
-			transformComponent->rotation =
-				Quaternion(eulerAngles.x, Vector3(1.0f, 0.0f, 0.0f)) *
-				Quaternion(eulerAngles.y, Vector3(0.0f, 1.0f, 0.0f));
+			transformComponent->rotation = Quaternion(eulerAngles);
 		}
 		else
 		{

@@ -1,4 +1,4 @@
-#include <injector/graphics/gl_material.hpp>
+#include <injector/graphics/gl_pipeline.hpp>
 #include <stdexcept>
 
 namespace INJECTOR_NAMESPACE

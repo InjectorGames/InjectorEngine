@@ -17,9 +17,10 @@ void init()
 	auto transformSystem = window->createSystem<TransformSystem>();
 	auto cameraSystem = window->createCameraSystem();
 	auto renderSystem = window->createRenderSystem();
-	
+
 	auto camera = window->createEntity();
-	camera->createComponent<TransformComponent>();
+	camera->createComponent<TransformComponent>(Vector3(0.0f, 2.0f, 4.0f), 
+		Quaternion(Vector3::zero), Vector3::one, RotationOrigin::Orbit);
 	transformSystem->addTransform(camera);
 
 	camera->createComponent<CameraComponent>();
@@ -27,17 +28,16 @@ void init()
 	cameraSystem->addCamera(camera);
 	renderSystem->addCamera(camera);
 
-	auto testCube = window->createEntity();
-	testCube->createComponent<TransformComponent>(
-		nullptr, Vector3(0.0f, 0.0f, 2.0f));
-	testCube->createComponent<RotateComponent>(
-		Quaternion(Vector3(0.0f, 0.0f, Converter::toRadians(1.0f))));
-	transformSystem->addTransform(testCube);
+	auto floor = window->createEntity();
+	floor->createComponent<TransformComponent>(Vector3::zero,
+		Quaternion(Vector3(Converter::toRadians(90.0f), 0.0f, 0.0f)), Vector3::one * 8);
 
 	auto colorPipeline = window->createColorPipeline();
 	auto squareMesh = window->createSquareMesh();
-	testCube->createComponent<RenderComponent>(colorPipeline, squareMesh);
-	renderSystem->addRender(testCube);
+	floor->createComponent<RenderComponent>(colorPipeline, squareMesh);
+
+	transformSystem->addTransform(floor);
+	renderSystem->addRender(floor);
 
 	window->show();
 }
@@ -45,7 +45,7 @@ void init()
 int main(int argc, char* args[])
 {
 	Engine::initializeEvents();
-	Engine::initializeVideo(GraphicsAPI::Vulkan);
+	Engine::initializeVideo(GraphicsAPI::OpenGL);
 	Engine::initializeEngine();
 
 	init();

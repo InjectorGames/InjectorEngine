@@ -19,17 +19,10 @@ namespace INJECTOR_NAMESPACE
 
 	bool RenderSystem::addCamera(const EntityHandle& entity) noexcept
 	{
-		if (entity == nullptr || !entity->containsComponent<CameraComponent>() ||
-			!entity->containsComponent<TransformComponent>())
-			return false;
-
 		return cameras.emplace(entity).second;
 	}
 	bool RenderSystem::addRender(const EntityHandle& entity) noexcept
 	{
-		if (entity == nullptr || !entity->containsComponent<RenderComponent>())
-			return false;
-
 		return renders.emplace(entity).second;
 	}
 

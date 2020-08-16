@@ -3,18 +3,16 @@
 namespace INJECTOR_NAMESPACE
 {
 	TransformComponent::TransformComponent(
-		const EntityHandle& _parent,
 		const Vector3& _position,
 		const Quaternion& _rotation,
 		const Vector3& _scale,
-		Type _type,
+		RotationOrigin _origin,
 		const Matrix4& _matrix,
 		const bool _changed) :
-		parent(_parent),
 		position(_position),
 		rotation(_rotation),
 		scale(_scale),
-		type(_type),
+		origin(_origin),
 		matrix(_matrix),
 		changed(_changed)
 	{}

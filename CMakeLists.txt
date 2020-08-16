@@ -43,14 +43,13 @@ add_library(InjectorEngine STATIC
 	source/graphics/gl_attribute.cpp
 	source/graphics/gl_buffer.cpp
 	source/graphics/gl_camera_system.cpp
-	source/graphics/gl_color_material.cpp
-	source/graphics/gl_material.cpp
+	source/graphics/gl_color_pipeline.cpp
 	source/graphics/gl_mesh.cpp
+	source/graphics/gl_pipeline.cpp
 	source/graphics/gl_render_system.cpp
 	source/graphics/gl_shader.cpp
 	source/graphics/gl_window.cpp
 	source/graphics/image.cpp
-	source/graphics/material.cpp
 	source/graphics/mesh.cpp
 	source/graphics/pipeline.cpp
 	source/graphics/primitive.cpp
@@ -69,6 +68,7 @@ add_library(InjectorEngine STATIC
 	source/graphics/vk_window.cpp
 	source/graphics/window.cpp
 
+	source/mathematics/attach_component.cpp
 	source/mathematics/converter.cpp
 	source/mathematics/int_vector2.cpp
 	source/mathematics/int_vector3.cpp

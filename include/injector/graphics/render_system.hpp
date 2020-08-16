@@ -1,5 +1,6 @@
 #pragma once
 #include <injector/system.hpp>
+#include <injector/entity.hpp>
 #include <injector/graphics/render_component.hpp>
 #include <injector/graphics/camera_component.hpp>
 #include <injector/mathematics/transform_component.hpp>

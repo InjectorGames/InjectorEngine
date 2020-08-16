@@ -33,9 +33,6 @@ namespace INJECTOR_NAMESPACE
 
 	bool CameraSystem::addCamera(const EntityHandle& entity) noexcept
 	{
-		if (entity == nullptr || !entity->containsComponent<CameraComponent>())
-			return false;
-
 		return cameras.emplace(entity).second;
 	}
 	bool CameraSystem::removeCamera(const EntityHandle& entity) noexcept

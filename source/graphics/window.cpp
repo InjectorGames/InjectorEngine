@@ -40,7 +40,7 @@ namespace INJECTOR_NAMESPACE
 	{
 		SDL_Event event;
 
-		deltaMousePosition = IntVector2::zero;
+		mouseMotion = IntVector2::zero;
 
 		while (SDL_PollEvent(&event) != 0)
 		{
@@ -60,7 +60,7 @@ namespace INJECTOR_NAMESPACE
 			}
 			else if (event.type == SDL_MOUSEMOTION && event.motion.windowID == windowID)
 			{
-				deltaMousePosition += IntVector2(event.motion.xrel, event.motion.yrel);
+				mouseMotion += IntVector2(event.motion.xrel, event.motion.yrel);
 			}
 			/*else if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.windowID == id)
 			{
@@ -73,7 +73,8 @@ namespace INJECTOR_NAMESPACE
 			}*/
 		}
 
-		Manager::update();
+		if(!isMinimized())
+			Manager::update();
 	}
 	void Window::onResize(IntVector2 size)
 	{
@@ -106,9 +107,9 @@ namespace INJECTOR_NAMESPACE
 		SDL_GetGlobalMouseState(&position.x, &position.y);
 		return position;
 	}
-	IntVector2 Window::getDeltaMousePosition() const noexcept
+	IntVector2 Window::getMouseMotion() const noexcept
 	{
-		return deltaMousePosition;
+		return mouseMotion;
 	}
 	uint32_t Window::getMouseButtons() const noexcept
 	{
@@ -185,6 +186,10 @@ namespace INJECTOR_NAMESPACE
 		throw std::runtime_error("Not implemented window function");
 	}
 	MeshHandle Window::createSquareMesh()
+	{
+		throw std::runtime_error("Not implemented window function");
+	}
+	MeshHandle Window::createCubeMesh()
 	{
 		throw std::runtime_error("Not implemented window function");
 	}

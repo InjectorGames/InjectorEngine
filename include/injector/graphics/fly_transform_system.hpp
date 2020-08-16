@@ -13,10 +13,9 @@ namespace INJECTOR_NAMESPACE
 		Vector3 translation;
 		Vector3 rotation;
 	public:
-		bool clampPitch;
+		EntityHandle transform;
 		float speed;
 		float sensitivity;
-		EntityHandle transform;
 
 		FlyTransformSystem(
 			const WindowHandle& window);

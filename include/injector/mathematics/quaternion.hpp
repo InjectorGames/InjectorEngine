@@ -11,8 +11,7 @@ namespace INJECTOR_NAMESPACE
 
 		Quaternion();
 		Quaternion(float x, float y, float z, float w);
-		Quaternion(const Vector3& vector, float w);
-		Quaternion(float angle, const Vector3& vector);
+		Quaternion(float angle, const Vector3& axis);
 		Quaternion(const Vector3& eulerAngles);
 		Quaternion(const Vector3& a, const Vector3& b);
 		Quaternion(const Matrix3& matrix);

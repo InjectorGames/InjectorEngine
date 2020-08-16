@@ -1,13 +1,10 @@
 #pragma once
-#include <injector/graphics/material.hpp>
-#include <injector/graphics/gl_shader.hpp>
-
+#include <injector/graphics/pipeline.hpp>
 #include <GL/glew.h>
-#include <SDL_opengl.h>
 
 namespace INJECTOR_NAMESPACE
 {
-	class GlMaterial : public Material
+	class GlPipeline : public Pipeline
 	{
 	protected:
 		uint32_t instance;
@@ -46,13 +43,13 @@ namespace INJECTOR_NAMESPACE
 
 		int32_t getUniformLocation(const std::string& name);
 	public:
-		GlMaterial(const GlShader& shader);
-		GlMaterial(const GlShader& shader1,
+		GlPipeline(const GlShader& shader);
+		GlPipeline(const GlShader& shader1,
 			const GlShader& shader2);
-		GlMaterial(const GlShader& shader1,
+		GlPipeline(const GlShader& shader1,
 			const GlShader& shader2,
 			const GlShader& shader3);
-		GlMaterial(const GlShader& shader1,
+		GlPipeline(const GlShader& shader1,
 			const GlShader& shader2,
 			const GlShader& shader3,
 			const GlShader& shader4);

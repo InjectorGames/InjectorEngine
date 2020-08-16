@@ -1,12 +1,10 @@
 #pragma once
 #include <injector/graphics/shader.hpp>
+#include <SDL_opengl.h>
 
 #include <vector>
 #include <string>
 #include <cstdint>
-
-#include <GL/glew.h>
-#include <SDL_opengl.h>
 
 namespace INJECTOR_NAMESPACE
 {

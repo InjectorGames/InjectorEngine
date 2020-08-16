@@ -12,12 +12,9 @@ namespace INJECTOR_NAMESPACE
 	Quaternion::Quaternion(float _x, float _y, float _z, float _w) :
 		x(_x), y(_y), z(_z), w(_w)
 	{}
-	Quaternion::Quaternion(const Vector3& vector, float _w) :
-		x(vector.x), y(vector.y), z(vector.z), w(_w)
-	{}
-	Quaternion::Quaternion(float angle, const Vector3& vector)
+	Quaternion::Quaternion(float angle, const Vector3& axis)
 	{
-		auto v = vector * std::sin(angle * 0.5f);
+		auto v = axis * std::sin(angle * 0.5f);
 		x = v.x;
 		y = v.y;
 		z = v.z;

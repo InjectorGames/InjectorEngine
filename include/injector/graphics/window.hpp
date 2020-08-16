@@ -18,7 +18,7 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		SDL_Window* window;
-		IntVector2 deltaMousePosition;
+		IntVector2 mouseMotion;
 	public:
 		static const std::string defaultTitle;
 		static const IntVector2 defaultPosition;
@@ -39,7 +39,7 @@ namespace INJECTOR_NAMESPACE
 		IntVector2 getSize() const noexcept;
 		IntVector2 getMousePosition() const noexcept;
 		IntVector2 getGlobalMousePosition() const noexcept;
-		IntVector2 getDeltaMousePosition() const noexcept;
+		IntVector2 getMouseMotion() const noexcept;
 		uint32_t getMouseButtons() const noexcept;
 		uint32_t getGlobalMouseButtons() const noexcept;
 		void getMouseState(IntVector2& position, uint32_t& buttons) const noexcept;
@@ -61,6 +61,7 @@ namespace INJECTOR_NAMESPACE
 		virtual RenderSystemHandle createRenderSystem();
 		virtual PipelineHandle createColorPipeline();
 		virtual MeshHandle createSquareMesh();
+		virtual MeshHandle createCubeMesh();
 
 		static std::shared_ptr<Window> create(
 			const std::string& title = Window::defaultTitle,
