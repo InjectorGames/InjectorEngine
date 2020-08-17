@@ -8,17 +8,20 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		size_t indexCount;
+		MeshIndex indexType;
+		BufferHandle vertexBuffer;
+		BufferHandle indexBuffer;
 	public:
-		Mesh(size_t indexCount);
+		Mesh(size_t indexCount,
+			MeshIndex indexType,
+			const BufferHandle& vertexBuffer,
+			const BufferHandle& indexBuffer);
 		virtual ~Mesh();
 
 		size_t getIndexCount() const noexcept;
-
-		virtual MeshIndex getIndex() const;
-		virtual void setIndex(MeshIndex index);
-
-		virtual const BufferHandle& getVertexBuffer() const;
-		virtual const BufferHandle& getIndexBuffer() const;
+		MeshIndex getIndexType() const noexcept;
+		BufferHandle getVertexBuffer() const noexcept;
+		BufferHandle getIndexBuffer() const noexcept;
 	};
 
 	using MeshHandle = std::shared_ptr<Mesh>;

@@ -1,6 +1,7 @@
 #include <injector/graphics/vk_window.hpp>
 #include <injector/graphics/primitive.hpp>
 #include <injector/graphics/vk_mesh.hpp>
+#include <injector/graphics/vk_shader.hpp>
 #include <injector/graphics/vk_camera_system.hpp>
 #include <injector/graphics/vk_render_system.hpp>
 #include <injector/graphics/vk_color_pipeline.hpp>
@@ -674,7 +675,43 @@ namespace INJECTOR_NAMESPACE
 				vk::CommandPoolCreateFlagBits::eTransient,
 				graphicsQueueFamilyIndex);
 
-			onResize(size);
+			auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+			auto surfaceImageCount = getBestSurfaceImageCount(surfaceCapabilities);
+			auto surfaceFormat = getBestSurfaceFormat(physicalDevice, surface);
+			auto surfaceTransform = getBestSurfaceTransform(surfaceCapabilities);
+			auto surfaceCompositeAlpha = getBestSurfaceCompositeAlpha(surfaceCapabilities);
+			auto surfacePresentMode = getBestSurfacePresentMode(physicalDevice, surface);
+
+			surfaceExtent = getBestSurfaceExtent(
+				surfaceCapabilities, size);
+			swapchain = createSwapchain(
+				device,
+				surface,
+				surfaceImageCount,
+				surfaceFormat,
+				surfaceExtent,
+				surfaceTransform,
+				surfaceCompositeAlpha,
+				surfacePresentMode);
+			renderPass = createRenderPass(
+				device, surfaceFormat.format);
+
+			frameIndex = 0;
+
+			auto images = device.getSwapchainImagesKHR(swapchain);
+			swapchainDatas = std::vector<std::shared_ptr<VkSwapchainData>>(images.size());
+
+			for (size_t i = 0; i < images.size(); i++)
+			{
+				swapchainDatas[i] = std::make_shared<VkSwapchainData>(
+					device,
+					images[i],
+					renderPass,
+					graphicsCommandPool,
+					presentCommandPool,
+					surfaceFormat.format,
+					surfaceExtent);
+			}
 		}
 		catch (const std::exception& exception)
 		{
@@ -979,6 +1016,62 @@ namespace INJECTOR_NAMESPACE
 		systems.push_back(system);
 		return system;
 	}
+
+	ShaderHandle VkWindow::createShader(ShaderStage stage, const std::string& path)
+	{
+		return std::make_shared<VkShader>(device, path, stage);
+	}
+	BufferHandle VkWindow::createBuffer(
+		size_t size,
+		BufferType type,
+		BufferUsage usage,
+		const void* data)
+	{
+		if (usage == BufferUsage::CpuOnly ||
+			usage == BufferUsage::CpuToGpu)
+		{
+			return std::make_shared<VkBuffer>(memoryAllocator, size, type, usage, data);
+		}
+		else if(usage == BufferUsage::GpuOnly)
+		{
+			auto stagingBuffer = VkBuffer(memoryAllocator, size, type, BufferUsage::CpuOnly,
+				data, vk::BufferUsageFlagBits::eTransferSrc);
+			auto buffer = std::make_shared<VkBuffer>(memoryAllocator, size, type, usage, 
+				nullptr, vk::BufferUsageFlagBits::eTransferDst);
+
+			vk::CommandBuffer commandBuffer;
+
+			auto commandBufferAlocateInfo = vk::CommandBufferAllocateInfo(
+				transferCommandPool, vk::CommandBufferLevel::ePrimary, 1);
+			auto result = device.allocateCommandBuffers(
+				&commandBufferAlocateInfo, &commandBuffer);
+
+			if (result != vk::Result::eSuccess)
+				throw std::runtime_error("Failed to allocate Vulkan staging command buffer");
+
+			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
+				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+			commandBuffer.begin(commandBufferBeginInfo);
+
+			auto bufferCopy = vk::BufferCopy(0, 0, size);
+			commandBuffer.copyBuffer(
+				stagingBuffer.getBuffer(), buffer->getBuffer(), 1, &bufferCopy);
+
+			commandBuffer.end();
+
+			auto submitInfo = vk::SubmitInfo(0, nullptr, nullptr, 1, &commandBuffer);
+			graphicsQueue.submit(1, &submitInfo, nullptr);
+
+			graphicsQueue.waitIdle();
+			device.freeCommandBuffers(transferCommandPool, 1, &commandBuffer);
+			return buffer;
+		}
+		else
+		{
+			throw std::runtime_error("Unsupported Vulkan buffer create usage");
+		}
+	}
+
 	PipelineHandle VkWindow::createColorPipeline()
 	{
 		auto pipeline = std::make_shared<VkColorPipeline>(
@@ -987,39 +1080,21 @@ namespace INJECTOR_NAMESPACE
 			throw std::runtime_error("Failed to add created Vulkan color pipeline");
 		return pipeline;
 	}
+
 	MeshHandle VkWindow::createSquareMesh()
 	{
-		auto vertexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
+		auto vertexBuffer = createBuffer(
 			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]),
-			BufferType::Vertex, BufferUsage::CpuToGpu, 
+			BufferType::Vertex, BufferUsage::GpuOnly, 
 			static_cast<const void*>(Primitive::squareVertices.data()));
 
-		auto indexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
+		auto indexBuffer = createBuffer(
 			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]),
-			BufferType::Index, BufferUsage::CpuToGpu,
+			BufferType::Index, BufferUsage::GpuOnly,
 			static_cast<const void*>(Primitive::squareIndices.data()));
 
-		return std::make_shared<VkMesh>(vk::IndexType::eUint16, 
-			Primitive::squareIndices.size(), vertexBuffer, indexBuffer);
-
-		/*vk::CommandBuffer commandBuffer;
-
-		auto commandBufferAlocateInfo = vk::CommandBufferAllocateInfo(
-			transferCommandPool, vk::CommandBufferLevel::ePrimary, 1);
-		auto allocationResult = device.allocateCommandBuffers(
-			&commandBufferAlocateInfo, &commandBuffer);
-
-		if (allocationResult != vk::Result::eSuccess)
-			throw std::runtime_error(
-				"Failed to allocate Vulkan staging command buffer");
-
-		auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
-			vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
-		commandBuffer.begin(commandBufferBeginInfo);
-
-		auto bufferCopy = vk::BufferCopy(0, 0, size);
-		commandBuffer.copyBuffer(stagingBuffer, buffer, 1, &bufferCopy);
-		commandBuffer.end();*/
+		return std::make_shared<VkMesh>(Primitive::squareIndices.size(),
+			MeshIndex::Ushort, vertexBuffer, indexBuffer);
 	}
 	MeshHandle VkWindow::createCubeMesh()
 	{
@@ -1035,7 +1110,7 @@ namespace INJECTOR_NAMESPACE
 		indexBuffer->setData(Primitive::cubeIndices.data(),
 			Primitive::cubeIndices.size() * sizeof(Primitive::cubeIndices[0]));
 
-		return std::make_shared<VkMesh>(vk::IndexType::eUint16,
-			Primitive::cubeIndices.size(), vertexBuffer, indexBuffer);
+		return std::make_shared<VkMesh>(Primitive::cubeIndices.size(),
+			MeshIndex::Ushort, vertexBuffer, indexBuffer);
 	}
 }

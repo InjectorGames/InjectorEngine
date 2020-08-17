@@ -9,14 +9,15 @@ namespace INJECTOR_NAMESPACE
 		size_t size,
 		BufferType type,
 		BufferUsage usage,
-		const void* data) :
+		const void* data,
+		vk::BufferUsageFlags flags) :
 		Buffer(size, type, usage),
 		allocator(_allocator)
 	{
 		VkBufferCreateInfo bufferCreateInfo = {};
 		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		bufferCreateInfo.size = size;
-		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(getVkType(type));
+		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(getVkType(type) | flags);
 
 		VmaAllocationCreateInfo allocationCreateInfo = {};
 		allocationCreateInfo.usage = getVkUsage(usage);

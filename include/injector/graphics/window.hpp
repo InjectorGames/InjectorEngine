@@ -59,7 +59,16 @@ namespace INJECTOR_NAMESPACE
 
 		virtual CameraSystemHandle createCameraSystem();
 		virtual RenderSystemHandle createRenderSystem();
+
+		virtual ShaderHandle createShader(ShaderStage stage, const std::string& path);
+		virtual BufferHandle createBuffer(
+			size_t size,
+			BufferType type,
+			BufferUsage usage,
+			const void* data = nullptr);
+
 		virtual PipelineHandle createColorPipeline();
+
 		virtual MeshHandle createSquareMesh();
 		virtual MeshHandle createCubeMesh();
 

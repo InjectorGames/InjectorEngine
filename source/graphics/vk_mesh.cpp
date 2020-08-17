@@ -3,58 +3,55 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	VkMesh::VkMesh(vk::IndexType _index,
+	VkMesh::VkMesh(
 		size_t indexCount,
-		const VkBufferHandle& _vertexBuffer,
-		const VkBufferHandle& _indexBuffer) :
-		Mesh(indexCount),
-		index(_index),
-		vertexBuffer(_vertexBuffer),
-		indexBuffer(_indexBuffer)
-	{}
+		MeshIndex indexType,
+		const BufferHandle& vertexBuffer,
+		const BufferHandle& indexBuffer) :
+		Mesh(indexCount, indexType, vertexBuffer, indexBuffer)
+	{
+		vkIndexType = toVkIndexType(indexType);
+		vkVertexBuffer = std::dynamic_pointer_cast<VkBuffer>(vertexBuffer)->getBuffer();
+		vkIndexBuffer = std::dynamic_pointer_cast<VkBuffer>(indexBuffer)->getBuffer();
+	}
 	VkMesh::~VkMesh()
 	{}
 
-	MeshIndex VkMesh::getIndex() const
+	vk::IndexType VkMesh::getVkIndexType() const noexcept
 	{
-		return toIndex(index);
+		return vkIndexType;
 	}
-	void VkMesh::setIndex(MeshIndex _index)
+	vk::Buffer VkMesh::getVkVertexBuffer() const noexcept
 	{
-		index = toVkIndex(_index);
+		return vkVertexBuffer;
 	}
-
-	const BufferHandle& VkMesh::getVertexBuffer() const
+	vk::Buffer VkMesh::getVkIndexBuffer() const noexcept
 	{
-		return vertexBuffer;
-	}
-	const BufferHandle& VkMesh::getIndexBuffer() const
-	{
-		return indexBuffer;
+		return vkIndexBuffer;
 	}
 
-	void VkMesh::draw(vk::CommandBuffer commandBuffer)
+	void VkMesh::draw(vk::CommandBuffer commandBuffer) noexcept
 	{
 		VkDeviceSize offset = 0;
-		commandBuffer.bindVertexBuffers(0, 1, &vertexBuffer->getBuffer(), &offset);
-		commandBuffer.bindIndexBuffer(indexBuffer->getBuffer(), 0, index);
-		commandBuffer.drawIndexed(indexCount, 1, 0, 0, 0);
+		commandBuffer.bindVertexBuffers(0, 1, &vkVertexBuffer, &offset);
+		commandBuffer.bindIndexBuffer(vkIndexBuffer, 0, vkIndexType);
+		commandBuffer.drawIndexed(static_cast<uint32_t>(indexCount), 1, 0, 0, 0);
 	}
 
-	vk::IndexType VkMesh::toVkIndex(MeshIndex index)
+	vk::IndexType VkMesh::toVkIndexType(MeshIndex indexType)
 	{
-		if (index == MeshIndex::Ushort)
+		if (indexType == MeshIndex::Ushort)
 			return vk::IndexType::eUint16;
-		else if (index == MeshIndex::Uint)
+		else if (indexType == MeshIndex::Uint)
 			return vk::IndexType::eUint32;
 		else
 			throw std::runtime_error("Unsupported Vulkan mesh index type");
 	}
-	MeshIndex VkMesh::toIndex(vk::IndexType index)
+	MeshIndex VkMesh::toIndexType(vk::IndexType indexType)
 	{
-		if (index == vk::IndexType::eUint16)
+		if (indexType == vk::IndexType::eUint16)
 			return MeshIndex::Ushort;
-		else if (index == vk::IndexType::eUint32)
+		else if (indexType == vk::IndexType::eUint32)
 			return MeshIndex::Uint;
 		else
 			throw std::runtime_error("Unsupported Vulkan mesh index type");

@@ -36,6 +36,10 @@ namespace INJECTOR_NAMESPACE
 	{
 		return buffer;
 	}
+	GLenum GlBuffer::getGlType() const noexcept
+	{
+		return glType;
+	}
 
 	void* GlBuffer::map(BufferAccess access)
 	{

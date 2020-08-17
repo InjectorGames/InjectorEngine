@@ -7,23 +7,25 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	GlMesh::GlMesh(GLenum _index,
+	GlMesh::GlMesh(
 		size_t indexCount,
-		const GlBufferHandle& _vertexBuffer,
-		const GlBufferHandle& _indexBuffer,
-		const std::vector<GlAttribute>& _attributes) :
-		Mesh(indexCount),
-		index(_index),
-		vertexBuffer(_vertexBuffer),
-		indexBuffer(_indexBuffer)
+		MeshIndex indexType,
+		const BufferHandle& vertexBuffer,
+		const BufferHandle& indexBuffer,
+		const std::vector<GlAttribute>& attributes) :
+		Mesh(indexCount, indexType, vertexBuffer, indexBuffer)
 	{
+		glIndexType = toGlIndexType(indexType);
+
 		glGenVertexArrays(GL_ONE, &vertexArray);
 
 		glBindVertexArray(vertexArray);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->getBuffer());
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->getBuffer());
+		glBindBuffer(GL_ARRAY_BUFFER, 
+			std::dynamic_pointer_cast<GlBuffer>(vertexBuffer)->getBuffer());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 
+			std::dynamic_pointer_cast<GlBuffer>(indexBuffer)->getBuffer());
 
-		for (auto& attribute : _attributes)
+		for (auto& attribute : attributes)
 		{
 			attribute.enable();
 			attribute.setPointer();
@@ -38,52 +40,38 @@ namespace INJECTOR_NAMESPACE
 		glDeleteVertexArrays(GL_ONE, &vertexArray);
 	}
 
-	void GlMesh::draw(GLuint mode)
-	{
-		glBindVertexArray(vertexArray);
-		glDrawElements(mode, indexCount, index, nullptr);
-		glBindVertexArray(GL_ZERO);
-	}
-
-	uint32_t GlMesh::getVertexArray() const noexcept
+	GLuint GlMesh::getVertexArray() const noexcept
 	{
 		return vertexArray;
 	}
-
-	MeshIndex GlMesh::getIndex() const
+	GLenum GlMesh::getGlIndexType() const noexcept
 	{
-		return toIndex(index);
-	}
-	void GlMesh::setIndex(MeshIndex _index)
-	{
-		index = toGlIndex(_index);
+		return glIndexType;
 	}
 
-	const BufferHandle& GlMesh::getVertexBuffer() const
+	void GlMesh::draw(GLuint mode) noexcept
 	{
-		return vertexBuffer;
-	}
-	const BufferHandle& GlMesh::getIndexBuffer() const
-	{
-		return indexBuffer;
+		glBindVertexArray(vertexArray);
+		glDrawElements(mode, static_cast<GLsizei>(indexCount), glIndexType, nullptr);
+		glBindVertexArray(GL_ZERO);
 	}
 
-	GLenum GlMesh::toGlIndex(MeshIndex index)
+	GLenum GlMesh::toGlIndexType(MeshIndex indexType)
 	{
-		if (index == MeshIndex::Ushort)
+		if (indexType == MeshIndex::Ushort)
 			return GL_UNSIGNED_SHORT;
-		else if (index == MeshIndex::Uint)
+		else if (indexType == MeshIndex::Uint)
 			return GL_UNSIGNED_INT;
 		else
-			throw std::runtime_error("Unsupported Vulkan mesh index type");
+			throw std::runtime_error("Unsupported OpenGL mesh index type");
 	}
-	MeshIndex GlMesh::toIndex(GLenum index)
+	MeshIndex GlMesh::toIndexType(GLenum indexType)
 	{
-		if (index == GL_UNSIGNED_SHORT)
+		if (indexType == GL_UNSIGNED_SHORT)
 			return MeshIndex::Ushort;
-		else if (index == GL_UNSIGNED_INT)
+		else if (indexType == GL_UNSIGNED_INT)
 			return MeshIndex::Uint;
 		else
-			throw std::runtime_error("Unsupported Vulkan mesh index type");
+			throw std::runtime_error("Unsupported OpenGL mesh index type");
 	}
 }

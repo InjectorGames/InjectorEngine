@@ -7,26 +7,24 @@ namespace INJECTOR_NAMESPACE
 	class VkMesh : public Mesh
 	{
 	protected:
-		vk::IndexType index;
-		VkBufferHandle vertexBuffer;
-		VkBufferHandle indexBuffer;
+		vk::IndexType vkIndexType;
+		vk::Buffer vkVertexBuffer;
+		vk::Buffer vkIndexBuffer;
 	public:
-		VkMesh(vk::IndexType index,
-			size_t indexCount,
-			const VkBufferHandle& vertexBuffer,
-			const VkBufferHandle& indexBuffer);
+		VkMesh(size_t indexCount,
+			MeshIndex indexType,
+			const BufferHandle& vertexBuffer,
+			const BufferHandle& indexBuffer);
 		virtual ~VkMesh();
 
-		MeshIndex getIndex() const override;
-		void setIndex(MeshIndex index) override;
+		vk::IndexType getVkIndexType() const noexcept;
+		vk::Buffer getVkVertexBuffer() const noexcept;
+		vk::Buffer getVkIndexBuffer() const noexcept;
 
-		const BufferHandle& getVertexBuffer() const override;
-		const BufferHandle& getIndexBuffer() const override;
+		void draw(vk::CommandBuffer commandBuffer) noexcept;
 
-		void draw(vk::CommandBuffer commandBuffer);
-
-		static vk::IndexType toVkIndex(MeshIndex index);
-		static MeshIndex toIndex(vk::IndexType index);
+		static vk::IndexType toVkIndexType(MeshIndex indexType);
+		static MeshIndex toIndexType(vk::IndexType indexType);
 	};
 
 	using VkMeshHandle = std::shared_ptr<VkMesh>;

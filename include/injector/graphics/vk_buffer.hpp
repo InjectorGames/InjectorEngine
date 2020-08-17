@@ -18,7 +18,8 @@ namespace INJECTOR_NAMESPACE
 			size_t size,
 			BufferType type,
 			BufferUsage usage,
-			const void* data = nullptr);
+			const void* data = nullptr,
+			vk::BufferUsageFlags flags = {});
 		virtual ~VkBuffer();
 
 		VmaAllocator getAllocator() const noexcept;

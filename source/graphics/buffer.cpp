@@ -37,6 +37,10 @@ namespace INJECTOR_NAMESPACE
 	{
 		return usage;
 	}
+	bool Buffer::isMappable() const noexcept
+	{
+		return mappable;
+	}
 	bool Buffer::isMapped() const noexcept
 	{
 		return mapped;
@@ -57,6 +61,7 @@ namespace INJECTOR_NAMESPACE
 		mapSize = size;
 		mapOffset = 0;
 		mapped = true;
+		return nullptr;
 	}
 	void* Buffer::map(BufferAccess access, size_t _size, size_t offset)
 	{
@@ -71,6 +76,7 @@ namespace INJECTOR_NAMESPACE
 		mapSize = _size;
 		mapOffset = offset;
 		mapped = true;
+		return nullptr;
 	}
 	void Buffer::unmap()
 	{

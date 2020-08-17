@@ -3,8 +3,15 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	Mesh::Mesh(size_t _indexCount) :
-		indexCount(_indexCount)
+	Mesh::Mesh(
+		size_t _indexCount,
+		MeshIndex _indexType,
+		const BufferHandle& _vertexBuffer,
+		const BufferHandle& _indexBuffer) :
+		indexCount(_indexCount),
+		indexType(_indexType),
+		vertexBuffer(_vertexBuffer),
+		indexBuffer(_indexBuffer)
 	{}
 	Mesh::~Mesh()
 	{}
@@ -13,21 +20,15 @@ namespace INJECTOR_NAMESPACE
 	{
 		return indexCount;
 	}
-
-	MeshIndex Mesh::getIndex() const
+	MeshIndex Mesh::getIndexType() const noexcept
 	{
-		throw std::runtime_error("Not implemented mesh function");
+		return indexType;
 	}
-	void Mesh::setIndex(MeshIndex index)
+	BufferHandle Mesh::getVertexBuffer() const noexcept
 	{
-		throw std::runtime_error("Not implemented mesh function");
+		return vertexBuffer;
 	}
-
-	const BufferHandle& Mesh::getVertexBuffer() const
-	{
-		throw std::runtime_error("Not implemented mesh function");
-	}
-	const BufferHandle& Mesh::getIndexBuffer() const
+	BufferHandle Mesh::getIndexBuffer() const noexcept
 	{
 		throw std::runtime_error("Not implemented mesh function");
 	}

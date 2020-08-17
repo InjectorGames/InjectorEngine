@@ -25,29 +25,22 @@ namespace INJECTOR_NAMESPACE
 		};
 	protected:
 		GLuint vertexArray;
-		GLenum index;
-		GlBufferHandle vertexBuffer;
-		GlBufferHandle indexBuffer;
+		GLenum glIndexType;
 	public:
-		GlMesh(GLenum _indexType,
-			size_t indexCount,
-			const GlBufferHandle& vertexBuffer,
-			const GlBufferHandle& indexBuffer,
+		GlMesh(size_t indexCount,
+			MeshIndex indexType,
+			const BufferHandle& vertexBuffer,
+			const BufferHandle& indexBuffer,
 			const std::vector<GlAttribute>& attributes);
 		virtual ~GlMesh();
 
-		uint32_t getVertexArray() const noexcept;
+		GLuint getVertexArray() const noexcept;
+		GLenum getGlIndexType() const noexcept;
 
-		MeshIndex getIndex() const override;
-		void setIndex(MeshIndex indexType) override;
+		void draw(GLuint mode) noexcept;
 
-		const BufferHandle& getVertexBuffer() const override;
-		const BufferHandle& getIndexBuffer() const override;
-
-		void draw(GLuint mode);
-
-		static GLenum toGlIndex(MeshIndex index);
-		static MeshIndex toIndex(GLenum index);
+		static GLenum toGlIndexType(MeshIndex indexType);
+		static MeshIndex toIndexType(GLenum indexType);
 
 		/*template<class TV, class TI>
 		inline static const std::shared_ptr<GlMesh> Create(

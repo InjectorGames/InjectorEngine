@@ -28,6 +28,7 @@ namespace INJECTOR_NAMESPACE
 		size_t getSize() const noexcept;
 		BufferType getType() const noexcept;
 		BufferUsage getUsage() const noexcept;
+		bool isMappable() const noexcept;
 		bool isMapped() const noexcept;
 		BufferAccess getMapAccess() const noexcept;
 

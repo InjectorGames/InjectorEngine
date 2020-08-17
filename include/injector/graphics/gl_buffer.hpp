@@ -14,7 +14,6 @@ namespace INJECTOR_NAMESPACE
 	protected:
 		GLuint buffer;
 		GLenum glType;
-		GLbitfield glAccess;
 	public:
 		GlBuffer(size_t size,
 			BufferType type,
@@ -23,6 +22,7 @@ namespace INJECTOR_NAMESPACE
 		virtual ~GlBuffer();
 
 		GLuint getBuffer() const noexcept;
+		GLenum getGlType() const noexcept;
 
 		void* map(BufferAccess access) override;
 		void* map(BufferAccess access, size_t size, size_t offset) override;
