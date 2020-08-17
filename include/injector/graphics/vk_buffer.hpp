@@ -13,9 +13,12 @@ namespace INJECTOR_NAMESPACE
 		vk::Buffer buffer;
 		VmaAllocation allocation;
 	public:
-		VkBuffer(VmaAllocator allocator,
+		VkBuffer(
+			VmaAllocator allocator,
 			size_t size,
-			vk::BufferUsageFlags usage);
+			BufferType type,
+			BufferUsage usage,
+			const void* data = nullptr);
 		virtual ~VkBuffer();
 
 		VmaAllocator getAllocator() const noexcept;
@@ -29,8 +32,11 @@ namespace INJECTOR_NAMESPACE
 		void setData(const void* data, size_t size) override;
 		void setData(const void* data, size_t size, size_t offset) override;
 
-		static vk::BufferUsageFlagBits toVkUsage(BufferUsage usage);
-		static BufferUsage toUsage(vk::BufferUsageFlagBits usage);
+		static vk::BufferUsageFlagBits getVkType(BufferType type);
+		static BufferType getType(vk::BufferUsageFlagBits type);
+
+		static VmaMemoryUsage getVkUsage(BufferUsage usage);
+		static BufferUsage getUsage(VmaMemoryUsage usage);
 	};
 
 	using VkBufferHandle = std::shared_ptr<VkBuffer>;

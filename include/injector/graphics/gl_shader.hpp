@@ -1,6 +1,6 @@
 #pragma once
 #include <injector/graphics/shader.hpp>
-#include <SDL_opengl.h>
+#include <GL/glew.h>
 
 #include <vector>
 #include <string>
@@ -12,7 +12,6 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		bool gles;
-		GLenum stage;
 		GLuint shader;
 
 		static const std::string glHeader;
@@ -21,10 +20,10 @@ namespace INJECTOR_NAMESPACE
 		static bool getCompileStatus(GLuint shader) noexcept;
 		static std::string getInfoLog(GLuint shader) noexcept;
 	public:
-		GlShader(bool gles, GLenum stage, const std::string& path);
+		GlShader(bool gles,
+			const std::string& path,
+			ShaderStage stage);
 		virtual ~GlShader();
-
-		ShaderStage getStage() const override;
 
 		bool getGLES() const noexcept;
 		GLuint getShader() const noexcept;

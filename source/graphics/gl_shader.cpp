@@ -23,24 +23,27 @@ namespace INJECTOR_NAMESPACE
 		return infoLog;
 	}
 
-	GlShader::GlShader(bool _gles, GLenum _stage, const std::string& path) :
-		gles(_gles),
-		stage(_stage)
+	GlShader::GlShader(
+		bool _gles,
+		const std::string& path,
+		ShaderStage stage) :
+		Shader(stage),
+		gles(_gles)
 	{
 		std::string extension;
 
-		switch (_stage)
+		switch (stage)
 		{
-		case GL_VERTEX_SHADER:
+		case ShaderStage::Vertex:
 			extension = ".vert";
 			break;
-		case GL_GEOMETRY_SHADER:
+		case ShaderStage::Geometry:
 			extension = ".geom";
 			break;
-		case GL_FRAGMENT_SHADER:
+		case ShaderStage::Fragment:
 			extension = ".frag";
 			break;
-		case GL_COMPUTE_SHADER:
+		case ShaderStage::Compute:
 			extension = ".comp";
 			break;
 		default:
@@ -67,11 +70,9 @@ namespace INJECTOR_NAMESPACE
 
 		sources.push_back(source.c_str());
 
-		shader = glCreateShader(stage);
-
+		shader = glCreateShader(toGlStage(stage));
 		glShaderSource(shader, static_cast<GLsizei>(sources.size()), 
 			static_cast<const GLchar* const*>(sources.data()), nullptr);
-
 		glCompileShader(shader);
 
 		if (!getCompileStatus(shader))
@@ -84,11 +85,6 @@ namespace INJECTOR_NAMESPACE
 	GlShader::~GlShader()
 	{
 		glDeleteShader(shader);
-	}
-
-	ShaderStage GlShader::getStage() const
-	{
-		return toStage(stage);
 	}
 
 	bool GlShader::getGLES() const noexcept

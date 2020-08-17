@@ -4,7 +4,7 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	class GlPipeline : public Pipeline
+	/*class GlPipeline : public Pipeline
 	{
 	protected:
 		uint32_t instance;
@@ -59,5 +59,5 @@ namespace INJECTOR_NAMESPACE
 
 		void use() override;
 		void unuse() override;
-	};
+	};*/
 }

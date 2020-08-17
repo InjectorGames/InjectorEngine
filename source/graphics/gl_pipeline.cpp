@@ -3,7 +3,7 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	uint32_t GlMaterial::create() noexcept
+	/*uint32_t GlMaterial::create() noexcept
 	{
 		return static_cast<uint32_t>(glCreateProgram());
 	}
@@ -221,5 +221,5 @@ namespace INJECTOR_NAMESPACE
 	void GlMaterial::unuse()
 	{
 		use(GL_ZERO);
-	}
+	}*/
 }

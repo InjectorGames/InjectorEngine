@@ -1,4 +1,5 @@
 #pragma once
+#include <injector/graphics/buffer_type.hpp>
 #include <injector/graphics/buffer_usage.hpp>
 #include <injector/graphics/buffer_access.hpp>
 
@@ -11,15 +12,22 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		size_t size;
+		BufferType type;
+		BufferUsage usage;
+		bool mappable;
 		bool mapped;
 		BufferAccess mapAccess;
 		size_t mapSize;
 		size_t mapOffset;
 	public:
-		Buffer(size_t size);
+		Buffer(size_t size,
+			BufferType type,
+			BufferUsage usage);
 		virtual ~Buffer();
 		
 		size_t getSize() const noexcept;
+		BufferType getType() const noexcept;
+		BufferUsage getUsage() const noexcept;
 		bool isMapped() const noexcept;
 		BufferAccess getMapAccess() const noexcept;
 

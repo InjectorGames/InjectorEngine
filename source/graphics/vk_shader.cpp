@@ -5,56 +5,57 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	VkShader::VkShader(const vk::Device& _device, 
-		vk::ShaderStageFlagBits _stage,
-		const std::string& path) :
-		device(_device),
-		stage(_stage)
+	VkShader::VkShader(
+		const vk::Device& _device, 
+		const std::string& path,
+		ShaderStage stage) :
+		Shader(stage),
+		device(_device)
 	{
 		std::string extension;
 
-		switch (_stage)
+		switch (stage)
 		{
-		case vk::ShaderStageFlagBits::eVertex:
+		case ShaderStage::Vertex:
 			extension = ".vert.spv";
 			break;
-		case vk::ShaderStageFlagBits::eTessellationControl:
+		case ShaderStage::TessellationControl:
 			extension = ".tesc.spv";
 			break;
-		case vk::ShaderStageFlagBits::eTessellationEvaluation:
+		case ShaderStage::TessellationEvaluation:
 			extension = ".tese.spv";
 			break;
-		case vk::ShaderStageFlagBits::eGeometry:
+		case ShaderStage::Geometry:
 			extension = ".geom.spv";
 			break;
-		case vk::ShaderStageFlagBits::eFragment:
+		case ShaderStage::Fragment:
 			extension = ".frag.spv";
 			break;
-		case vk::ShaderStageFlagBits::eCompute:
+		case ShaderStage::Compute:
 			extension = ".comp.spv";
 			break;
-		case vk::ShaderStageFlagBits::eRaygenKHR:
+		case ShaderStage::Raygen:
 			extension = ".rgen.spv";
 			break;
-		case vk::ShaderStageFlagBits::eAnyHitKHR:
+		case ShaderStage::AnyHit:
 			extension = ".rahit.spv";
 			break;
-		case vk::ShaderStageFlagBits::eClosestHitKHR:
+		case ShaderStage::ClosestHit:
 			extension = ".rchit.spv";
 			break;
-		case vk::ShaderStageFlagBits::eMissKHR:
+		case ShaderStage::Miss:
 			extension = ".rmiss.spv";
 			break;
-		case vk::ShaderStageFlagBits::eIntersectionKHR:
+		case ShaderStage::Intersection:
 			extension = ".rint.spv";
 			break;
-		case vk::ShaderStageFlagBits::eCallableKHR:
+		case ShaderStage::Callable:
 			extension = ".rcall.spv";
 			break;
-		case vk::ShaderStageFlagBits::eTaskNV:
+		case ShaderStage::Task:
 			extension = ".task.spv";
 			break;
-		case vk::ShaderStageFlagBits::eMeshNV:
+		case ShaderStage::Mesh:
 			extension = ".mesh.spv";
 			break;
 		default:
@@ -87,16 +88,11 @@ namespace INJECTOR_NAMESPACE
 		device = nullptr;
 	}
 
-	ShaderStage VkShader::getStage() const
-	{
-		return toStage(stage);
-	}
-
-	const vk::Device& VkShader::getDevice() const noexcept
+	vk::Device VkShader::getDevice() const noexcept
 	{
 		return device;
 	}
-	const vk::ShaderModule& VkShader::getShaderModule() const noexcept
+	vk::ShaderModule VkShader::getShaderModule() const noexcept
 	{
 		return shaderModule;
 	}

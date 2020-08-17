@@ -27,6 +27,7 @@ namespace INJECTOR_NAMESPACE
 		vk::Queue presentQueue;
 		vk::CommandPool graphicsCommandPool;
 		vk::CommandPool presentCommandPool;
+		vk::CommandPool transferCommandPool;
 		vk::Extent2D surfaceExtent;
 		vk::SwapchainKHR swapchain;
 		vk::RenderPass renderPass;
@@ -104,6 +105,7 @@ namespace INJECTOR_NAMESPACE
 			vk::Format format);
 		static vk::CommandPool createCommandPool(
 			vk::Device device,
+			vk::CommandPoolCreateFlags flags,
 			uint32_t queueFamilyIndex);
 	public:
 		VkWindow(const std::string& title = defaultTitle,

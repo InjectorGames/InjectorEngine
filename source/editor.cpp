@@ -45,7 +45,7 @@ void init()
 int main(int argc, char* args[])
 {
 	Engine::initializeEvents();
-	Engine::initializeVideo(GraphicsAPI::OpenGL);
+	Engine::initializeVideo(GraphicsAPI::Vulkan);
 	Engine::initializeEngine();
 
 	init();

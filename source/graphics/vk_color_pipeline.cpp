@@ -26,6 +26,8 @@ namespace INJECTOR_NAMESPACE
 			throw std::runtime_error("Failed to create Vulkan pipeline layout");
 
 		pipeline = nullptr;
+
+		// TODO: !!!!! INCORRECT USAGE, DANGEROUS PLACE
 		recreate(renderPass, surfaceExtent);
 	}
 	VkColorPipeline::~VkColorPipeline()
@@ -50,10 +52,10 @@ namespace INJECTOR_NAMESPACE
 		if(pipeline)
 			device.destroyPipeline(pipeline);
 
-		auto vertexShader = VkShader(device, vk::ShaderStageFlagBits::eVertex,
-			"resources/shaders/vulkan/color");
-		auto fragmentShader = VkShader(device, vk::ShaderStageFlagBits::eFragment,
-			"resources/shaders/vulkan/color");
+		auto vertexShader = VkShader(device, "resources/shaders/vulkan/color",
+			ShaderStage::Vertex);
+		auto fragmentShader = VkShader(device, "resources/shaders/vulkan/color",
+			ShaderStage::Fragment);
 
 		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>
 		{

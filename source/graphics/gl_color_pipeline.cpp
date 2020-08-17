@@ -1,8 +1,8 @@
-#include <injector/graphics/gl_color_material.hpp>
+//#include <injector/graphics/gl_color_material.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
-	const Vector4 GlColorMaterial::defaultColor = Vector4::one;
+	/*const Vector4 GlColorMaterial::defaultColor = Vector4::one;
 
 	GlColorMaterial::GlColorMaterial(
 		const GlShader& vertex,
@@ -34,5 +34,5 @@ namespace INJECTOR_NAMESPACE
 	void GlColorMaterial::setColor(const Vector4& color) noexcept
 	{
 		setUniform(colorLocation, color);
-	}
+	}*/
 }

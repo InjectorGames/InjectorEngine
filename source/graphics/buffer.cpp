@@ -3,19 +3,39 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	Buffer::Buffer(size_t _size) :
+	Buffer::Buffer(
+		size_t _size,
+		BufferType _type,
+		BufferUsage _usage) :
 		size(_size),
+		type(_type),
+		usage(_usage),
 		mapped(false),
 		mapAccess(),
 		mapSize(),
 		mapOffset()
-	{}
+	{
+		if (usage == BufferUsage::CpuOnly ||
+			usage == BufferUsage::CpuToGpu ||
+			usage == BufferUsage::GpuToCpu)
+			mappable = true;
+		else
+			mappable = false;
+	}
 	Buffer::~Buffer()
 	{}
 
 	size_t Buffer::getSize() const noexcept
 	{
 		return size;
+	}
+	BufferType Buffer::getType() const noexcept
+	{
+		return type;
+	}
+	BufferUsage Buffer::getUsage() const noexcept
+	{
+		return usage;
 	}
 	bool Buffer::isMapped() const noexcept
 	{
@@ -28,6 +48,8 @@ namespace INJECTOR_NAMESPACE
 
 	void* Buffer::map(BufferAccess access)
 	{
+		if (!mappable)
+			throw std::runtime_error("Failed to map buffer, not mappeble");
 		if (mapped)
 			throw std::runtime_error("Failed to map buffer, already mapped");
 
@@ -38,6 +60,8 @@ namespace INJECTOR_NAMESPACE
 	}
 	void* Buffer::map(BufferAccess access, size_t _size, size_t offset)
 	{
+		if (!mappable)
+			throw std::runtime_error("Failed to map buffer, not mappeble");
 		if (mapped)
 			throw std::runtime_error("Failed to map buffer, already mapped");
 		if (_size + offset > size)

@@ -11,18 +11,15 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		vk::Device device;
-		vk::ShaderStageFlagBits stage;
 		vk::ShaderModule shaderModule;
 	public:
 		VkShader(const vk::Device& device,
-			vk::ShaderStageFlagBits stage,
-			const std::string& path);
+			const std::string& path,
+			ShaderStage stage);
 		virtual ~VkShader();
 
-		ShaderStage getStage() const override;
-
-		const vk::Device& getDevice() const noexcept;
-		const vk::ShaderModule& getShaderModule() const noexcept;
+		vk::Device getDevice() const noexcept;
+		vk::ShaderModule getShaderModule() const noexcept;
 
 		static vk::ShaderStageFlagBits toVkStage(ShaderStage stage);
 		static ShaderStage toStage(vk::ShaderStageFlagBits stage);

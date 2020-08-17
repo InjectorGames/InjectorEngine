@@ -3,11 +3,14 @@
 
 namespace INJECTOR_NAMESPACE
 {
+	Shader::Shader(ShaderStage _stage) :
+		stage(_stage)
+	{}
 	Shader::~Shader()
 	{}
 
-	ShaderStage Shader::getStage() const
+	ShaderStage Shader::getStage() const noexcept
 	{
-		throw std::runtime_error("Not implemented shader function");
+		return stage;
 	}
 }

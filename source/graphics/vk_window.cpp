@@ -592,14 +592,13 @@ namespace INJECTOR_NAMESPACE
 	}
 	vk::CommandPool VkWindow::createCommandPool(
 		vk::Device device,
+		vk::CommandPoolCreateFlags flags,
 		uint32_t queueFamilyIndex)
 	{
 		vk::CommandPool commandPool;
 
 		auto commandPoolCreateInfo = vk::CommandPoolCreateInfo(
-			vk::CommandPoolCreateFlagBits::eTransient | 
-			vk::CommandPoolCreateFlagBits::eResetCommandBuffer, 
-			queueFamilyIndex);
+			flags, queueFamilyIndex);
 		auto result = device.createCommandPool(
 			&commandPoolCreateInfo, nullptr, &commandPool);
 
@@ -654,14 +653,26 @@ namespace INJECTOR_NAMESPACE
 
 			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 			{
-				graphicsCommandPool = createCommandPool(device, graphicsQueueFamilyIndex);
-				presentCommandPool = createCommandPool(device, presentQueueFamilyIndex);
+				graphicsCommandPool = createCommandPool(device, 
+					vk::CommandPoolCreateFlagBits::eTransient |
+					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
+					graphicsQueueFamilyIndex);
+				presentCommandPool = createCommandPool(device,
+					vk::CommandPoolCreateFlagBits::eTransient |
+					vk::CommandPoolCreateFlagBits::eResetCommandBuffer, 
+					presentQueueFamilyIndex);
 			}
 			else
 			{
-				graphicsCommandPool = presentCommandPool =
-					createCommandPool(device, graphicsQueueFamilyIndex);
+				graphicsCommandPool = presentCommandPool = createCommandPool(device, 
+					vk::CommandPoolCreateFlagBits::eTransient |
+					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
+					graphicsQueueFamilyIndex);
 			}
+
+			transferCommandPool = createCommandPool(device,
+				vk::CommandPoolCreateFlagBits::eTransient,
+				graphicsQueueFamilyIndex);
 
 			onResize(size);
 		}
@@ -685,6 +696,7 @@ namespace INJECTOR_NAMESPACE
 
 		device.destroyRenderPass(renderPass);
 		device.destroySwapchainKHR(swapchain);
+		device.destroyCommandPool(transferCommandPool);
 
 		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 		{
@@ -979,30 +991,47 @@ namespace INJECTOR_NAMESPACE
 	{
 		auto vertexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
 			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]),
-			vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst);
-		vertexBuffer->setData(Primitive::squareVertices.data(),
-			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]));
+			BufferType::Vertex, BufferUsage::CpuToGpu, 
+			static_cast<const void*>(Primitive::squareVertices.data()));
 
 		auto indexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
 			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]),
-			vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst);
-		indexBuffer->setData(Primitive::squareIndices.data(),
-			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]));
+			BufferType::Index, BufferUsage::CpuToGpu,
+			static_cast<const void*>(Primitive::squareIndices.data()));
 
 		return std::make_shared<VkMesh>(vk::IndexType::eUint16, 
 			Primitive::squareIndices.size(), vertexBuffer, indexBuffer);
+
+		/*vk::CommandBuffer commandBuffer;
+
+		auto commandBufferAlocateInfo = vk::CommandBufferAllocateInfo(
+			transferCommandPool, vk::CommandBufferLevel::ePrimary, 1);
+		auto allocationResult = device.allocateCommandBuffers(
+			&commandBufferAlocateInfo, &commandBuffer);
+
+		if (allocationResult != vk::Result::eSuccess)
+			throw std::runtime_error(
+				"Failed to allocate Vulkan staging command buffer");
+
+		auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
+			vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+		commandBuffer.begin(commandBufferBeginInfo);
+
+		auto bufferCopy = vk::BufferCopy(0, 0, size);
+		commandBuffer.copyBuffer(stagingBuffer, buffer, 1, &bufferCopy);
+		commandBuffer.end();*/
 	}
 	MeshHandle VkWindow::createCubeMesh()
 	{
 		auto vertexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
 			Primitive::cubeVertices.size() * sizeof(Primitive::cubeVertices[0]),
-			vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst);
+			BufferType::Vertex, BufferUsage::CpuToGpu);
 		vertexBuffer->setData(Primitive::cubeVertices.data(),
 			Primitive::cubeVertices.size() * sizeof(Primitive::cubeVertices[0]));
 
 		auto indexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
 			Primitive::cubeIndices.size() * sizeof(Primitive::cubeIndices[0]),
-			vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst);
+			BufferType::Index, BufferUsage::CpuToGpu);
 		indexBuffer->setData(Primitive::cubeIndices.data(),
 			Primitive::cubeIndices.size() * sizeof(Primitive::cubeIndices[0]));
 
