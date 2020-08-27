@@ -6,13 +6,13 @@ namespace INJECTOR_NAMESPACE
 	VkMesh::VkMesh(
 		size_t indexCount,
 		MeshIndex indexType,
-		const BufferHandle& vertexBuffer,
-		const BufferHandle& indexBuffer) :
+		const VkBufferHandle& vertexBuffer,
+		const VkBufferHandle& indexBuffer) :
 		Mesh(indexCount, indexType, vertexBuffer, indexBuffer)
 	{
 		vkIndexType = toVkIndexType(indexType);
-		vkVertexBuffer = std::dynamic_pointer_cast<VkBuffer>(vertexBuffer)->getBuffer();
-		vkIndexBuffer = std::dynamic_pointer_cast<VkBuffer>(indexBuffer)->getBuffer();
+		vkVertexBuffer = vertexBuffer->getBuffer();
+		vkIndexBuffer = indexBuffer->getBuffer();
 	}
 	VkMesh::~VkMesh()
 	{}
@@ -40,9 +40,9 @@ namespace INJECTOR_NAMESPACE
 
 	vk::IndexType VkMesh::toVkIndexType(MeshIndex indexType)
 	{
-		if (indexType == MeshIndex::Ushort)
+		if (indexType == MeshIndex::UnsignedShort)
 			return vk::IndexType::eUint16;
-		else if (indexType == MeshIndex::Uint)
+		else if (indexType == MeshIndex::UnsignedInt)
 			return vk::IndexType::eUint32;
 		else
 			throw std::runtime_error("Unsupported Vulkan mesh index type");
@@ -50,9 +50,9 @@ namespace INJECTOR_NAMESPACE
 	MeshIndex VkMesh::toIndexType(vk::IndexType indexType)
 	{
 		if (indexType == vk::IndexType::eUint16)
-			return MeshIndex::Ushort;
+			return MeshIndex::UnsignedShort;
 		else if (indexType == vk::IndexType::eUint32)
-			return MeshIndex::Uint;
+			return MeshIndex::UnsignedInt;
 		else
 			throw std::runtime_error("Unsupported Vulkan mesh index type");
 	}

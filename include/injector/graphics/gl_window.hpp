@@ -29,7 +29,9 @@ namespace INJECTOR_NAMESPACE
 
 		CameraSystemHandle createCameraSystem() override;
 		RenderSystemHandle createRenderSystem() override;
-		PipelineHandle createColorPipeline() override;
+
+		//ColorMaterialHandle createColorMaterial() override;
+
 		MeshHandle createSquareMesh() override;
 	};
 }

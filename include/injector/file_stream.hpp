@@ -12,11 +12,12 @@ namespace INJECTOR_NAMESPACE
 		FileStream();
 		FileStream(const char* filePath,
 			std::ios::openmode mode = std::ios::in | std::ios::out);
-		FileStream(const std::string& filePath, std::ios::openmode mode =
-			std::ios::in | std::ios::out);
+		FileStream(const std::string& filePath,
+			std::ios::openmode mode = std::ios::in | std::ios::out);
 		virtual ~FileStream();
 
-		std::istream& read(void* value, size_t count);
+		std::istream& read(char& value);
+		std::istream& read(char* value, size_t count);
 		std::istream& read(uint8_t& value);
 		std::istream& read(uint8_t* value, size_t count);
 		std::istream& read(int8_t& value);
@@ -56,7 +57,8 @@ namespace INJECTOR_NAMESPACE
 		std::istream& readLE(float& value);
 		std::istream& readLE(double& value);
 
-		std::ostream& write(const void* value, size_t count);
+		std::ostream& write(char value);
+		std::ostream& write(const char* value, size_t count);
 		std::ostream& write(uint8_t value);
 		std::ostream& write(const uint8_t* value, size_t count);
 		std::ostream& write(int8_t value);
@@ -95,5 +97,25 @@ namespace INJECTOR_NAMESPACE
 		std::ostream& writeLE(int64_t value);
 		std::ostream& writeLE(float value);
 		std::ostream& writeLE(double value);
+
+		static std::string readAllText(
+			const std::string& filePath);
+		static void writeAllText(
+			const std::string& filePath,
+			const char* text,
+			size_t count);
+		static void writeAllText(
+			const std::string& filePath,
+			const std::string& text);
+
+		static std::vector<char> readAllBytes(
+			const std::string& filePath);
+		static void writeAllBytes(
+			const std::string& filePath,
+			const char* bytes,
+			size_t count);
+		static void writeAllBytes(
+			const std::string& filePath,
+			const std::vector<char>& bytes);
 	};
 }

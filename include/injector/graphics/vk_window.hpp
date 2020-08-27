@@ -128,14 +128,18 @@ namespace INJECTOR_NAMESPACE
 		CameraSystemHandle createCameraSystem() override;
 		RenderSystemHandle createRenderSystem() override;
 
-		ShaderHandle createShader(ShaderStage stage, const std::string& path) override;
 		BufferHandle createBuffer(
 			size_t size,
 			BufferType type,
 			BufferUsage usage,
 			const void* data = nullptr) override;
+		MeshHandle createMesh(
+			size_t indexCount,
+			MeshIndex indexType,
+			const BufferHandle& vertexBuffer,
+			const BufferHandle& indexBuffer) override;
 
-		PipelineHandle createColorPipeline() override;
+		ColorPipelineHandle createColorPipeline() override;
 
 		MeshHandle createSquareMesh() override;
 		MeshHandle createCubeMesh() override;

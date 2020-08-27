@@ -1,51 +1,40 @@
 #include <injector/graphics/pipeline.hpp>
+#include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
-	Pipeline::Pipeline(
-		const Matrix4& _model,
-		const Matrix4& _view,
-		const Matrix4& _proj,
-		const Matrix4& _mvp) :
-		model(_model),
-		view(_view),
-		proj(_proj),
-		mvp(_mvp)
-	{}
 	Pipeline::~Pipeline()
 	{}
 
-	const Matrix4& Pipeline::getModel() const noexcept
+	const Matrix4& Pipeline::getModel() const
 	{
-		return model;
+		throw std::runtime_error("Not implemented pipeline function");
 	}
-	const Matrix4& Pipeline::getView() const noexcept
+	const Matrix4& Pipeline::getView() const
 	{
-		return view;
+		throw std::runtime_error("Not implemented pipeline function");
 	}
-	const Matrix4& Pipeline::getProj() const noexcept
+	const Matrix4& Pipeline::getProj() const
 	{
-		return view;
+		throw std::runtime_error("Not implemented pipeline function");
 	}
-	const Matrix4& Pipeline::getMVP() const noexcept
+	const Matrix4& Pipeline::getViewProj() const
 	{
-		return mvp;
+		throw std::runtime_error("Not implemented pipeline function");
+	}
+	const Matrix4& Pipeline::getMVP() const
+	{
+		throw std::runtime_error("Not implemented pipeline function");
 	}
 
-	void Pipeline::setModel(const Matrix4& _model) noexcept
-	{
-		model = Matrix4(_model);
-	}
-	void Pipeline::setView(const Matrix4& _view) noexcept
-	{
-		view = Matrix4(_view);
-	}
-	void Pipeline::setProj(const Matrix4& _proj) noexcept
-	{
-		proj = _proj;
-	}
-	void Pipeline::setMVP(const Matrix4& _mvp) noexcept
-	{
-		mvp = _mvp;
-	}
+	void Pipeline::setModel(const Matrix4& model)
+	{}
+	void Pipeline::setView(const Matrix4& view)
+	{}
+	void Pipeline::setProj(const Matrix4& proj)
+	{}
+	void Pipeline::setViewProj(const Matrix4& proj)
+	{}
+	void Pipeline::setMVP(const Matrix4& proj)
+	{}
 }

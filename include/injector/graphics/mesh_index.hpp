@@ -5,7 +5,7 @@ namespace INJECTOR_NAMESPACE
 {
 	enum class MeshIndex
 	{
-		Ushort,
-		Uint,
+		UnsignedShort,
+		UnsignedInt,
 	};
 }

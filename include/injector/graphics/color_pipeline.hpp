@@ -1,17 +1,16 @@
 #pragma once
-#include <injector/mathematics/matrix4.hpp>
+#include <injector/graphics/pipeline.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
-	class ColorPipeline
+	class ColorPipeline : public Pipeline
 	{
-	protected:
-		Vector4 color;
 	public:
-		ColorPipeline(const Vector4& color = Vector4::one);
 		virtual ~ColorPipeline();
 
-		const Vector4& getColor() const noexcept;
-		void setColor(const Vector4& color) noexcept;
+		virtual const Vector4& getColor() const;
+		virtual void setColor(const Vector4& color);
 	};
+
+	using ColorPipelineHandle = std::shared_ptr<ColorPipeline>;
 }

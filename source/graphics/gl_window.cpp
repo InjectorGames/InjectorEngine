@@ -83,10 +83,7 @@ namespace INJECTOR_NAMESPACE
 		systems.push_back(system);
 		return system;
 	}
-	PipelineHandle GlWindow::createColorPipeline()
-	{
-		return nullptr;
-	}
+
 	MeshHandle GlWindow::createSquareMesh()
 	{
 		return nullptr;

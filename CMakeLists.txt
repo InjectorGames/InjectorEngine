@@ -55,7 +55,6 @@ add_library(InjectorEngine STATIC
 	source/graphics/primitive.cpp
 	source/graphics/render_component.cpp
 	source/graphics/render_system.cpp
-	source/graphics/shader.cpp
 	source/graphics/vk_buffer.cpp
 	source/graphics/vk_camera_system.cpp
 	source/graphics/vk_color_pipeline.cpp
@@ -126,17 +125,11 @@ if(INJECTOR_BUILD_EDITOR)
 endif()
 
 set(INJECTOR_RESOURCES
-	shaders/opengl/col_color.frag
-	shaders/opengl/col_color.vert
-	shaders/opengl/color.frag
-	shaders/opengl/color.vert
-	shaders/opengl/diffuse.frag
-	shaders/opengl/diffuse.vert
-	shaders/opengl/gradient_sky.frag
-	shaders/opengl/gradient_sky.vert
+	shaders/color.frag
+	shaders/color.vert
 
-	shaders/vulkan/color.frag.spv
-	shaders/vulkan/color.vert.spv
+	shaders/color.frag.spv
+	shaders/color.vert.spv
 )
 
 foreach(FILE ${INJECTOR_RESOURCES})

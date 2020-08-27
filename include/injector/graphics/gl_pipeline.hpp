@@ -1,5 +1,5 @@
 #pragma once
-#include <injector/graphics/pipeline.hpp>
+#include <injector/defines.hpp>
 #include <GL/glew.h>
 
 namespace INJECTOR_NAMESPACE

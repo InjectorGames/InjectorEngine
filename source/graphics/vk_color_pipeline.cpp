@@ -1,100 +1,61 @@
 #include <injector/graphics/vk_color_pipeline.hpp>
 #include <injector/graphics/vk_shader.hpp>
+#include <injector/file_stream.hpp>
+
+#include <vector>
+#include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
-	VkColorPipeline::VkColorPipeline(
+	vk::Pipeline VkColorPipeline::createPipeline(
 		vk::Device device,
+		vk::PipelineCache pipelineCache,
+		vk::PipelineLayout pipelineLayout,
 		vk::RenderPass renderPass,
-		vk::Extent2D surfaceExtent) :
-		VkPipeline(device)
+		const vk::Extent2D& surfaceExtent)
 	{
-		auto pushConstantRanges = std::vector<vk::PushConstantRange>
+		auto vertexCode = FileStream::readAllBytes(
+			"resources/shaders/color.vert.spv");
+		auto vertexShader = VkShader(device, vertexCode);
+
+		auto fragmentCode = FileStream::readAllBytes(
+			"resources/shaders/color.frag.spv");
+		auto fragmentShader = VkShader(device, fragmentCode);
+
+		auto pipelineShaderStageCreateInfos =
+			std::vector<vk::PipelineShaderStageCreateInfo>
 		{
-			vk::PushConstantRange(vk::ShaderStageFlagBits::eVertex,
-				0, sizeof(Matrix4)),
-			vk::PushConstantRange(vk::ShaderStageFlagBits::eFragment,
-				sizeof(Matrix4), sizeof(Vector4)),
+			vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eVertex,
+				vertexShader.getShaderModule(), "main", nullptr),
+			vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eFragment,
+				fragmentShader.getShaderModule(), "main", nullptr),
 		};
 
-		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo({},
-			0, nullptr, pushConstantRanges.size(), pushConstantRanges.data());
-		auto result = device.createPipelineLayout(
-			&pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
-
-		if (result != vk::Result::eSuccess)
-			throw std::runtime_error("Failed to create Vulkan pipeline layout");
-
-		pipeline = nullptr;
-
-		// TODO: !!!!! INCORRECT USAGE, DANGEROUS PLACE
-		recreate(renderPass, surfaceExtent);
-	}
-	VkColorPipeline::~VkColorPipeline()
-	{
-		device.destroyPipeline(pipeline);
-		device.destroyPipelineLayout(pipelineLayout);
-	}
-
-	void VkColorPipeline::bind(
-		vk::CommandBuffer commandBuffer)
-	{
-		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
-		commandBuffer.pushConstants(pipelineLayout,
-			vk::ShaderStageFlagBits::eVertex, 0, sizeof(Matrix4), &mvp);
-		commandBuffer.pushConstants(pipelineLayout,
-			vk::ShaderStageFlagBits::eFragment, sizeof(Matrix4), sizeof(Vector4), &color);
-	}
-	void VkColorPipeline::recreate(
-		vk::RenderPass renderPass,
-		vk::Extent2D surfaceExtent)
-	{
-		if(pipeline)
-			device.destroyPipeline(pipeline);
-
-		auto vertexShader = VkShader(device, "resources/shaders/vulkan/color",
-			ShaderStage::Vertex);
-		auto fragmentShader = VkShader(device, "resources/shaders/vulkan/color",
-			ShaderStage::Fragment);
-
-		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>
+		auto vertexInputBindingDescriptions =
+			std::vector<vk::VertexInputBindingDescription> 
 		{
-			vk::PipelineShaderStageCreateInfo
-			(
-				{}, vk::ShaderStageFlagBits::eVertex,
-				vertexShader.getShaderModule(),
-				"main", nullptr
-			),
-			vk::PipelineShaderStageCreateInfo
-			(
-				{}, vk::ShaderStageFlagBits::eFragment,
-				fragmentShader.getShaderModule(),
-				"main", nullptr
-			),
+			vk::VertexInputBindingDescription(
+				0, sizeof(float) * 3, vk::VertexInputRate::eVertex),
 		};
 
-		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
-			0, sizeof(float) * 3, vk::VertexInputRate::eVertex);
-		auto vertexInputAttributeDescriptions =
+		auto vertexInputAttributeDescriptions = 
 			std::vector<vk::VertexInputAttributeDescription>
 		{
 			vk::VertexInputAttributeDescription(
 				0, 0, vk::Format::eR32G32B32Sfloat, 0),
 		};
+
 		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo({},
-			1, &vertexInputBindingDescription,
-			vertexInputAttributeDescriptions.size(),
+			static_cast<uint32_t>(vertexInputBindingDescriptions.size()),
+			vertexInputBindingDescriptions.data(),
+			static_cast<uint32_t>(vertexInputAttributeDescriptions.size()),
 			vertexInputAttributeDescriptions.data());
 
 		auto pipelineInputAssemblyStateCreateInfo =
 			vk::PipelineInputAssemblyStateCreateInfo({}, vk::PrimitiveTopology::eTriangleList, false);
 
 		auto viewport = vk::Viewport(
-			0.0f, 0.0f,
-			surfaceExtent.width,
-			surfaceExtent.height,
-			0.0f, 1.0f);
-
+			0.0f, 0.0f, surfaceExtent.width, surfaceExtent.height, 0.0f, 1.0f);
 		auto scissor = vk::Rect2D(
 			vk::Offset2D(0, 0), surfaceExtent);
 
@@ -122,7 +83,6 @@ namespace INJECTOR_NAMESPACE
 			vk::ColorComponentFlagBits::eB |
 			vk::ColorComponentFlagBits::eA);
 
-		// TODO: rewrite
 		auto pipelineColorBlendStateCreateInfo =
 			vk::PipelineColorBlendStateCreateInfo({}, false, vk::LogicOp::eCopy,
 				1, &pielineColorBlendAttacmentStateCreateInfo);
@@ -140,17 +100,89 @@ namespace INJECTOR_NAMESPACE
 			&pipelineColorBlendStateCreateInfo,
 			nullptr,
 			pipelineLayout,
-			renderPass,
-			0,
-			nullptr,
-			-1);
+			renderPass, 0,
+			nullptr, -1);
 
-		auto resultValue = device.createGraphicsPipeline(
-			pipelineCache, graphicsPipelineCreateInfo);
+		auto resultValue = device.createGraphicsPipeline(pipelineCache, graphicsPipelineCreateInfo);
 
 		if (resultValue.result != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to create Vulkan pipeline");
 
-		pipeline = resultValue.value;
+		return resultValue.value;
+	}
+
+	VkColorPipeline::VkColorPipeline(
+		vk::Device device,
+		vk::RenderPass renderPass,
+		const vk::Extent2D& surfaceExtent) : 
+		VkPipeline(device),
+		mvp(Matrix4::identity),
+		color(Vector4::one)
+	{
+		auto pushConstantRanges = std::vector<vk::PushConstantRange>
+		{
+			vk::PushConstantRange(vk::ShaderStageFlagBits::eVertex, 
+				0, sizeof(Matrix4)),
+			vk::PushConstantRange(vk::ShaderStageFlagBits::eFragment, 
+				sizeof(Matrix4), sizeof(Vector4)),
+		};
+
+		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo({},
+			0, nullptr,
+			static_cast<uint32_t>(pushConstantRanges.size()),
+			pushConstantRanges.data());
+
+		auto result = device.createPipelineLayout(
+			&pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+
+		if (result != vk::Result::eSuccess)
+			throw std::runtime_error("Failed to create Vulkan pipeline layout");
+
+		pipeline = createPipeline(
+			device, pipelineCache, pipelineLayout, renderPass, surfaceExtent);
+	}
+	VkColorPipeline::~VkColorPipeline()
+	{
+		device.destroyPipeline(pipeline);
+		device.destroyPipelineLayout(pipelineLayout);
+	}
+
+	void VkColorPipeline::recreate(
+		uint32_t imageCount,
+		vk::RenderPass renderPass,
+		vk::Extent2D surfaceExtent)
+	{
+		device.destroyPipeline(pipeline);
+
+		pipeline = createPipeline(
+			device, pipelineCache, pipelineLayout, renderPass, surfaceExtent);
+	}
+	void VkColorPipeline::bind(
+		uint32_t imageIndex,
+		vk::CommandBuffer commandBuffer)
+	{
+		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
+		commandBuffer.pushConstants(pipelineLayout, vk::ShaderStageFlagBits::eVertex,
+			0, sizeof(Matrix4), &mvp);
+		commandBuffer.pushConstants(pipelineLayout, vk::ShaderStageFlagBits::eFragment, 
+			sizeof(Matrix4), sizeof(Vector4), &color);
+	}
+
+	const Matrix4& VkColorPipeline::getMVP() const
+	{
+		return mvp;
+	}
+	void VkColorPipeline::setMVP(const Matrix4& _mvp)
+	{
+		mvp = Matrix4(_mvp);
+	}
+
+	const Vector4& VkColorPipeline::getColor() const
+	{
+		return color;
+	}
+	void VkColorPipeline::setColor(const Vector4& _color)
+	{
+		color = Vector4(_color);
 	}
 }

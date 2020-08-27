@@ -182,10 +182,6 @@ namespace INJECTOR_NAMESPACE
 		throw std::runtime_error("Not implemented window function");
 	}
 
-	ShaderHandle Window::createShader(ShaderStage stage, const std::string& path)
-	{
-		throw std::runtime_error("Not implemented window function");
-	}
 	BufferHandle Window::createBuffer(
 		size_t size,
 		BufferType type,
@@ -194,8 +190,16 @@ namespace INJECTOR_NAMESPACE
 	{
 		throw std::runtime_error("Not implemented window function");
 	}
+	MeshHandle Window::createMesh(
+		size_t indexCount,
+		MeshIndex indexType,
+		const BufferHandle& vertexBuffer,
+		const BufferHandle& indexBuffer)
+	{
+		throw std::runtime_error("Not implemented window function");
+	}
 
-	PipelineHandle Window::createColorPipeline()
+	ColorPipelineHandle Window::createColorPipeline()
 	{
 		throw std::runtime_error("Not implemented window function");
 	}

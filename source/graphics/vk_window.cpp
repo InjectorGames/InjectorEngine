@@ -1,7 +1,7 @@
 #include <injector/graphics/vk_window.hpp>
-#include <injector/graphics/primitive.hpp>
 #include <injector/graphics/vk_mesh.hpp>
 #include <injector/graphics/vk_shader.hpp>
+#include <injector/graphics/primitive.hpp>
 #include <injector/graphics/vk_camera_system.hpp>
 #include <injector/graphics/vk_render_system.hpp>
 #include <injector/graphics/vk_color_pipeline.hpp>
@@ -834,7 +834,7 @@ namespace INJECTOR_NAMESPACE
 		}
 
 		for (auto& pipeline : pipelines)
-			pipeline->recreate(renderPass, surfaceExtent);
+			pipeline->recreate(images.size(), renderPass, surfaceExtent);
 	}
 
 	uint32_t VkWindow::beginImage()
@@ -869,6 +869,8 @@ namespace INJECTOR_NAMESPACE
 			}
 		}
 		while (result != vk::Result::eSuccess);
+
+		vmaSetCurrentFrameIndex(memoryAllocator, imageIndex);
 
 		return imageIndex;
 	}
@@ -1017,10 +1019,6 @@ namespace INJECTOR_NAMESPACE
 		return system;
 	}
 
-	ShaderHandle VkWindow::createShader(ShaderStage stage, const std::string& path)
-	{
-		return std::make_shared<VkShader>(device, path, stage);
-	}
 	BufferHandle VkWindow::createBuffer(
 		size_t size,
 		BufferType type,
@@ -1071,46 +1069,61 @@ namespace INJECTOR_NAMESPACE
 			throw std::runtime_error("Unsupported Vulkan buffer create usage");
 		}
 	}
+	MeshHandle VkWindow::createMesh(
+		size_t indexCount,
+		MeshIndex indexType,
+		const BufferHandle& vertexBuffer,
+		const BufferHandle& indexBuffer)
+	{
+		auto vkVertexBuffer = std::dynamic_pointer_cast<VkBuffer>(vertexBuffer);
+		auto vkIndexBuffer = std::dynamic_pointer_cast<VkBuffer>(indexBuffer);
 
-	PipelineHandle VkWindow::createColorPipeline()
+		if (!vkVertexBuffer || !vkIndexBuffer)
+			throw std::runtime_error("Failed to cast vertex or index Vulkan buffer");
+
+		return std::make_shared<VkMesh>(
+			indexCount, indexType, vkVertexBuffer, vkIndexBuffer);
+	}
+
+	ColorPipelineHandle VkWindow::createColorPipeline()
 	{
 		auto pipeline = std::make_shared<VkColorPipeline>(
 			device, renderPass, surfaceExtent);
+
 		if(!pipelines.emplace(pipeline).second)
 			throw std::runtime_error("Failed to add created Vulkan color pipeline");
+
 		return pipeline;
 	}
 
 	MeshHandle VkWindow::createSquareMesh()
 	{
-		auto vertexBuffer = createBuffer(
+		auto vertexBuffer = VkWindow::createBuffer(
 			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]),
 			BufferType::Vertex, BufferUsage::GpuOnly, 
 			static_cast<const void*>(Primitive::squareVertices.data()));
 
-		auto indexBuffer = createBuffer(
+		auto indexBuffer = VkWindow::createBuffer(
 			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]),
 			BufferType::Index, BufferUsage::GpuOnly,
 			static_cast<const void*>(Primitive::squareIndices.data()));
 
-		return std::make_shared<VkMesh>(Primitive::squareIndices.size(),
-			MeshIndex::Ushort, vertexBuffer, indexBuffer);
+		return VkWindow::createMesh(Primitive::squareIndices.size(),
+			MeshIndex::UnsignedShort, vertexBuffer, indexBuffer);
 	}
 	MeshHandle VkWindow::createCubeMesh()
 	{
-		auto vertexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
+		auto vertexBuffer = VkWindow::createBuffer(
 			Primitive::cubeVertices.size() * sizeof(Primitive::cubeVertices[0]),
-			BufferType::Vertex, BufferUsage::CpuToGpu);
-		vertexBuffer->setData(Primitive::cubeVertices.data(),
-			Primitive::cubeVertices.size() * sizeof(Primitive::cubeVertices[0]));
+			BufferType::Vertex, BufferUsage::GpuOnly,
+			static_cast<const void*>(Primitive::cubeVertices.data()));
 
-		auto indexBuffer = std::make_shared<VkBuffer>(memoryAllocator,
+		auto indexBuffer = VkWindow::createBuffer(
 			Primitive::cubeIndices.size() * sizeof(Primitive::cubeIndices[0]),
-			BufferType::Index, BufferUsage::CpuToGpu);
-		indexBuffer->setData(Primitive::cubeIndices.data(),
-			Primitive::cubeIndices.size() * sizeof(Primitive::cubeIndices[0]));
+			BufferType::Index, BufferUsage::GpuOnly,
+			static_cast<const void*>(Primitive::cubeIndices.data()));
 
-		return std::make_shared<VkMesh>(Primitive::cubeIndices.size(),
-			MeshIndex::Ushort, vertexBuffer, indexBuffer);
+		return VkWindow::createMesh(Primitive::cubeIndices.size(),
+			MeshIndex::UnsignedShort, vertexBuffer, indexBuffer);
 	}
 }

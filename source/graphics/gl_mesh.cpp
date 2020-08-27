@@ -58,9 +58,9 @@ namespace INJECTOR_NAMESPACE
 
 	GLenum GlMesh::toGlIndexType(MeshIndex indexType)
 	{
-		if (indexType == MeshIndex::Ushort)
+		if (indexType == MeshIndex::UnsignedShort)
 			return GL_UNSIGNED_SHORT;
-		else if (indexType == MeshIndex::Uint)
+		else if (indexType == MeshIndex::UnsignedInt)
 			return GL_UNSIGNED_INT;
 		else
 			throw std::runtime_error("Unsupported OpenGL mesh index type");
@@ -68,9 +68,9 @@ namespace INJECTOR_NAMESPACE
 	MeshIndex GlMesh::toIndexType(GLenum indexType)
 	{
 		if (indexType == GL_UNSIGNED_SHORT)
-			return MeshIndex::Ushort;
+			return MeshIndex::UnsignedShort;
 		else if (indexType == GL_UNSIGNED_INT)
-			return MeshIndex::Uint;
+			return MeshIndex::UnsignedInt;
 		else
 			throw std::runtime_error("Unsupported OpenGL mesh index type");
 	}

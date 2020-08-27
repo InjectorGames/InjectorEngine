@@ -78,20 +78,18 @@ namespace INJECTOR_NAMESPACE
 			auto& projMatrix = cameraPair.second.camera->matrix;
 			auto viewProjMatrix = projMatrix * viewMatrix;
 
-			VkPipelineHandle lastPipeline = nullptr;
-
 			for (auto renderPair : renderPairs)
 			{
 				auto& modelMatrix = renderPair.second.transform->matrix;
 				auto mvpMatrix = viewProjMatrix * modelMatrix;
 
-				if (lastPipeline != renderPair.first)
-				{
-					lastPipeline = renderPair.first;
-					renderPair.first->setMVP(mvpMatrix);
-					renderPair.first->bind(commandBuffer);
-				}
+				renderPair.first->setModel(modelMatrix);
+				renderPair.first->setView(viewMatrix);
+				renderPair.first->setProj(projMatrix);
+				renderPair.first->setViewProj(viewProjMatrix);
+				renderPair.first->setMVP(mvpMatrix);
 
+				renderPair.first->bind(imageIndex, commandBuffer);
 				renderPair.second.mesh->draw(commandBuffer);
 			}
 		}

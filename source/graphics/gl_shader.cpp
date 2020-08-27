@@ -5,7 +5,7 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	const std::string GlShader::glHeader = "#version 300 es\n";
+	/*const std::string GlShader::glHeader = "#version 300 es\n";
 	const std::string GlShader::glesHeader = "#version 330 core\n\n#define highp \n#define mediump \n#define lowp \n";
 
 	bool GlShader::getCompileStatus(GLuint shader) noexcept
@@ -127,5 +127,5 @@ namespace INJECTOR_NAMESPACE
 		default:
 			throw std::runtime_error("Unsupported OpenGL shader stage");
 		}
-	}
+	}*/
 }

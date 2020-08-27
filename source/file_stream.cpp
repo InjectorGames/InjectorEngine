@@ -15,9 +15,13 @@ namespace INJECTOR_NAMESPACE
 	FileStream::~FileStream()
 	{}
 
-	std::istream& FileStream::read(void* value, size_t count)
+	std::istream& FileStream::read(char& value)
 	{
-		return std::fstream::read(static_cast<char*>(value), count);
+		return std::fstream::read(reinterpret_cast<char*>(&value), sizeof(char));
+	}
+	std::istream& FileStream::read(char* value, size_t count)
+	{
+		return std::fstream::read(reinterpret_cast<char*>(value), sizeof(char) * count);
 	}
 	std::istream& FileStream::read(uint8_t& value)
 	{
@@ -198,9 +202,13 @@ namespace INJECTOR_NAMESPACE
 		return stream;
 	}
 
-	std::ostream& FileStream::write(const void* value, size_t count)
+	std::ostream& FileStream::write(char value)
 	{
-		return std::fstream::write(static_cast<const char*>(value), count);
+		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(char));
+	}
+	std::ostream& FileStream::write(const char* value, size_t count)
+	{
+		return std::fstream::write(reinterpret_cast<const char*>(value), sizeof(char) * count);
 	}
 	std::ostream& FileStream::write(uint8_t value)
 	{
@@ -363,5 +371,86 @@ namespace INJECTOR_NAMESPACE
 	{
 		value = ByteSwap::swapLittleEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(double));
+	}
+
+	std::string FileStream::readAllText(
+		const std::string& filePath)
+	{
+		auto fileStream = FileStream(filePath, std::ios::in | std::ios::ate);
+
+		if (!fileStream.is_open())
+			throw std::runtime_error("Failed to open file for reading: " + filePath);
+
+		auto size = static_cast<size_t>(fileStream.tellg());
+		fileStream.seekg(0, fileStream.beg);
+
+		auto text = std::string(size, ' ');
+		fileStream.read(text.data(), size);
+
+		return text;
+	}
+	void FileStream::writeAllText(
+		const std::string& filePath,
+		const char* text,
+		size_t count)
+	{
+		auto fileStream = FileStream(filePath, std::ios::out);
+
+		if (!fileStream.is_open())
+			throw std::runtime_error("Failed to open file for writing: " + filePath);
+
+		fileStream.write(text, count);
+	}
+	void FileStream::writeAllText(
+		const std::string& filePath,
+		const std::string& text)
+	{
+		auto fileStream = FileStream(filePath, std::ios::out);
+
+		if (!fileStream.is_open())
+			throw std::runtime_error("Failed to open file for writing: " + filePath);
+
+		fileStream.write(text.data(), text.size());
+	}
+	
+	std::vector<char> FileStream::readAllBytes(
+		const std::string& filePath)
+	{
+		auto fileStream = FileStream(
+			filePath, std::ios::in | std::ios::ate | std::ios::binary);
+
+		if (!fileStream.is_open())
+			throw std::runtime_error("Failed to open file for reading: " + filePath);
+
+		auto size = static_cast<size_t>(fileStream.tellg());
+		fileStream.seekg(0, fileStream.beg);
+
+		auto bytes = std::vector<char>(size);
+		fileStream.read(bytes.data(), size);
+
+		return bytes;
+	}
+	void FileStream::writeAllBytes(
+		const std::string& filePath,
+		const char* bytes,
+		size_t count)
+	{
+		auto fileStream = FileStream(filePath, std::ios::out);
+
+		if (!fileStream.is_open())
+			throw std::runtime_error("Failed to open file for writing: " + filePath);
+
+		fileStream.write(bytes, count);
+	}
+	void FileStream::writeAllBytes(
+		const std::string& filePath,
+		const std::vector<char>& bytes)
+	{
+		auto fileStream = FileStream(filePath, std::ios::out | std::ios::binary);
+
+		if (!fileStream.is_open())
+			throw std::runtime_error("Failed to open file for writing: " + filePath);
+
+		fileStream.write(bytes.data(), bytes.size());
 	}
 }

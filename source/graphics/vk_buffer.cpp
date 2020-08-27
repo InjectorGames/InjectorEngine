@@ -20,6 +20,7 @@ namespace INJECTOR_NAMESPACE
 		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(getVkType(type) | flags);
 
 		VmaAllocationCreateInfo allocationCreateInfo = {};
+		allocationCreateInfo.flags = VMA_ALLOCATION_CREATE_WITHIN_BUDGET_BIT;
 		allocationCreateInfo.usage = getVkUsage(usage);
 		// TODO: VMA_MEMORY_USAGE_GPU_LAZILY_ALLOCATED on mobiles
 

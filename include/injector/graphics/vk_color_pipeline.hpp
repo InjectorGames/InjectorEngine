@@ -9,19 +9,37 @@ namespace INJECTOR_NAMESPACE
 	protected:
 		vk::PipelineLayout pipelineLayout;
 		vk::Pipeline pipeline;
+
+		Matrix4 mvp;
+		Vector4 color;
+
+		static vk::Pipeline createPipeline(
+			vk::Device device,
+			vk::PipelineCache pipelineCache,
+			vk::PipelineLayout pipelineLayout,
+			vk::RenderPass renderPass,
+			const vk::Extent2D& surfaceExtent);
 	public:
 		VkColorPipeline(
 			vk::Device device,
 			vk::RenderPass renderPass,
-			vk::Extent2D surfaceExtent);
+			const vk::Extent2D& surfaceExtent);
 		virtual ~VkColorPipeline();
 
-		void bind(
-			vk::CommandBuffer commandBuffer) override;
 		void recreate(
+			uint32_t imageCount,
 			vk::RenderPass renderPass,
 			vk::Extent2D surfaceExtent) override;
+		void bind(
+			uint32_t imageIndex,
+			vk::CommandBuffer commandBuffer) override;
+
+		const Matrix4& getMVP() const override;
+		void setMVP(const Matrix4& mvp) override;
+
+		const Vector4& getColor() const override;
+		void setColor(const Vector4& color) override;
 	};
 
-	using VkPipelineHandle = std::shared_ptr<VkPipeline>;
+	using VkColorPipelineHandle = std::shared_ptr<VkColorPipeline>;
 }

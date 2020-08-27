@@ -13,8 +13,8 @@ namespace INJECTOR_NAMESPACE
 	public:
 		VkMesh(size_t indexCount,
 			MeshIndex indexType,
-			const BufferHandle& vertexBuffer,
-			const BufferHandle& indexBuffer);
+			const VkBufferHandle& vertexBuffer,
+			const VkBufferHandle& indexBuffer);
 		virtual ~VkMesh();
 
 		vk::IndexType getVkIndexType() const noexcept;

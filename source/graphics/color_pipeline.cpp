@@ -1,19 +1,17 @@
 #include <injector/graphics/color_pipeline.hpp>
+#include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
-	ColorPipeline::ColorPipeline(const Vector4& _color) :
-		color(_color)
-	{}
 	ColorPipeline::~ColorPipeline()
 	{}
 
-	const Vector4& ColorPipeline::getColor() const noexcept
+	const Vector4& ColorPipeline::getColor() const
 	{
-		return color;
+		throw std::runtime_error("Not implemented color pipeline function");
 	}
-	void ColorPipeline::setColor(const Vector4& _color) noexcept
+	void ColorPipeline::setColor(const Vector4& color)
 	{
-		color = Vector4(_color);
+		throw std::runtime_error("Not implemented color pipeline function");
 	}
 }

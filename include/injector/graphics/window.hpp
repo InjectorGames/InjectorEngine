@@ -1,11 +1,11 @@
 #pragma once
 #include <injector/manager.hpp>
 #include <injector/graphics/mesh.hpp>
-#include <injector/graphics/shader.hpp>
 #include <injector/graphics/pipeline.hpp>
 #include <injector/graphics/mouse_button.hpp>
 #include <injector/graphics/render_system.hpp>
 #include <injector/graphics/camera_system.hpp>
+#include <injector/graphics/color_pipeline.hpp>
 
 #include <SDL.h>
 
@@ -60,14 +60,18 @@ namespace INJECTOR_NAMESPACE
 		virtual CameraSystemHandle createCameraSystem();
 		virtual RenderSystemHandle createRenderSystem();
 
-		virtual ShaderHandle createShader(ShaderStage stage, const std::string& path);
 		virtual BufferHandle createBuffer(
 			size_t size,
 			BufferType type,
 			BufferUsage usage,
 			const void* data = nullptr);
+		virtual MeshHandle createMesh(
+			size_t indexCount,
+			MeshIndex indexType,
+			const BufferHandle& vertexBuffer,
+			const BufferHandle& indexBuffer);
 
-		virtual PipelineHandle createColorPipeline();
+		virtual ColorPipelineHandle createColorPipeline();
 
 		virtual MeshHandle createSquareMesh();
 		virtual MeshHandle createCubeMesh();

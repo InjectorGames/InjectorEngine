@@ -1,5 +1,5 @@
 #pragma once
-#include <injector/graphics/shader.hpp>
+#include <injector/defines.hpp>
 #include <GL/glew.h>
 
 #include <vector>
@@ -8,7 +8,7 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	class GlShader : public Shader
+	/*class GlShader : public Shader
 	{
 	protected:
 		bool gles;
@@ -32,5 +32,5 @@ namespace INJECTOR_NAMESPACE
 		static ShaderStage toStage(GLenum stage);
 	};
 
-	using GlShaderHandle = std::shared_ptr<GlShader>;
+	using GlShaderHandle = std::shared_ptr<GlShader>;*/
 }

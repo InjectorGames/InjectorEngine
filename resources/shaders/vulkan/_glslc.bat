@@ -1,4 +1,9 @@
 @echo off
-echo Compiling shaders...
-for %%f in (*.vert *.tesc *.tese *.geom *.frag *.comp *.rgen *.rahit *.rchit *.rmiss *.rint *.rcall *.task *.mesh) do glslc -c -O %%f
+
+for %%f in (*.vert *.tesc *.tese *.geom *.frag *.comp *.rgen *.rahit *.rchit *.rmiss *.rint *.rcall *.task *.mesh) do (
+	echo Compiling "%%f" shader...
+	glslc -c -O %%f
+	move %%f.spv ../%%f.spv
+)
+
 pause
