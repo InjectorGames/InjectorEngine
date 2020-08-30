@@ -27,13 +27,13 @@ void init()
 	cameraSystem->addCamera(camera);
 	renderSystem->addCamera(camera);
 	
-	auto colorPipeline = window->createColorPipeline();
-	auto squareMesh = window->createSquareMesh(true);
-	auto cubeMesh = window->createCubeMesh(true);
+	auto colorPipeline = window->createDiffusePipeline();
+	auto squareMesh = window->createSquareMeshVN(true);
+	auto cubeMesh = window->createCubeMeshVN(true);
 
 	auto floor = window->createEntity();
 	floor->createComponent<TransformComponent>(Vector3::zero,
-		Quaternion(Vector3(Converter::toRadians(90.0f), 0.0f, 0.0f)), Vector3::one * 10);
+		Quaternion(Vector3(Converter::toRadians(-90.0f), 0.0f, 0.0f)), Vector3::one * 10);
 	floor->createComponent<RenderComponent>(colorPipeline, squareMesh);
 	transformSystem->addTransform(floor);
 	cameraComponent->renders.emplace(floor);

@@ -14,6 +14,7 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		GLuint program;
+		GLenum drawMode;
 		std::vector<GlVertexAttribute> vertexAttributes;
 		
 
@@ -40,12 +41,15 @@ namespace INJECTOR_NAMESPACE
 		int32_t getUniformLocation(const std::string& name);*/
 	public:
 		GlPipeline(
+			GLenum drawMode,
 			const std::vector<GlVertexAttribute>& vertexAttributes);
 		virtual ~GlPipeline();
 
-		uint32_t getProgram() const noexcept;
+		GLuint getProgram() const noexcept;
+		GLenum getDrawMode() const noexcept;
 		const std::vector<GlVertexAttribute>& getVertexAttributes() const noexcept;
 
+		virtual void flush();
 		virtual void bind();
 
 		static bool getLinkStatus(GLuint program) noexcept;

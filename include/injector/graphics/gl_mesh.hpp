@@ -9,21 +9,6 @@ namespace INJECTOR_NAMESPACE
 {
 	class GlMesh : public Mesh
 	{
-		/*enum class DrawMode : GLenum
-		{
-			Points = GL_POINTS,
-			LineStrip = GL_LINE_STRIP,
-			LineLoop = GL_LINE_LOOP,
-			Lines = GL_LINES,
-			LineStripAdjacency = GL_LINE_STRIP_ADJACENCY, // GL 3.2
-			LinesAdjacency = GL_LINES_ADJACENCY, // GL 3.2
-			TriangleStrip = GL_TRIANGLE_STRIP,
-			TriangleFan = GL_TRIANGLE_FAN,
-			Triangles = GL_TRIANGLES,
-			TriangleStripAdjacency = GL_TRIANGLE_STRIP_ADJACENCY, // GL 3.2
-			TrianglesAdjacency = GL_TRIANGLES_ADJACENCY, // GL 3.2
-			Patches = GL_PATCHES,
-		};*/
 	protected:
 		GLuint vertexArray;
 		GlBufferHandle vertexBuffer;

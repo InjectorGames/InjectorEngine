@@ -3,6 +3,7 @@
 #include <injector/graphics/vk_camera_system.hpp>
 #include <injector/graphics/vk_render_system.hpp>
 #include <injector/graphics/vk_color_pipeline.hpp>
+#include <injector/graphics/vk_diffuse_pipeline.hpp>
 
 #include <SDL_vulkan.h>
 
@@ -841,7 +842,7 @@ namespace INJECTOR_NAMESPACE
 		}
 
 		for (auto& pipeline : pipelines)
-			pipeline->recreate(images.size(), renderPass, surfaceExtent);
+			pipeline->recreate(memoryAllocator, renderPass, images.size(), surfaceExtent);
 	}
 
 	uint32_t VkWindow::beginImage()
@@ -1116,6 +1117,16 @@ namespace INJECTOR_NAMESPACE
 
 		if(!pipelines.emplace(pipeline).second)
 			throw std::runtime_error("Failed to add created Vulkan color pipeline");
+
+		return pipeline;
+	}
+	DiffusePipelineHandle VkWindow::createDiffusePipeline()
+	{
+		auto pipeline = std::make_shared<VkDiffusePipeline>(
+			device, memoryAllocator, renderPass, swapchainDatas.size(), surfaceExtent);
+
+		if (!pipelines.emplace(pipeline).second)
+			throw std::runtime_error("Failed to add created Vulkan diffuse pipeline");
 
 		return pipeline;
 	}

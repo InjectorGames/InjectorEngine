@@ -33,11 +33,11 @@ namespace INJECTOR_NAMESPACE
 		throw std::runtime_error("Not implemented diffuse pipeline function");
 	}
 
-	virtual const Vector3& DiffusePipeline::getLightDirection() const
+	const Vector3& DiffusePipeline::getLightDirection() const
 	{
 		throw std::runtime_error("Not implemented diffuse pipeline function");
 	}
-	virtual void DiffusePipeline::setLightDirection(const Vector3& lightDirection)
+	void DiffusePipeline::setLightDirection(const Vector3& lightDirection)
 	{
 		throw std::runtime_error("Not implemented diffuse pipeline function");
 	}

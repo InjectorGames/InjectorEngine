@@ -31,23 +31,14 @@ namespace INJECTOR_NAMESPACE
 				fragmentShader.getShaderModule(), "main", nullptr),
 		};
 
-		auto vertexInputBindingDescriptions =
-			std::vector<vk::VertexInputBindingDescription> 
-		{
-			vk::VertexInputBindingDescription(
-				0, sizeof(float) * 3, vk::VertexInputRate::eVertex),
-		};
-		auto vertexInputAttributeDescriptions = 
-			std::vector<vk::VertexInputAttributeDescription>
-		{
-			vk::VertexInputAttributeDescription(
-				0, 0, vk::Format::eR32G32B32Sfloat, 0),
-		};
+		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
+			0, sizeof(float) * 3, vk::VertexInputRate::eVertex);
+		auto vertexInputAttributeDescription = vk::VertexInputAttributeDescription(
+			0, 0, vk::Format::eR32G32B32Sfloat, 0);
+
 		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo({},
-			static_cast<uint32_t>(vertexInputBindingDescriptions.size()),
-			vertexInputBindingDescriptions.data(),
-			static_cast<uint32_t>(vertexInputAttributeDescriptions.size()),
-			vertexInputAttributeDescriptions.data());
+			1, &vertexInputBindingDescription,
+			1, &vertexInputAttributeDescription);
 
 		auto pipelineInputAssemblyStateCreateInfo =
 			vk::PipelineInputAssemblyStateCreateInfo({}, vk::PrimitiveTopology::eTriangleList, false);
@@ -61,27 +52,21 @@ namespace INJECTOR_NAMESPACE
 
 		auto pipelineRasterizationStateCreateInfo = vk::PipelineRasterizationStateCreateInfo(
 			{}, false, false,
-			vk::PolygonMode::eFill, vk::CullModeFlagBits::eNone, vk::FrontFace::eClockwise,
+			vk::PolygonMode::eFill, vk::CullModeFlagBits::eBack, vk::FrontFace::eClockwise,
 			false, 0.0f, 0.0f, 0.0f, 1.0f);
 
 		auto pipelineMultisampleStateCreateInfo = vk::PipelineMultisampleStateCreateInfo(
-			{}, vk::SampleCountFlagBits::e1, false, 1.0f, nullptr, false, false);
+			{}, vk::SampleCountFlagBits::e1, false, {}, {}, false, false);
 
 		auto pielineColorBlendAttacmentStateCreateInfo = vk::PipelineColorBlendAttachmentState(
-			false,
-			vk::BlendFactor::eOne,
-			vk::BlendFactor::eZero,
-			vk::BlendOp::eAdd,
-			vk::BlendFactor::eOne,
-			vk::BlendFactor::eZero,
-			vk::BlendOp::eAdd,
+			false, {}, {}, {}, {}, {}, {},
 			vk::ColorComponentFlagBits::eR |
 			vk::ColorComponentFlagBits::eG |
 			vk::ColorComponentFlagBits::eB |
 			vk::ColorComponentFlagBits::eA);
 
 		auto pipelineColorBlendStateCreateInfo =
-			vk::PipelineColorBlendStateCreateInfo({}, false, vk::LogicOp::eCopy,
+			vk::PipelineColorBlendStateCreateInfo({}, false, {},
 				1, &pielineColorBlendAttacmentStateCreateInfo);
 
 		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo({},
@@ -103,7 +88,7 @@ namespace INJECTOR_NAMESPACE
 		auto resultValue = device.createGraphicsPipeline(pipelineCache, graphicsPipelineCreateInfo);
 
 		if (resultValue.result != vk::Result::eSuccess)
-			throw std::runtime_error("Failed to create Vulkan pipeline");
+			throw std::runtime_error("Failed to create Vulkan color pipeline");
 
 		return resultValue.value;
 	}
@@ -112,10 +97,8 @@ namespace INJECTOR_NAMESPACE
 		vk::Device device,
 		vk::RenderPass renderPass,
 		const vk::Extent2D& surfaceExtent,
-		const Matrix4& _mvp,
 		const Vector4& _color) :
 		VkPipeline(device),
-		mvp(_mvp),
 		color(_color)
 	{
 		auto pushConstantRanges = std::vector<vk::PushConstantRange>
@@ -146,15 +129,6 @@ namespace INJECTOR_NAMESPACE
 		device.destroyPipelineLayout(pipelineLayout);
 	}
 
-	const Matrix4& VkColorPipeline::getMVP() const
-	{
-		return mvp;
-	}
-	void VkColorPipeline::setMVP(const Matrix4& _mvp)
-	{
-		mvp = Matrix4(_mvp);
-	}
-
 	const Vector4& VkColorPipeline::getColor() const
 	{
 		return color;
@@ -165,23 +139,36 @@ namespace INJECTOR_NAMESPACE
 	}
 
 	void VkColorPipeline::recreate(
-		uint32_t imageCount,
+		VmaAllocator allocator,
 		vk::RenderPass renderPass,
-		vk::Extent2D surfaceExtent)
+		uint32_t imageCount,
+		const vk::Extent2D& surfaceExtent)
 	{
 		device.destroyPipeline(pipeline);
 
 		pipeline = createPipeline(
 			device, pipelineCache, pipelineLayout, renderPass, surfaceExtent);
 	}
+	void VkColorPipeline::flush(
+		size_t imageIndex)
+	{}
 	void VkColorPipeline::bind(
-		uint32_t imageIndex,
-		vk::CommandBuffer commandBuffer)
+		vk::CommandBuffer commandBuffer,
+		size_t imageIndex)
 	{
+		VkPipeline::bind(commandBuffer, imageIndex);
 		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
-		commandBuffer.pushConstants(pipelineLayout, vk::ShaderStageFlagBits::eVertex,
-			0, sizeof(Matrix4), &mvp);
-		commandBuffer.pushConstants(pipelineLayout, vk::ShaderStageFlagBits::eFragment, 
-			sizeof(Matrix4), sizeof(Vector4), &color);
+	}
+	void VkColorPipeline::setUniforms(
+		const Matrix4& model,
+		const Matrix4& view,
+		const Matrix4& proj,
+		const Matrix4& viewProj,
+		const Matrix4& mvp)
+	{
+		bindedCommandBuffer.pushConstants(pipelineLayout, 
+			vk::ShaderStageFlagBits::eVertex, 0, sizeof(Matrix4), &mvp);
+		bindedCommandBuffer.pushConstants(pipelineLayout,
+			vk::ShaderStageFlagBits::eFragment, sizeof(Matrix4), sizeof(Vector4), &color);
 	}
 }

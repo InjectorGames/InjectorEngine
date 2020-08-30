@@ -11,6 +11,7 @@ namespace INJECTOR_NAMESPACE
 	protected:
 		vk::Device device;
 		vk::PipelineCache pipelineCache;
+		vk::CommandBuffer bindedCommandBuffer;
 	public:
 		VkPipeline(vk::Device device);
 		virtual ~VkPipeline();
@@ -19,12 +20,15 @@ namespace INJECTOR_NAMESPACE
 		vk::PipelineCache getPipelineCache();
 
 		virtual void recreate(
-			uint32_t imageCount,
+			VmaAllocator allocator,
 			vk::RenderPass renderPass,
-			vk::Extent2D surfaceExtent);
+			uint32_t imageCount,
+			const vk::Extent2D& surfaceExtent);
+		virtual void flush(
+			size_t imageIndex);
 		virtual void bind(
-			uint32_t imageIndex,
-			vk::CommandBuffer commandBuffer);
+			vk::CommandBuffer commandBuffer,
+			size_t imageIndex);
 	};
 
 	using VkPipelineHandle = std::shared_ptr<VkPipeline>;

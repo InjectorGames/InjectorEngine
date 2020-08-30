@@ -81,7 +81,9 @@ namespace INJECTOR_NAMESPACE
 	}*/
 
 	GlPipeline::GlPipeline(
+		GLenum _drawMode,
 		const std::vector<GlVertexAttribute>& _vertexAttributes) : 
+		drawMode(_drawMode),
 		vertexAttributes(_vertexAttributes)
 	{
 		program = glCreateProgram();
@@ -95,11 +97,19 @@ namespace INJECTOR_NAMESPACE
 	{
 		return program;
 	}
+	GLenum GlPipeline::getDrawMode() const noexcept
+	{
+		return drawMode;
+	}
 	const std::vector<GlVertexAttribute>& GlPipeline::getVertexAttributes() const noexcept
 	{
 		return vertexAttributes;
 	}
 
+	void GlPipeline::flush()
+	{
+		throw std::runtime_error("Not implemented OpenGL pipeline function");
+	}
 	void GlPipeline::bind()
 	{
 		glUseProgram(program);

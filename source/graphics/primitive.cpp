@@ -2,36 +2,88 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	const std::vector<float> Primitive::squareVertices =
+	const std::vector<Vector3> Primitive::squareVertices =
 	{
-		-0.5f, -0.5f, 0.0f, -0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f,
+		Vector3(-0.5f, -0.5f, 0.0f),
+		Vector3(-0.5f, 0.5f, 0.0f), 
+		Vector3(0.5f, 0.5f, 0.0f),
+		Vector3(0.5f, -0.5f, 0.0f),
 	};
-	const std::vector<float> Primitive::squareNormals =
+	const std::vector<Vector3> Primitive::squareNormals =
 	{
-		0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f,
+		Vector3(0.0f, 0.0f, -1.0f),
+		Vector3(0.0f, 0.0f, -1.0f),
+		Vector3(0.0f, 0.0f, -1.0f),
+		Vector3(0.0f, 0.0f, -1.0f),
 	};
 	const std::vector<uint16_t> Primitive::squareIndices =
 	{
 		0, 1, 2, 0, 2, 3,
 	};
 
-	const std::vector<float> Primitive::cubeVertices =
+	const std::vector<Vector3> Primitive::cubeVertices =
 	{
-		-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f,
-		-0.5f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f,
-		-0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f,
+		Vector3(-0.5f, -0.5f, 0.5f),
+		Vector3(-0.5f, 0.5f, 0.5f),
+		Vector3(-0.5f, 0.5f, -0.5f),
+		Vector3(-0.5f, -0.5f, -0.5f),
+
+		Vector3(0.5f, -0.5f, -0.5f),
+		Vector3(0.5f, 0.5f, -0.5f),
+		Vector3(0.5f, 0.5f, 0.5f),
+		Vector3(0.5f, -0.5f, 0.5f),
+
+		Vector3(-0.5f, -0.5f, 0.5f),
+		Vector3(-0.5f, -0.5f, -0.5f),
+		Vector3(0.5f, -0.5f, -0.5f),
+		Vector3(0.5f, -0.5f, 0.5f),
+
+		Vector3(-0.5f, 0.5f, -0.5f),
+		Vector3(-0.5f, 0.5f, 0.5f),
+		Vector3(0.5f, 0.5f, 0.5f),
+		Vector3(0.5f, 0.5f, -0.5f),
+
+		Vector3(-0.5f, -0.5f, -0.5f),
+		Vector3(-0.5f, 0.5f, -0.5f),
+		Vector3(0.5f, 0.5f, -0.5f),
+		Vector3(0.5f, -0.5f, -0.5f),
+
+		Vector3(0.5f, -0.5f, 0.5f),
+		Vector3(0.5f, 0.5f, 0.5f),
+		Vector3(-0.5f, 0.5f, 0.5f),
+		Vector3(-0.5f, -0.5f, 0.5f),
 	};
-	const std::vector<float> Primitive::cubeNormals =
+	const std::vector<Vector3> Primitive::cubeNormals =
 	{
-		-1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f,
-		0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+		Vector3(-1.0f, 0.0f, 0.0f), 
+		Vector3(-1.0f, 0.0f, 0.0f), 
+		Vector3(-1.0f, 0.0f, 0.0f),
+		Vector3(-1.0f, 0.0f, 0.0f),
+
+		Vector3(1.0f, 0.0f, 0.0f), 
+		Vector3(1.0f, 0.0f, 0.0f),
+		Vector3(1.0f, 0.0f, 0.0f), 
+		Vector3(1.0f, 0.0f, 0.0f),
+
+		Vector3(0.0f, -1.0f, 0.0f),
+		Vector3(0.0f, -1.0f, 0.0f),
+		Vector3(0.0f, -1.0f, 0.0f), 
+		Vector3(0.0f, -1.0f, 0.0f),
+
+		Vector3(0.0f, 1.0f, 0.0f), 
+		Vector3(0.0f, 1.0f, 0.0f), 
+		Vector3(0.0f, 1.0f, 0.0f), 
+		Vector3(0.0f, 1.0f, 0.0f),
+
+		Vector3(0.0f, 0.0f, -1.0f),
+		Vector3(0.0f, 0.0f, -1.0f),
+		Vector3(0.0f, 0.0f, -1.0f),
+		Vector3(0.0f, 0.0f, -1.0f),
+
+		Vector3(0.0f, 0.0f, 1.0f),
+		Vector3(0.0f, 0.0f, 1.0f), 
+		Vector3(0.0f, 0.0f, 1.0f), 
+		Vector3(0.0f, 0.0f, 1.0f),
 	};
 	const std::vector<uint16_t> Primitive::cubeIndices =
 	{
@@ -43,29 +95,26 @@ namespace INJECTOR_NAMESPACE
 		20, 21, 22, 20, 22, 23,
 	};
 
-	const std::vector<float> Primitive::axisVertices =
+	const std::vector<Vector3> Primitive::axisVertices =
 	{
-		0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		Vector3(0.0f, 0.0f, 0.0f),
+		Vector3(1.0f, 0.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 0.0f),
+		Vector3(0.0f, 1.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 1.0f),
 	};
-	const std::vector<float> Primitive::axisColors =
+	const std::vector<Vector3> Primitive::axisColors =
 	{
-		1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+		Vector3(1.0f, 0.0f, 0.0f), 
+		Vector3(1.0f, 0.0f, 0.0f),
+		Vector3(0.0f, 1.0f, 0.0f),
+		Vector3(0.0f, 1.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 1.0f),
+		Vector3(0.0f, 0.0f, 1.0f),
 	};
 	const std::vector<uint16_t> Primitive::axisIndices =
 	{
 		0, 1, 2, 3, 4, 5,
-	};
-
-	const std::vector<float> Primitive::gradientSkyVertices =
-	{
-		-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
-	};
-	const std::vector<uint16_t> Primitive::gradientSkyIndices =
-	{
-		0, 1, 2, 0, 2, 3,
 	};
 }

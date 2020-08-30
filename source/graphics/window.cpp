@@ -255,27 +255,71 @@ namespace INJECTOR_NAMESPACE
 	{
 		throw std::runtime_error("Not implemented window function");
 	}
+	DiffusePipelineHandle Window::createDiffusePipeline()
+	{
+		throw std::runtime_error("Not implemented window function");
+	}
 
-	MeshHandle Window::createSquareMesh(bool staticUse)
+	MeshHandle Window::createSquareMeshV(bool staticUse)
 	{
 		return createMesh(
 			Primitive::squareIndices.size(),
 			BufferIndex::UnsignedShort,
 			Primitive::squareVertices.data(),
-			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]),
+			Primitive::squareVertices.size() * sizeof(Vector3),
 			Primitive::squareIndices.data(),
-			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]),
+			Primitive::squareIndices.size() * sizeof(Vector3),
 			staticUse);
 	}
-	MeshHandle Window::createCubeMesh(bool staticUse)
+	MeshHandle Window::createSquareMeshVN(bool staticUse)
+	{
+		auto vertices = std::vector<Vector3>(
+			Primitive::squareVertices.size() + Primitive::squareNormals.size());
+
+		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 2)
+		{
+			memcpy(&vertices[j], &Primitive::squareVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 1], &Primitive::squareNormals[i], sizeof(Vector3));
+		}
+
+		return createMesh(
+			Primitive::squareIndices.size(),
+			BufferIndex::UnsignedShort,
+			vertices.data(),
+			vertices.size() * sizeof(Vector3),
+			Primitive::squareIndices.data(),
+			Primitive::squareIndices.size() * sizeof(Vector3),
+			staticUse);
+	}
+	MeshHandle Window::createCubeMeshV(bool staticUse)
 	{
 		return createMesh(
 			Primitive::cubeIndices.size(),
 			BufferIndex::UnsignedShort,
 			Primitive::cubeVertices.data(),
-			Primitive::cubeVertices.size() * sizeof(Primitive::cubeVertices[0]),
+			Primitive::cubeVertices.size() * sizeof(Vector3),
 			Primitive::cubeIndices.data(),
-			Primitive::cubeIndices.size() * sizeof(Primitive::cubeIndices[0]),
+			Primitive::cubeIndices.size() * sizeof(Vector3),
+			staticUse);
+	}
+	MeshHandle Window::createCubeMeshVN(bool staticUse)
+	{
+		auto vertices = std::vector<Vector3>(
+			Primitive::cubeVertices.size() + Primitive::cubeNormals.size());
+
+		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 2)
+		{
+			memcpy(&vertices[j], &Primitive::cubeVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 1], &Primitive::cubeNormals[i], sizeof(Vector3));
+		}
+
+		return createMesh(
+			Primitive::cubeIndices.size(),
+			BufferIndex::UnsignedShort,
+			vertices.data(),
+			vertices.size() * sizeof(Vector3),
+			Primitive::cubeIndices.data(),
+			Primitive::cubeIndices.size() * sizeof(Vector3),
 			staticUse);
 	}
 

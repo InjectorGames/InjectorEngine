@@ -10,7 +10,6 @@ namespace INJECTOR_NAMESPACE
 		vk::PipelineLayout pipelineLayout;
 		vk::Pipeline pipeline;
 
-		Matrix4 mvp;
 		Vector4 color;
 
 		static vk::Pipeline createPipeline(
@@ -24,23 +23,28 @@ namespace INJECTOR_NAMESPACE
 			vk::Device device,
 			vk::RenderPass renderPass,
 			const vk::Extent2D& surfaceExtent,
-			const Matrix4& mvp = Matrix4::identity,
 			const Vector4& color = Vector4::one);
 		virtual ~VkColorPipeline();
-
-		const Matrix4& getMVP() const override;
-		void setMVP(const Matrix4& mvp) override;
 
 		const Vector4& getColor() const override;
 		void setColor(const Vector4& color) override;
 
 		void recreate(
-			uint32_t imageCount,
+			VmaAllocator allocator,
 			vk::RenderPass renderPass,
-			vk::Extent2D surfaceExtent) override;
+			uint32_t imageCount,
+			const vk::Extent2D& surfaceExtent) override;
+		void flush(
+			size_t imageIndex) override;
 		void bind(
-			uint32_t imageIndex,
-			vk::CommandBuffer commandBuffer) override;
+			vk::CommandBuffer commandBuffer,
+			size_t imageIndex) override;
+		void setUniforms(
+			const Matrix4& model,
+			const Matrix4& view,
+			const Matrix4& proj,
+			const Matrix4& viewProj,
+			const Matrix4& mvp) override;
 	};
 
 	using VkColorPipelineHandle = std::shared_ptr<VkColorPipeline>;

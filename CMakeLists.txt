@@ -38,6 +38,7 @@ add_library(InjectorEngine STATIC
 	source/graphics/camera_component.cpp
 	source/graphics/camera_system.cpp
 	source/graphics/color_pipeline.cpp
+	source/graphics/diffuse_pipeline.cpp
 	source/graphics/fly_transform_system.cpp
 	source/graphics/gl_buffer.cpp
 	source/graphics/gl_camera_system.cpp
@@ -127,9 +128,13 @@ endif()
 set(INJECTOR_RESOURCES
 	shaders/color.frag
 	shaders/color.vert
+	shaders/diffuse.frag
+	shaders/diffuse.vert
 
 	shaders/color.frag.spv
 	shaders/color.vert.spv
+	shaders/diffuse.frag.spv
+	shaders/diffuse.vert.spv
 )
 
 foreach(FILE ${INJECTOR_RESOURCES})

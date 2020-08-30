@@ -70,11 +70,14 @@ namespace INJECTOR_NAMESPACE
 				auto distance = cameraData.transform->position.getDistance(
 					-renderData.transform->position);
 				renderPairs.emplace(distance, renderData);
+				renderData.pipeline->flush();
 			}
 
 			auto& viewMatrix = cameraData.transform->matrix;
 			auto& projMatrix = cameraData.camera->matrix;
 			auto viewProjMatrix = projMatrix * viewMatrix;
+
+			GlPipelineHandle lastPipeline = nullptr;
 
 			for (auto& renderPair : renderPairs)
 			{
@@ -83,14 +86,16 @@ namespace INJECTOR_NAMESPACE
 				auto& modelMatrix = renderData.transform->matrix;
 				auto mvpMatrix = viewProjMatrix * modelMatrix;
 
-				renderData.pipeline->setModel(modelMatrix);
-				renderData.pipeline->setView(viewMatrix);
-				renderData.pipeline->setProj(projMatrix);
-				renderData.pipeline->setViewProj(viewProjMatrix);
-				renderData.pipeline->setMVP(mvpMatrix);
-				renderData.pipeline->bind();
+				if (renderData.pipeline != lastPipeline)
+				{
+					lastPipeline = renderData.pipeline;
+					renderData.pipeline->bind();
+				}
 
-				renderData.mesh->draw(GL_TRIANGLES,
+				renderData.pipeline->setUniforms(
+					modelMatrix, viewMatrix, projMatrix, viewProjMatrix, mvpMatrix);
+				renderData.mesh->draw(
+					renderData.pipeline->getDrawMode(),
 					renderData.pipeline->getVertexAttributes());
 			}
 		}

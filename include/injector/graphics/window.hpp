@@ -6,6 +6,7 @@
 #include <injector/graphics/render_system.hpp>
 #include <injector/graphics/camera_system.hpp>
 #include <injector/graphics/color_pipeline.hpp>
+#include <injector/graphics/diffuse_pipeline.hpp>
 
 #include <SDL.h>
 
@@ -75,9 +76,12 @@ namespace INJECTOR_NAMESPACE
 			bool staticUse);
 
 		virtual ColorPipelineHandle createColorPipeline();
+		virtual DiffusePipelineHandle createDiffusePipeline();
 
-		MeshHandle createSquareMesh(bool staticUse);
-		MeshHandle createCubeMesh(bool staticUse);
+		MeshHandle createSquareMeshV(bool staticUse);
+		MeshHandle createSquareMeshVN(bool staticUse);
+		MeshHandle createCubeMeshV(bool staticUse);
+		MeshHandle createCubeMeshVN(bool staticUse);
 
 		static std::shared_ptr<Window> create(
 			const std::string& title = Window::defaultTitle,

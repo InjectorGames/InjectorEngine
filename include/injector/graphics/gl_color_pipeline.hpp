@@ -10,22 +10,28 @@ namespace INJECTOR_NAMESPACE
 		GLint mvpLocation;
 		GLint colorLocation;
 
-		Matrix4 mvp;
 		Vector4 color;
 	public:
 		static const std::vector<GlVertexAttribute> colorAttributes;
 
-		GlColorPipeline(bool gles,
+		GlColorPipeline(
+			bool gles,
 			const Matrix4& mvp = Matrix4::identity,
 			const Vector4& color = Vector4::one);
 		virtual ~GlColorPipeline();
 
-		const Matrix4& getMVP() const override;
-		void setMVP(const Matrix4& mvp) override;
-
 		const Vector4& getColor() const override;
 		void setColor(const Vector4& color) override;
 
+		void flush() override;
 		void bind() override;
+
+		void setUniforms(
+			const Matrix4& model,
+			const Matrix4& view,
+			const Matrix4& proj,
+			const Matrix4& viewProj,
+			const Matrix4& mvp) override;
+
 	};
 }

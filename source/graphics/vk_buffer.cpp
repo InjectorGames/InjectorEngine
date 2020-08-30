@@ -173,13 +173,13 @@ namespace INJECTOR_NAMESPACE
 		if(_size > size)
 			throw std::runtime_error("Failed to set Vulkan buffer data, out of range");
 
-		void* mapData;
+		void* mappedData;
 
-		auto result = vmaMapMemory(allocator, allocation, &mapData);
+		auto result = vmaMapMemory(allocator, allocation, &mappedData);
 		if (result != VK_SUCCESS)
 			throw std::runtime_error("Failed to map Vulkan buffer");
 
-		memcpy(mapData, data, _size);
+		memcpy(mappedData, data, _size);
 
 		flush(_size, 0);
 		vmaUnmapMemory(allocator, allocation);

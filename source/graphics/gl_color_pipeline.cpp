@@ -18,8 +18,7 @@ namespace INJECTOR_NAMESPACE
 		bool gles,
 		const Matrix4& _mvp,
 		const Vector4& _color) :
-		GlPipeline(colorAttributes),
-		mvp(_mvp),
+		GlPipeline(GL_TRIANGLES, colorAttributes),
 		color(_color)
 	{
 		auto vertexSource = FileStream::readAllText(
@@ -50,15 +49,6 @@ namespace INJECTOR_NAMESPACE
 	GlColorPipeline::~GlColorPipeline()
 	{}
 
-	const Matrix4& GlColorPipeline::getMVP() const
-	{
-		return mvp;
-	}
-	void GlColorPipeline::setMVP(const Matrix4& _mvp)
-	{
-		mvp = Matrix4(_mvp);
-	}
-
 	const Vector4& GlColorPipeline::getColor() const
 	{
 		return color;
@@ -68,17 +58,29 @@ namespace INJECTOR_NAMESPACE
 		color = Vector4(_color);
 	}
 
-	void GlColorPipeline::bind()
+	void GlColorPipeline::flush()
 	{
 		GlPipeline::bind();
 
-		glUniformMatrix4fv(mvpLocation, GL_ONE, GL_FALSE,
-			reinterpret_cast<const GLfloat*>(&mvp));
-		glUniform4fv(colorLocation, GL_ONE,
+		glUniform4fv(colorLocation, GL_ONE, 
 			reinterpret_cast<const GLfloat*>(&color));
-
+	}
+	void GlColorPipeline::bind()
+	{
+		GlPipeline::bind();
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
+	}
+
+	void GlColorPipeline::setUniforms(
+		const Matrix4& model,
+		const Matrix4& view,
+		const Matrix4& proj,
+		const Matrix4& viewProj,
+		const Matrix4& mvp)
+	{
+		glUniformMatrix4fv(mvpLocation, GL_ONE, GL_FALSE,
+			reinterpret_cast<const GLfloat*>(&mvp));
 	}
 }

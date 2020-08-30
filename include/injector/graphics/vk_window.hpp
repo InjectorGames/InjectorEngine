@@ -139,6 +139,7 @@ namespace INJECTOR_NAMESPACE
 			bool staticUse) override;
 
 		ColorPipelineHandle createColorPipeline() override;
+		DiffusePipelineHandle createDiffusePipeline() override;
 	};
 
 	using VkWindowHandle = std::shared_ptr<VkWindow>;
