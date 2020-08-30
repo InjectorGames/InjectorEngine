@@ -3,12 +3,9 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	enum class BufferUsage
+	enum class BufferIndex
 	{
-		CpuOnly,
-		GpuOnly,
-		CpuToGpu,
-		GpuToCpu,
-		CpuCopy,
+		UnsignedShort,
+		UnsignedInt,
 	};
 }

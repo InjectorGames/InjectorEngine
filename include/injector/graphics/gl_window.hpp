@@ -30,8 +30,15 @@ namespace INJECTOR_NAMESPACE
 		CameraSystemHandle createCameraSystem() override;
 		RenderSystemHandle createRenderSystem() override;
 
-		//ColorMaterialHandle createColorMaterial() override;
+		MeshHandle createMesh(
+			size_t indexCount,
+			BufferIndex indexType,
+			const void* vertexData,
+			size_t vertexSize,
+			const void* indexData,
+			size_t indexSize,
+			bool staticUse) override;
 
-		MeshHandle createSquareMesh() override;
+		ColorPipelineHandle createColorPipeline() override;
 	};
 }

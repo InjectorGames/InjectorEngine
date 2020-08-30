@@ -1,5 +1,6 @@
 #pragma once
 #include <injector/graphics/window.hpp>
+#include <injector/graphics/vk_buffer.hpp>
 #include <injector/graphics/vk_pipeline.hpp>
 #include <injector/graphics/vk_swapchain_data.hpp>
 
@@ -114,6 +115,9 @@ namespace INJECTOR_NAMESPACE
 			uint32_t flags = defaultFlags);
 		virtual ~VkWindow();
 
+		vk::CommandBuffer getGraphicsCommandBuffer(uint32_t imageIndex) const;
+		vk::CommandBuffer getPresentCommandBuffer(uint32_t imageIndex) const;
+
 		void onResize(IntVector2 size) override;
 
 		uint32_t beginImage();
@@ -122,27 +126,19 @@ namespace INJECTOR_NAMESPACE
 		void beginRecord(uint32_t imageIndex);
 		void endRecord(uint32_t imageIndex);
 
-		vk::CommandBuffer getGraphicsCommandBuffer(uint32_t imageIndex) const;
-		vk::CommandBuffer getPresentCommandBuffer(uint32_t imageIndex) const;
-
 		CameraSystemHandle createCameraSystem() override;
 		RenderSystemHandle createRenderSystem() override;
 
-		BufferHandle createBuffer(
-			size_t size,
-			BufferType type,
-			BufferUsage usage,
-			const void* data = nullptr) override;
 		MeshHandle createMesh(
 			size_t indexCount,
-			MeshIndex indexType,
-			const BufferHandle& vertexBuffer,
-			const BufferHandle& indexBuffer) override;
+			BufferIndex indexType,
+			const void* vertexData,
+			size_t vertexSize,
+			const void* indexData,
+			size_t indexSize,
+			bool staticUse) override;
 
 		ColorPipelineHandle createColorPipeline() override;
-
-		MeshHandle createSquareMesh() override;
-		MeshHandle createCubeMesh() override;
 	};
 
 	using VkWindowHandle = std::shared_ptr<VkWindow>;

@@ -1,5 +1,6 @@
 #include <injector/graphics/window.hpp>
 #include <injector/engine.hpp>
+#include <injector/graphics/primitive.hpp>
 #include <injector/graphics/gl_window.hpp>
 #include <injector/graphics/vk_window.hpp>
 
@@ -19,7 +20,10 @@ namespace INJECTOR_NAMESPACE
 	Window::Window(const std::string& title,
 		IntVector2 position,
 		IntVector2 size,
-		uint32_t flags)
+		uint32_t flags) :
+		translation(),
+		rotation(),
+		mouseMotion()
 	{
 		window = SDL_CreateWindow(title.c_str(),
 			position.x, position.y, size.x, size.y, flags);
@@ -34,6 +38,19 @@ namespace INJECTOR_NAMESPACE
 	{
 		SDL_DestroyWindow(window);
 		window = nullptr;
+	}
+
+	const Vector3& Window::getTranslation() const noexcept
+	{
+		return translation;
+	}
+	const Vector3& Window::getRotation() const noexcept
+	{
+		return rotation;
+	}
+	const IntVector2& Window::getMouseMotion() const noexcept
+	{
+		return mouseMotion;
 	}
 
 	void Window::update()
@@ -62,16 +79,60 @@ namespace INJECTOR_NAMESPACE
 			{
 				mouseMotion += IntVector2(event.motion.xrel, event.motion.yrel);
 			}
-			/*else if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.windowID == id)
+			else if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.windowID == windowID)
 			{
-				events.emit<KeyboardEvent>(event.key);
+				if (event.key.keysym.sym == SDLK_a)
+				{
+					if (event.key.state == SDL_PRESSED)
+						translation.x = -1.0f;
+					else
+						translation.x = 0.0f;
+				}
+				else if (event.key.keysym.sym == SDLK_d)
+				{
+					if (event.key.state == SDL_PRESSED)
+						translation.x = 1.0f;
+					else
+						translation.x = 0.0f;
+				}
+				else if (event.key.keysym.sym == SDLK_LCTRL)
+				{
+					if (event.key.state == SDL_PRESSED)
+						translation.y = -1.0f;
+					else
+						translation.y = 0.0f;
+				}
+				else if (event.key.keysym.sym == SDLK_SPACE)
+				{
+					if (event.key.state == SDL_PRESSED)
+						translation.y = 1.0f;
+					else
+						translation.y = 0.0f;
+				}
+				else if (event.key.keysym.sym == SDLK_s)
+				{
+					if (event.key.state == SDL_PRESSED)
+						translation.z = -1.0f;
+					else
+						translation.z = 0.0f;
+				}
+				else if (event.key.keysym.sym == SDLK_w)
+				{
+					if (event.key.state == SDL_PRESSED)
+						translation.z = 1.0f;
+					else
+						translation.z = 0.0f;
+				}
 			}
-			
+			/*
+			// TODO: add mouse fire
 			else if ((event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) && event.button.windowID == id)
 			{
 				events.emit<MouseButtonEvent>(event.button);
 			}*/
 		}
+
+		rotation = Vector3(mouseMotion.y, mouseMotion.x, 0.0f);
 
 		if(!isMinimized())
 			Manager::update();
@@ -106,10 +167,6 @@ namespace INJECTOR_NAMESPACE
 		auto position = IntVector2();
 		SDL_GetGlobalMouseState(&position.x, &position.y);
 		return position;
-	}
-	IntVector2 Window::getMouseMotion() const noexcept
-	{
-		return mouseMotion;
 	}
 	uint32_t Window::getMouseButtons() const noexcept
 	{
@@ -182,19 +239,14 @@ namespace INJECTOR_NAMESPACE
 		throw std::runtime_error("Not implemented window function");
 	}
 
-	BufferHandle Window::createBuffer(
-		size_t size,
-		BufferType type,
-		BufferUsage usage,
-		const void* data)
-	{
-		throw std::runtime_error("Not implemented window function");
-	}
 	MeshHandle Window::createMesh(
 		size_t indexCount,
-		MeshIndex indexType,
-		const BufferHandle& vertexBuffer,
-		const BufferHandle& indexBuffer)
+		BufferIndex indexType,
+		const void* vertexData,
+		size_t vertexSize,
+		const void* indexData,
+		size_t indexSize,
+		bool staticUse)
 	{
 		throw std::runtime_error("Not implemented window function");
 	}
@@ -204,13 +256,27 @@ namespace INJECTOR_NAMESPACE
 		throw std::runtime_error("Not implemented window function");
 	}
 
-	MeshHandle Window::createSquareMesh()
+	MeshHandle Window::createSquareMesh(bool staticUse)
 	{
-		throw std::runtime_error("Not implemented window function");
+		return createMesh(
+			Primitive::squareIndices.size(),
+			BufferIndex::UnsignedShort,
+			Primitive::squareVertices.data(),
+			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]),
+			Primitive::squareIndices.data(),
+			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]),
+			staticUse);
 	}
-	MeshHandle Window::createCubeMesh()
+	MeshHandle Window::createCubeMesh(bool staticUse)
 	{
-		throw std::runtime_error("Not implemented window function");
+		return createMesh(
+			Primitive::cubeIndices.size(),
+			BufferIndex::UnsignedShort,
+			Primitive::cubeVertices.data(),
+			Primitive::cubeVertices.size() * sizeof(Primitive::cubeVertices[0]),
+			Primitive::cubeIndices.data(),
+			Primitive::cubeIndices.size() * sizeof(Primitive::cubeIndices[0]),
+			staticUse);
 	}
 
 	std::shared_ptr<Window> Window::create(

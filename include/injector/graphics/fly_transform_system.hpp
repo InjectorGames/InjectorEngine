@@ -10,8 +10,6 @@ namespace INJECTOR_NAMESPACE
 		WindowHandle window;
 		bool rotating;
 		Vector3 eulerAngles;
-		Vector3 translation;
-		Vector3 rotation;
 	public:
 		EntityHandle transform;
 		float speed;

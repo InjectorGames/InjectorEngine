@@ -18,6 +18,8 @@ namespace INJECTOR_NAMESPACE
 	{
 	protected:
 		SDL_Window* window;
+		Vector3 translation;
+		Vector3 rotation;
 		IntVector2 mouseMotion;
 	public:
 		static const std::string defaultTitle;
@@ -31,6 +33,10 @@ namespace INJECTOR_NAMESPACE
 			uint32_t flags = defaultFlags);
 		virtual ~Window();
 
+		const Vector3& getTranslation() const noexcept;
+		const Vector3& getRotation() const noexcept;
+		const IntVector2& getMouseMotion() const noexcept;
+
 		void update() override;
 		virtual void onResize(IntVector2 size);
 
@@ -39,7 +45,6 @@ namespace INJECTOR_NAMESPACE
 		IntVector2 getSize() const noexcept;
 		IntVector2 getMousePosition() const noexcept;
 		IntVector2 getGlobalMousePosition() const noexcept;
-		IntVector2 getMouseMotion() const noexcept;
 		uint32_t getMouseButtons() const noexcept;
 		uint32_t getGlobalMouseButtons() const noexcept;
 		void getMouseState(IntVector2& position, uint32_t& buttons) const noexcept;
@@ -60,21 +65,19 @@ namespace INJECTOR_NAMESPACE
 		virtual CameraSystemHandle createCameraSystem();
 		virtual RenderSystemHandle createRenderSystem();
 
-		virtual BufferHandle createBuffer(
-			size_t size,
-			BufferType type,
-			BufferUsage usage,
-			const void* data = nullptr);
 		virtual MeshHandle createMesh(
 			size_t indexCount,
-			MeshIndex indexType,
-			const BufferHandle& vertexBuffer,
-			const BufferHandle& indexBuffer);
+			BufferIndex indexType,
+			const void* vertexData,
+			size_t vertexSize,
+			const void* indexData,
+			size_t indexSize,
+			bool staticUse);
 
 		virtual ColorPipelineHandle createColorPipeline();
 
-		virtual MeshHandle createSquareMesh();
-		virtual MeshHandle createCubeMesh();
+		MeshHandle createSquareMesh(bool staticUse);
+		MeshHandle createCubeMesh(bool staticUse);
 
 		static std::shared_ptr<Window> create(
 			const std::string& title = Window::defaultTitle,

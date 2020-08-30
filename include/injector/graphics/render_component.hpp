@@ -9,17 +9,11 @@ namespace INJECTOR_NAMESPACE
 	{
 		PipelineHandle pipeline;
 		MeshHandle mesh;
-		bool ascending;
-		int queue;
-		int offset;
 		bool render;
 
 		RenderComponent(
 			const PipelineHandle& pipeline = nullptr,
 			const MeshHandle& mesh = nullptr,
-			bool ascending = true,
-			int queue = 0,
-			int offset = 0,
 			bool render = true);
 		virtual ~RenderComponent();
 	};

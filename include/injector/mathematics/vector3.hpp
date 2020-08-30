@@ -20,6 +20,7 @@ namespace INJECTOR_NAMESPACE
 		float getDotProduct(const Vector3& vector) const noexcept;
 		float getDotProduct(const IntVector3& vector) const noexcept;
 		Vector3 getCrossProduct(const Vector3& vector) const noexcept;
+		Vector3 getCrossProduct(const IntVector3& vector) const noexcept;
 		float getLength() const noexcept;
 		float getDistance(const Vector3& vector) const noexcept;
 		float getDistance(const IntVector3& vector) const noexcept;

@@ -10,7 +10,7 @@ namespace INJECTOR_NAMESPACE
 	{
 		throw std::runtime_error("Not implemented color pipeline function");
 	}
-	void ColorPipeline::setColor(const Vector4& color)
+	void ColorPipeline::setColor(const Vector4& _color)
 	{
 		throw std::runtime_error("Not implemented color pipeline function");
 	}

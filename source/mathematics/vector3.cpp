@@ -51,6 +51,13 @@ namespace INJECTOR_NAMESPACE
 			z * vector.x - x * vector.z,
 			x * vector.y - y * vector.x);
 	}
+	Vector3 Vector3::getCrossProduct(const IntVector3& vector) const noexcept
+	{
+		return Vector3(
+			y * vector.z - z * vector.y,
+			z * vector.x - x * vector.z,
+			x * vector.y - y * vector.x);
+	}
 	float Vector3::getLength() const noexcept
 	{
 		return std::sqrtf(getDotProduct(*this));

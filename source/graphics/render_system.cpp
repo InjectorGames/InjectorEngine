@@ -12,20 +12,10 @@ namespace INJECTOR_NAMESPACE
 	{
 		return cameras.size();
 	}
-	size_t RenderSystem::getRenderCount() const noexcept
-	{
-		return renders.size();
-	}
-
 	bool RenderSystem::addCamera(const EntityHandle& entity) noexcept
 	{
 		return cameras.emplace(entity).second;
 	}
-	bool RenderSystem::addRender(const EntityHandle& entity) noexcept
-	{
-		return renders.emplace(entity).second;
-	}
-
 	bool RenderSystem::removeCamera(const EntityHandle& entity) noexcept
 	{
 		if (entity == nullptr)
@@ -39,26 +29,8 @@ namespace INJECTOR_NAMESPACE
 		cameras.erase(iterator);
 		return true;
 	}
-	bool RenderSystem::removeRender(const EntityHandle& entity) noexcept
-	{
-		if (entity == nullptr)
-			return false;
-
-		auto iterator = renders.find(entity);
-
-		if (iterator == renders.end())
-			return false;
-
-		renders.erase(iterator);
-		return true;
-	}
-
 	void RenderSystem::removeCameras() noexcept
 	{
 		cameras.clear();
-	}
-	void RenderSystem::removeRenders() noexcept
-	{
-		renders.clear();
 	}
 }

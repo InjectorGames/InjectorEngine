@@ -1,7 +1,5 @@
 #include <injector/graphics/vk_window.hpp>
 #include <injector/graphics/vk_mesh.hpp>
-#include <injector/graphics/vk_shader.hpp>
-#include <injector/graphics/primitive.hpp>
 #include <injector/graphics/vk_camera_system.hpp>
 #include <injector/graphics/vk_render_system.hpp>
 #include <injector/graphics/vk_color_pipeline.hpp>
@@ -768,6 +766,15 @@ namespace INJECTOR_NAMESPACE
 #endif
 	}
 
+	vk::CommandBuffer VkWindow::getGraphicsCommandBuffer(uint32_t imageIndex) const
+	{
+		return swapchainDatas.at(imageIndex)->graphicsCommandBuffer;
+	}
+	vk::CommandBuffer VkWindow::getPresentCommandBuffer(uint32_t imageIndex) const
+	{
+		return swapchainDatas.at(imageIndex)->presentCommandBuffer;
+	}
+
 	void VkWindow::onResize(IntVector2 size)
 	{
 		device.waitIdle();
@@ -997,15 +1004,6 @@ namespace INJECTOR_NAMESPACE
 		}
 	}
 
-	vk::CommandBuffer VkWindow::getGraphicsCommandBuffer(uint32_t imageIndex) const
-	{
-		return swapchainDatas[imageIndex]->graphicsCommandBuffer;
-	}
-	vk::CommandBuffer VkWindow::getPresentCommandBuffer(uint32_t imageIndex) const
-	{
-		return swapchainDatas[imageIndex]->presentCommandBuffer;
-	}
-
 	CameraSystemHandle VkWindow::createCameraSystem()
 	{
 		auto system = std::make_shared<VkCameraSystem>(*this);
@@ -1019,23 +1017,46 @@ namespace INJECTOR_NAMESPACE
 		return system;
 	}
 
-	BufferHandle VkWindow::createBuffer(
-		size_t size,
-		BufferType type,
-		BufferUsage usage,
-		const void* data)
+	MeshHandle VkWindow::createMesh(
+		size_t indexCount,
+		BufferIndex indexType,
+		const void* vertexData,
+		size_t vertexSize,
+		const void* indexData,
+		size_t indexSize,
+		bool staticUse)
 	{
-		if (usage == BufferUsage::CpuOnly ||
-			usage == BufferUsage::CpuToGpu)
+		VkBufferHandle vertexBuffer;
+		VkBufferHandle indexBuffer;
+
+		if (staticUse)
 		{
-			return std::make_shared<VkBuffer>(memoryAllocator, size, type, usage, data);
-		}
-		else if(usage == BufferUsage::GpuOnly)
-		{
-			auto stagingBuffer = VkBuffer(memoryAllocator, size, type, BufferUsage::CpuOnly,
-				data, vk::BufferUsageFlagBits::eTransferSrc);
-			auto buffer = std::make_shared<VkBuffer>(memoryAllocator, size, type, usage, 
-				nullptr, vk::BufferUsageFlagBits::eTransferDst);
+			vertexBuffer = std::make_shared<VkBuffer>(
+				memoryAllocator,
+				vertexSize,
+				vk::BufferUsageFlagBits::eVertexBuffer |
+				vk::BufferUsageFlagBits::eTransferDst,
+				VMA_MEMORY_USAGE_GPU_ONLY);
+			indexBuffer = std::make_shared<VkBuffer>(
+				memoryAllocator,
+				indexSize,
+				vk::BufferUsageFlagBits::eIndexBuffer |
+				vk::BufferUsageFlagBits::eTransferDst,
+				VMA_MEMORY_USAGE_GPU_ONLY);
+
+			auto vertexStagingBuffer = VkBuffer(
+				memoryAllocator,
+				vertexSize,
+				vk::BufferUsageFlagBits::eTransferSrc,
+				VMA_MEMORY_USAGE_CPU_ONLY);
+			vertexStagingBuffer.setData(vertexData, vertexSize);
+
+			auto indexStagingBuffer = VkBuffer(
+				memoryAllocator,
+				vertexSize,
+				vk::BufferUsageFlagBits::eTransferSrc,
+				VMA_MEMORY_USAGE_CPU_ONLY);
+			indexStagingBuffer.setData(indexData, indexSize);
 
 			vk::CommandBuffer commandBuffer;
 
@@ -1051,9 +1072,13 @@ namespace INJECTOR_NAMESPACE
 				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 			commandBuffer.begin(commandBufferBeginInfo);
 
-			auto bufferCopy = vk::BufferCopy(0, 0, size);
+			auto bufferCopy = vk::BufferCopy(0, 0, vertexSize);
 			commandBuffer.copyBuffer(
-				stagingBuffer.getBuffer(), buffer->getBuffer(), 1, &bufferCopy);
+				vertexStagingBuffer.getBuffer(), vertexBuffer->getBuffer(), 1, &bufferCopy);
+
+			bufferCopy = vk::BufferCopy(0, 0, indexSize);
+			commandBuffer.copyBuffer(
+				indexStagingBuffer.getBuffer(), indexBuffer->getBuffer(), 1, &bufferCopy);
 
 			commandBuffer.end();
 
@@ -1062,27 +1087,26 @@ namespace INJECTOR_NAMESPACE
 
 			graphicsQueue.waitIdle();
 			device.freeCommandBuffers(transferCommandPool, 1, &commandBuffer);
-			return buffer;
 		}
 		else
 		{
-			throw std::runtime_error("Unsupported Vulkan buffer create usage");
-		}
-	}
-	MeshHandle VkWindow::createMesh(
-		size_t indexCount,
-		MeshIndex indexType,
-		const BufferHandle& vertexBuffer,
-		const BufferHandle& indexBuffer)
-	{
-		auto vkVertexBuffer = std::dynamic_pointer_cast<VkBuffer>(vertexBuffer);
-		auto vkIndexBuffer = std::dynamic_pointer_cast<VkBuffer>(indexBuffer);
+			vertexBuffer = std::make_shared<VkBuffer>(
+				memoryAllocator,
+				vertexSize,
+				vk::BufferUsageFlagBits::eVertexBuffer,
+				VMA_MEMORY_USAGE_CPU_TO_GPU);
+			vertexBuffer->setData(vertexData, vertexSize);
 
-		if (!vkVertexBuffer || !vkIndexBuffer)
-			throw std::runtime_error("Failed to cast vertex or index Vulkan buffer");
+			indexBuffer = std::make_shared<VkBuffer>(
+				memoryAllocator,
+				indexSize,
+				vk::BufferUsageFlagBits::eVertexBuffer,
+				VMA_MEMORY_USAGE_CPU_TO_GPU);
+			indexBuffer->setData(indexData, indexSize);
+		}
 
 		return std::make_shared<VkMesh>(
-			indexCount, indexType, vkVertexBuffer, vkIndexBuffer);
+			indexCount, indexType, vertexBuffer, indexBuffer);
 	}
 
 	ColorPipelineHandle VkWindow::createColorPipeline()
@@ -1094,36 +1118,5 @@ namespace INJECTOR_NAMESPACE
 			throw std::runtime_error("Failed to add created Vulkan color pipeline");
 
 		return pipeline;
-	}
-
-	MeshHandle VkWindow::createSquareMesh()
-	{
-		auto vertexBuffer = VkWindow::createBuffer(
-			Primitive::squareVertices.size() * sizeof(Primitive::squareVertices[0]),
-			BufferType::Vertex, BufferUsage::GpuOnly, 
-			static_cast<const void*>(Primitive::squareVertices.data()));
-
-		auto indexBuffer = VkWindow::createBuffer(
-			Primitive::squareIndices.size() * sizeof(Primitive::squareIndices[0]),
-			BufferType::Index, BufferUsage::GpuOnly,
-			static_cast<const void*>(Primitive::squareIndices.data()));
-
-		return VkWindow::createMesh(Primitive::squareIndices.size(),
-			MeshIndex::UnsignedShort, vertexBuffer, indexBuffer);
-	}
-	MeshHandle VkWindow::createCubeMesh()
-	{
-		auto vertexBuffer = VkWindow::createBuffer(
-			Primitive::cubeVertices.size() * sizeof(Primitive::cubeVertices[0]),
-			BufferType::Vertex, BufferUsage::GpuOnly,
-			static_cast<const void*>(Primitive::cubeVertices.data()));
-
-		auto indexBuffer = VkWindow::createBuffer(
-			Primitive::cubeIndices.size() * sizeof(Primitive::cubeIndices[0]),
-			BufferType::Index, BufferUsage::GpuOnly,
-			static_cast<const void*>(Primitive::cubeIndices.data()));
-
-		return VkWindow::createMesh(Primitive::cubeIndices.size(),
-			MeshIndex::UnsignedShort, vertexBuffer, indexBuffer);
 	}
 }

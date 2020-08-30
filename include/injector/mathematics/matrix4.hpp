@@ -82,9 +82,9 @@ namespace INJECTOR_NAMESPACE
 		Matrix4& operator/=(float value) noexcept;
 		Matrix4& operator*=(float value) noexcept;
 
-		static Matrix4 createPerspectiveZO(float fieldOfView, float aspectRatio,
+		static Matrix4 createPerspectiveVk(float fieldOfView, float aspectRatio,
 			float nearClipPlane, float farClipPlane);
-		static Matrix4 createPerspectiveNO(float fieldOfView, float aspectRatio,
+		static Matrix4 createPerspectiveGl(float fieldOfView, float aspectRatio,
 			float nearClipPlane, float farClipPlane);
 
 		static const Matrix4 zero;

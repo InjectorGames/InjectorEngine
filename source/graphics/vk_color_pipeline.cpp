@@ -37,14 +37,12 @@ namespace INJECTOR_NAMESPACE
 			vk::VertexInputBindingDescription(
 				0, sizeof(float) * 3, vk::VertexInputRate::eVertex),
 		};
-
 		auto vertexInputAttributeDescriptions = 
 			std::vector<vk::VertexInputAttributeDescription>
 		{
 			vk::VertexInputAttributeDescription(
 				0, 0, vk::Format::eR32G32B32Sfloat, 0),
 		};
-
 		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo({},
 			static_cast<uint32_t>(vertexInputBindingDescriptions.size()),
 			vertexInputBindingDescriptions.data(),
@@ -58,7 +56,6 @@ namespace INJECTOR_NAMESPACE
 			0.0f, 0.0f, surfaceExtent.width, surfaceExtent.height, 0.0f, 1.0f);
 		auto scissor = vk::Rect2D(
 			vk::Offset2D(0, 0), surfaceExtent);
-
 		auto pipelineViewportStateCreateInfo = vk::PipelineViewportStateCreateInfo(
 			{}, 1, &viewport, 1, &scissor);
 
@@ -114,10 +111,12 @@ namespace INJECTOR_NAMESPACE
 	VkColorPipeline::VkColorPipeline(
 		vk::Device device,
 		vk::RenderPass renderPass,
-		const vk::Extent2D& surfaceExtent) : 
+		const vk::Extent2D& surfaceExtent,
+		const Matrix4& _mvp,
+		const Vector4& _color) :
 		VkPipeline(device),
-		mvp(Matrix4::identity),
-		color(Vector4::one)
+		mvp(_mvp),
+		color(_color)
 	{
 		auto pushConstantRanges = std::vector<vk::PushConstantRange>
 		{
@@ -147,6 +146,24 @@ namespace INJECTOR_NAMESPACE
 		device.destroyPipelineLayout(pipelineLayout);
 	}
 
+	const Matrix4& VkColorPipeline::getMVP() const
+	{
+		return mvp;
+	}
+	void VkColorPipeline::setMVP(const Matrix4& _mvp)
+	{
+		mvp = Matrix4(_mvp);
+	}
+
+	const Vector4& VkColorPipeline::getColor() const
+	{
+		return color;
+	}
+	void VkColorPipeline::setColor(const Vector4& _color)
+	{
+		color = Vector4(_color);
+	}
+
 	void VkColorPipeline::recreate(
 		uint32_t imageCount,
 		vk::RenderPass renderPass,
@@ -166,23 +183,5 @@ namespace INJECTOR_NAMESPACE
 			0, sizeof(Matrix4), &mvp);
 		commandBuffer.pushConstants(pipelineLayout, vk::ShaderStageFlagBits::eFragment, 
 			sizeof(Matrix4), sizeof(Vector4), &color);
-	}
-
-	const Matrix4& VkColorPipeline::getMVP() const
-	{
-		return mvp;
-	}
-	void VkColorPipeline::setMVP(const Matrix4& _mvp)
-	{
-		mvp = Matrix4(_mvp);
-	}
-
-	const Vector4& VkColorPipeline::getColor() const
-	{
-		return color;
-	}
-	void VkColorPipeline::setColor(const Vector4& _color)
-	{
-		color = Vector4(_color);
 	}
 }

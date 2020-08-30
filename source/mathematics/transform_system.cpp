@@ -66,14 +66,7 @@ namespace INJECTOR_NAMESPACE
 			}
 
 			transformComponent->matrix = matrix;
-		}
-
-		for (auto& transform : transforms)
-		{
-			TransformComponent* transformComponent;
-
-			if (!transform->getComponent(transformComponent))
-				continue;
+			transformComponent->changed = false;
 		}
 
 		for (auto& attach : attaches)

@@ -23,8 +23,16 @@ namespace INJECTOR_NAMESPACE
 		VkColorPipeline(
 			vk::Device device,
 			vk::RenderPass renderPass,
-			const vk::Extent2D& surfaceExtent);
+			const vk::Extent2D& surfaceExtent,
+			const Matrix4& mvp = Matrix4::identity,
+			const Vector4& color = Vector4::one);
 		virtual ~VkColorPipeline();
+
+		const Matrix4& getMVP() const override;
+		void setMVP(const Matrix4& mvp) override;
+
+		const Vector4& getColor() const override;
+		void setColor(const Vector4& color) override;
 
 		void recreate(
 			uint32_t imageCount,
@@ -33,12 +41,6 @@ namespace INJECTOR_NAMESPACE
 		void bind(
 			uint32_t imageIndex,
 			vk::CommandBuffer commandBuffer) override;
-
-		const Matrix4& getMVP() const override;
-		void setMVP(const Matrix4& mvp) override;
-
-		const Vector4& getColor() const override;
-		void setColor(const Vector4& color) override;
 	};
 
 	using VkColorPipelineHandle = std::shared_ptr<VkColorPipeline>;

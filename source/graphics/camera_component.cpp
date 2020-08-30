@@ -11,7 +11,9 @@ namespace INJECTOR_NAMESPACE
 		const Vector4& _frustum,
 		const Vector2& _clipPlane,
 		const Matrix4& _matrix,
-		bool _changed) :
+		bool _changed,
+		bool _render,
+		const std::set<EntityHandle>& _renders) :
 		queue(_queue),
 		type(_type),
 		aspectRatio(_aspectRatio),
@@ -20,7 +22,9 @@ namespace INJECTOR_NAMESPACE
 		frustum(_frustum),
 		clipPlane(_clipPlane),
 		matrix(_matrix),
-		changed(_changed)
+		changed(_changed),
+		render(_render),
+		renders(_renders)
 	{}
 	CameraComponent::~CameraComponent()
 	{}

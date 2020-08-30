@@ -22,7 +22,7 @@ namespace INJECTOR_NAMESPACE
 
 			if (cameraComponent->type == CameraComponent::Type::Perspective)
 			{
-				cameraComponent->matrix = Matrix4::createPerspectiveNO(
+				cameraComponent->matrix = Matrix4::createPerspectiveGl(
 					cameraComponent->fieldOfView, cameraComponent->aspectRatio,
 					cameraComponent->clipPlane.x, cameraComponent->clipPlane.y);
 				cameraComponent->changed = false;

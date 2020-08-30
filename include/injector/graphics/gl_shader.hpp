@@ -2,35 +2,32 @@
 #include <injector/defines.hpp>
 #include <GL/glew.h>
 
-#include <vector>
 #include <string>
-#include <cstdint>
+#include <vector>
+#include <memory>
 
 namespace INJECTOR_NAMESPACE
 {
-	/*class GlShader : public Shader
+	class GlShader
 	{
 	protected:
-		bool gles;
 		GLuint shader;
-
+		bool gles;
+	public:
 		static const std::string glHeader;
 		static const std::string glesHeader;
 
-		static bool getCompileStatus(GLuint shader) noexcept;
-		static std::string getInfoLog(GLuint shader) noexcept;
-	public:
-		GlShader(bool gles,
-			const std::string& path,
-			ShaderStage stage);
+		GlShader(GLenum stage,
+			const std::string& source,
+			bool gles);
 		virtual ~GlShader();
 
-		bool getGLES() const noexcept;
 		GLuint getShader() const noexcept;
+		bool isGLES() const noexcept;
 
-		static GLenum toGlStage(ShaderStage stage);
-		static ShaderStage toStage(GLenum stage);
+		static bool getCompileStatus(GLuint shader) noexcept;
+		static std::string getInfoLog(GLuint shader) noexcept;
 	};
 
-	using GlShaderHandle = std::shared_ptr<GlShader>;*/
+	using GlShaderHandle = std::shared_ptr<GlShader>;
 }

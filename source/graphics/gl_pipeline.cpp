@@ -3,57 +3,7 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	/*uint32_t GlMaterial::create() noexcept
-	{
-		return static_cast<uint32_t>(glCreateProgram());
-	}
-	void GlMaterial::destroy(uint32_t program) noexcept
-	{
-		glDeleteProgram(static_cast<GLuint>(program));
-	}
-	void GlMaterial::use(uint32_t program) noexcept
-	{
-		glUseProgram(static_cast<GLuint>(program));
-	}
-
-	void GlMaterial::attach(uint32_t program, uint32_t shader) noexcept
-	{
-		glAttachShader(static_cast<GLuint>(program), static_cast<GLuint>(shader));
-	}
-	void GlMaterial::detach(uint32_t program, uint32_t shader) noexcept
-	{
-		glDetachShader(static_cast<GLuint>(program), static_cast<GLuint>(shader));
-	}
-
-	void GlMaterial::link(uint32_t program) noexcept
-	{
-		glLinkProgram(static_cast<GLuint>(program));
-	}
-	bool GlMaterial::getLinkStatus(uint32_t program) noexcept
-	{
-		GLint success;
-		glGetProgramiv(static_cast<GLuint>(program), GL_LINK_STATUS, &success);
-		return success == GL_TRUE;
-	}
-	std::string GlMaterial::getInfoLog(uint32_t program) noexcept
-	{
-		GLint length;
-		glGetProgramiv(static_cast<GLuint>(program), GL_INFO_LOG_LENGTH, &length);
-		std::string infoLog(static_cast<size_t>(length), ' ');
-		glGetProgramInfoLog(static_cast<GLuint>(program), length, &length,
-			static_cast<GLchar*>(infoLog.data()));
-		return infoLog;
-	}
-
-	int32_t GlMaterial::getUniformLocation(uint32_t program, const std::string& name)
-	{
-		auto location = static_cast<GLint>(glGetUniformLocation(
-			static_cast<GLuint>(program), static_cast<const GLchar*>(name.c_str())));
-		if (location == -1)
-			throw std::runtime_error("Failed to get uniform location");
-		return location;
-	}
-
+	/*
 	void GlMaterial::setUniform(int32_t index, int value) noexcept
 	{
 		glUniform1i(static_cast<GLint>(index), static_cast<GLint>(value));
@@ -128,98 +78,54 @@ namespace INJECTOR_NAMESPACE
 	int32_t GlMaterial::getUniformLocation(const std::string& name)
 	{
 		return getUniformLocation(instance, name);
-	}
-
-	GlMaterial::GlMaterial(const GlShader& shader)
-	{
-		instance = create();
-		attach(instance, shader.getShader());
-		link(instance);
-		detach(instance, shader.getShader());
-
-		if (!getLinkStatus(instance))
-		{
-			destroy(instance);
-			throw std::runtime_error("Failed to link OpenGL program: " +
-				getInfoLog(instance));
-		}
-	}
-	GlMaterial::GlMaterial(const GlShader& shader1,
-		const GlShader& shader2)
-	{
-		instance = create();
-		attach(instance, shader1.getShader());
-		attach(instance, shader2.getShader());
-		link(instance);
-		detach(instance, shader2.getShader());
-		detach(instance, shader1.getShader());
-
-		if (!getLinkStatus(instance))
-		{
-			destroy(instance);
-			throw std::runtime_error("Failed to link OpenGL program: " +
-				getInfoLog(instance));
-		}
-	}
-	GlMaterial::GlMaterial(const GlShader& shader1,
-		const GlShader& shader2,
-		const GlShader& shader3)
-	{
-		instance = create();
-		attach(instance, shader1.getShader());
-		attach(instance, shader2.getShader());
-		attach(instance, shader3.getShader());
-		link(instance);
-		detach(instance, shader3.getShader());
-		detach(instance, shader2.getShader());
-		detach(instance, shader1.getShader());
-
-		if (!getLinkStatus(instance))
-		{
-			destroy(instance);
-			throw std::runtime_error("Failed to link OpenGL program: " +
-				getInfoLog(instance));
-		}
-	}
-	GlMaterial::GlMaterial(const GlShader& shader1,
-		const GlShader& shader2,
-		const GlShader& shader3,
-		const GlShader& shader4)
-	{
-		instance = create();
-		attach(instance, shader1.getShader());
-		attach(instance, shader2.getShader());
-		attach(instance, shader3.getShader());
-		attach(instance, shader4.getShader());
-		link(instance);
-		detach(instance, shader4.getShader());
-		detach(instance, shader3.getShader());
-		detach(instance, shader2.getShader());
-		detach(instance, shader1.getShader());
-
-		if (!getLinkStatus(instance))
-		{
-			destroy(instance);
-			throw std::runtime_error("Failed to link OpenGL program: " + 
-				getInfoLog(instance));
-		}
-	}
-	GlMaterial::~GlMaterial()
-	{
-		destroy(instance);
-	}
-
-	uint32_t GlMaterial::getInstance() const noexcept
-	{
-		return instance;
-	}
-
-	void GlMaterial::use()
-	{
-		use(instance);
-	}
-	void GlMaterial::unuse()
-	{
-		use(GL_ZERO);
 	}*/
+
+	GlPipeline::GlPipeline(
+		const std::vector<GlVertexAttribute>& _vertexAttributes) : 
+		vertexAttributes(_vertexAttributes)
+	{
+		program = glCreateProgram();
+	}
+	GlPipeline::~GlPipeline()
+	{
+		glDeleteProgram(program);
+	}
+
+	GLuint GlPipeline::getProgram() const noexcept
+	{
+		return program;
+	}
+	const std::vector<GlVertexAttribute>& GlPipeline::getVertexAttributes() const noexcept
+	{
+		return vertexAttributes;
+	}
+
+	void GlPipeline::bind()
+	{
+		glUseProgram(program);
+	}
+
+	bool GlPipeline::getLinkStatus(GLuint program) noexcept
+	{
+		GLint success;
+		glGetProgramiv(program, GL_LINK_STATUS, &success);
+		return success == GL_TRUE;
+	}
+	std::string GlPipeline::getInfoLog(GLuint program) noexcept
+	{
+		GLint length;
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+		std::string infoLog(length, ' ');
+		glGetProgramInfoLog(program, length, &length, infoLog.data());
+		return infoLog;
+	}
+	GLint GlPipeline::getUniformLocation(GLuint program, const std::string& name)
+	{
+		auto location = glGetUniformLocation(program, name.c_str());
+
+		if (location == -1)
+			throw std::runtime_error("Failed to get uniform location");
+
+		return location;
+	}
 }

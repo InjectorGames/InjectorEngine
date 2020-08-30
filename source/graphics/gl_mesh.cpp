@@ -1,39 +1,26 @@
 #include <injector/graphics/gl_mesh.hpp>
-
-#include <GL/glew.h>
-#include <SDL_opengl.h>
-
 #include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
 {
 	GlMesh::GlMesh(
 		size_t indexCount,
-		MeshIndex indexType,
-		const BufferHandle& vertexBuffer,
-		const BufferHandle& indexBuffer,
-		const std::vector<GlAttribute>& attributes) :
-		Mesh(indexCount, indexType, vertexBuffer, indexBuffer)
+		BufferIndex indexType,
+		const GlBufferHandle& _vertexBuffer,
+		const GlBufferHandle& _indexBuffer) :
+		Mesh(indexCount, indexType),
+		vertexBuffer(_vertexBuffer),
+		indexBuffer(_indexBuffer)
 	{
-		glIndexType = toGlIndexType(indexType);
-
 		glGenVertexArrays(GL_ONE, &vertexArray);
 
 		glBindVertexArray(vertexArray);
-		glBindBuffer(GL_ARRAY_BUFFER, 
-			std::dynamic_pointer_cast<GlBuffer>(vertexBuffer)->getBuffer());
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 
-			std::dynamic_pointer_cast<GlBuffer>(indexBuffer)->getBuffer());
-
-		for (auto& attribute : attributes)
-		{
-			attribute.enable();
-			attribute.setPointer();
-		}
+		_vertexBuffer->bind();
+		_indexBuffer->bind();
 
 		glBindVertexArray(GL_ZERO);
-		glBindBuffer(GL_ARRAY_BUFFER, GL_ZERO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_ZERO);
+		_vertexBuffer->unbind();
+		_indexBuffer->unbind();
 	}
 	GlMesh::~GlMesh()
 	{
@@ -44,34 +31,53 @@ namespace INJECTOR_NAMESPACE
 	{
 		return vertexArray;
 	}
-	GLenum GlMesh::getGlIndexType() const noexcept
+	const GlBufferHandle& GlMesh::getVertexBuffer() const noexcept
 	{
-		return glIndexType;
+		return vertexBuffer;
+	}
+	const GlBufferHandle& GlMesh::getIndexBuffer() const noexcept
+	{
+		return indexBuffer;
 	}
 
-	void GlMesh::draw(GLuint mode) noexcept
+	void GlMesh::draw(GLuint mode,
+		const std::vector<GlVertexAttribute>& vertexAttributes) noexcept
 	{
 		glBindVertexArray(vertexArray);
-		glDrawElements(mode, static_cast<GLsizei>(indexCount), glIndexType, nullptr);
+		vertexBuffer->bind();
+		indexBuffer->bind();
+
+		for (auto& vertexAttribute : vertexAttributes)
+		{
+			vertexAttribute.enable();
+			vertexAttribute.setPointer();
+		}
+		
+		auto index = (indexType == BufferIndex::UnsignedShort) ?
+			GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
+
+		glDrawElements(mode, static_cast<GLsizei>(indexCount), index, nullptr);
+
 		glBindVertexArray(GL_ZERO);
+		vertexBuffer->unbind();
+		indexBuffer->unbind();
 	}
 
-	GLenum GlMesh::toGlIndexType(MeshIndex indexType)
+	void GlMesh::setVertexData(void* data, size_t size)
 	{
-		if (indexType == MeshIndex::UnsignedShort)
-			return GL_UNSIGNED_SHORT;
-		else if (indexType == MeshIndex::UnsignedInt)
-			return GL_UNSIGNED_INT;
-		else
-			throw std::runtime_error("Unsupported OpenGL mesh index type");
+		vertexBuffer->setData(data, size);
 	}
-	MeshIndex GlMesh::toIndexType(GLenum indexType)
+	void GlMesh::setVertexData(void* data, size_t size, size_t offset)
 	{
-		if (indexType == GL_UNSIGNED_SHORT)
-			return MeshIndex::UnsignedShort;
-		else if (indexType == GL_UNSIGNED_INT)
-			return MeshIndex::UnsignedInt;
-		else
-			throw std::runtime_error("Unsupported OpenGL mesh index type");
+		vertexBuffer->setData(data, size, offset);
+	}
+
+	void GlMesh::setIndexData(void* data, size_t size)
+	{
+		indexBuffer->setData(data, size);
+	}
+	void GlMesh::setIndexData(void* data, size_t size, size_t offset)
+	{
+		indexBuffer->setData(data, size, offset);
 	}
 }

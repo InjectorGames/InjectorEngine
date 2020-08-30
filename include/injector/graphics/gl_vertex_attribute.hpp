@@ -1,15 +1,14 @@
 #pragma once
 #include <injector/defines.hpp>
-#include <cstdint>
-
 #include <GL/glew.h>
-#include <SDL_opengl.h>
+
+#include <cstdint>
 
 namespace INJECTOR_NAMESPACE
 {
-	struct GlAttribute
+	struct GlVertexAttribute
 	{
-		enum class Type : GLenum
+		/*enum class Type : GLenum
 		{
 			Byte = GL_BYTE,
 			UnsignedByte = GL_UNSIGNED_BYTE,
@@ -24,26 +23,19 @@ namespace INJECTOR_NAMESPACE
 			Int_2_10_10_10_Rev = GL_INT_2_10_10_10_REV,
 			UnsignedInt_2_10_10_10_Rev = GL_UNSIGNED_INT_2_10_10_10_REV,
 			UnsignedInt_10f_11f_11f_Rev = GL_UNSIGNED_INT_10F_11F_11F_REV, // GL 4.4
-		};
-		enum class Size : int
-		{
-			One = 1,
-			Two = 2,
-			Three = 3,
-			Four = 4,
-		};
+		};*/
 
-		uint32_t index;
-		Size size;
-		Type type;
+		GLuint index;
+		GLint size;
+		GLenum type;
 		bool normalized;
 		size_t stride;
 		size_t offset;
 
-		GlAttribute(
-			const uint32_t index,
-			const Size size,
-			const Type type,
+		GlVertexAttribute(
+			const GLuint index,
+			const GLint size,
+			const GLenum type,
 			const bool normalized,
 			const size_t stride,
 			const size_t offset);

@@ -1,27 +1,23 @@
 #pragma once
-#include <injector/graphics/buffer.hpp>
-#include <injector/graphics/mesh_index.hpp>
+#include <injector/graphics/buffer_index.hpp>
+#include <memory>
 
 namespace INJECTOR_NAMESPACE
 {
 	class Mesh
 	{
-	protected:
-		size_t indexCount;
-		MeshIndex indexType;
-		BufferHandle vertexBuffer;
-		BufferHandle indexBuffer;
 	public:
-		Mesh(size_t indexCount,
-			MeshIndex indexType,
-			const BufferHandle& vertexBuffer,
-			const BufferHandle& indexBuffer);
+		size_t indexCount;
+		BufferIndex indexType;
+
+		Mesh(size_t indexCount, BufferIndex indexType);
 		virtual ~Mesh();
 
-		size_t getIndexCount() const noexcept;
-		MeshIndex getIndexType() const noexcept;
-		BufferHandle getVertexBuffer() const noexcept;
-		BufferHandle getIndexBuffer() const noexcept;
+		virtual void setVertexData(void* data, size_t size);
+		virtual void setVertexData(void* data, size_t size, size_t offset);
+
+		virtual void setIndexData(void* data, size_t size);
+		virtual void setIndexData(void* data, size_t size, size_t offset);
 	};
 
 	using MeshHandle = std::shared_ptr<Mesh>;

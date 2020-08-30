@@ -19,6 +19,15 @@ namespace INJECTOR_NAMESPACE
 		device.destroyPipelineCache(pipelineCache);
 	}
 
+	vk::Device VkPipeline::getDevice()
+	{
+		return device;
+	}
+	vk::PipelineCache VkPipeline::getPipelineCache()
+	{
+		return pipelineCache;
+	}
+
 	void VkPipeline::recreate(
 		uint32_t imageCount,
 		vk::RenderPass renderPass,

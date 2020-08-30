@@ -1,14 +1,15 @@
 #pragma once
 #include <injector/graphics/mesh.hpp>
 #include <injector/graphics/gl_buffer.hpp>
-#include <injector/graphics/gl_attribute.hpp>
+#include <injector/graphics/gl_vertex_attribute.hpp>
+
+#include <vector>
 
 namespace INJECTOR_NAMESPACE
 {
 	class GlMesh : public Mesh
 	{
-	public:
-		enum class DrawMode : GLenum
+		/*enum class DrawMode : GLenum
 		{
 			Points = GL_POINTS,
 			LineStrip = GL_LINE_STRIP,
@@ -22,25 +23,30 @@ namespace INJECTOR_NAMESPACE
 			TriangleStripAdjacency = GL_TRIANGLE_STRIP_ADJACENCY, // GL 3.2
 			TrianglesAdjacency = GL_TRIANGLES_ADJACENCY, // GL 3.2
 			Patches = GL_PATCHES,
-		};
+		};*/
 	protected:
 		GLuint vertexArray;
-		GLenum glIndexType;
+		GlBufferHandle vertexBuffer;
+		GlBufferHandle indexBuffer;
 	public:
 		GlMesh(size_t indexCount,
-			MeshIndex indexType,
-			const BufferHandle& vertexBuffer,
-			const BufferHandle& indexBuffer,
-			const std::vector<GlAttribute>& attributes);
+			BufferIndex indexType,
+			const GlBufferHandle& vertexBuffer,
+			const GlBufferHandle& indexBuffer);
 		virtual ~GlMesh();
 
 		GLuint getVertexArray() const noexcept;
-		GLenum getGlIndexType() const noexcept;
+		const GlBufferHandle& getVertexBuffer() const noexcept;
+		const GlBufferHandle& getIndexBuffer() const noexcept;
 
-		void draw(GLuint mode) noexcept;
+		void draw(GLuint mode,
+			const std::vector<GlVertexAttribute>& vertexAttributes) noexcept;
 
-		static GLenum toGlIndexType(MeshIndex indexType);
-		static MeshIndex toIndexType(GLenum indexType);
+		void setVertexData(void* data, size_t size) override;
+		void setVertexData(void* data, size_t size, size_t offset) override;
+
+		void setIndexData(void* data, size_t size) override;
+		void setIndexData(void* data, size_t size, size_t offset) override;
 
 		/*template<class TV, class TI>
 		inline static const std::shared_ptr<GlMesh> Create(
@@ -210,4 +216,6 @@ namespace INJECTOR_NAMESPACE
 				attributes, GlBuffer::Usage::StaticDraw, DrawType::UnsignedByte);
 		}*/
 	};
+
+	using GlMeshHandle = std::shared_ptr<GlMesh>;
 }

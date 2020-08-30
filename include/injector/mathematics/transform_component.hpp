@@ -16,7 +16,7 @@ namespace INJECTOR_NAMESPACE
 
 		TransformComponent(
 			const Vector3& position = Vector3::zero,
-			const Quaternion& rotation = Quaternion(Vector3::zero),
+			const Quaternion& rotation = Quaternion::zero,
 			const Vector3& scale = Vector3::one,
 			RotationOrigin origin = RotationOrigin::Spin,
 			const Matrix4& matrix = Matrix4::identity,

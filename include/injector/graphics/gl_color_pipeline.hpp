@@ -1,23 +1,31 @@
 #pragma once
-#include <injector/graphics/gl_material.hpp>
+#include <injector/graphics/gl_pipeline.hpp>
+#include <injector/graphics/color_pipeline.hpp>
 
 namespace INJECTOR_NAMESPACE
 {
-	class GlColorMaterial : public GlMaterial
+	class GlColorPipeline : public GlPipeline, public ColorPipeline
 	{
 	protected:
-		int32_t mvpMatrixLocation;
-		int32_t colorLocation;
+		GLint mvpLocation;
+		GLint colorLocation;
+
+		Matrix4 mvp;
+		Vector4 color;
 	public:
-		static const Vector4 defaultColor;
+		static const std::vector<GlVertexAttribute> colorAttributes;
 
-		GlColorMaterial(const GlShader& vertex, const GlShader& fragment,
-			const Vector4& color = defaultColor);
-		virtual ~GlColorMaterial();
+		GlColorPipeline(bool gles,
+			const Matrix4& mvp = Matrix4::identity,
+			const Vector4& color = Vector4::one);
+		virtual ~GlColorPipeline();
 
-		void use() override;
+		const Matrix4& getMVP() const override;
+		void setMVP(const Matrix4& mvp) override;
 
-		void setMvpMatrix(const Matrix4& matrix) override;
-		void setColor(const Vector4& color) noexcept;
+		const Vector4& getColor() const override;
+		void setColor(const Vector4& color) override;
+
+		void bind() override;
 	};
 }

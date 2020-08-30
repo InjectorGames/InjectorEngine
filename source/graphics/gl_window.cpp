@@ -1,6 +1,8 @@
 #include <injector/graphics/gl_window.hpp>
+#include <injector/graphics/gl_mesh.hpp>
 #include <injector/graphics/gl_camera_system.hpp>
 #include <injector/graphics/gl_render_system.hpp>
+#include <injector/graphics/gl_color_pipeline.hpp>
 #include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
@@ -84,8 +86,28 @@ namespace INJECTOR_NAMESPACE
 		return system;
 	}
 
-	MeshHandle GlWindow::createSquareMesh()
+	MeshHandle GlWindow::createMesh(
+		size_t indexCount,
+		BufferIndex indexType,
+		const void* vertexData,
+		size_t vertexSize,
+		const void* indexData,
+		size_t indexSize,
+		bool staticUse)
 	{
-		return nullptr;
+		auto usage = staticUse ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
+
+		auto vertexBuffer = std::make_shared<GlBuffer>(
+			vertexSize, GL_ARRAY_BUFFER, usage, vertexData);
+		auto indexBuffer = std::make_shared<GlBuffer>(
+			indexSize, GL_ELEMENT_ARRAY_BUFFER, usage, indexData);
+
+		return std::make_shared<GlMesh>(
+			indexCount, indexType, vertexBuffer, indexBuffer);
+	}
+
+	ColorPipelineHandle GlWindow::createColorPipeline()
+	{
+		return std::make_shared<GlColorPipeline>(gles);
 	}
 }

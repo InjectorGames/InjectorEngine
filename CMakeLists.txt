@@ -35,12 +35,10 @@ add_subdirectory(3rdparty/sdl)
 configure_file(cmake/defines.hpp.in injector/defines.hpp)
 
 add_library(InjectorEngine STATIC
-	source/graphics/buffer.cpp
 	source/graphics/camera_component.cpp
 	source/graphics/camera_system.cpp
 	source/graphics/color_pipeline.cpp
 	source/graphics/fly_transform_system.cpp
-	source/graphics/gl_attribute.cpp
 	source/graphics/gl_buffer.cpp
 	source/graphics/gl_camera_system.cpp
 	source/graphics/gl_color_pipeline.cpp
@@ -48,6 +46,7 @@ add_library(InjectorEngine STATIC
 	source/graphics/gl_pipeline.cpp
 	source/graphics/gl_render_system.cpp
 	source/graphics/gl_shader.cpp
+	source/graphics/gl_vertex_attribute.cpp
 	source/graphics/gl_window.cpp
 	source/graphics/image.cpp
 	source/graphics/mesh.cpp
@@ -58,6 +57,7 @@ add_library(InjectorEngine STATIC
 	source/graphics/vk_buffer.cpp
 	source/graphics/vk_camera_system.cpp
 	source/graphics/vk_color_pipeline.cpp
+	source/graphics/vk_diffuse_pipeline.cpp
 	source/graphics/vk_image.cpp
 	source/graphics/vk_mesh.cpp
 	source/graphics/vk_pipeline.cpp

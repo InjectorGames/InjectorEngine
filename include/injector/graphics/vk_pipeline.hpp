@@ -15,6 +15,9 @@ namespace INJECTOR_NAMESPACE
 		VkPipeline(vk::Device device);
 		virtual ~VkPipeline();
 
+		vk::Device getDevice();
+		vk::PipelineCache getPipelineCache();
+
 		virtual void recreate(
 			uint32_t imageCount,
 			vk::RenderPass renderPass,

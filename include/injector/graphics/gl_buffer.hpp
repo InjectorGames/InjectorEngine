@@ -1,43 +1,52 @@
 #pragma once
-#include <injector/graphics/buffer.hpp>
-
+#include <injector/graphics/buffer_access.hpp>
 #include <GL/glew.h>
-#include <SDL_opengl.h>
 
-#include <vector>
+#include <memory>
 #include <cstdint>
 
 namespace INJECTOR_NAMESPACE
 {
-	class GlBuffer : public Buffer
+	class GlBuffer
 	{
 	protected:
 		GLuint buffer;
-		GLenum glType;
+		size_t size;
+		GLenum type;
+		bool mappable;
+		bool mapped;
+		BufferAccess mapAccess;
+		size_t mapSize;
+		size_t mapOffset;
 	public:
 		GlBuffer(size_t size,
-			BufferType type,
-			BufferUsage usage,
-			const void* data = nullptr);
+			GLenum type,
+			GLenum usage,
+			const void* data);
 		virtual ~GlBuffer();
 
 		GLuint getBuffer() const noexcept;
-		GLenum getGlType() const noexcept;
+		size_t getSize() const noexcept;
+		GLenum getType() const noexcept;
+		bool isMappable() const noexcept;
+		bool isMapped() const noexcept;
+		BufferAccess getMapAccess() const noexcept;
+		size_t getMapSize() const noexcept;
+		size_t getMapOffset() const noexcept;
 
-		void* map(BufferAccess access) override;
-		void* map(BufferAccess access, size_t size, size_t offset) override;
-		void unmap() override;
+		void bind();
+		void unbind();
 
-		void setData(const void* data, size_t size) override;
-		void setData(const void* data, size_t size, size_t offset) override;
+		void flush(size_t size, size_t offset);
+
+		void* map(BufferAccess access);
+		void* map(BufferAccess access, size_t size, size_t offset);
+		void unmap();
+
+		void setData(const void* data, size_t size);
+		void setData(const void* data, size_t size, size_t offset);
 
 		static GLbitfield toGlAccess(BufferAccess access);
-
-		static GLenum toGlType(BufferType type);
-		static BufferType toType(GLenum type);
-
-		static GLenum toGlUsage(BufferUsage usage);
-		static BufferUsage toUsage(GLenum usage);
 	};
 
 	using GlBufferHandle = std::shared_ptr<GlBuffer>;

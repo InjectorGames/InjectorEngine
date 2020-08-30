@@ -511,7 +511,7 @@ namespace INJECTOR_NAMESPACE
 		return *this;
 	}
 
-	Matrix4 Matrix4::createPerspectiveZO(float fieldOfView, float aspectRatio,
+	Matrix4 Matrix4::createPerspectiveVk(float fieldOfView, float aspectRatio,
 		float nearClipPlane, float farClipPlane)
 	{
 		auto tanHalfFov = std::tan(fieldOfView / 2.0f);
@@ -519,13 +519,13 @@ namespace INJECTOR_NAMESPACE
 		return Matrix4(
 			1.0f / (aspectRatio * tanHalfFov),
 			0.0f, 0.0f, 0.0f, 0.0f,
-			1.0f / (tanHalfFov),
+			1.0f / -tanHalfFov,
 			0.0f, 0.0f, 0.0f, 0.0f,
 			farClipPlane / (farClipPlane - nearClipPlane),
 			1.0f, 0.0f, 0.0f, 
 			-(farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane), 0.0f);
 	}
-	Matrix4 Matrix4::createPerspectiveNO(float fieldOfView, float aspectRatio,
+	Matrix4 Matrix4::createPerspectiveGl(float fieldOfView, float aspectRatio,
 		float nearClipPlane, float farClipPlane)
 	{
 		auto tanHalfFov = std::tan(fieldOfView / 2.0f);
@@ -533,11 +533,11 @@ namespace INJECTOR_NAMESPACE
 		return Matrix4(
 			1.0f / (aspectRatio * tanHalfFov),
 			0.0f, 0.0f, 0.0f, 0.0f,
-			1.0f / (tanHalfFov),
+			1.0f / tanHalfFov,
 			0.0f, 0.0f, 0.0f, 0.0f,
 			(farClipPlane + nearClipPlane) / (farClipPlane - nearClipPlane),
-			-(2.0f * farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane),
-			0.0f, 0.0f, 1.0f, 0.0f);
+			1.0f, 0.0f, 0.0f, 
+			-(2.0f * farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane), 0.0f);
 	}
 
 	const Matrix4 Matrix4::zero = Matrix4(0.0f);

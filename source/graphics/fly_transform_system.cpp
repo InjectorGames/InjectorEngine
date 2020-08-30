@@ -1,4 +1,6 @@
 #include <injector/graphics/fly_transform_system.hpp>
+#include <injector/engine.hpp>
+
 #include <algorithm>
 
 namespace INJECTOR_NAMESPACE
@@ -8,8 +10,6 @@ namespace INJECTOR_NAMESPACE
 		window(_window),
 		rotating(false),
 		eulerAngles(),
-		rotation(),
-		translation(),
 		transform(),
 		speed(2.0f),
 		sensitivity(0.0025f)
@@ -39,16 +39,18 @@ namespace INJECTOR_NAMESPACE
 				window->setMouseMode(true);
 			}
 
-			auto mouseMotion = window->getMouseMotion();
+			auto deltaTime = static_cast<float>(Engine::getUpdateDeltaTime());
+			auto& translation = window->getTranslation();
+			transformComponent->position += 
+				transformComponent->rotation * translation * -speed * deltaTime;
 
-			eulerAngles += Vector3(
-				-mouseMotion.y * sensitivity,
-				mouseMotion.x * sensitivity, 0.0f);
-
+			auto& rotation = window->getRotation();
+			eulerAngles += rotation * sensitivity;
 			eulerAngles.x = std::clamp(eulerAngles.x,
 				-Converter::toRadians(89.9f), Converter::toRadians(89.9f));
 
 			transformComponent->rotation = Quaternion(eulerAngles);
+			transformComponent->changed = true;
 		}
 		else
 		{
