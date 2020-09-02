@@ -43,7 +43,7 @@ void init()
 	cube1->createComponent<RenderComponent>(colorPipeline, cubeMesh);
 	transformSystem->addTransform(cube1);
 	cameraComponent->renders.emplace(cube1);
-
+	
 	window->show();
 }
 
