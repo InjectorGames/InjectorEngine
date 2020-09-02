@@ -3,6 +3,8 @@
 #include <injector/graphics/gl_camera_system.hpp>
 #include <injector/graphics/gl_render_system.hpp>
 #include <injector/graphics/gl_color_pipeline.hpp>
+#include <injector/graphics/gl_diffuse_pipeline.hpp>
+
 #include <stdexcept>
 
 namespace INJECTOR_NAMESPACE
@@ -109,5 +111,9 @@ namespace INJECTOR_NAMESPACE
 	ColorPipelineHandle GlWindow::createColorPipeline()
 	{
 		return std::make_shared<GlColorPipeline>(gles);
+	}
+	DiffusePipelineHandle GlWindow::createDiffusePipeline()
+	{
+		return std::make_shared<GlDiffusePipeline>(gles);
 	}
 }

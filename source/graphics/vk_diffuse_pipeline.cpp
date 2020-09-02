@@ -304,6 +304,6 @@ namespace INJECTOR_NAMESPACE
 	}
 	void VkDiffusePipeline::setLightDirection(const Vector3& lightDirection)
 	{
-		ubo.lightDirection = Vector3(lightDirection);
+		ubo.lightDirection = Vector3(lightDirection.getNormalized());
 	}
 }

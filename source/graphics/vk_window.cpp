@@ -130,7 +130,6 @@ namespace INJECTOR_NAMESPACE
 
 #if !defined(NDEBUG)
 		auto debugUtilsMessengerCreateInfo = vk::DebugUtilsMessengerCreateInfoEXT({},
-			vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
 			vk::DebugUtilsMessageSeverityFlagBitsEXT::eError |
 			vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning,
 			vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
@@ -155,7 +154,6 @@ namespace INJECTOR_NAMESPACE
 		vk::DebugUtilsMessengerEXT debugMessenger;
 
 		auto debugUtilsMessengerCreateInfo = vk::DebugUtilsMessengerCreateInfoEXT({},
-			vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
 			vk::DebugUtilsMessageSeverityFlagBitsEXT::eError |
 			vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning,
 			vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
@@ -451,14 +449,14 @@ namespace INJECTOR_NAMESPACE
 				break;
 			}
 		}
-		for (auto mode : surfacePresentModes)
+		/*for (auto mode : surfacePresentModes)
 		{
 			if (mode == vk::PresentModeKHR::eImmediate)
 			{
 				presentMode = mode;
 				break;
 			}
-		}
+		}*/
 
 		return presentMode;
 	}

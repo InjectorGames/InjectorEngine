@@ -66,7 +66,7 @@ namespace INJECTOR_NAMESPACE
 			const Vector4& objectColor = Vector4::one,
 			const Vector4& ambientColor = Vector4::one / 4.0f,
 			const Vector4& lightColor = Vector4::one,
-			const Vector3& lightDirection = Vector3(0.25f, 0.5f, 1.0f));
+			const Vector3& lightDirection = Vector3(1.0f, 2.0f, 3.0f));
 		virtual ~VkDiffusePipeline();
 
 		void recreate(
@@ -86,17 +86,17 @@ namespace INJECTOR_NAMESPACE
 			const Matrix4& viewProj,
 			const Matrix4& mvp) override;
 
-		const Vector4& getObjectColor() const;
-		void setObjectColor(const Vector4& objectColor);
+		const Vector4& getObjectColor() const override;
+		void setObjectColor(const Vector4& objectColor) override;
 
-		const Vector4& getAmbientColor() const;
-		void setAmbientColor(const Vector4& ambientColor);
+		const Vector4& getAmbientColor() const override;
+		void setAmbientColor(const Vector4& ambientColor) override;
 
-		const Vector4& getLightColor() const;
-		void setLightColor(const Vector4& lightColor);
+		const Vector4& getLightColor() const override;
+		void setLightColor(const Vector4& lightColor) override;
 
-		const Vector3& getLightDirection() const;
-		void setLightDirection(const Vector3& lightDirection);
+		const Vector3& getLightDirection() const override;
+		void setLightDirection(const Vector3& lightDirection) override;
 	};
 
 	using VkDiffusePipelineHandle = std::shared_ptr<VkDiffusePipeline>;

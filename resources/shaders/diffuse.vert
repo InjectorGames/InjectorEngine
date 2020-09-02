@@ -1,5 +1,5 @@
-in highp vec3 v_Position;
-in highp vec3 v_Normal;
+layout (location = 0) in highp vec3 v_Position;
+layout (location = 1) in highp vec3 v_Normal;
 
 out highp vec3 f_Normal;
 

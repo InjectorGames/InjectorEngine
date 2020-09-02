@@ -43,6 +43,7 @@ add_library(InjectorEngine STATIC
 	source/graphics/gl_buffer.cpp
 	source/graphics/gl_camera_system.cpp
 	source/graphics/gl_color_pipeline.cpp
+	source/graphics/gl_diffuse_pipeline.cpp
 	source/graphics/gl_mesh.cpp
 	source/graphics/gl_pipeline.cpp
 	source/graphics/gl_render_system.cpp

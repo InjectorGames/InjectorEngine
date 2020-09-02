@@ -1,5 +1,5 @@
-in highp vec3 v_Position;
-in highp vec3 v_Color;
+layout (location = 0) in highp vec3 v_Position;
+layout (location = 1) in highp vec3 v_Color;
 
 out highp vec3 f_Color;
 

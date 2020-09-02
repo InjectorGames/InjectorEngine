@@ -16,7 +16,7 @@ namespace INJECTOR_NAMESPACE
 		Entity();
 		~Entity();
 
-		void Entity::destroyComponents() noexcept;
+		void destroyComponents() noexcept;
 		size_t getComponentCount() const noexcept;
 
 		template<class T, class ...Args>

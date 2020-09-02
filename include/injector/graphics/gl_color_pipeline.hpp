@@ -12,11 +12,10 @@ namespace INJECTOR_NAMESPACE
 
 		Vector4 color;
 	public:
-		static const std::vector<GlVertexAttribute> colorAttributes;
+		static const std::vector<GlVertexAttribute> vertexAttributes;
 
 		GlColorPipeline(
 			bool gles,
-			const Matrix4& mvp = Matrix4::identity,
 			const Vector4& color = Vector4::one);
 		virtual ~GlColorPipeline();
 
@@ -32,6 +31,5 @@ namespace INJECTOR_NAMESPACE
 			const Matrix4& proj,
 			const Matrix4& viewProj,
 			const Matrix4& mvp) override;
-
 	};
 }

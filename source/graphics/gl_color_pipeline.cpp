@@ -6,19 +6,15 @@
 
 namespace INJECTOR_NAMESPACE
 {
-	/*GlAttribute(0, GlAttribute::Size::Three, GlAttribute::Type::Float, false, sizeof(float) * 6, 0),
-		GlAttribute(1, GlAttribute::Size::Three, GlAttribute::Type::Float, false, sizeof(float) * 6, sizeof(float) * 3),*/
-
-	const std::vector<GlVertexAttribute> GlColorPipeline::colorAttributes =
+	const std::vector<GlVertexAttribute> GlColorPipeline::vertexAttributes =
 	{
-		GlVertexAttribute(0, 3, GL_FLOAT, false, 0, 0),
+		GlVertexAttribute(0, 3, GL_FLOAT, false, sizeof(Vector3), 0),
 	};
 
 	GlColorPipeline::GlColorPipeline(
 		bool gles,
-		const Matrix4& _mvp,
 		const Vector4& _color) :
-		GlPipeline(GL_TRIANGLES, colorAttributes),
+		GlPipeline(GL_TRIANGLES, vertexAttributes),
 		color(_color)
 	{
 		auto vertexSource = FileStream::readAllText(

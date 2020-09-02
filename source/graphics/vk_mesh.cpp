@@ -26,8 +26,9 @@ namespace INJECTOR_NAMESPACE
 
 	void VkMesh::draw(vk::CommandBuffer commandBuffer) noexcept
 	{
-		VkDeviceSize offset = 0;
-		commandBuffer.bindVertexBuffers(0, 1, &vertexBuffer->getBuffer(), &offset);
+		const VkDeviceSize offset = 0;
+		auto buffer = vertexBuffer->getBuffer();
+		commandBuffer.bindVertexBuffers(0, 1, &buffer, &offset);
 
 		auto index = (indexType == BufferIndex::UnsignedShort) ? 
 			vk::IndexType::eUint16 : vk::IndexType::eUint32;

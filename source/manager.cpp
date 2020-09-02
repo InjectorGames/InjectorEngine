@@ -1,4 +1,3 @@
-#pragma once
 #include <injector/manager.hpp>
 #include <stdexcept>
 

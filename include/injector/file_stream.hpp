@@ -1,11 +1,14 @@
 #pragma once
 #include <injector/defines.hpp>
 
+#include <vector>
 #include <fstream>
 #include <filesystem>
 
 namespace INJECTOR_NAMESPACE
 {
+
+	
 	class FileStream : public std::fstream
 	{
 	public:
