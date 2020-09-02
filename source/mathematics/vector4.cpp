@@ -88,7 +88,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	Vector4 Vector4::getNormalized() const noexcept
 	{
-		return *this * std::sqrt(getDotProduct(*this));
+		return *this * (1.0f / std::sqrt(getDotProduct(*this)));
 	}
 	Vector4 Vector4::getReflected(const Vector4& normal) const noexcept
 	{

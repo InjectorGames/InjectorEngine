@@ -37,7 +37,7 @@ void init()
 	floor->createComponent<RenderComponent>(colorPipeline, squareMesh);
 	transformSystem->addTransform(floor);
 	cameraComponent->renders.emplace(floor);
-
+	//glm::normalize
 	auto cube1 = window->createEntity();
 	cube1->createComponent<TransformComponent>(Vector3(-5.0f, 0.5f, -5.0f));
 	cube1->createComponent<RenderComponent>(colorPipeline, cubeMesh);
@@ -49,7 +49,7 @@ void init()
 
 int main(int argc, char* args[])
 {
-	Engine::initializeEvents();
+	//Engine::initializeEvents();
 	//Engine::initializeVideo(GraphicsAPI::Vulkan);
 	Engine::initializeVideo(GraphicsAPI::OpenGL);
 	Engine::initializeEngine();

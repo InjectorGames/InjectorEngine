@@ -7,7 +7,7 @@ namespace INJECTOR_NAMESPACE
     const std::vector<GlVertexAttribute> GlDiffusePipeline::vertexAttributes =
 	{
 		GlVertexAttribute(0, 3, GL_FLOAT, false, sizeof(Vector3) * 2, 0),
-        GlVertexAttribute(0, 3, GL_FLOAT, false, sizeof(Vector3) * 2, sizeof(Vector3)),
+        GlVertexAttribute(1, 3, GL_FLOAT, false, sizeof(Vector3) * 2, sizeof(Vector3)),
 	};
 
     GlDiffusePipeline::GlDiffusePipeline(
@@ -20,7 +20,7 @@ namespace INJECTOR_NAMESPACE
 		objectColor(_objectColor),
         ambientColor(_ambientColor),
         lightColor(_lightColor),
-        lightDirection(_lightDirection)
+        lightDirection(_lightDirection.getNormalized())
     {
         auto vertexSource = FileStream::readAllText(
 			"resources/shaders/diffuse.vert");
@@ -107,8 +107,11 @@ namespace INJECTOR_NAMESPACE
 	{
 		GlPipeline::bind();
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
 		glDisable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
+		glCullFace(GL_BACK); 
+		glFrontFace(GL_CW); 
 	}
 
 	void GlDiffusePipeline::setUniforms(

@@ -60,19 +60,19 @@ namespace INJECTOR_NAMESPACE
 	}
 	float Vector3::getLength() const noexcept
 	{
-		return std::sqrtf(getDotProduct(*this));
+		return std::sqrt(getDotProduct(*this));
 	}
 	float Vector3::getDistance(const Vector3& vector) const noexcept
 	{
-		return  std::sqrtf(getDotProduct(*this - vector));
+		return  std::sqrt(getDotProduct(*this - vector));
 	}
 	float Vector3::getDistance(const IntVector3& vector) const noexcept
 	{
-		return  std::sqrtf(getDotProduct(*this - vector));
+		return  std::sqrt(getDotProduct(*this - vector));
 	}
 	Vector3 Vector3::getNormalized() const noexcept
 	{
-		return *this * std::sqrtf(getDotProduct(*this));;
+		return *this * (1.0f / std::sqrt(getDotProduct(*this)));
 	}
 	Vector3 Vector3::getReflected(const Vector3& normal) const noexcept
 	{

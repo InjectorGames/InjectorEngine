@@ -41,7 +41,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	Vector2 Vector2::getNormalized() const noexcept
 	{
-		return *this * std::sqrt(getDotProduct(*this));
+		return *this * (1.0f / std::sqrt(getDotProduct(*this)));
 	}
 	Vector2 Vector2::getReflected(const Vector2& normal) const noexcept
 	{
