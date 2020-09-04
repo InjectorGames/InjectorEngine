@@ -5,7 +5,7 @@
 #include <memory>
 #include <cstdint>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class GlBuffer
 	{

@@ -7,7 +7,7 @@
 
 #include <set>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class RenderSystem : public System
 	{

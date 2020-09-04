@@ -1,8 +1,6 @@
 #pragma once
-#include <injector/defines.hpp>
-#include <memory>
 
-namespace INJECTOR_NAMESPACE
+namespace Injector
 {
 	class System
 	{
@@ -10,6 +8,4 @@ namespace INJECTOR_NAMESPACE
 		virtual ~System();
 		virtual void update();
 	};
-
-	using SystemHandle = std::shared_ptr<System>;
 }

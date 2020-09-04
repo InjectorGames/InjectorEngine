@@ -3,7 +3,7 @@
 #include <injector/graphics/mesh.hpp>
 #include <injector/graphics/pipeline.hpp>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	struct RenderComponent : public Component
 	{

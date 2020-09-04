@@ -2,7 +2,7 @@
 #include <injector/graphics/vk_pipeline.hpp>
 #include <injector/graphics/color_pipeline.hpp>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class VkColorPipeline : public VkPipeline, public ColorPipeline
 	{

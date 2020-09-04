@@ -1,12 +1,11 @@
 #pragma once
-#include <injector/defines.hpp>
 #include <GL/glew.h>
 
 #include <string>
 #include <vector>
 #include <memory>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class GlShader
 	{

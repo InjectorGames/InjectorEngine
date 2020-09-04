@@ -1,10 +1,9 @@
 #pragma once
-#include <injector/defines.hpp>
 #include <GL/glew.h>
 
 #include <cstdint>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	struct GlVertexAttribute
 	{

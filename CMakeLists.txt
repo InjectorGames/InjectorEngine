@@ -21,6 +21,7 @@ TEST_BIG_ENDIAN(INJECTOR_BIG_ENDIAN)
 
 include(FindVulkan)
 include(cmake/asio.cmake)
+include(cmake/stb.cmake)
 include(cmake/vma.cmake)
 
 set(BUILD_UTILS OFF CACHE BOOL "")
@@ -48,6 +49,7 @@ add_library(InjectorEngine STATIC
 	source/graphics/gl_pipeline.cpp
 	source/graphics/gl_render_system.cpp
 	source/graphics/gl_shader.cpp
+	source/graphics/gl_texture.cpp
 	source/graphics/gl_vertex_attribute.cpp
 	source/graphics/gl_window.cpp
 	source/graphics/image.cpp
@@ -56,6 +58,7 @@ add_library(InjectorEngine STATIC
 	source/graphics/primitive.cpp
 	source/graphics/render_component.cpp
 	source/graphics/render_system.cpp
+	source/graphics/texture.cpp
 	source/graphics/vk_buffer.cpp
 	source/graphics/vk_camera_system.cpp
 	source/graphics/vk_color_pipeline.cpp
@@ -66,6 +69,7 @@ add_library(InjectorEngine STATIC
 	source/graphics/vk_render_system.cpp
 	source/graphics/vk_shader.cpp
 	source/graphics/vk_swapchain_data.cpp
+	source/graphics/vk_texture.cpp
 	source/graphics/vk_window.cpp
 	source/graphics/window.cpp
 
@@ -100,6 +104,7 @@ target_link_libraries(InjectorEngine PUBLIC
 	glm::glm
 	SDL2main
 	SDL2-static
+	stb
 	vma
 	Vulkan::Vulkan
 	#zlibstatic

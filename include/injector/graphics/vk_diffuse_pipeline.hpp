@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class VkDiffusePipeline : public VkPipeline, public DiffusePipeline
 	{

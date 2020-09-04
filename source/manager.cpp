@@ -1,7 +1,7 @@
 #include <injector/manager.hpp>
 #include <stdexcept>
 
-namespace INJECTOR_NAMESPACE
+namespace Injector
 {
 	Manager::Manager(bool _active) :
 		active(_active),
@@ -30,16 +30,16 @@ namespace INJECTOR_NAMESPACE
 		return systems.size();
 	}
 
-	EntityHandle Manager::createEntity()
+	shared_ptr<Entity> Manager::createEntity()
 	{
-		auto entity = std::make_shared<Entity>();
+		auto entity = make_shared<Entity>();
 
 		if (!entities.emplace(entity).second)
-			throw std::runtime_error("Failed to create manager entity");
+			throw runtime_error("Failed to create manager entity");
 
 		return entity;
 	}
-	bool Manager::addEntity(const EntityHandle& entity) noexcept
+	bool Manager::addEntity(const shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;
@@ -47,7 +47,7 @@ namespace INJECTOR_NAMESPACE
 		return entities.emplace(entity).second;
 	}
 
-	bool Manager::removeEntity(const EntityHandle& entity) noexcept
+	bool Manager::removeEntity(const shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;

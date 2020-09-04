@@ -2,7 +2,7 @@
 #include <injector/mathematics/matrix4.hpp>
 #include <memory>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class Pipeline
 	{

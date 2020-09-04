@@ -2,7 +2,7 @@
 #include <injector/graphics/buffer_index.hpp>
 #include <memory>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class Mesh
 	{

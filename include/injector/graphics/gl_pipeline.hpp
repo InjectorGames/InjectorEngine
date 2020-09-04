@@ -8,7 +8,7 @@
 #include <vector>
 #include <memory>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class GlPipeline : public Pipeline
 	{

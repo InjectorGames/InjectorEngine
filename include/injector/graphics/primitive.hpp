@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstdint>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class Primitive
 	{

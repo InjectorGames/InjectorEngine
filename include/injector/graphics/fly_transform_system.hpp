@@ -2,7 +2,7 @@
 #include <injector/graphics/window.hpp>
 #include <injector/mathematics/transform_component.hpp>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class FlyTransformSystem : public System
 	{

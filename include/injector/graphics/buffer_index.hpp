@@ -1,7 +1,6 @@
 #pragma once
-#include <injector/defines.hpp>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	enum class BufferIndex
 	{

@@ -13,7 +13,7 @@
 #include <string>
 #include <cstdint>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class Window : public Manager
 	{

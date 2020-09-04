@@ -1,7 +1,7 @@
 #pragma once
 #include <injector/graphics/pipeline.hpp>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class DiffusePipeline : public Pipeline
 	{

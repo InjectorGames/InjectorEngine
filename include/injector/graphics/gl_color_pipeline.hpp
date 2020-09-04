@@ -2,7 +2,7 @@
 #include <injector/graphics/gl_pipeline.hpp>
 #include <injector/graphics/color_pipeline.hpp>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	class GlColorPipeline : public GlPipeline, public ColorPipeline
 	{

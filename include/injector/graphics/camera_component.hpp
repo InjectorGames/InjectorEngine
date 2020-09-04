@@ -6,7 +6,7 @@
 
 #include <set>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	struct CameraComponent : public Component
 	{

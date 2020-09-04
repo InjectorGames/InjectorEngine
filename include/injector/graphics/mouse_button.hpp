@@ -1,10 +1,9 @@
 #pragma once
-#include <injector/defines.hpp>
 #include <SDL_mouse.h>
 
 #include <cstdint>
 
-namespace INJECTOR_NAMESPACE
+namespace injector::graphics
 {
 	enum class MouseButton : uint32_t
 	{
