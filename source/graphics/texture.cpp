@@ -1,6 +1,6 @@
-#include <injector/graphics/texture.hpp>
+#include "Injector/Graphics/Texture.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Graphics
 {
 
 }

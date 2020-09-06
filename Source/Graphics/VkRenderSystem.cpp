@@ -1,0 +1,109 @@
+#include "Injector/Graphics/VkRenderSystem.hpp"
+#include "Injector/Graphics/VkPipeline.hpp"
+#include "Injector/Graphics/VkMesh.hpp"
+
+#include <map>
+
+namespace Injector::Graphics
+{
+	VkRenderSystem::VkRenderSystem(
+		VkWindow& _window) :
+		window(_window)
+	{
+	}
+	VkRenderSystem::~VkRenderSystem()
+	{}
+
+	void VkRenderSystem::update()
+	{
+		struct CameraData
+		{
+			CameraComponent* camera;
+			TransformComponent* transform;
+		};
+
+		struct RenderData
+		{
+			shared_ptr<VkPipeline> pipeline;
+			shared_ptr<VkMesh> mesh;
+			TransformComponent* transform;
+		};
+
+		auto cameraPairs = multimap<int, CameraData>();
+
+		for (auto& camera : cameras)
+		{
+			auto cameraData = CameraData();
+
+			if (!camera->getComponent(cameraData.camera) ||
+				!camera->getComponent(cameraData.transform) ||
+				!cameraData.camera->render)
+				continue;
+
+			cameraPairs.emplace(cameraData.camera->queue, cameraData);
+		}
+
+		auto imageIndex = window.beginImage();
+		auto commandBuffer = window.getGraphicsCommandBuffer(imageIndex);
+		window.beginRecord(imageIndex);
+
+		for (auto& cameraPair : cameraPairs)
+		{
+			auto cameraData = cameraPair.second;
+			auto renderPairs = multimap<float, RenderData>();
+
+			for (auto& render : cameraData.camera->renders)
+			{
+				auto renderData = RenderData();
+				RenderComponent* renderComponent;
+
+				if (!render->getComponent<RenderComponent>(renderComponent) ||
+					!render->getComponent<TransformComponent>(renderData.transform) ||
+					!renderComponent->render ||
+					!renderComponent->pipeline ||
+					!renderComponent->mesh)
+					continue;
+
+				renderData.pipeline = dynamic_pointer_cast<VkPipeline>(
+					renderComponent->pipeline);
+				renderData.mesh = dynamic_pointer_cast<VkMesh>(
+					renderComponent->mesh);
+
+				if (!renderData.pipeline || !renderData.mesh)
+					continue;
+
+				auto distance = cameraData.transform->position.getDistance(
+					-renderData.transform->position);
+				renderPairs.emplace(distance, renderData);
+				renderData.pipeline->flush(imageIndex);
+			}
+
+			auto& viewMatrix = cameraData.transform->matrix;
+			auto& projMatrix = cameraData.camera->matrix;
+			auto viewProjMatrix = projMatrix * viewMatrix;
+
+			shared_ptr<VkPipeline> lastPipeline = nullptr;
+
+			for (auto& renderPair : renderPairs)
+			{
+				auto renderData = renderPair.second;
+
+				auto& modelMatrix = renderData.transform->matrix;
+				auto mvpMatrix = viewProjMatrix * modelMatrix;
+
+				if (renderData.pipeline != lastPipeline)
+				{
+					lastPipeline = renderData.pipeline;
+					renderData.pipeline->bind(commandBuffer, imageIndex);
+				}
+
+				renderData.pipeline->setUniforms(
+					modelMatrix, viewMatrix, projMatrix, viewProjMatrix, mvpMatrix);
+				renderData.mesh->draw(commandBuffer);
+			}
+		}
+
+		window.endRecord(imageIndex);
+		window.endImage(imageIndex);
+	}
+}

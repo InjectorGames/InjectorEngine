@@ -1,9 +1,9 @@
-#include <injector/mathematics/converter.hpp>
+#include "Injector/Mathematics/Converter.hpp"
 
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Mathematics
 {
 	float Converter::toDegrees(float radians)
 	{

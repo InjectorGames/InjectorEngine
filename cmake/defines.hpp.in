@@ -1,8 +1,6 @@
 #pragma once
 
-#define INJECTOR_NAMESPACE injector
-
-namespace INJECTOR_NAMESPACE
+namespace Injector
 {
 #define INJECTOR_VERSION_MAJOR @InjectorEngine_VERSION_MAJOR@
 #define INJECTOR_VERSION_MINOR @InjectorEngine_VERSION_MINOR@

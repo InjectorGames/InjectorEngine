@@ -1,6 +1,6 @@
-#include <injector/component.hpp>
+#include "Injector/Component.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector
 {
 	Component::~Component()
 	{}

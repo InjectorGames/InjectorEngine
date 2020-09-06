@@ -1,11 +1,13 @@
-#include <injector/mathematics/quaternion.hpp>
+#include "Injector/Mathematics/Quaternion.hpp"
+#include "Injector/EngineException.hpp"
 
 #include <cmath>
 #include <limits>
-#include <stdexcept>
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Mathematics
 {
+	using namespace std;
+
 	Quaternion::Quaternion() :
 		x(0.0f), y(0.0f), z(0.0f), w(0.0f)
 	{}
@@ -14,11 +16,11 @@ namespace INJECTOR_NAMESPACE
 	{}
 	Quaternion::Quaternion(float angle, const Vector3& axis)
 	{
-		auto v = axis * std::sin(angle * 0.5f);
+		auto v = axis * sin(angle * 0.5f);
 		x = v.x;
 		y = v.y;
 		z = v.z;
-		w = std::cos(angle * 0.5f);
+		w = cos(angle * 0.5f);
 	}
 	Quaternion::Quaternion(const Vector3& eulerAngles)
 	{
@@ -35,7 +37,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	Quaternion::Quaternion(const Vector3& a, const Vector3& b)
 	{
-		auto norm = std::sqrt(a.getDotProduct(a) * b.getDotProduct(b));
+		auto norm = sqrt(a.getDotProduct(a) * b.getDotProduct(b));
 		auto real = norm + a.getDotProduct(b);
 
 		auto t = Vector3();
@@ -47,8 +49,7 @@ namespace INJECTOR_NAMESPACE
 			// can happen later, when we normalise the quaternion.
 			real = 0.0f;
 
-			t = std::abs(a.x) > std::abs(a.z) ?
-				Vector3(-a.y, a.x, 0.0f) : Vector3(0.0f, -a.z, a.y);
+			t = abs(a.x) > abs(a.z) ? Vector3(-a.y, a.x, 0.0f) : Vector3(0.0f, -a.z, a.y);
 		}
 		else
 		{
@@ -85,7 +86,7 @@ namespace INJECTOR_NAMESPACE
 			biggestIndex = 3;
 		}
 
-		auto biggestValue = std::sqrt(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
+		auto biggestValue = sqrt(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
 		auto multiplier = 0.25f / biggestValue;
 
 		switch (biggestIndex)
@@ -111,7 +112,7 @@ namespace INJECTOR_NAMESPACE
 			z = biggestValue;
 			w = (matrix.m01 - matrix.m10) * multiplier;
 		default:
-			throw std::runtime_error("Something went wrong");
+			throw EngineException("Something went wrong");
 		}
 	}
 	Quaternion::Quaternion(const Matrix4& matrix)
@@ -140,7 +141,7 @@ namespace INJECTOR_NAMESPACE
 			biggestIndex = 3;
 		}
 
-		auto biggestValue = std::sqrt(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
+		auto biggestValue = sqrt(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
 		auto multiplier = 0.25f / biggestValue;
 
 		switch (biggestIndex)
@@ -166,7 +167,7 @@ namespace INJECTOR_NAMESPACE
 			z = biggestValue;
 			w = (matrix.m01 - matrix.m10) * multiplier;
 		default:
-			throw std::runtime_error("Something went wrong");
+			throw EngineException("Something went wrong");
 		}
 	}
 
@@ -182,7 +183,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	float Quaternion::getLength() const noexcept
 	{
-		return std::sqrt(getDotProduct(*this));
+		return sqrt(getDotProduct(*this));
 	}
 	Quaternion Quaternion::getNormalized() const noexcept
 	{
@@ -205,34 +206,34 @@ namespace INJECTOR_NAMESPACE
 		const Vector3& direction, const Vector3& up) const noexcept
 	{
 		auto c0 = up.getCrossProduct(direction) *
-			(1.0f / std::sqrt(std::fmaxf(0.00001f, direction.getDotProduct(direction))));
+			(1.0f / sqrt(fmaxf(0.00001f, direction.getDotProduct(direction))));
 		return Quaternion(Matrix3(c0, direction.getCrossProduct(c0), direction));
 	}
 
 	float Quaternion::getAngle() const noexcept
 	{
-		if (std::abs(w) > static_cast<float>(0.877582561890372716130286068203503191))
-			return std::asin(std::sqrt(x * x + y * y + z * z)) * 2.0f;
-		return std::acos(w) * 2.0f;
+		if (abs(w) > static_cast<float>(0.877582561890372716130286068203503191))
+			return asin(std::sqrt(x * x + y * y + z * z)) * 2.0f;
+		return acos(w) * 2.0f;
 	}
 	float Quaternion::getRoll() const noexcept
 	{
-		return std::atan2(2.0f * (x * y + w * z), w * w + x * x - y * y - z * z);
+		return atan2(2.0f * (x * y + w * z), w * w + x * x - y * y - z * z);
 	}
 	float Quaternion::getPitch() const noexcept
 	{
 		float _y = 2.0f * (y * z + w * x);
 		float _x = w * w - x * x - y * y + z * z;
 
-		if (std::abs(_y) <= std::numeric_limits<float>::epsilon() &&
-			std::abs(_x) <= std::numeric_limits<float>::epsilon())
-			return 2.0f * std::atan2(x, w);
+		if (abs(_y) <= std::numeric_limits<float>::epsilon() &&
+			abs(_x) <= std::numeric_limits<float>::epsilon())
+			return 2.0f * atan2(x, w);
 
-		return std::atan2(y, x);
+		return atan2(y, x);
 	}
 	float Quaternion::getYaw() const noexcept
 	{
-		return std::asin(std::fminf(std::fmaxf(-2.0f * (x * z - w * y), -1.0f), 1.0f));
+		return asin(fminf(fmaxf(-2.0f * (x * z - w * y), -1.0f), 1.0f));
 	}
 	Vector3 Quaternion::getAxis() const noexcept
 	{
@@ -241,7 +242,7 @@ namespace INJECTOR_NAMESPACE
 		if (tmp <= 0.0f)
 			return Vector3(0.0f, 0.0f, 1.0f);
 
-		tmp = 1.0f / std::sqrt(tmp);
+		tmp = 1.0f / sqrt(tmp);
 		return Vector3(x * tmp, y * tmp, z * tmp);
 	}
 	Vector3 Quaternion::getEulerAngles() const noexcept

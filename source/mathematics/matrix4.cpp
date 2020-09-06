@@ -1,10 +1,10 @@
-#include <injector/mathematics/matrix4.hpp>
-
+#include "Injector/Mathematics/Matrix4.hpp"
 #include <cmath>
-#include <stdexcept>
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Mathematics
 {
+	using namespace std;
+
 	Matrix4::Matrix4() :
 		m00(0.0f), m01(0.0f), m02(0.0f), m03(0.0f),
 		m10(0.0f), m11(0.0f), m12(0.0f), m13(0.0f),
@@ -514,7 +514,7 @@ namespace INJECTOR_NAMESPACE
 	Matrix4 Matrix4::createPerspectiveVk(float fieldOfView, float aspectRatio,
 		float nearClipPlane, float farClipPlane)
 	{
-		auto tanHalfFov = std::tan(fieldOfView / 2.0f);
+		auto tanHalfFov = tan(fieldOfView / 2.0f);
 
 		return Matrix4(
 			1.0f / (aspectRatio * tanHalfFov),
@@ -528,7 +528,7 @@ namespace INJECTOR_NAMESPACE
 	Matrix4 Matrix4::createPerspectiveGl(float fieldOfView, float aspectRatio,
 		float nearClipPlane, float farClipPlane)
 	{
-		auto tanHalfFov = std::tan(fieldOfView / 2.0f);
+		auto tanHalfFov = tan(fieldOfView / 2.0f);
 
 		return Matrix4(
 			1.0f / (aspectRatio * tanHalfFov),

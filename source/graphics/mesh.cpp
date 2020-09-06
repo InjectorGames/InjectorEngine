@@ -1,7 +1,7 @@
-#include <injector/graphics/mesh.hpp>
-#include <stdexcept>
+#include "Injector/Graphics/Mesh.hpp"
+#include "Injector/Graphics/GraphicsException.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Graphics
 {
 	Mesh::Mesh(
 		size_t _indexCount,
@@ -14,19 +14,19 @@ namespace INJECTOR_NAMESPACE
 
 	void Mesh::setVertexData(void* data, size_t size)
 	{
-		throw std::runtime_error("Not implemented mesh function");
+		throw GraphicsException("Not implemented mesh function");
 	}
 	void Mesh::setVertexData(void* data, size_t size, size_t offset)
 	{
-		throw std::runtime_error("Not implemented mesh function");
+		throw GraphicsException("Not implemented mesh function");
 	}
 
 	void Mesh::setIndexData(void* data, size_t size)
 	{
-		throw std::runtime_error("Not implemented mesh function");
+		throw GraphicsException("Not implemented mesh function");
 	}
 	void Mesh::setIndexData(void* data, size_t size, size_t offset)
 	{
-		throw std::runtime_error("Not implemented mesh function");
+		throw GraphicsException("Not implemented mesh function");
 	}
 }

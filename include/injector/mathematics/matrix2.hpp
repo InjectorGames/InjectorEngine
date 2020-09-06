@@ -1,7 +1,7 @@
 #pragma once
-#include <injector/mathematics/vector2.hpp>
+#include "Injector/Mathematics/Vector2.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Mathematics
 {
 	struct Matrix2
 	{

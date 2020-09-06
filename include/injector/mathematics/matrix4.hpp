@@ -1,8 +1,8 @@
 #pragma once
-#include <injector/mathematics/matrix3.hpp>
-#include <injector/mathematics/vector4.hpp>
+#include "Injector/Mathematics/Matrix3.hpp"
+#include "Injector/Mathematics/Vector4.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Mathematics
 {
 	struct Matrix4
 	{

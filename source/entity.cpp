@@ -1,6 +1,6 @@
-#include <injector/entity.hpp>
+#include "Injector/Entity.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector
 {
 	Entity::Entity() :
 		components()

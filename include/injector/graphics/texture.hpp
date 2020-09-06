@@ -1,6 +1,6 @@
 #pragma once
 
-namespace injector::graphics
+namespace Injector::Graphics
 {
     class Texture
     {

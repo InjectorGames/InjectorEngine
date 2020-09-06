@@ -1,9 +1,12 @@
 #pragma once
-#include <injector/mathematics/int_vector2.hpp>
+#include "Injector/Mathematics/IntVector2.hpp"
 #include <string>
 
-namespace injector::graphics
+namespace Injector::Graphics
 {
+	using namespace std;
+	using namespace Injector::Mathematics;
+
 	class Image
 	{
 	protected:
@@ -11,8 +14,7 @@ namespace injector::graphics
 		IntVector2 size;
 		unsigned char* data;
 	public:
-		Image(
-			const std::string& filePath,
+		Image(const string& filePath,
 			int channelCount = 0);
 		virtual ~Image();
 	};

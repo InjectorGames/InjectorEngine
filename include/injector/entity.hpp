@@ -1,17 +1,16 @@
 #pragma once
-#include <injector/component.hpp>
+#include "Injector/Component.hpp"
+#include "Injector/EngineException.hpp"
 
 #include <map>
-#include <memory>
 #include <typeindex>
-#include <stdexcept>
 
-namespace INJECTOR_NAMESPACE
+namespace Injector
 {
 	class Entity final
 	{
 	private:
-		std::map<std::type_index, Component*> components;
+		map<type_index, Component*> components;
 	public:
 		Entity();
 		~Entity();
@@ -27,7 +26,7 @@ namespace INJECTOR_NAMESPACE
 			if (!components.emplace(typeid(T), component).second)
 			{
 				delete component;
-				throw std::runtime_error("Failed to add entity component");
+				throw EngineException("Failed to add entity component");
 			}
 
 			return component;
@@ -97,6 +96,4 @@ namespace INJECTOR_NAMESPACE
 			return true;
 		}
 	};
-
-	using EntityHandle = std::shared_ptr<Entity>;
 }

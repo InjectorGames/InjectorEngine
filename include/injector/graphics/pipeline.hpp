@@ -1,9 +1,10 @@
 #pragma once
-#include <injector/mathematics/matrix4.hpp>
-#include <memory>
+#include "Injector/Mathematics/Matrix4.hpp"
 
-namespace injector::graphics
+namespace Injector::Graphics
 {
+	using namespace Injector::Mathematics;
+
 	class Pipeline
 	{
 	public:
@@ -16,6 +17,4 @@ namespace injector::graphics
 			const Matrix4& viewProj,
 			const Matrix4& mvp);
 	};
-
-	using PipelineHandle = std::shared_ptr<Pipeline>;
 }

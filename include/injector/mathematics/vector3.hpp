@@ -1,8 +1,8 @@
 #pragma once
-#include <injector/mathematics/vector2.hpp>
-#include <injector/mathematics/int_vector3.hpp>
+#include "Injector/Mathematics/Vector2.hpp"
+#include "Injector/Mathematics/IntVector3.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Mathematics
 {
 	struct Vector3
 	{

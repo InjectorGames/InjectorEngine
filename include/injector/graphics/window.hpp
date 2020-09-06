@@ -1,19 +1,19 @@
 #pragma once
-#include <injector/manager.hpp>
-#include <injector/graphics/mesh.hpp>
-#include <injector/graphics/pipeline.hpp>
-#include <injector/graphics/mouse_button.hpp>
-#include <injector/graphics/render_system.hpp>
-#include <injector/graphics/camera_system.hpp>
-#include <injector/graphics/color_pipeline.hpp>
-#include <injector/graphics/diffuse_pipeline.hpp>
+#include "Injector/Manager.hpp"
+#include "Injector/Graphics/Mesh.hpp"
+#include "Injector/Graphics/Pipeline.hpp"
+#include "Injector/Graphics/MouseButton.hpp"
+#include "Injector/Graphics/RenderSystem.hpp"
+#include "Injector/Graphics/CameraSystem.hpp"
+#include "Injector/Graphics/ColorPipeline.hpp"
+#include "Injector/Graphics/DiffusePipeline.hpp"
 
-#include <SDL.h>
+#include "SDL.h"
 
 #include <string>
 #include <cstdint>
 
-namespace injector::graphics
+namespace Injector::Graphics
 {
 	class Window : public Manager
 	{
@@ -23,12 +23,12 @@ namespace injector::graphics
 		Vector3 rotation;
 		IntVector2 mouseMotion;
 	public:
-		static const std::string defaultTitle;
+		static const string defaultTitle;
 		static const IntVector2 defaultPosition;
 		static const IntVector2 defaultSize;
 		static const uint32_t defaultFlags;
 
-		Window(const std::string& title = defaultTitle,
+		Window(const string& title = defaultTitle,
 			IntVector2 position = defaultPosition,
 			IntVector2 size = defaultSize,
 			uint32_t flags = defaultFlags);
@@ -63,10 +63,10 @@ namespace injector::graphics
 		void setResizable(bool resizable) noexcept;
 		bool setMouseMode(bool realtive) noexcept;
 
-		virtual CameraSystemHandle createCameraSystem();
-		virtual RenderSystemHandle createRenderSystem();
+		virtual shared_ptr<CameraSystem> createCameraSystem();
+		virtual shared_ptr<RenderSystem> createRenderSystem();
 
-		virtual MeshHandle createMesh(
+		virtual shared_ptr<Mesh> createMesh(
 			size_t indexCount,
 			BufferIndex indexType,
 			const void* vertexData,
@@ -75,20 +75,18 @@ namespace injector::graphics
 			size_t indexSize,
 			bool staticUse);
 
-		virtual ColorPipelineHandle createColorPipeline();
-		virtual DiffusePipelineHandle createDiffusePipeline();
+		virtual shared_ptr<ColorPipeline> createColorPipeline();
+		virtual shared_ptr<DiffusePipeline> createDiffusePipeline();
 
-		MeshHandle createSquareMeshV(bool staticUse);
-		MeshHandle createSquareMeshVN(bool staticUse);
-		MeshHandle createCubeMeshV(bool staticUse);
-		MeshHandle createCubeMeshVN(bool staticUse);
+		shared_ptr<Mesh> createSquareMeshV(bool staticUse);
+		shared_ptr<Mesh> createSquareMeshVN(bool staticUse);
+		shared_ptr<Mesh> createCubeMeshV(bool staticUse);
+		shared_ptr<Mesh> createCubeMeshVN(bool staticUse);
 
-		static std::shared_ptr<Window> create(
-			const std::string& title = Window::defaultTitle,
+		static shared_ptr<Window> create(
+			const string& title = Window::defaultTitle,
 			IntVector2 position = Window::defaultPosition,
 			IntVector2 size = Window::defaultSize,
 			uint32_t flags = Window::defaultFlags);
 	};
-
-	using WindowHandle = std::shared_ptr<Window>;
 }

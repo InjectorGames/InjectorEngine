@@ -1,6 +1,6 @@
-#include <injector/system.hpp>
+#include "Injector/System.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector
 {
 	System::~System()
 	{}

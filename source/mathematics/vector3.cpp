@@ -1,8 +1,10 @@
-#include <injector/mathematics/vector3.hpp>
+#include <Injector/Mathematics/Vector3.hpp>
 #include <cmath>
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Mathematics
 {
+	using namespace std;
+
 	Vector3::Vector3() :
 		x(0.0f), y(0.0f), z(0.0f)
 	{}
@@ -60,19 +62,19 @@ namespace INJECTOR_NAMESPACE
 	}
 	float Vector3::getLength() const noexcept
 	{
-		return std::sqrt(getDotProduct(*this));
+		return sqrt(getDotProduct(*this));
 	}
 	float Vector3::getDistance(const Vector3& vector) const noexcept
 	{
-		return  std::sqrt(getDotProduct(*this - vector));
+		return sqrt(getDotProduct(*this - vector));
 	}
 	float Vector3::getDistance(const IntVector3& vector) const noexcept
 	{
-		return  std::sqrt(getDotProduct(*this - vector));
+		return sqrt(getDotProduct(*this - vector));
 	}
 	Vector3 Vector3::getNormalized() const noexcept
 	{
-		return *this * (1.0f / std::sqrt(getDotProduct(*this)));
+		return *this * (1.0f / sqrt(getDotProduct(*this)));
 	}
 	Vector3 Vector3::getReflected(const Vector3& normal) const noexcept
 	{
@@ -82,23 +84,23 @@ namespace INJECTOR_NAMESPACE
 	{
 		auto dot = getDotProduct(normal);
 		auto  k = (1.0f - eta * eta * (1.0f - dot * dot));
-		return Vector3(k >= 0.0f ? (*this * eta - normal * (eta * dot + std::sqrt(k))) : Vector3(0.0f));
+		return Vector3(k >= 0.0f ? (*this * eta - normal * (eta * dot + sqrt(k))) : Vector3(0.0f));
 	}
 	Vector3 Vector3::getSine() const noexcept
 	{
-		return Vector3(std::sin(x), std::sin(y), std::sin(z));
+		return Vector3(sin(x), sin(y), sin(z));
 	}
 	Vector3 Vector3::getCosine() const noexcept
 	{
-		return Vector3(std::cos(x), std::cos(y), std::cos(z));
+		return Vector3(cos(x), cos(y), cos(z));
 	}
 	Vector3 Vector3::getTangent() const noexcept
 	{
-		return Vector3(std::tan(x), std::tan(y), std::tan(z));
+		return Vector3(tan(x), tan(y), tan(z));
 	}
 	Vector3 Vector3::getCotangent() const noexcept
 	{
-		return Vector3(1.0f / std::tan(x), 1.0f / std::tan(y), 1.0f / std::tan(z));
+		return Vector3(1.0f / tan(x), 1.0f / tan(y), 1.0f / tan(z));
 	}
 
 	Vector2 Vector3::getVector2() const noexcept

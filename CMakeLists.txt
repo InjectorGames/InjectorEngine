@@ -9,7 +9,7 @@ project(InjectorEngine
 	LANGUAGES CXX
 )
 
-option(INJECTOR_BUILD_EDITOR "Build in editor executable" ON)
+option(INJECTOR_BUILD_EDITOR "Build editor executable" ON)
 
 include(GNUInstallDirs)
 
@@ -20,129 +20,133 @@ include(TestBigEndian)
 TEST_BIG_ENDIAN(INJECTOR_BIG_ENDIAN)
 
 include(FindVulkan)
-include(cmake/asio.cmake)
-include(cmake/stb.cmake)
-include(cmake/vma.cmake)
+include(CMake/asio.cmake)
+include(CMake/stb.cmake)
+include(CMake/VulkanMemoryAllocator.cmake)
 
 set(BUILD_UTILS OFF CACHE BOOL "")
 set(GLEW_REGAL OFF CACHE BOOL "")
 set(GLEW_OSMESA OFF CACHE BOOL "")
-add_subdirectory(3rdparty/glew/build/cmake)
+add_subdirectory(Libraries/glew/build/cmake)
 
-add_subdirectory(3rdparty/glm)
-add_subdirectory(3rdparty/sdl)
-#add_subdirectory(3rdparty/zlib)
+add_subdirectory(Libraries/SDL)
+#add_subdirectory(Libraries/zlib)
 
-configure_file(cmake/defines.hpp.in injector/defines.hpp)
+configure_file(CMake/Defines.hpp.in Injector/Defines.hpp)
 
 add_library(InjectorEngine STATIC
-	source/graphics/camera_component.cpp
-	source/graphics/camera_system.cpp
-	source/graphics/color_pipeline.cpp
-	source/graphics/diffuse_pipeline.cpp
-	source/graphics/fly_transform_system.cpp
-	source/graphics/gl_buffer.cpp
-	source/graphics/gl_camera_system.cpp
-	source/graphics/gl_color_pipeline.cpp
-	source/graphics/gl_diffuse_pipeline.cpp
-	source/graphics/gl_mesh.cpp
-	source/graphics/gl_pipeline.cpp
-	source/graphics/gl_render_system.cpp
-	source/graphics/gl_shader.cpp
-	source/graphics/gl_texture.cpp
-	source/graphics/gl_vertex_attribute.cpp
-	source/graphics/gl_window.cpp
-	source/graphics/image.cpp
-	source/graphics/mesh.cpp
-	source/graphics/pipeline.cpp
-	source/graphics/primitive.cpp
-	source/graphics/render_component.cpp
-	source/graphics/render_system.cpp
-	source/graphics/texture.cpp
-	source/graphics/vk_buffer.cpp
-	source/graphics/vk_camera_system.cpp
-	source/graphics/vk_color_pipeline.cpp
-	source/graphics/vk_diffuse_pipeline.cpp
-	source/graphics/vk_image.cpp
-	source/graphics/vk_mesh.cpp
-	source/graphics/vk_pipeline.cpp
-	source/graphics/vk_render_system.cpp
-	source/graphics/vk_shader.cpp
-	source/graphics/vk_swapchain_data.cpp
-	source/graphics/vk_texture.cpp
-	source/graphics/vk_window.cpp
-	source/graphics/window.cpp
+	Source/File/FileException.cpp
+	Source/File/FileStream.cpp
 
-	source/mathematics/attach_component.cpp
-	source/mathematics/converter.cpp
-	source/mathematics/int_vector2.cpp
-	source/mathematics/int_vector3.cpp
-	source/mathematics/int_vector4.cpp
-	source/mathematics/matrix2.cpp
-	source/mathematics/matrix3.cpp
-	source/mathematics/matrix4.cpp
-	source/mathematics/quaternion.cpp
-	source/mathematics/rotate_component.cpp
-	source/mathematics/transform_component.cpp
-	source/mathematics/transform_system.cpp
-	source/mathematics/translate_component.cpp
-	source/mathematics/vector2.cpp
-	source/mathematics/vector3.cpp
-	source/mathematics/vector4.cpp
+	Source/Graphics/CameraComponent.cpp
+	Source/Graphics/CameraSystem.cpp
+	Source/Graphics/ColorPipeline.cpp
+	Source/Graphics/DiffusePipeline.cpp
+	Source/Graphics/FlyTransformSystem.cpp
+	Source/Graphics/GlBuffer.cpp
+	Source/Graphics/GlCameraSystem.cpp
+	Source/Graphics/GlColorPipeline.cpp
+	Source/Graphics/GlDiffusePipeline.cpp
+	Source/Graphics/GlMesh.cpp
+	Source/Graphics/GlPipeline.cpp
+	Source/Graphics/GlRenderSystem.cpp
+	Source/Graphics/GlShader.cpp
+	Source/Graphics/GlTexture.cpp
+	Source/Graphics/GlVertexAttribute.cpp
+	Source/Graphics/GlWindow.cpp
+	Source/Graphics/GraphicsException.cpp
+	Source/Graphics/Image.cpp
+	Source/Graphics/Mesh.cpp
+	Source/Graphics/Pipeline.cpp
+	Source/Graphics/Primitive.cpp
+	Source/Graphics/RenderComponent.cpp
+	Source/Graphics/RenderSystem.cpp
+	Source/Graphics/Texture.cpp
+	Source/Graphics/VkBuffer.cpp
+	Source/Graphics/VkCameraSystem.cpp
+	Source/Graphics/VkColorPipeline.cpp
+	Source/Graphics/VkDiffusePipeline.cpp
+	Source/Graphics/VkImage.cpp
+	Source/Graphics/VkMesh.cpp
+	Source/Graphics/VkPipeline.cpp
+	Source/Graphics/VkRenderSystem.cpp
+	Source/Graphics/VkShader.cpp
+	Source/Graphics/VkSwapchainData.cpp
+	Source/Graphics/VkTexture.cpp
+	Source/Graphics/VkWindow.cpp
+	Source/Graphics/Window.cpp
 
-	source/byte_swap.cpp
-	source/component.cpp
-	source/engine.cpp
-	source/entity.cpp
-	source/file_stream.cpp
-	source/manager.cpp
-	source/system.cpp
+	Source/Mathematics/AttachComponent.cpp
+	Source/Mathematics/Converter.cpp
+	Source/Mathematics/IntVector2.cpp
+	Source/Mathematics/IntVector3.cpp
+	Source/Mathematics/IntVector4.cpp
+	Source/Mathematics/Matrix2.cpp
+	Source/Mathematics/Matrix3.cpp
+	Source/Mathematics/Matrix4.cpp
+	Source/Mathematics/Quaternion.cpp
+	Source/Mathematics/RotateComponent.cpp
+	Source/Mathematics/TransformComponent.cpp
+	Source/Mathematics/TransformSystem.cpp
+	Source/Mathematics/TranslateComponent.cpp
+	Source/Mathematics/Vector2.cpp
+	Source/Mathematics/Vector3.cpp
+	Source/Mathematics/Vector4.cpp
+
+	Source/Memory/ByteSwap.cpp
+
+	Source/Component.cpp
+	Source/Engine.cpp
+	Source/EngineException.cpp
+	Source/Entity.cpp
+	Source/Exception.cpp
+	Source/Manager.cpp
+	Source/System.cpp
 )
 target_link_libraries(InjectorEngine PUBLIC
 	asio
 	glew_s
-	glm::glm
 	SDL2main
 	SDL2-static
 	stb
-	vma
+	VulkanMemoryAllocator
 	Vulkan::Vulkan
 	#zlibstatic
 )
 target_include_directories(InjectorEngine PUBLIC
 	${PROJECT_BINARY_DIR}
-	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/3rdparty/glew/include
+	${PROJECT_SOURCE_DIR}/Include
+	${PROJECT_SOURCE_DIR}/Libraries/glew/include
 	${Vulkan_INCLUDE_DIRS}
-	#${PROJECT_SOURCE_DIR}/3rdparty/zlib
-	#${PROJECT_BINARY_DIR}/3rdparty/zlib
+	#${PROJECT_SOURCE_DIR}/Libraries/zlib
+	#${PROJECT_BINARY_DIR}/Libraries/zlib
 )
 
 if(INJECTOR_BUILD_EDITOR)
 	add_executable(InjectorEditor
-	    source/editor.cpp
+	    Source/Editor.cpp
 	)
 	target_link_libraries(InjectorEditor PUBLIC 
 	    InjectorEngine
 	)
 	target_include_directories(InjectorEditor PUBLIC
 		${PROJECT_BINARY_DIR}
-		${PROJECT_SOURCE_DIR}/include
+		${PROJECT_SOURCE_DIR}/Include
 	)
 endif()
 
 set(INJECTOR_RESOURCES
-	shaders/color.frag
-	shaders/color.vert
-	shaders/diffuse.frag
-	shaders/diffuse.vert
+	Shaders/Color.frag
+	Shaders/Color.vert
+	Shaders/Diffuse.frag
+	Shaders/Diffuse.vert
 
-	shaders/color.frag.spv
-	shaders/color.vert.spv
-	shaders/diffuse.frag.spv
-	shaders/diffuse.vert.spv
+	Shaders/Color.frag.spv
+	Shaders/Color.vert.spv
+	Shaders/Diffuse.frag.spv
+	Shaders/Diffuse.vert.spv
 )
 
 foreach(FILE ${INJECTOR_RESOURCES})
-    configure_file(resources/${FILE} resources/${FILE} COPYONLY)
+    configure_file(Resources/${FILE} Resources/${FILE} COPYONLY)
 endforeach(FILE)

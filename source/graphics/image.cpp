@@ -1,12 +1,12 @@
-#include <injector/graphics/image.hpp>
+#include "Injector/Graphics/Image.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "stb_image.h"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Graphics
 {
 	Image::Image(
-		const std::string& filePath,
+		const string& filePath,
 		int _channelCount)
 	{
 		data = stbi_load(filePath.c_str(), &size.x, &size.y, &channelCount, _channelCount);

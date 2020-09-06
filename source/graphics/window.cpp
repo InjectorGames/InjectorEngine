@@ -1,23 +1,24 @@
-#include <injector/graphics/window.hpp>
-#include <injector/engine.hpp>
-#include <injector/graphics/primitive.hpp>
-#include <injector/graphics/gl_window.hpp>
-#include <injector/graphics/vk_window.hpp>
+#include "Injector/Graphics/Window.hpp"
+#include "Injector/Engine.hpp"
+#include "Injector/Graphics/Primitive.hpp"
+#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Graphics/GlWindow.hpp"
+#include "Injector/Graphics/VkWindow.hpp"
 
-#include <SDL_events.h>
+#include "SDL_events.h"
 
-#include <stdexcept>
 #include <iostream>
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Graphics
 {
-	const std::string Window::defaultTitle = "Injector Engine";
+	const string Window::defaultTitle = "Injector Engine";
 	const IntVector2 Window::defaultPosition = IntVector2(
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
 	const IntVector2 Window::defaultSize = IntVector2(800, 600);
 	const uint32_t Window::defaultFlags = SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE;
 
-	Window::Window(const std::string& title,
+	Window::Window(
+		const string& title,
 		IntVector2 position,
 		IntVector2 size,
 		uint32_t flags) :
@@ -29,8 +30,7 @@ namespace INJECTOR_NAMESPACE
 			position.x, position.y, size.x, size.y, flags);
 
 		if (!window)
-			throw std::runtime_error(
-				"Failed to create SDL window: " + std::string(SDL_GetError()));
+			throw GraphicsException("Failed to create SDL window, Error: " + string(SDL_GetError()));
 
 		SDL_SetWindowMinimumSize(window, 1, 1);
 	}
@@ -139,7 +139,7 @@ namespace INJECTOR_NAMESPACE
 	}
 	void Window::onResize(IntVector2 size)
 	{
-		throw std::runtime_error("Not implemented window function");
+		throw GraphicsException("Not implemented window function");
 	}
 
 	uint32_t Window::getID() const noexcept
@@ -230,16 +230,16 @@ namespace INJECTOR_NAMESPACE
 		return SDL_SetRelativeMouseMode(static_cast<SDL_bool>(realtive)) == 0;
 	}
 
-	CameraSystemHandle Window::createCameraSystem()
+	shared_ptr<CameraSystem> Window::createCameraSystem()
 	{
-		throw std::runtime_error("Not implemented window function");
+		throw GraphicsException("Not implemented window function");
 	}
-	RenderSystemHandle Window::createRenderSystem()
+	shared_ptr<RenderSystem> Window::createRenderSystem()
 	{
-		throw std::runtime_error("Not implemented window function");
+		throw GraphicsException("Not implemented window function");
 	}
 
-	MeshHandle Window::createMesh(
+	shared_ptr<Mesh> Window::createMesh(
 		size_t indexCount,
 		BufferIndex indexType,
 		const void* vertexData,
@@ -248,19 +248,19 @@ namespace INJECTOR_NAMESPACE
 		size_t indexSize,
 		bool staticUse)
 	{
-		throw std::runtime_error("Not implemented window function");
+		throw GraphicsException("Not implemented window function");
 	}
 
-	ColorPipelineHandle Window::createColorPipeline()
+	shared_ptr<ColorPipeline> Window::createColorPipeline()
 	{
-		throw std::runtime_error("Not implemented window function");
+		throw GraphicsException("Not implemented window function");
 	}
-	DiffusePipelineHandle Window::createDiffusePipeline()
+	shared_ptr<DiffusePipeline> Window::createDiffusePipeline()
 	{
-		throw std::runtime_error("Not implemented window function");
+		throw GraphicsException("Not implemented window function");
 	}
 
-	MeshHandle Window::createSquareMeshV(bool staticUse)
+	shared_ptr<Mesh> Window::createSquareMeshV(bool staticUse)
 	{
 		return createMesh(
 			Primitive::squareIndices.size(),
@@ -271,9 +271,9 @@ namespace INJECTOR_NAMESPACE
 			Primitive::squareIndices.size() * sizeof(Vector3),
 			staticUse);
 	}
-	MeshHandle Window::createSquareMeshVN(bool staticUse)
+	shared_ptr<Mesh> Window::createSquareMeshVN(bool staticUse)
 	{
-		auto vertices = std::vector<Vector3>(
+		auto vertices = vector<Vector3>(
 			Primitive::squareVertices.size() + Primitive::squareNormals.size());
 
 		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 2)
@@ -291,7 +291,7 @@ namespace INJECTOR_NAMESPACE
 			Primitive::squareIndices.size() * sizeof(Vector3),
 			staticUse);
 	}
-	MeshHandle Window::createCubeMeshV(bool staticUse)
+	shared_ptr<Mesh> Window::createCubeMeshV(bool staticUse)
 	{
 		return createMesh(
 			Primitive::cubeIndices.size(),
@@ -302,9 +302,9 @@ namespace INJECTOR_NAMESPACE
 			Primitive::cubeIndices.size() * sizeof(Vector3),
 			staticUse);
 	}
-	MeshHandle Window::createCubeMeshVN(bool staticUse)
+	shared_ptr<Mesh> Window::createCubeMeshVN(bool staticUse)
 	{
-		auto vertices = std::vector<Vector3>(
+		auto vertices = vector<Vector3>(
 			Primitive::cubeVertices.size() + Primitive::cubeNormals.size());
 
 		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 2)
@@ -323,21 +323,21 @@ namespace INJECTOR_NAMESPACE
 			staticUse);
 	}
 
-	std::shared_ptr<Window> Window::create(
-		const std::string& title,
+	shared_ptr<Window> Window::create(
+		const string& title,
 		IntVector2 position,
 		IntVector2 size,
 		uint32_t flags)
 	{
-		auto graphicsAPI = Engine::getGraphicsAPI();
+		auto graphicsApi = Engine::getGraphicsApi();
 
-		if (graphicsAPI == GraphicsAPI::OpenGL)
+		if (graphicsApi == GraphicsApi::OpenGL)
 			return Engine::createManager<GlWindow>(false, title, position, size, flags);
-		else if (graphicsAPI == GraphicsAPI::OpenGLES)
+		else if (graphicsApi == GraphicsApi::OpenGLES)
 			return Engine::createManager<GlWindow>(true, title, position, size, flags);
-		else if (graphicsAPI == GraphicsAPI::Vulkan)
+		else if (graphicsApi == GraphicsApi::Vulkan)
 			return Engine::createManager<VkWindow>(title, position, size, flags);
 		else
-			throw std::runtime_error("Failed to create window, unknown graphics API");
+			throw GraphicsException("Failed to create window, unknown graphics API");
 	}
 }

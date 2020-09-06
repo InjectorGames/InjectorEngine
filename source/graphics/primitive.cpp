@@ -1,27 +1,27 @@
-#include <injector/graphics/primitive.hpp>
+#include "Injector/Graphics/Primitive.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Graphics
 {
-	const std::vector<Vector3> Primitive::squareVertices =
+	const vector<Vector3> Primitive::squareVertices =
 	{
 		Vector3(-0.5f, -0.5f, 0.0f),
 		Vector3(-0.5f, 0.5f, 0.0f), 
 		Vector3(0.5f, 0.5f, 0.0f),
 		Vector3(0.5f, -0.5f, 0.0f),
 	};
-	const std::vector<Vector3> Primitive::squareNormals =
+	const vector<Vector3> Primitive::squareNormals =
 	{
 		Vector3(0.0f, 0.0f, -1.0f),
 		Vector3(0.0f, 0.0f, -1.0f),
 		Vector3(0.0f, 0.0f, -1.0f),
 		Vector3(0.0f, 0.0f, -1.0f),
 	};
-	const std::vector<uint16_t> Primitive::squareIndices =
+	const vector<uint16_t> Primitive::squareIndices =
 	{
 		0, 1, 2, 0, 2, 3,
 	};
 
-	const std::vector<Vector3> Primitive::cubeVertices =
+	const vector<Vector3> Primitive::cubeVertices =
 	{
 		Vector3(-0.5f, -0.5f, 0.5f),
 		Vector3(-0.5f, 0.5f, 0.5f),
@@ -53,7 +53,7 @@ namespace INJECTOR_NAMESPACE
 		Vector3(-0.5f, 0.5f, 0.5f),
 		Vector3(-0.5f, -0.5f, 0.5f),
 	};
-	const std::vector<Vector3> Primitive::cubeNormals =
+	const vector<Vector3> Primitive::cubeNormals =
 	{
 		Vector3(-1.0f, 0.0f, 0.0f), 
 		Vector3(-1.0f, 0.0f, 0.0f), 
@@ -85,7 +85,7 @@ namespace INJECTOR_NAMESPACE
 		Vector3(0.0f, 0.0f, 1.0f), 
 		Vector3(0.0f, 0.0f, 1.0f),
 	};
-	const std::vector<uint16_t> Primitive::cubeIndices =
+	const vector<uint16_t> Primitive::cubeIndices =
 	{
 		0, 1, 2, 0, 2, 3,
 		4, 5, 6, 4, 6, 7,
@@ -95,7 +95,7 @@ namespace INJECTOR_NAMESPACE
 		20, 21, 22, 20, 22, 23,
 	};
 
-	const std::vector<Vector3> Primitive::axisVertices =
+	const vector<Vector3> Primitive::axisVertices =
 	{
 		Vector3(0.0f, 0.0f, 0.0f),
 		Vector3(1.0f, 0.0f, 0.0f),
@@ -104,7 +104,7 @@ namespace INJECTOR_NAMESPACE
 		Vector3(0.0f, 0.0f, 0.0f),
 		Vector3(0.0f, 0.0f, 1.0f),
 	};
-	const std::vector<Vector3> Primitive::axisColors =
+	const vector<Vector3> Primitive::axisColors =
 	{
 		Vector3(1.0f, 0.0f, 0.0f), 
 		Vector3(1.0f, 0.0f, 0.0f),
@@ -113,7 +113,7 @@ namespace INJECTOR_NAMESPACE
 		Vector3(0.0f, 0.0f, 1.0f),
 		Vector3(0.0f, 0.0f, 1.0f),
 	};
-	const std::vector<uint16_t> Primitive::axisIndices =
+	const vector<uint16_t> Primitive::axisIndices =
 	{
 		0, 1, 2, 3, 4, 5,
 	};

@@ -1,7 +1,7 @@
-#include <injector/graphics/pipeline.hpp>
-#include <stdexcept>
+#include "Injector/Graphics/Pipeline.hpp"
+#include "Injector/Graphics/GraphicsException.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Graphics
 {
 	Pipeline::~Pipeline()
 	{}
@@ -13,6 +13,6 @@ namespace INJECTOR_NAMESPACE
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-		throw std::runtime_error("Not implemented pipeline function");
+		throw GraphicsException("Not implemented pipeline function");
 	}
 }

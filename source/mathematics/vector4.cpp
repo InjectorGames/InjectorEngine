@@ -1,8 +1,10 @@
-#include <injector/mathematics/vector4.hpp>
+#include "Injector/Mathematics/Vector4.hpp"
 #include <cmath>
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Mathematics
 {
+	using namespace std;
+
 	Vector4::Vector4() :
 		x(0.0f), y(0.0f), z(0.0f), w(0.0f)
 	{}
@@ -76,19 +78,19 @@ namespace INJECTOR_NAMESPACE
 	}
 	float Vector4::getLength() const noexcept
 	{
-		return std::sqrt(getDotProduct(*this));
+		return sqrt(getDotProduct(*this));
 	}
 	float Vector4::getDistance(const Vector4& vector) const noexcept
 	{
-		return  std::sqrt(getDotProduct(*this - vector));
+		return sqrt(getDotProduct(*this - vector));
 	}
 	float Vector4::getDistance(const IntVector4& vector) const noexcept
 	{
-		return  std::sqrt(getDotProduct(*this - vector));
+		return sqrt(getDotProduct(*this - vector));
 	}
 	Vector4 Vector4::getNormalized() const noexcept
 	{
-		return *this * (1.0f / std::sqrt(getDotProduct(*this)));
+		return *this * (1.0f / sqrt(getDotProduct(*this)));
 	}
 	Vector4 Vector4::getReflected(const Vector4& normal) const noexcept
 	{
@@ -98,24 +100,23 @@ namespace INJECTOR_NAMESPACE
 	{
 		auto dot = getDotProduct(normal);
 		auto  k = (1.0f - eta * eta * (1.0f - dot * dot));
-		return Vector4(k >= 0.0f ? (*this * eta - normal * (eta * dot + std::sqrt(k))) : Vector4(0.0f));
+		return Vector4(k >= 0.0f ? (*this * eta - normal * (eta * dot + sqrt(k))) : Vector4(0.0f));
 	}
 	Vector4 Vector4::getSine() const noexcept
 	{
-		return Vector4(std::sin(x), std::sin(y), std::sin(z), std::sin(w));
+		return Vector4(sin(x), sin(y), sin(z), sin(w));
 	}
 	Vector4 Vector4::getCosine() const noexcept
 	{
-		return Vector4(std::cos(x), std::cos(y), std::cos(z), std::cos(w));
+		return Vector4(cos(x), cos(y), cos(z), cos(w));
 	}
 	Vector4 Vector4::getTangent() const noexcept
 	{
-		return Vector4(std::tan(x), std::tan(y), std::tan(z), std::tan(w));
+		return Vector4(tan(x), tan(y), tan(z), tan(w));
 	}
 	Vector4 Vector4::getCotangent() const noexcept
 	{
-		return Vector4(1.0f / std::tan(x), 1.0f / std::tan(y),
-			1.0f / std::tan(z), 1.0f / std::tan(w));
+		return Vector4(1.0f / tan(x), 1.0f / tan(y), 1.0f / tan(z), 1.0f / tan(w));
 	}
 
 	Vector2 Vector4::getVector2() const noexcept

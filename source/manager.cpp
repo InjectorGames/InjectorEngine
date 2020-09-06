@@ -1,8 +1,10 @@
-#include <injector/manager.hpp>
-#include <stdexcept>
+#include "Injector/Manager.hpp"
+#include "Injector/EngineException.hpp"
 
 namespace Injector
 {
+	using namespace std;
+
 	Manager::Manager(bool _active) :
 		active(_active),
 		entities(), 
@@ -35,7 +37,7 @@ namespace Injector
 		auto entity = make_shared<Entity>();
 
 		if (!entities.emplace(entity).second)
-			throw runtime_error("Failed to create manager entity");
+			throw EngineException("Failed to create manager entity");
 
 		return entity;
 	}
@@ -60,7 +62,7 @@ namespace Injector
 		entities.erase(iterator);
 		return true;
 	}
-	bool Manager::destroySystem(const SystemHandle& system) noexcept
+	bool Manager::destroySystem(const shared_ptr<System>& system) noexcept
 	{
 		if (system == nullptr)
 			return false;
@@ -77,14 +79,14 @@ namespace Injector
 		return false;
 	}
 
-	bool Manager::containsEntity(const EntityHandle& entity) const noexcept
+	bool Manager::containsEntity(const shared_ptr<Entity>& entity) const noexcept
 	{
 		if (entity == nullptr)
 			return false;
 
 		return entities.find(entity) != entities.end();
 	}
-	bool Manager::containsSystem(const SystemHandle& system) noexcept
+	bool Manager::containsSystem(const shared_ptr<System>& system) noexcept
 	{
 		if (system == nullptr)
 			return false;

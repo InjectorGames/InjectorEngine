@@ -1,6 +1,6 @@
-#include <injector/mathematics/matrix3.hpp>
+#include "Injector/Mathematics/Matrix3.hpp"
 
-namespace INJECTOR_NAMESPACE
+namespace Injector::Mathematics
 {
 	Matrix3::Matrix3() :
 		m00(0.0f), m01(0.0f), m02(0.0f),

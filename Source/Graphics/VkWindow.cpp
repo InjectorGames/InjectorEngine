@@ -1,0 +1,1119 @@
+#include "Injector/Graphics/VkWindow.hpp"
+#include "Injector/Defines.hpp"
+#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Graphics/VkMesh.hpp"
+#include "Injector/Graphics/VkCameraSystem.hpp"
+#include "Injector/Graphics/VkRenderSystem.hpp"
+#include "Injector/Graphics/VkColorPipeline.hpp"
+#include "Injector/Graphics/VkDiffusePipeline.hpp"
+
+#include "SDL_vulkan.h"
+
+#include <map>
+#include <vector>
+#include <iostream>
+
+namespace Injector::Graphics
+{
+#define VK_FRAME_LAG 2
+
+	VkBool32 VKAPI_CALL VkWindow::debugMessengerCallback(
+		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+		VkDebugUtilsMessageTypeFlagsEXT messageTypes,
+		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+		void* pUserData)
+	{
+		if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
+			cout << "VULKAN VERBOSE: " << pCallbackData->pMessage << "\n";
+		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
+			cout << "VULKAN INFO: " << pCallbackData->pMessage << "\n";
+		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+			cout << "VULKAN WARNING: " << pCallbackData->pMessage << "\n";
+		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+			cout << "VULKAN ERROR: " << pCallbackData->pMessage << "\n";
+
+		return VK_FALSE;
+	}
+
+	vk::Instance VkWindow::createInstance(
+		SDL_Window* window,
+		const string& appName,
+		uint32_t appVersion)
+	{
+		vk::Instance instance;
+
+		auto instanceLayers = vector<const char*>();
+
+#if !defined(NDEBUG)
+		instanceLayers.push_back("VK_LAYER_KHRONOS_validation");
+
+		auto instanceLayerProperties = vk::enumerateInstanceLayerProperties();
+
+		if (instanceLayerProperties.size() == 0)
+			throw GraphicsException("Failed to get Vulkan instance layer properties");
+
+		for (auto layer : instanceLayers)
+		{
+			auto found = false;
+
+			for (auto& properties : instanceLayerProperties)
+			{
+				if (strcmp(layer, properties.layerName) == 0)
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (!found)
+				throw GraphicsException("Failed to get Vulkan instance layer: " + string(layer));
+		}
+#endif
+
+		uint32_t extensionCount;
+		SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, nullptr);
+
+		auto instanceExtensions = vector<const char*>(extensionCount);
+		SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, instanceExtensions.data());
+
+		if (extensionCount == 0)
+			throw GraphicsException("Failed to get Vulkan instance extensions: " + string(SDL_GetError()));
+
+#if !defined(NDEBUG)
+		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+#endif
+
+		auto instanceExtensionProperties = vk::enumerateInstanceExtensionProperties();
+
+		if (instanceExtensionProperties.size() == 0)
+			throw GraphicsException("Failed to get Vulkan instance extension properties");
+
+		for (auto extension : instanceExtensions)
+		{
+			auto found = false;
+
+			for (auto& properties : instanceExtensionProperties)
+			{
+				if (strcmp(extension, properties.extensionName) == 0)
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (!found)
+				throw GraphicsException("Failed to get Vulkan instance extension: " + string(extension));
+		}
+
+		auto applicationInfo = vk::ApplicationInfo(
+			appName.c_str(), appVersion,
+			"Injector Engine",
+			VK_MAKE_VERSION(
+				INJECTOR_VERSION_MAJOR, 
+				INJECTOR_VERSION_MINOR,
+				INJECTOR_VERSION_PATCH),
+			VK_API_VERSION_1_0);
+
+		auto instanceCreateInfo = vk::InstanceCreateInfo({}, &applicationInfo,
+			static_cast<uint32_t>(instanceLayers.size()), instanceLayers.data(),
+			static_cast<uint32_t>(instanceExtensions.size()), instanceExtensions.data());
+
+#if !defined(NDEBUG)
+		auto debugUtilsMessengerCreateInfo = vk::DebugUtilsMessengerCreateInfoEXT({},
+			vk::DebugUtilsMessageSeverityFlagBitsEXT::eError |
+			vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning,
+			vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
+			vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
+			vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation,
+			static_cast<PFN_vkDebugUtilsMessengerCallbackEXT>(debugMessengerCallback));
+
+		instanceCreateInfo.pNext = &debugUtilsMessengerCreateInfo;
+#endif
+		auto reslut = vk::createInstance(&instanceCreateInfo, nullptr, &instance);
+
+		if (reslut != vk::Result::eSuccess)
+			throw GraphicsException("Failed to create Vulkan instance");
+
+		return instance;
+	}
+	vk::DebugUtilsMessengerEXT VkWindow::createDebugMessenger(
+		vk::Instance instance,
+		const vk::DispatchLoaderDynamic& dispatchDynamic)
+	{
+#if !defined(NDEBUG)
+		vk::DebugUtilsMessengerEXT debugMessenger;
+
+		auto debugUtilsMessengerCreateInfo = vk::DebugUtilsMessengerCreateInfoEXT({},
+			vk::DebugUtilsMessageSeverityFlagBitsEXT::eError |
+			vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning,
+			vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
+			vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
+			vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation,
+			static_cast<PFN_vkDebugUtilsMessengerCallbackEXT>(debugMessengerCallback));
+
+		auto result = instance.createDebugUtilsMessengerEXT(
+			&debugUtilsMessengerCreateInfo, nullptr, &debugMessenger, dispatchDynamic);
+
+		if (result != vk::Result::eSuccess)
+			throw GraphicsException("Failed to create Vulkan debug report");
+
+		return debugMessenger;
+#else
+		return nullptr;
+#endif
+	}
+	vk::PhysicalDevice VkWindow::getBestPhysicalDevice(
+		vk::Instance instance)
+	{
+		auto physicalDevices = instance.enumeratePhysicalDevices();
+
+		if (physicalDevices.size() == 0)
+			throw GraphicsException("Failed to get Vulkan physical devices");
+
+		auto targetPhysicalDevices = multimap<int, vk::PhysicalDevice>();
+
+		for (auto& device : physicalDevices)
+		{
+			auto score = 0;
+			auto properties = device.getProperties();
+
+			if (properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu)
+				score += 1000;
+			else if (properties.deviceType == vk::PhysicalDeviceType::eVirtualGpu)
+				score += 750;
+			else if (properties.deviceType == vk::PhysicalDeviceType::eIntegratedGpu)
+				score += 500;
+			else if (properties.deviceType == vk::PhysicalDeviceType::eCpu)
+				score += 250;
+
+			targetPhysicalDevices.emplace(score, device);
+			// TODO: add other tests
+		}
+
+		return targetPhysicalDevices.rbegin()->second;
+	}
+	vk::SurfaceKHR VkWindow::createSurface(
+		vk::Instance instance,
+		SDL_Window* window)
+	{
+		VkSurfaceKHR surfaceHandle;
+
+		auto result = SDL_Vulkan_CreateSurface(window,
+			static_cast<VkInstance>(instance), &surfaceHandle);
+
+		if (result == SDL_FALSE)
+			throw GraphicsException("Failed to create Vulkan surface, Error: " + string(SDL_GetError()));
+
+		return vk::SurfaceKHR(surfaceHandle);
+	}
+	void VkWindow::getQueueFamilyIndices(
+		vk::PhysicalDevice physicalDevice,
+		vk::SurfaceKHR surface,
+		uint32_t& graphicsQueueFamilyIndex,
+		uint32_t& presentQueueFamilyIndex)
+	{
+		auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+
+		if (queueFamilyProperties.size() == 0)
+			throw GraphicsException("Failed to get Vulkan queue family properties");
+
+		graphicsQueueFamilyIndex = UINT32_MAX;
+		presentQueueFamilyIndex = UINT32_MAX;
+
+		for (auto i = 0; i < queueFamilyProperties.size(); i++)
+		{
+			auto& properties = queueFamilyProperties[i];
+
+			if (properties.queueFlags & vk::QueueFlagBits::eGraphics)
+			{
+				if (graphicsQueueFamilyIndex == UINT32_MAX)
+					graphicsQueueFamilyIndex = i;
+			}
+			// TODO ONLY TEST: && graphicsQueueFamilyIndex != i
+			if (physicalDevice.getSurfaceSupportKHR(i, surface))
+			{
+				if (presentQueueFamilyIndex == UINT32_MAX)
+					presentQueueFamilyIndex = i;
+			}
+
+			if (graphicsQueueFamilyIndex != UINT32_MAX &&
+				presentQueueFamilyIndex != UINT32_MAX)
+				break;
+		}
+
+		if (graphicsQueueFamilyIndex == UINT32_MAX)
+			throw GraphicsException("Failed to find Vulkan graphics queue family");
+		if (presentQueueFamilyIndex == UINT32_MAX)
+			throw GraphicsException("Failed to find Vulkan present queue family");
+	}
+	vk::Device VkWindow::createDevice(
+		vk::PhysicalDevice physicalDevice,
+		uint32_t graphicsQueueFamilyIndex,
+		uint32_t presentQueueFamilyIndex)
+	{
+		vk::Device device;
+
+		auto deviceExtensionProperties = physicalDevice.enumerateDeviceExtensionProperties();
+
+		if (deviceExtensionProperties.size() == 0)
+			throw GraphicsException("Failed to get Vulkan device extension properties");
+
+		// TODO: create extension request mechanism
+		auto deviceExtensions = vector<const char*>() =
+		{
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+		};
+
+		for (auto extension : deviceExtensions)
+		{
+			auto found = false;
+
+			for (auto& properties : deviceExtensionProperties)
+			{
+				if (strcmp(extension, properties.extensionName) == 0)
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (!found)
+				throw GraphicsException("Failed to find Vulkan device extension: " + string(extension));
+		}
+
+		auto priority = 1.0f;
+		auto deviceQueueCreateInfo = vk::DeviceQueueCreateInfo(
+			{}, graphicsQueueFamilyIndex, 1, &priority);
+
+		auto deviceQueueCreateInfos = vector<vk::DeviceQueueCreateInfo>() =
+		{
+			deviceQueueCreateInfo,
+		};
+
+		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+		{
+			deviceQueueCreateInfo.queueFamilyIndex = presentQueueFamilyIndex;
+			deviceQueueCreateInfos.push_back(deviceQueueCreateInfo);
+		}
+
+		// TODO: use device features
+
+		auto deviceCreateInfo = vk::DeviceCreateInfo({},
+			static_cast<uint32_t>(deviceQueueCreateInfos.size()),
+			deviceQueueCreateInfos.data(), 
+			0, nullptr,
+			static_cast<uint32_t>(deviceExtensions.size()),
+			deviceExtensions.data(),
+			nullptr);
+
+		auto result = physicalDevice.createDevice(&deviceCreateInfo, nullptr, &device);
+
+		if (result != vk::Result::eSuccess)
+			throw GraphicsException("Failed to create Vulkan logical device");
+
+		return device;
+	}
+	VmaAllocator VkWindow::createMemoryAllocator(
+		vk::Instance instance,
+		vk::PhysicalDevice physicalDevice,
+		vk::Device device)
+	{
+		VmaAllocatorCreateInfo allocatorInfo = {};
+		allocatorInfo.flags = VMA_ALLOCATOR_CREATE_EXTERNALLY_SYNCHRONIZED_BIT;
+		allocatorInfo.physicalDevice = static_cast<VkPhysicalDevice>(physicalDevice);
+		allocatorInfo.device = static_cast<VkDevice>(device);
+		allocatorInfo.instance = static_cast<VkInstance>(instance);
+
+		VmaAllocator allocator;
+		auto result = vmaCreateAllocator(&allocatorInfo, &allocator);
+
+		if (result != VK_SUCCESS)
+			throw GraphicsException("Failed to create Vulkan memory allocator");
+
+		return allocator;
+	}
+	vk::Fence VkWindow::createFence(
+		vk::Device device,
+		vk::FenceCreateFlags flags)
+	{
+		vk::Fence fence;
+
+		auto fenceCreateInfo = vk::FenceCreateInfo(flags);
+		auto result = device.createFence(&fenceCreateInfo, nullptr, &fence);
+
+		if (result != vk::Result::eSuccess)
+			throw GraphicsException("Failed to create Vulkan fence");
+
+		return fence;
+	}
+	vk::Semaphore VkWindow::createSemaphore(
+		vk::Device device,
+		vk::SemaphoreCreateFlags flags)
+	{
+		vk::Semaphore semaphore;
+
+		auto fenceCreateInfo = vk::SemaphoreCreateInfo(flags);
+		auto result = device.createSemaphore(&fenceCreateInfo, nullptr, &semaphore);
+
+		if (result != vk::Result::eSuccess)
+			throw GraphicsException("Failed to create Vulkan fence");
+
+		return semaphore;
+	}
+	vk::Queue VkWindow::getQueue(
+		vk::Device device,
+		uint32_t queueFamilyIndex,
+		uint32_t queueIndex)
+	{
+		auto queue = device.getQueue(queueFamilyIndex, queueIndex);
+
+		if (!queue)
+			throw GraphicsException("Failed to get Vulkan queue");
+
+		return queue;
+	}
+	uint32_t VkWindow::getBestSurfaceImageCount(
+		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities)
+	{
+		auto imageCount = surfaceCapabilities.minImageCount + 1;
+
+		if (surfaceCapabilities.maxImageCount > 0 &&
+			imageCount > surfaceCapabilities.maxImageCount)
+			imageCount = surfaceCapabilities.maxImageCount;
+
+		return imageCount;
+	}
+	vk::SurfaceFormatKHR VkWindow::getBestSurfaceFormat(
+		vk::PhysicalDevice physicalDevice,
+		vk::SurfaceKHR surface)
+	{
+		auto surfaceFormats = physicalDevice.getSurfaceFormatsKHR(surface);
+
+		if (surfaceFormats.size() == 0)
+			throw GraphicsException("Failed to get Vulkan surface formats");
+
+		auto surfaceFormat = surfaceFormats[0];
+
+		for (auto& format : surfaceFormats)
+		{
+			if (format.format == vk::Format::eB8G8R8A8Srgb &&
+				format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear)
+			{
+				surfaceFormat = format;
+				break;
+			}
+		}
+
+		if (surfaceFormat == vk::Format::eUndefined)
+			surfaceFormat = vk::Format::eB8G8R8A8Srgb;
+
+		return surfaceFormat;
+	}
+	vk::PresentModeKHR VkWindow::getBestSurfacePresentMode(
+		vk::PhysicalDevice physicalDevice,
+		vk::SurfaceKHR surface)
+	{
+		auto surfacePresentModes = physicalDevice.getSurfacePresentModesKHR(surface);
+
+		if (surfacePresentModes.size() == 0)
+			throw GraphicsException("Failed to get Vulkan surface present modes");
+
+		auto presentMode = vk::PresentModeKHR::eFifo;
+
+		// TODO: Test all modes to pick best
+		for (auto mode : surfacePresentModes)
+		{
+			if (mode == vk::PresentModeKHR::eMailbox)
+			{
+				presentMode = mode;
+				break;
+			}
+		}
+		for (auto mode : surfacePresentModes)
+		{
+			if (mode == vk::PresentModeKHR::eFifoRelaxed)
+			{
+				presentMode = mode;
+				break;
+			}
+		}
+		for (auto mode : surfacePresentModes)
+		{
+			if (mode == vk::PresentModeKHR::eImmediate)
+			{
+				presentMode = mode;
+				break;
+			}
+		}
+
+		return presentMode;
+	}
+	vk::SurfaceTransformFlagBitsKHR VkWindow::getBestSurfaceTransform(
+		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities)
+	{
+		if (surfaceCapabilities.supportedTransforms & 
+			vk::SurfaceTransformFlagBitsKHR::eIdentity)
+		{
+			return vk::SurfaceTransformFlagBitsKHR::eIdentity;
+		}
+		else
+		{
+			return surfaceCapabilities.currentTransform;
+		}
+	}
+	vk::CompositeAlphaFlagBitsKHR VkWindow::getBestSurfaceCompositeAlpha(
+		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities)
+	{
+		if (surfaceCapabilities.supportedCompositeAlpha &
+			vk::CompositeAlphaFlagBitsKHR::eOpaque)
+			return vk::CompositeAlphaFlagBitsKHR::eOpaque;
+		else if (surfaceCapabilities.supportedCompositeAlpha &
+			vk::CompositeAlphaFlagBitsKHR::ePreMultiplied)
+			return vk::CompositeAlphaFlagBitsKHR::ePreMultiplied;
+		else if (surfaceCapabilities.supportedCompositeAlpha &
+			vk::CompositeAlphaFlagBitsKHR::ePostMultiplied)
+			return vk::CompositeAlphaFlagBitsKHR::ePostMultiplied;
+		else if (surfaceCapabilities.supportedCompositeAlpha &
+			vk::CompositeAlphaFlagBitsKHR::eInherit)
+			return vk::CompositeAlphaFlagBitsKHR::eInherit;
+		else
+			throw GraphicsException("Failed to get Vulkan surface composite alpha");
+	}
+	vk::Extent2D VkWindow::getBestSurfaceExtent(
+		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
+		IntVector2 surfaceSize)
+	{
+		if (surfaceCapabilities.currentExtent.width == UINT32_MAX)
+		{
+			return vk::Extent2D(
+				max(surfaceCapabilities.minImageExtent.width, min(
+					surfaceCapabilities.maxImageExtent.width, static_cast<uint32_t>(surfaceSize.x))),
+				max(surfaceCapabilities.minImageExtent.height, min(
+					surfaceCapabilities.maxImageExtent.height, static_cast<uint32_t>(surfaceSize.y))));
+		}
+		else
+		{
+			return surfaceCapabilities.currentExtent;
+		}
+	}
+	vk::SwapchainKHR VkWindow::createSwapchain(
+		vk::Device device,
+		vk::SurfaceKHR surface,
+		uint32_t surfaceImageCount,
+		vk::SurfaceFormatKHR surfaceFormat,
+		vk::Extent2D surfaceExtent,
+		vk::SurfaceTransformFlagBitsKHR surfaceTransform,
+		vk::CompositeAlphaFlagBitsKHR surfaceCompositeAlpha,
+		vk::PresentModeKHR surfacePresentMode)
+	{
+		vk::SwapchainKHR swapchain;
+
+		auto swapchainCreateInfo = vk::SwapchainCreateInfoKHR({},
+			surface,
+			surfaceImageCount,
+			surfaceFormat.format,
+			surfaceFormat.colorSpace,
+			surfaceExtent,
+			1, vk::ImageUsageFlagBits::eColorAttachment,
+			vk::SharingMode::eExclusive,
+			0, nullptr,
+			surfaceTransform,
+			surfaceCompositeAlpha,
+			surfacePresentMode,
+			true,
+			nullptr);
+
+		auto result = device.createSwapchainKHR(&swapchainCreateInfo, nullptr, &swapchain);
+
+		if (result != vk::Result::eSuccess)
+			throw GraphicsException("Failed to create Vulkan swapchain");
+
+		return swapchain;
+	}
+	vk::RenderPass VkWindow::createRenderPass(
+		vk::Device device,
+		vk::Format format)
+	{
+		vk::RenderPass renderPass;
+
+		auto colorAttachmentDescription = vk::AttachmentDescription({},
+			format,
+			vk::SampleCountFlagBits::e1,
+			vk::AttachmentLoadOp::eClear,
+			vk::AttachmentStoreOp::eStore,
+			vk::AttachmentLoadOp::eDontCare,
+			vk::AttachmentStoreOp::eDontCare,
+			vk::ImageLayout::eUndefined,
+			vk::ImageLayout::ePresentSrcKHR);
+
+		auto colorAttachmentReference = vk::AttachmentReference(
+			0, vk::ImageLayout::eColorAttachmentOptimal);
+
+
+		auto subpassDescription = vk::SubpassDescription({},
+			vk::PipelineBindPoint::eGraphics,
+			0, nullptr,
+			1, &colorAttachmentReference);
+
+		// TODO: make good loking
+		vk::SubpassDependency dependency {};
+		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+		dependency.dstSubpass = 0;
+		dependency.srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+		dependency.srcAccessMask = {};
+		dependency.dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+		dependency.dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
+
+		auto renderPassCreateInfo = vk::RenderPassCreateInfo({},
+			1, &colorAttachmentDescription,
+			1, &subpassDescription, 
+			1, &dependency);
+
+		auto result = device.createRenderPass(&renderPassCreateInfo, nullptr, &renderPass);
+
+		if (result != vk::Result::eSuccess)
+			throw GraphicsException("Failed to create Vulkan render pass");
+
+		return renderPass;
+	}
+	vk::CommandPool VkWindow::createCommandPool(
+		vk::Device device,
+		vk::CommandPoolCreateFlags flags,
+		uint32_t queueFamilyIndex)
+	{
+		vk::CommandPool commandPool;
+
+		auto commandPoolCreateInfo = vk::CommandPoolCreateInfo(
+			flags, queueFamilyIndex);
+		auto result = device.createCommandPool(
+			&commandPoolCreateInfo, nullptr, &commandPool);
+
+		if (result != vk::Result::eSuccess)
+			throw GraphicsException("Failed to create Vulkan command pool");
+
+		return commandPool;
+	}
+
+	VkWindow::VkWindow(
+		const string& title,
+		IntVector2 position,
+		IntVector2 size,
+		uint32_t flags) :
+		Window(title, position, size, flags | SDL_WINDOW_VULKAN)
+	{
+		instance = createInstance(window, title.c_str(), 1);
+
+		try
+		{
+			dispatchDynamic = vk::DispatchLoaderDynamic(
+				static_cast<VkInstance>(instance), vkGetInstanceProcAddr);
+			debugMessenger = createDebugMessenger(
+				instance, dispatchDynamic);
+
+			physicalDevice = getBestPhysicalDevice(instance);
+			surface = createSurface(instance, window);
+
+			getQueueFamilyIndices(physicalDevice, surface,
+				graphicsQueueFamilyIndex, presentQueueFamilyIndex);
+
+			device = createDevice(physicalDevice,
+				graphicsQueueFamilyIndex, presentQueueFamilyIndex);
+			memoryAllocator = createMemoryAllocator(
+				instance, physicalDevice, device);
+
+			fences = vector<vk::Fence>(VK_FRAME_LAG);
+			imageAcquiredSemaphores = vector<vk::Semaphore>(VK_FRAME_LAG);
+			drawCompleteSemaphores = vector<vk::Semaphore>(VK_FRAME_LAG);
+			imageOwnershipSemaphores = vector<vk::Semaphore>(VK_FRAME_LAG);
+
+			for (size_t i = 0; i < VK_FRAME_LAG; i++)
+			{
+				fences[i] = createFence(device, vk::FenceCreateFlagBits::eSignaled);
+				imageAcquiredSemaphores[i] = createSemaphore(device, {});
+				drawCompleteSemaphores[i] = createSemaphore(device, {});
+				imageOwnershipSemaphores[i] = createSemaphore(device, {});
+			}
+
+			graphicsQueue = getQueue(device, graphicsQueueFamilyIndex, 0);
+			presentQueue = getQueue(device, presentQueueFamilyIndex, 0);
+
+			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+			{
+				graphicsCommandPool = createCommandPool(device, 
+					vk::CommandPoolCreateFlagBits::eTransient |
+					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
+					graphicsQueueFamilyIndex);
+				presentCommandPool = createCommandPool(device,
+					vk::CommandPoolCreateFlagBits::eTransient |
+					vk::CommandPoolCreateFlagBits::eResetCommandBuffer, 
+					presentQueueFamilyIndex);
+			}
+			else
+			{
+				graphicsCommandPool = presentCommandPool = createCommandPool(device, 
+					vk::CommandPoolCreateFlagBits::eTransient |
+					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
+					graphicsQueueFamilyIndex);
+			}
+
+			transferCommandPool = createCommandPool(device,
+				vk::CommandPoolCreateFlagBits::eTransient,
+				graphicsQueueFamilyIndex);
+
+			auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+			auto surfaceImageCount = getBestSurfaceImageCount(surfaceCapabilities);
+			auto surfaceFormat = getBestSurfaceFormat(physicalDevice, surface);
+			auto surfaceTransform = getBestSurfaceTransform(surfaceCapabilities);
+			auto surfaceCompositeAlpha = getBestSurfaceCompositeAlpha(surfaceCapabilities);
+			auto surfacePresentMode = getBestSurfacePresentMode(physicalDevice, surface);
+
+			surfaceExtent = getBestSurfaceExtent(
+				surfaceCapabilities, size);
+			swapchain = createSwapchain(
+				device,
+				surface,
+				surfaceImageCount,
+				surfaceFormat,
+				surfaceExtent,
+				surfaceTransform,
+				surfaceCompositeAlpha,
+				surfacePresentMode);
+			renderPass = createRenderPass(
+				device, surfaceFormat.format);
+
+			frameIndex = 0;
+
+			auto images = device.getSwapchainImagesKHR(swapchain);
+			swapchainDatas = vector<shared_ptr<VkSwapchainData>>(images.size());
+
+			for (size_t i = 0; i < images.size(); i++)
+			{
+				swapchainDatas[i] = make_shared<VkSwapchainData>(
+					device,
+					images[i],
+					renderPass,
+					graphicsCommandPool,
+					presentCommandPool,
+					surfaceFormat.format,
+					surfaceExtent);
+			}
+		}
+		catch (const exception& exception)
+		{
+#if !defined(NDEBUG)
+			instance.destroy(debugMessenger, nullptr, dispatchDynamic);
+#else
+			instance.destroy();
+#endif
+			throw exception;
+		}
+	}
+	VkWindow::~VkWindow()
+	{
+		device.waitIdle();
+
+		entities.clear();
+		systems.clear();
+		swapchainDatas.clear();
+
+		device.destroyRenderPass(renderPass);
+		device.destroySwapchainKHR(swapchain);
+		device.destroyCommandPool(transferCommandPool);
+
+		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+		{
+			device.destroyCommandPool(graphicsCommandPool);
+			device.destroyCommandPool(presentCommandPool);
+		}
+		else
+		{
+			device.destroyCommandPool(graphicsCommandPool);
+		}
+
+		vmaDestroyAllocator(memoryAllocator);
+
+		for (uint32_t i = 0; i < VK_FRAME_LAG; i++)
+		{
+			device.waitForFences(1, &fences[i], VK_TRUE, UINT64_MAX);
+			device.destroyFence(fences[i]);
+			device.destroySemaphore(imageAcquiredSemaphores[i]);
+			device.destroySemaphore(drawCompleteSemaphores[i]);
+			device.destroySemaphore(imageOwnershipSemaphores[i]);
+		}
+
+		device.waitIdle();
+		device.destroy();
+
+		instance.destroySurfaceKHR(surface);
+
+#if !defined(NDEBUG)
+		instance.destroy(debugMessenger, nullptr, dispatchDynamic);
+#else
+		instance.destroy();
+#endif
+	}
+
+	vk::CommandBuffer VkWindow::getGraphicsCommandBuffer(uint32_t imageIndex) const
+	{
+		return swapchainDatas.at(imageIndex)->graphicsCommandBuffer;
+	}
+	vk::CommandBuffer VkWindow::getPresentCommandBuffer(uint32_t imageIndex) const
+	{
+		return swapchainDatas.at(imageIndex)->presentCommandBuffer;
+	}
+
+	void VkWindow::onResize(IntVector2 size)
+	{
+		device.waitIdle();
+
+		swapchainDatas.clear();
+
+		device.destroyRenderPass(renderPass);
+		device.destroySwapchainKHR(swapchain);
+
+		auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+		auto surfaceImageCount = getBestSurfaceImageCount(surfaceCapabilities);
+		auto surfaceFormat = getBestSurfaceFormat(physicalDevice, surface);
+		auto surfaceTransform = getBestSurfaceTransform(surfaceCapabilities);
+		auto surfaceCompositeAlpha = getBestSurfaceCompositeAlpha(surfaceCapabilities);
+		auto surfacePresentMode = getBestSurfacePresentMode(physicalDevice, surface);
+
+		surfaceExtent = getBestSurfaceExtent(
+			surfaceCapabilities, size);
+		swapchain = createSwapchain(
+			device,
+			surface,
+			surfaceImageCount,
+			surfaceFormat,
+			surfaceExtent,
+			surfaceTransform,
+			surfaceCompositeAlpha,
+			surfacePresentMode);
+		renderPass = createRenderPass(
+			device, surfaceFormat.format);
+
+		frameIndex = 0;
+
+		auto images = device.getSwapchainImagesKHR(swapchain);
+		swapchainDatas = vector<shared_ptr<VkSwapchainData>>(images.size());
+
+		for (size_t i = 0; i < images.size(); i++)
+		{
+			swapchainDatas[i] = make_shared<VkSwapchainData>(
+				device,
+				images[i],
+				renderPass,
+				graphicsCommandPool,
+				presentCommandPool,
+				surfaceFormat.format,
+				surfaceExtent);
+		}
+
+		while (true)
+		{
+			repeat:
+
+			for (auto i = pipelines.begin(); i != pipelines.end(); i++)
+			{
+				auto& pipeline = *i;
+
+				if (pipeline.use_count() <= 1)
+				{
+					pipelines.erase(i);
+					goto repeat;
+				}
+			}
+
+			break;
+		}
+
+		for (auto& pipeline : pipelines)
+			pipeline->recreate(memoryAllocator, renderPass, images.size(), surfaceExtent);
+	}
+
+	uint32_t VkWindow::beginImage()
+	{
+		device.waitForFences(1, &fences[frameIndex], true, UINT64_MAX);
+		device.resetFences({ fences[frameIndex] });
+
+		vk::Result result;
+		uint32_t imageIndex;
+
+		do
+		{
+			result = device.acquireNextImageKHR(swapchain, UINT64_MAX,
+				imageAcquiredSemaphores[frameIndex], vk::Fence(), &imageIndex);
+
+			if (result == vk::Result::eErrorOutOfDateKHR)
+			{
+				auto size = getSize();
+				onResize(size);
+			}
+			else if (result == vk::Result::eErrorSurfaceLostKHR)
+			{
+				instance.destroySurfaceKHR(surface);
+				surface = createSurface(instance, window);
+
+				auto size = getSize();
+				onResize(size);
+			}
+			else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
+			{
+				throw GraphicsException("Failed to acquire next Vulkan image");
+			}
+		}
+		while (result != vk::Result::eSuccess);
+
+		vmaSetCurrentFrameIndex(memoryAllocator, imageIndex);
+
+		return imageIndex;
+	}
+	void VkWindow::endImage(uint32_t imageIndex)
+	{
+		vk::PipelineStageFlags waitDestinationStageMask =
+			vk::PipelineStageFlagBits::eColorAttachmentOutput;
+
+		auto submitInfo = vk::SubmitInfo(
+			1, &imageAcquiredSemaphores[frameIndex],
+			&waitDestinationStageMask,
+			1, &swapchainDatas[imageIndex]->graphicsCommandBuffer,
+			1, &drawCompleteSemaphores[frameIndex]);
+
+		auto result = graphicsQueue.submit(1, &submitInfo, fences[frameIndex]);
+
+		if (result != vk::Result::eSuccess)
+			throw GraphicsException("Failed to submit Vulkan graphics queue");
+
+		auto presentInfo = vk::PresentInfoKHR(
+			1, &drawCompleteSemaphores[frameIndex],
+			1, &swapchain,
+			&imageIndex);
+
+		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+		{
+			submitInfo.pWaitSemaphores = &drawCompleteSemaphores[frameIndex];
+			submitInfo.pCommandBuffers = &swapchainDatas[imageIndex]->presentCommandBuffer;
+			submitInfo.pSignalSemaphores = &imageOwnershipSemaphores[frameIndex];
+
+			result = presentQueue.submit(1, &submitInfo, vk::Fence());
+
+			if (result != vk::Result::eSuccess)
+				throw GraphicsException("Failed to submit Vulkan graphics queue");
+
+			presentInfo.pWaitSemaphores = &imageOwnershipSemaphores[frameIndex];
+		}
+
+		frameIndex += 1;
+		frameIndex %= VK_FRAME_LAG;
+
+		result = presentQueue.presentKHR(&presentInfo);
+
+		if (result == vk::Result::eErrorOutOfDateKHR)
+		{
+			auto size = getSize();
+			onResize(size);
+		}
+		else if (result == vk::Result::eErrorSurfaceLostKHR)
+		{
+			instance.destroySurfaceKHR(surface);
+			surface = createSurface(instance, window);
+
+			auto size = getSize();
+			onResize(size);
+		}
+		else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
+		{
+			throw GraphicsException("Failed to present next Vulkan image");
+		}
+	}
+
+	void VkWindow::beginRecord(uint32_t imageIndex)
+	{
+		auto& swapchainData = swapchainDatas[imageIndex];
+		auto graphicsCommandBuffer = swapchainData->graphicsCommandBuffer;
+
+		auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
+			vk::CommandBufferUsageFlagBits::eOneTimeSubmit, nullptr);
+		auto result = graphicsCommandBuffer.begin(&commandBufferBeginInfo);
+
+		if (result != vk::Result::eSuccess)
+			throw GraphicsException("Failed to begin Vulkan command buffer");
+
+		auto clearValues = vk::ClearValue(vk::ClearColorValue(
+			array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f}));
+		auto renderPassBeginInfo = vk::RenderPassBeginInfo(
+			renderPass, swapchainData->framebuffer,
+			vk::Rect2D({ 0, 0 }, surfaceExtent),
+			1, &clearValues);
+		graphicsCommandBuffer.beginRenderPass(
+			&renderPassBeginInfo, vk::SubpassContents::eInline);
+	}
+	void VkWindow::endRecord(uint32_t imageIndex)
+	{
+		auto& swapchainData = swapchainDatas[imageIndex];
+		auto graphicsCommandBuffer = swapchainData->graphicsCommandBuffer;
+		graphicsCommandBuffer.endRenderPass();
+
+		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+		{
+			auto imageMemoryBarrier = vk::ImageMemoryBarrier({}, {},
+				vk::ImageLayout::ePresentSrcKHR, vk::ImageLayout::ePresentSrcKHR,
+				graphicsQueueFamilyIndex, presentQueueFamilyIndex, swapchainData->image,
+				vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
+			graphicsCommandBuffer.pipelineBarrier(
+				vk::PipelineStageFlagBits::eBottomOfPipe,
+				vk::PipelineStageFlagBits::eBottomOfPipe,
+				{}, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
+		}
+
+		graphicsCommandBuffer.end();
+
+		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
+		{
+			auto presentCommandBuffer = swapchainData->presentCommandBuffer;
+			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
+				vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
+			auto result = presentCommandBuffer.begin(&commandBufferBeginInfo);
+
+			if (result != vk::Result::eSuccess)
+				throw GraphicsException("Failed to begin Vulkan command buffer");
+
+			auto imageMemoryBarrier = vk::ImageMemoryBarrier({}, {},
+				vk::ImageLayout::ePresentSrcKHR, vk::ImageLayout::ePresentSrcKHR,
+				graphicsQueueFamilyIndex, presentQueueFamilyIndex, swapchainData->image,
+				vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
+			presentCommandBuffer.pipelineBarrier(
+				vk::PipelineStageFlagBits::eBottomOfPipe,
+				vk::PipelineStageFlagBits::eBottomOfPipe,
+				{}, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
+
+			presentCommandBuffer.end();
+		}
+	}
+
+	shared_ptr<CameraSystem> VkWindow::createCameraSystem()
+	{
+		auto system = make_shared<VkCameraSystem>(*this);
+		systems.push_back(system);
+		return system;
+	}
+	shared_ptr<RenderSystem> VkWindow::createRenderSystem()
+	{
+		auto system = make_shared<VkRenderSystem>(*this);
+		systems.push_back(system);
+		return system;
+	}
+
+	shared_ptr<Mesh> VkWindow::createMesh(
+		size_t indexCount,
+		BufferIndex indexType,
+		const void* vertexData,
+		size_t vertexSize,
+		const void* indexData,
+		size_t indexSize,
+		bool staticUse)
+	{
+		shared_ptr<VkBuffer> vertexBuffer;
+		shared_ptr<VkBuffer> indexBuffer;
+
+		if (staticUse)
+		{
+			vertexBuffer = make_shared<VkBuffer>(
+				memoryAllocator,
+				vertexSize,
+				vk::BufferUsageFlagBits::eVertexBuffer |
+				vk::BufferUsageFlagBits::eTransferDst,
+				VMA_MEMORY_USAGE_GPU_ONLY);
+			indexBuffer = make_shared<VkBuffer>(
+				memoryAllocator,
+				indexSize,
+				vk::BufferUsageFlagBits::eIndexBuffer |
+				vk::BufferUsageFlagBits::eTransferDst,
+				VMA_MEMORY_USAGE_GPU_ONLY);
+
+			auto vertexStagingBuffer = VkBuffer(
+				memoryAllocator,
+				vertexSize,
+				vk::BufferUsageFlagBits::eTransferSrc,
+				VMA_MEMORY_USAGE_CPU_ONLY);
+			vertexStagingBuffer.setData(vertexData, vertexSize);
+
+			auto indexStagingBuffer = VkBuffer(
+				memoryAllocator,
+				vertexSize,
+				vk::BufferUsageFlagBits::eTransferSrc,
+				VMA_MEMORY_USAGE_CPU_ONLY);
+			indexStagingBuffer.setData(indexData, indexSize);
+
+			vk::CommandBuffer commandBuffer;
+
+			auto commandBufferAlocateInfo = vk::CommandBufferAllocateInfo(
+				transferCommandPool, vk::CommandBufferLevel::ePrimary, 1);
+			auto result = device.allocateCommandBuffers(
+				&commandBufferAlocateInfo, &commandBuffer);
+
+			if (result != vk::Result::eSuccess)
+				throw GraphicsException("Failed to allocate Vulkan staging command buffer");
+
+			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
+				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+			commandBuffer.begin(commandBufferBeginInfo);
+
+			auto bufferCopy = vk::BufferCopy(0, 0, vertexSize);
+			commandBuffer.copyBuffer(
+				vertexStagingBuffer.getBuffer(), vertexBuffer->getBuffer(), 1, &bufferCopy);
+
+			bufferCopy = vk::BufferCopy(0, 0, indexSize);
+			commandBuffer.copyBuffer(
+				indexStagingBuffer.getBuffer(), indexBuffer->getBuffer(), 1, &bufferCopy);
+
+			commandBuffer.end();
+
+			auto submitInfo = vk::SubmitInfo(0, nullptr, nullptr, 1, &commandBuffer);
+			graphicsQueue.submit(1, &submitInfo, nullptr);
+
+			graphicsQueue.waitIdle();
+			device.freeCommandBuffers(transferCommandPool, 1, &commandBuffer);
+		}
+		else
+		{
+			vertexBuffer = make_shared<VkBuffer>(
+				memoryAllocator,
+				vertexSize,
+				vk::BufferUsageFlagBits::eVertexBuffer,
+				VMA_MEMORY_USAGE_CPU_TO_GPU);
+			vertexBuffer->setData(vertexData, vertexSize);
+
+			indexBuffer = make_shared<VkBuffer>(
+				memoryAllocator,
+				indexSize,
+				vk::BufferUsageFlagBits::eVertexBuffer,
+				VMA_MEMORY_USAGE_CPU_TO_GPU);
+			indexBuffer->setData(indexData, indexSize);
+		}
+
+		return make_shared<VkMesh>(
+			indexCount, indexType, vertexBuffer, indexBuffer);
+	}
+
+	shared_ptr<ColorPipeline> VkWindow::createColorPipeline()
+	{
+		auto pipeline = make_shared<VkColorPipeline>(
+			device, renderPass, surfaceExtent);
+
+		if(!pipelines.emplace(pipeline).second)
+			throw GraphicsException("Failed to add created Vulkan color pipeline");
+
+		return pipeline;
+	}
+	shared_ptr<DiffusePipeline> VkWindow::createDiffusePipeline()
+	{
+		auto pipeline = make_shared<VkDiffusePipeline>(
+			device, memoryAllocator, renderPass, swapchainDatas.size(), surfaceExtent);
+
+		if (!pipelines.emplace(pipeline).second)
+			throw GraphicsException("Failed to add created Vulkan diffuse pipeline");
+
+		return pipeline;
+	}
+}

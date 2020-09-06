@@ -1,8 +1,8 @@
 #pragma once
-#include <injector/graphics/buffer_index.hpp>
-#include <memory>
+#include "Injector/Graphics/BufferIndex.hpp"
+#include <cstdlib>
 
-namespace injector::graphics
+namespace Injector::Graphics
 {
 	class Mesh
 	{
@@ -19,6 +19,4 @@ namespace injector::graphics
 		virtual void setIndexData(void* data, size_t size);
 		virtual void setIndexData(void* data, size_t size, size_t offset);
 	};
-
-	using MeshHandle = std::shared_ptr<Mesh>;
 }

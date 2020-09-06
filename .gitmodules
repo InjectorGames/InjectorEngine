@@ -1,1 +1,16 @@
 
+[submodule "Libraries/asio"]
+	path = Libraries/asio
+	url = https://github.com/InjectorGames/asio
+[submodule "Libraries/glew"]
+	path = Libraries/glew
+	url = https://github.com/InjectorGames/glew
+[submodule "Libraries/SDL"]
+	path = Libraries/SDL
+	url = https://github.com/InjectorGames/SDL
+[submodule "Libraries/VulkanMemoryAllocator"]
+	path = Libraries/VulkanMemoryAllocator
+	url = https://github.com/InjectorGames/VulkanMemoryAllocator
+[submodule "Libraries/stb"]
+	path = Libraries/stb
+	url = https://github.com/InjectorGames/stb
