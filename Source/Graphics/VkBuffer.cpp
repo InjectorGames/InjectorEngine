@@ -2,7 +2,7 @@
 #include "Injector/Graphics/VkBuffer.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	VkBuffer::VkBuffer(
 		VmaAllocator _allocator,

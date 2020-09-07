@@ -1,8 +1,8 @@
 #include "Injector/Graphics/GraphicsException.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
-    GraphicsException::GraphicsException(const string& message) :
+    GraphicsException::GraphicsException(const std::string& message) :
         Exception("GraphicsException: " + message)
     {}
 }

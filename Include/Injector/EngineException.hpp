@@ -6,6 +6,6 @@ namespace Injector
     class EngineException final : public Exception
     {
     public:
-        EngineException(const string& message);
+        EngineException(const std::string& message);
     };
 }

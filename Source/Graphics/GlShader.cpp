@@ -1,18 +1,20 @@
 #include "Injector/Graphics/GlShader.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 
-namespace Injector::Graphics
+#include <vector>
+
+namespace Injector
 {
-	const string GlShader::glHeader = "#version 330 core\n\n#define highp \n#define mediump \n#define lowp \n";
-	const string GlShader::glesHeader = "#version 300 es\n";
+	const std::string GlShader::glHeader = "#version 330 core\n\n#define highp \n#define mediump \n#define lowp \n";
+	const std::string GlShader::glesHeader = "#version 300 es\n";
 
 	GlShader::GlShader(
 		GLenum stage,
-		const string& source,
+		const std::string& source,
 		bool _gles) :
 		gles(_gles)
 	{
-		auto sources = vector<const char*>();
+		auto sources = std::vector<const char*>();
 
 		if (_gles)
 			sources.push_back(glesHeader.c_str());
@@ -59,11 +61,11 @@ namespace Injector::Graphics
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 		return success == GL_TRUE;
 	}
-	string GlShader::getInfoLog(GLuint shader) noexcept
+	std::string GlShader::getInfoLog(GLuint shader) noexcept
 	{
 		GLint length;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
-		string infoLog(static_cast<size_t>(length), ' ');
+		std::string infoLog(static_cast<size_t>(length), ' ');
 		glGetShaderInfoLog(shader, length, &length, infoLog.data());
 		return infoLog;
 	}

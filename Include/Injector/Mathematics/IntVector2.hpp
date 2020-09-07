@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	struct IntVector2
 	{

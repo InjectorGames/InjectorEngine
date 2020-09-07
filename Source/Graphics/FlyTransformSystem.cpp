@@ -4,10 +4,10 @@
 
 #include <algorithm>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	FlyTransformSystem::FlyTransformSystem(
-		const shared_ptr<Window>& _window) :
+		const std::shared_ptr<Window>& _window) :
 		window(_window),
 		rotating(false),
 		eulerAngles(),

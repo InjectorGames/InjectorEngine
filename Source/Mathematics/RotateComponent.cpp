@@ -1,6 +1,6 @@
 #include "Injector/Mathematics/RotateComponent.hpp"
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	RotateComponent::RotateComponent(
 		const Quaternion& _rotation) :

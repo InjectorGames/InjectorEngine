@@ -1,24 +1,20 @@
 #pragma once
 #include "GL/glew.h"
-
 #include <string>
-#include <vector>
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace std;
-
 	class GlShader
 	{
 	protected:
 		GLuint shader;
 		bool gles;
 	public:
-		static const string glHeader;
-		static const string glesHeader;
+		static const std::string glHeader;
+		static const std::string glesHeader;
 
 		GlShader(GLenum stage,
-			const string& source,
+			const std::string& source,
 			bool gles);
 		virtual ~GlShader();
 
@@ -26,6 +22,6 @@ namespace Injector::Graphics
 		bool isGLES() const noexcept;
 
 		static bool getCompileStatus(GLuint shader) noexcept;
-		static string getInfoLog(GLuint shader) noexcept;
+		static std::string getInfoLog(GLuint shader) noexcept;
 	};
 }

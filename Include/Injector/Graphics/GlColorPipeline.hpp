@@ -2,7 +2,7 @@
 #include "Injector/Graphics/GlPipeline.hpp"
 #include "Injector/Graphics/ColorPipeline.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class GlColorPipeline : public GlPipeline, public ColorPipeline
 	{
@@ -12,7 +12,7 @@ namespace Injector::Graphics
 
 		Vector4 color;
 	public:
-		static const vector<GlVertexAttribute> vertexAttributes;
+		static const std::vector<GlVertexAttribute> vertexAttributes;
 
 		GlColorPipeline(bool gles,
 			const Vector4& color = Vector4::one);

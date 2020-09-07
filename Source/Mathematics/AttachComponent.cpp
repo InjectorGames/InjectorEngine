@@ -1,9 +1,9 @@
 #include "Injector/Mathematics/AttachComponent.hpp"
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	AttachComponent::AttachComponent(
-		const shared_ptr<Entity>& _target) :
+		const std::shared_ptr<Entity>& _target) :
 		target(_target)
 	{}
 	AttachComponent::~AttachComponent()

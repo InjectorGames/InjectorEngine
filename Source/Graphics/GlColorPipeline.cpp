@@ -1,13 +1,11 @@
 #include "Injector/Graphics/GlColorPipeline.hpp"
-#include "Injector/File/FileStream.hpp"
+#include "Injector/Storage/FileStream.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 #include "Injector/Graphics/GlShader.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace Injector::File;
-
-	const vector<GlVertexAttribute> GlColorPipeline::vertexAttributes =
+	const std::vector<GlVertexAttribute> GlColorPipeline::vertexAttributes =
 	{
 		GlVertexAttribute(0, 3, GL_FLOAT, false, sizeof(Vector3), 0),
 	};

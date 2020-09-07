@@ -7,18 +7,18 @@
 
 #include <set>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class RenderSystem : public System
 	{
 	protected:
-		set<shared_ptr<Entity>> cameras;
+		std::set<std::shared_ptr<Entity>> cameras;
 	public:
 		virtual ~RenderSystem();
 
 		size_t getCameraCount() const noexcept;
-		bool addCamera(const shared_ptr<Entity>& entity) noexcept;
-		bool removeCamera(const shared_ptr<Entity>& entity) noexcept;
+		bool addCamera(const std::shared_ptr<Entity>& entity) noexcept;
+		bool removeCamera(const std::shared_ptr<Entity>& entity) noexcept;
 		void removeCameras() noexcept;
 	};
 }

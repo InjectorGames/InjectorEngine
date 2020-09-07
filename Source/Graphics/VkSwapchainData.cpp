@@ -1,7 +1,7 @@
 #include "Injector/Graphics/VkSwapchainData.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	VkSwapchainData::VkSwapchainData(
 		vk::Device _device,

@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	RenderSystem::~RenderSystem()
 	{}
@@ -12,11 +12,11 @@ namespace Injector::Graphics
 	{
 		return cameras.size();
 	}
-	bool RenderSystem::addCamera(const shared_ptr<Entity>& entity) noexcept
+	bool RenderSystem::addCamera(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		return cameras.emplace(entity).second;
 	}
-	bool RenderSystem::removeCamera(const shared_ptr<Entity>& entity) noexcept
+	bool RenderSystem::removeCamera(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;

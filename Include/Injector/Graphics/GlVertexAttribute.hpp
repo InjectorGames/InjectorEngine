@@ -2,7 +2,7 @@
 #include "GL/glew.h"
 #include <cstdint>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	struct GlVertexAttribute
 	{

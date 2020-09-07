@@ -1,10 +1,8 @@
 #include "Injector/Mathematics/IntVector4.hpp"
 #include <cmath>
 
-namespace Injector::Mathematics
+namespace Injector
 {
-	using namespace std;
-	
 	IntVector4::IntVector4() :
 		x(0), y(0), z(0), w(0)
 	{}

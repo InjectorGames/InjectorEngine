@@ -6,13 +6,10 @@
 
 namespace Injector
 {
-	using namespace std;
-	using namespace Injector::Graphics;
-
 	class Engine final
 	{
 	public:
-		using tick_t = chrono::steady_clock::time_point;
+		using tick_t = std::chrono::steady_clock::time_point;
 	private:
 		static bool engineInitialized;
 		static bool videoInitialized;
@@ -27,7 +24,7 @@ namespace Injector
 		static tick_t updateStartTick;
 		static double updateDeltaTime;
 
-		static vector<shared_ptr<Manager>> managers;
+		static std::vector<std::shared_ptr<Manager>> managers;
 	public:
 		static bool getCapUpdateRate() noexcept;
 		static void setCapUpdateRate(bool cap = true) noexcept;
@@ -58,16 +55,16 @@ namespace Injector
 		static tick_t getTickNow() noexcept;
 		static double getTimeNow() noexcept;
 
-		static bool addManager(const shared_ptr<Manager>& manager) noexcept;
-		static bool removeManager(const shared_ptr<Manager>& manager) noexcept;
-		static bool containsManager(const shared_ptr<Manager>& manager) noexcept;
+		static bool addManager(const std::shared_ptr<Manager>& manager) noexcept;
+		static bool removeManager(const std::shared_ptr<Manager>& manager) noexcept;
+		static bool containsManager(const std::shared_ptr<Manager>& manager) noexcept;
 		static void removeManagers() noexcept;
 		static size_t getManagerCount() noexcept;
 
 		template<class T, class ...Args>
-		static shared_ptr<T> createManager(Args... args) noexcept
+		static std::shared_ptr<T> createManager(Args... args) noexcept
 		{
-			auto manager = make_shared<T>(args...);
+			auto manager = std::make_shared<T>(args...);
 			managers.push_back(manager);
 			return manager;
 		}

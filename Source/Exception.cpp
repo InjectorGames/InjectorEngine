@@ -2,7 +2,7 @@
 
 namespace Injector
 {
-    Exception::Exception(const string& _message) :
+    Exception::Exception(const std::string& _message) :
         message(_message)
     {}
     Exception::~Exception()

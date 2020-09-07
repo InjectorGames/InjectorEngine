@@ -2,7 +2,7 @@
 
 namespace Injector
 {
-    EngineException::EngineException(const string& message) :
+    EngineException::EngineException(const std::string& message) :
         Exception("EngineException: " + message)
     {}
 }

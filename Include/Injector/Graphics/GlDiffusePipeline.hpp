@@ -2,7 +2,7 @@
 #include "Injector/Graphics/GlPipeline.hpp"
 #include "Injector/Graphics/DiffusePipeline.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
     class GlDiffusePipeline : public GlPipeline, public DiffusePipeline
     {
@@ -19,7 +19,7 @@ namespace Injector::Graphics
         Vector4 lightColor;
         Vector3 lightDirection;
     public:
-        static const vector<GlVertexAttribute> vertexAttributes;
+        static const std::vector<GlVertexAttribute> vertexAttributes;
 
         GlDiffusePipeline(bool gles,
             const Vector4& objectColor = Vector4::one,

@@ -6,10 +6,8 @@
 
 #include <set>
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace Injector::Mathematics;
-
 	struct CameraComponent : public Component
 	{
 		enum class Type
@@ -28,7 +26,7 @@ namespace Injector::Graphics
 		Matrix4 matrix;
 		bool changed;
 		bool render;
-		set<shared_ptr<Entity>> renders;
+		std::set<std::shared_ptr<Entity>> renders;
 
 		CameraComponent(
 			int queue = 0,
@@ -41,7 +39,7 @@ namespace Injector::Graphics
 			const Matrix4& matrix = Matrix4::identity,
 			bool changed = true,
 			bool render = true,
-			const set<shared_ptr<Entity>>& renders = {});
+			const std::set<std::shared_ptr<Entity>>& renders = {});
 		virtual ~CameraComponent();
 	};
 }

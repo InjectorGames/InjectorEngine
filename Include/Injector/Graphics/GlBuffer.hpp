@@ -4,7 +4,7 @@
 
 #include <cstdint>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class GlBuffer
 	{

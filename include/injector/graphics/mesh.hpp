@@ -2,7 +2,7 @@
 #include "Injector/Graphics/BufferIndex.hpp"
 #include <cstdlib>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class Mesh
 	{

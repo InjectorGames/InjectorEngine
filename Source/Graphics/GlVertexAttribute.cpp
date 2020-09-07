@@ -1,6 +1,6 @@
 #include "Injector/Graphics/GlVertexAttribute.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	GlVertexAttribute::GlVertexAttribute(
 		const GLuint _index,

@@ -4,7 +4,7 @@
 #include "GL/glew.h"
 #include "SDL_opengl.h"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class GlWindow : public Window
 	{
@@ -13,7 +13,7 @@ namespace Injector::Graphics
 		SDL_GLContext context;
 	public:
 		GlWindow(bool gles = false,
-			const string& title = defaultTitle,
+			const std::string& title = defaultTitle,
 			IntVector2 position = defaultPosition,
 			IntVector2 size = defaultSize,
 			uint32_t flags = defaultFlags);
@@ -27,10 +27,10 @@ namespace Injector::Graphics
 
 		void onResize(IntVector2 size) override;
 
-		shared_ptr<CameraSystem> createCameraSystem() override;
-		shared_ptr<RenderSystem> createRenderSystem() override;
+		std::shared_ptr<CameraSystem> createCameraSystem() override;
+		std::shared_ptr<RenderSystem> createRenderSystem() override;
 
-		shared_ptr<Mesh> createMesh(
+		std::shared_ptr<Mesh> createMesh(
 			size_t indexCount,
 			BufferIndex indexType,
 			const void* vertexData,
@@ -39,7 +39,7 @@ namespace Injector::Graphics
 			size_t indexSize,
 			bool staticUse) override;
 
-		shared_ptr<ColorPipeline> createColorPipeline() override;
-		shared_ptr<DiffusePipeline> createDiffusePipeline() override;
+		std::shared_ptr<ColorPipeline> createColorPipeline() override;
+		std::shared_ptr<DiffusePipeline> createDiffusePipeline() override;
 	};
 }

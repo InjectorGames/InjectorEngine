@@ -2,7 +2,7 @@
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Graphics/VkWindow.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class VkRenderSystem : public RenderSystem
 	{

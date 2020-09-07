@@ -2,7 +2,7 @@
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Graphics/GlWindow.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class GlRenderSystem : public RenderSystem
 	{

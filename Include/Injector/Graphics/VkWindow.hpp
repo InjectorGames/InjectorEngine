@@ -6,7 +6,7 @@
 
 #include <set>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class VkWindow : public Window
 	{
@@ -20,10 +20,10 @@ namespace Injector::Graphics
 		uint32_t presentQueueFamilyIndex;
 		vk::Device device;
 		VmaAllocator memoryAllocator;
-		vector<vk::Fence> fences;
-		vector<vk::Semaphore> imageAcquiredSemaphores;
-		vector<vk::Semaphore> drawCompleteSemaphores;
-		vector<vk::Semaphore> imageOwnershipSemaphores;
+		std::vector<vk::Fence> fences;
+		std::vector<vk::Semaphore> imageAcquiredSemaphores;
+		std::vector<vk::Semaphore> drawCompleteSemaphores;
+		std::vector<vk::Semaphore> imageOwnershipSemaphores;
 		vk::Queue graphicsQueue;
 		vk::Queue presentQueue;
 		vk::CommandPool graphicsCommandPool;
@@ -33,8 +33,8 @@ namespace Injector::Graphics
 		vk::SwapchainKHR swapchain;
 		vk::RenderPass renderPass;
 		uint32_t frameIndex;
-		vector<shared_ptr<VkSwapchainData>> swapchainDatas;
-		set<shared_ptr<VkPipeline>> pipelines;
+		std::vector<std::shared_ptr<VkSwapchainData>> swapchainDatas;
+		std::set<std::shared_ptr<VkPipeline>> pipelines;
 
 		static VkBool32 VKAPI_CALL debugMessengerCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -44,7 +44,7 @@ namespace Injector::Graphics
 
 		static vk::Instance createInstance(
 			SDL_Window* window,
-			const string& appName,
+			const std::string& appName,
 			uint32_t appVersion);
 		static vk::DebugUtilsMessengerEXT createDebugMessenger(
 			vk::Instance instance,
@@ -109,7 +109,7 @@ namespace Injector::Graphics
 			vk::CommandPoolCreateFlags flags,
 			uint32_t queueFamilyIndex);
 	public:
-		VkWindow(const string& title = defaultTitle,
+		VkWindow(const std::string& title = defaultTitle,
 			IntVector2 position = defaultPosition,
 			IntVector2 size = defaultSize,
 			uint32_t flags = defaultFlags);
@@ -126,10 +126,10 @@ namespace Injector::Graphics
 		void beginRecord(uint32_t imageIndex);
 		void endRecord(uint32_t imageIndex);
 
-		shared_ptr<CameraSystem> createCameraSystem() override;
-		shared_ptr<RenderSystem> createRenderSystem() override;
+		std::shared_ptr<CameraSystem> createCameraSystem() override;
+		std::shared_ptr<RenderSystem> createRenderSystem() override;
 
-		shared_ptr<Mesh> createMesh(
+		std::shared_ptr<Mesh> createMesh(
 			size_t indexCount,
 			BufferIndex indexType,
 			const void* vertexData,
@@ -138,7 +138,7 @@ namespace Injector::Graphics
 			size_t indexSize,
 			bool staticUse) override;
 
-		shared_ptr<ColorPipeline> createColorPipeline() override;
-		shared_ptr<DiffusePipeline> createDiffusePipeline() override;
+		std::shared_ptr<ColorPipeline> createColorPipeline() override;
+		std::shared_ptr<DiffusePipeline> createDiffusePipeline() override;
 	};
 }

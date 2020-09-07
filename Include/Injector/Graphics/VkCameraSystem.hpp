@@ -2,7 +2,7 @@
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/VkWindow.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class VkCameraSystem : public CameraSystem
 	{

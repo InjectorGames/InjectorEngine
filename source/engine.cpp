@@ -4,11 +4,11 @@
 #include "Injector/Graphics/GlWindow.hpp"
 #include "Injector/Graphics/VkWindow.hpp"
 
+#include "SDL.h"
+#include "SDL_vulkan.h"
+
 #include <thread>
 #include <iostream>
-
-#include <SDL.h>
-#include <SDL_vulkan.h>
 
 namespace Injector
 {
@@ -25,7 +25,7 @@ namespace Injector
 	Engine::tick_t Engine::updateStartTick = {};
 	double Engine::updateDeltaTime = 0.0;
 
-	std::vector<shared_ptr<Manager>> Engine::managers = {};
+	std::vector<std::shared_ptr<Manager>> Engine::managers = {};
 
 	bool Engine::getCapUpdateRate() noexcept
 	{
@@ -61,7 +61,7 @@ namespace Injector
 
 		engineInitialized = true;
 
-		cout << "Initialized engine (" <<
+		std::cout << "Initialized engine (" <<
 			INJECTOR_VERSION_MAJOR << "." <<
 			INJECTOR_VERSION_MINOR << "." <<
 			INJECTOR_VERSION_PATCH << ")\n";
@@ -82,7 +82,7 @@ namespace Injector
 		
 		engineInitialized = false;
 
-		cout << "Terminated engine\n";
+		std::cout << "Terminated engine\n";
 	}
 	bool Engine::getEngineInitialized() noexcept
 	{
@@ -97,23 +97,21 @@ namespace Injector
 			throw EngineException("Video subsystem is already initialized");
 
 		if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0)
-			throw EngineException("Failed to intialize video subsystem, Error: " +
-				string(SDL_GetError()));
+			throw EngineException("Failed to intialize video subsystem, Error: " + std::string(SDL_GetError()));
 
 		if (_graphicsApi == GraphicsApi::Vulkan)
 		{
 			if (SDL_Vulkan_LoadLibrary(nullptr) != 0)
 			{
 				SDL_QuitSubSystem(SDL_INIT_VIDEO);
-				throw EngineException("Failed to load Vulkan library, Error: " +
-					string(SDL_GetError()));
+				throw EngineException("Failed to load Vulkan library, Error: " + std::string(SDL_GetError()));
 			}
 		}
 		
 		graphicsApi = _graphicsApi;
 		videoInitialized = true;
 
-		cout << "Initialized video subsytem\n";
+		std::cout << "Initialized video subsytem\n";
 	}
 	void Engine::terminateVideo()
 	{
@@ -130,7 +128,7 @@ namespace Injector
 		graphicsApi = GraphicsApi::Unknown;
 		videoInitialized = false;
 
-		cout << "Terminated video subsystem\n";
+		std::cout << "Terminated video subsystem\n";
 	}
 	bool Engine::getVideoInitialized() noexcept
 	{
@@ -149,12 +147,11 @@ namespace Injector
 			throw EngineException("Events subsystem is already initialized");
 
 		if (SDL_InitSubSystem(SDL_INIT_EVENTS) != 0)
-			throw EngineException("Failed to intialize events subsystem. Error: " +
-				string(SDL_GetError()));
+			throw EngineException("Failed to intialize events subsystem. Error: " + std::string(SDL_GetError()));
 
 		eventsInitialized = true;
 
-		cout << "Initialized events subsytem\n";
+		std::cout << "Initialized events subsytem\n";
 	}
 	void Engine::terminateEvents()
 	{
@@ -166,7 +163,7 @@ namespace Injector
 		SDL_QuitSubSystem(SDL_INIT_EVENTS);
 		eventsInitialized = false;
 
-		cout << "Terminated events subsystem\n";
+		std::cout << "Terminated events subsystem\n";
 	}
 	bool Engine::getEventsInitialized() noexcept
 	{
@@ -182,9 +179,9 @@ namespace Injector
 
 		while (updateRunning)
 		{
-			auto tick = chrono::high_resolution_clock::now();
+			auto tick = std::chrono::high_resolution_clock::now();
 			updateDeltaTime = std::chrono::duration_cast<
-				chrono::duration<double>>(tick - updateStartTick).count();
+				std::chrono::duration<double>>(tick - updateStartTick).count();
 			updateStartTick = tick;
 
 			for (auto& manager : managers)
@@ -206,16 +203,13 @@ namespace Injector
 
 			if (capUpdateRate)
 			{
-				tick = chrono::high_resolution_clock::now();
+				tick = std::chrono::high_resolution_clock::now();
 				updateDeltaTime = std::chrono::duration_cast<
-					chrono::duration<double>>(tick - updateStartTick).count();
+					std::chrono::duration<double>>(tick - updateStartTick).count();
 				auto delayTime = (1.0 / targetUpdateRate - updateDeltaTime) * 1000 - 1.0;
 
 				if (delayTime > 0)
-				{
-					this_thread::sleep_for(chrono::milliseconds(
-						static_cast<uint64_t>(delayTime)));
-				}
+					std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<uint64_t>(delayTime)));
 			}
 		}
 	}
@@ -233,15 +227,15 @@ namespace Injector
 
 	Engine::tick_t Engine::getTickNow() noexcept
 	{
-		return chrono::high_resolution_clock::now();
+		return std::chrono::high_resolution_clock::now();
 	}
 	double Engine::getTimeNow() noexcept
 	{
-		return chrono::duration_cast<std::chrono::duration<double>>(
-			chrono::high_resolution_clock::now().time_since_epoch()).count();
+		return std::chrono::duration_cast<std::chrono::duration<double>>(
+			std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 	}
 
-	bool Engine::addManager(const shared_ptr<Manager>& manager) noexcept
+	bool Engine::addManager(const std::shared_ptr<Manager>& manager) noexcept
 	{
 		if (manager == nullptr)
 			return false;
@@ -249,7 +243,7 @@ namespace Injector
 		managers.push_back(manager);
 		return true;
 	}
-	bool Engine::removeManager(const shared_ptr<Manager>& manager) noexcept
+	bool Engine::removeManager(const std::shared_ptr<Manager>& manager) noexcept
 	{
 		if (manager == nullptr)
 			return false;
@@ -265,7 +259,7 @@ namespace Injector
 
 		return false;
 	}
-	bool Engine::containsManager(const shared_ptr<Manager>& manager) noexcept
+	bool Engine::containsManager(const std::shared_ptr<Manager>& manager) noexcept
 	{
 		if (manager == nullptr)
 			return false;

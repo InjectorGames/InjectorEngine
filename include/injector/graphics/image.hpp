@@ -2,11 +2,8 @@
 #include "Injector/Mathematics/IntVector2.hpp"
 #include <string>
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace std;
-	using namespace Injector::Mathematics;
-
 	class Image
 	{
 	protected:
@@ -14,7 +11,7 @@ namespace Injector::Graphics
 		IntVector2 size;
 		unsigned char* data;
 	public:
-		Image(const string& filePath,
+		Image(const std::string& filePath,
 			int channelCount = 0);
 		virtual ~Image();
 	};

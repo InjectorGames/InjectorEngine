@@ -1,6 +1,6 @@
 #include "Injector/Graphics/CameraComponent.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	CameraComponent::CameraComponent(
 		int _queue,
@@ -13,7 +13,7 @@ namespace Injector::Graphics
 		const Matrix4& _matrix,
 		bool _changed,
 		bool _render,
-		const set<shared_ptr<Entity>>& _renders) :
+		const std::set<std::shared_ptr<Entity>>& _renders) :
 		queue(_queue),
 		type(_type),
 		aspectRatio(_aspectRatio),

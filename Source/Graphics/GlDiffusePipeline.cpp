@@ -1,13 +1,11 @@
 #include "Injector/Graphics/GlDiffusePipeline.hpp"
-#include "Injector/File/FileStream.hpp"
+#include "Injector/Storage/FileStream.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 #include "Injector/Graphics/GlShader.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace Injector::File;
-
-    const vector<GlVertexAttribute> GlDiffusePipeline::vertexAttributes =
+    const std::vector<GlVertexAttribute> GlDiffusePipeline::vertexAttributes =
 	{
 		GlVertexAttribute(0, 3, GL_FLOAT, false, sizeof(Vector3) * 2, 0),
         GlVertexAttribute(1, 3, GL_FLOAT, false, sizeof(Vector3) * 2, sizeof(Vector3)),

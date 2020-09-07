@@ -2,7 +2,7 @@
 #include "Injector/Graphics/VmaDefines.hpp"
 #include "vulkan/vulkan.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	struct VkSwapchainData
 	{

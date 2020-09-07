@@ -1,6 +1,6 @@
 #include "Injector/Graphics/CameraSystem.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	CameraSystem::CameraSystem() :
 		lastAspectRatio()
@@ -30,11 +30,11 @@ namespace Injector::Graphics
 		}
 	}
 
-	bool CameraSystem::addCamera(const shared_ptr<Entity>& entity) noexcept
+	bool CameraSystem::addCamera(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		return cameras.emplace(entity).second;
 	}
-	bool CameraSystem::removeCamera(const shared_ptr<Entity>& entity) noexcept
+	bool CameraSystem::removeCamera(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;

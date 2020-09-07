@@ -1,6 +1,6 @@
 #include "Injector/Mathematics/TransformComponent.hpp"
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	TransformComponent::TransformComponent(
 		const Vector3& _position,

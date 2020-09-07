@@ -1,6 +1,6 @@
 #include "Injector/Mathematics/TranslateComponent.hpp"
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	TranslateComponent::TranslateComponent(
 		const Vector3& _translation) :

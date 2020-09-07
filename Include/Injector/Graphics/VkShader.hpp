@@ -2,10 +2,8 @@
 #include "vulkan/vulkan.hpp"
 #include <vector>
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace std;
-
 	class VkShader
 	{
 	protected:
@@ -13,9 +11,9 @@ namespace Injector::Graphics
 		vk::ShaderModule shaderModule;
 	public:
 		VkShader(const vk::Device& device,
-			const vector<uint32_t>& code);
+			const std::vector<uint32_t>& code);
 		VkShader(const vk::Device& device,
-			const vector<char>& code);
+			const std::vector<char>& code);
 		virtual ~VkShader();
 
 		vk::Device getDevice() const noexcept;

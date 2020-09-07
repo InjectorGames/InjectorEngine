@@ -1,10 +1,8 @@
 #include "Injector/Mathematics/IntVector2.hpp"
 #include <cmath>
 
-namespace Injector::Mathematics
+namespace Injector
 {
-	using namespace std;
-
 	IntVector2::IntVector2() :
 		x(0), y(0)
 	{}

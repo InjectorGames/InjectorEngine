@@ -4,7 +4,7 @@
 
 #include <map>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	VkRenderSystem::VkRenderSystem(
 		VkWindow& _window) :
@@ -24,12 +24,12 @@ namespace Injector::Graphics
 
 		struct RenderData
 		{
-			shared_ptr<VkPipeline> pipeline;
-			shared_ptr<VkMesh> mesh;
+			std::shared_ptr<VkPipeline> pipeline;
+			std::shared_ptr<VkMesh> mesh;
 			TransformComponent* transform;
 		};
 
-		auto cameraPairs = multimap<int, CameraData>();
+		auto cameraPairs = std::multimap<int, CameraData>();
 
 		for (auto& camera : cameras)
 		{
@@ -50,7 +50,7 @@ namespace Injector::Graphics
 		for (auto& cameraPair : cameraPairs)
 		{
 			auto cameraData = cameraPair.second;
-			auto renderPairs = multimap<float, RenderData>();
+			auto renderPairs = std::multimap<float, RenderData>();
 
 			for (auto& render : cameraData.camera->renders)
 			{
@@ -64,9 +64,9 @@ namespace Injector::Graphics
 					!renderComponent->mesh)
 					continue;
 
-				renderData.pipeline = dynamic_pointer_cast<VkPipeline>(
+				renderData.pipeline = std::dynamic_pointer_cast<VkPipeline>(
 					renderComponent->pipeline);
-				renderData.mesh = dynamic_pointer_cast<VkMesh>(
+				renderData.mesh = std::dynamic_pointer_cast<VkMesh>(
 					renderComponent->mesh);
 
 				if (!renderData.pipeline || !renderData.mesh)
@@ -82,7 +82,7 @@ namespace Injector::Graphics
 			auto& projMatrix = cameraData.camera->matrix;
 			auto viewProjMatrix = projMatrix * viewMatrix;
 
-			shared_ptr<VkPipeline> lastPipeline = nullptr;
+			std::shared_ptr<VkPipeline> lastPipeline = nullptr;
 
 			for (auto& renderPair : renderPairs)
 			{

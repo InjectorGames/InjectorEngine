@@ -1,13 +1,13 @@
 #pragma once
 #include "Injector/Exception.hpp"
 
-namespace Injector::File
+namespace Injector
 {
     class FileException final : public Exception
     {
     public:
         FileException(
-            const string& message,
-            const string& filePath);
+            const std::string& message,
+            const std::string& filePath);
     };
 }

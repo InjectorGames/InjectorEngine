@@ -2,7 +2,7 @@
 #include "Injector/Component.hpp"
 #include "Injector/Mathematics/Quaternion.hpp"
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	struct RotateComponent : public Component
 	{

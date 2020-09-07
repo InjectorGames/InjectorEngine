@@ -5,19 +5,17 @@
 
 #include <memory>
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace std;
-
 	struct RenderComponent : public Component
 	{
-		shared_ptr<Pipeline> pipeline;
-		shared_ptr<Mesh> mesh;
+		std::shared_ptr<Pipeline> pipeline;
+		std::shared_ptr<Mesh> mesh;
 		bool render;
 
 		RenderComponent(
-			const shared_ptr<Pipeline>& pipeline = nullptr,
-			const shared_ptr<Mesh>& mesh = nullptr,
+			const std::shared_ptr<Pipeline>& pipeline = nullptr,
+			const std::shared_ptr<Mesh>& mesh = nullptr,
 			bool render = true);
 		virtual ~RenderComponent();
 	};

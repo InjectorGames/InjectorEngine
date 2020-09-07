@@ -10,7 +10,7 @@ namespace Injector
 	class Entity final
 	{
 	private:
-		map<type_index, Component*> components;
+		std::map<std::type_index, Component*> components;
 	public:
 		Entity();
 		~Entity();

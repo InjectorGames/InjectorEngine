@@ -1,6 +1,6 @@
 #include "Injector/Mathematics/Matrix2.hpp"
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	Matrix2::Matrix2() :
 		m00(0.0f), m01(0.0f),

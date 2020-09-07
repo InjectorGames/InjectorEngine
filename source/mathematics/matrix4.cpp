@@ -1,10 +1,8 @@
 #include "Injector/Mathematics/Matrix4.hpp"
 #include <cmath>
 
-namespace Injector::Mathematics
+namespace Injector
 {
-	using namespace std;
-
 	Matrix4::Matrix4() :
 		m00(0.0f), m01(0.0f), m02(0.0f), m03(0.0f),
 		m10(0.0f), m11(0.0f), m12(0.0f), m13(0.0f),

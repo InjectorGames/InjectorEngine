@@ -4,7 +4,7 @@
 
 #include "vulkan/vulkan.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class VkImage
 	{

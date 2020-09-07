@@ -31,7 +31,7 @@
 
 #endif
 
-namespace Injector::Memory
+namespace Injector
 {
 	uint16_t ByteSwap::swapEndian(uint16_t value) noexcept
 	{

@@ -1,7 +1,7 @@
 #include "Injector/Graphics/GlBuffer.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	GlBuffer::GlBuffer(
 		size_t _size,

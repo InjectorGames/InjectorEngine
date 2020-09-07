@@ -1,7 +1,7 @@
 #include "Injector/Graphics/VkImage.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	VkImage::VkImage(VmaAllocator _allocator) :
 		allocator(_allocator)

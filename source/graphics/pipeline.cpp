@@ -1,7 +1,7 @@
 #include "Injector/Graphics/Pipeline.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	Pipeline::~Pipeline()
 	{}

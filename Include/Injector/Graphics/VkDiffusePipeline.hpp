@@ -6,10 +6,8 @@
 #include <vector>
 #include <memory>
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace std;
-
 	class VkDiffusePipeline : public VkPipeline, public DiffusePipeline
 	{
 	public:
@@ -36,8 +34,8 @@ namespace Injector::Graphics
 		vk::PipelineLayout pipelineLayout;
 		vk::Pipeline pipeline;
 		vk::DescriptorPool descriptorPool;
-		vector<shared_ptr<VkBuffer>> uniformBuffers;
-		vector<vk::DescriptorSet> descriptorSets;
+		std::vector<std::shared_ptr<VkBuffer>> uniformBuffers;
+		std::vector<vk::DescriptorSet> descriptorSets;
 
 		UniformBufferObject ubo;
 
@@ -50,15 +48,15 @@ namespace Injector::Graphics
 		static vk::DescriptorPool createDescriptorPool(
 			vk::Device device,
 			uint32_t imageCount);
-		static vector<shared_ptr<VkBuffer>> createUniformBuffers(
+		static std::vector<std::shared_ptr<VkBuffer>> createUniformBuffers(
 			VmaAllocator allocator,
 			uint32_t imageCount);
-		static vector<vk::DescriptorSet> createDescriptorSets(
+		static std::vector<vk::DescriptorSet> createDescriptorSets(
 			vk::Device device,
 			vk::DescriptorPool descriptorPool,
 			vk::DescriptorSetLayout descriptorSetLayout,
 			size_t imageCount,
-			const vector<shared_ptr<VkBuffer>>& uniformBuffers);
+			const std::vector<std::shared_ptr<VkBuffer>>& uniformBuffers);
 	public:
 		VkDiffusePipeline(
 			vk::Device device,

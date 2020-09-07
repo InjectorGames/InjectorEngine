@@ -1,10 +1,8 @@
 #pragma once
 #include "Injector/Mathematics/Matrix4.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace Injector::Mathematics;
-
 	class Pipeline
 	{
 	public:

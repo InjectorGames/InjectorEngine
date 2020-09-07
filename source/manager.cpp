@@ -3,8 +3,6 @@
 
 namespace Injector
 {
-	using namespace std;
-
 	Manager::Manager(bool _active) :
 		active(_active),
 		entities(), 
@@ -32,16 +30,16 @@ namespace Injector
 		return systems.size();
 	}
 
-	shared_ptr<Entity> Manager::createEntity()
+	std::shared_ptr<Entity> Manager::createEntity()
 	{
-		auto entity = make_shared<Entity>();
+		auto entity = std::make_shared<Entity>();
 
 		if (!entities.emplace(entity).second)
 			throw EngineException("Failed to create manager entity");
 
 		return entity;
 	}
-	bool Manager::addEntity(const shared_ptr<Entity>& entity) noexcept
+	bool Manager::addEntity(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;
@@ -49,7 +47,7 @@ namespace Injector
 		return entities.emplace(entity).second;
 	}
 
-	bool Manager::removeEntity(const shared_ptr<Entity>& entity) noexcept
+	bool Manager::removeEntity(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;
@@ -62,7 +60,7 @@ namespace Injector
 		entities.erase(iterator);
 		return true;
 	}
-	bool Manager::destroySystem(const shared_ptr<System>& system) noexcept
+	bool Manager::destroySystem(const std::shared_ptr<System>& system) noexcept
 	{
 		if (system == nullptr)
 			return false;
@@ -79,14 +77,14 @@ namespace Injector
 		return false;
 	}
 
-	bool Manager::containsEntity(const shared_ptr<Entity>& entity) const noexcept
+	bool Manager::containsEntity(const std::shared_ptr<Entity>& entity) const noexcept
 	{
 		if (entity == nullptr)
 			return false;
 
 		return entities.find(entity) != entities.end();
 	}
-	bool Manager::containsSystem(const shared_ptr<System>& system) noexcept
+	bool Manager::containsSystem(const std::shared_ptr<System>& system) noexcept
 	{
 		if (system == nullptr)
 			return false;

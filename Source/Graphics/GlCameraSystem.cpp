@@ -1,6 +1,6 @@
 #include "Injector/Graphics/GlCameraSystem.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	GlCameraSystem::GlCameraSystem(GlWindow& _window) :
 		window(_window)

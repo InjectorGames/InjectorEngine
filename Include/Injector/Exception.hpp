@@ -4,14 +4,12 @@
 
 namespace Injector
 {
-    using namespace std;
-
-    class Exception : public exception
+    class Exception : public std::exception
     {
     protected:
-        string message;
+        std::string message;
     public:
-        Exception(const string& message);
+        Exception(const std::string& message);
         virtual ~Exception();
 
         const char* what() const noexcept override;

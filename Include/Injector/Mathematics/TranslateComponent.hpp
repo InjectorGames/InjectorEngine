@@ -2,7 +2,7 @@
 #include "Injector/Component.hpp"
 #include "Injector/Mathematics/Vector3.hpp"
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	struct TranslateComponent : public Component
 	{

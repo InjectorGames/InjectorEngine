@@ -3,7 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	float Converter::toDegrees(float radians)
 	{

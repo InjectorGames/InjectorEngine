@@ -1,13 +1,13 @@
 #include "Injector/Graphics/GlMesh.hpp"
 #include <stdexcept>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	GlMesh::GlMesh(
 		size_t indexCount,
 		BufferIndex indexType,
-		const shared_ptr<GlBuffer>& _vertexBuffer,
-		const shared_ptr<GlBuffer>& _indexBuffer) :
+		const std::shared_ptr<GlBuffer>& _vertexBuffer,
+		const std::shared_ptr<GlBuffer>& _indexBuffer) :
 		Mesh(indexCount, indexType),
 		vertexBuffer(_vertexBuffer),
 		indexBuffer(_indexBuffer)
@@ -31,17 +31,17 @@ namespace Injector::Graphics
 	{
 		return vertexArray;
 	}
-	const shared_ptr<GlBuffer>& GlMesh::getVertexBuffer() const noexcept
+	const std::shared_ptr<GlBuffer>& GlMesh::getVertexBuffer() const noexcept
 	{
 		return vertexBuffer;
 	}
-	const shared_ptr<GlBuffer>& GlMesh::getIndexBuffer() const noexcept
+	const std::shared_ptr<GlBuffer>& GlMesh::getIndexBuffer() const noexcept
 	{
 		return indexBuffer;
 	}
 
 	void GlMesh::draw(GLuint mode, 
-		const vector<GlVertexAttribute>& vertexAttributes) noexcept
+		const std::vector<GlVertexAttribute>& vertexAttributes) noexcept
 	{
 		glBindVertexArray(vertexArray);
 		vertexBuffer->bind();

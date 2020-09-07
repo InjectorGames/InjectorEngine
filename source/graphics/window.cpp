@@ -7,18 +7,16 @@
 
 #include "SDL_events.h"
 
-#include <iostream>
-
-namespace Injector::Graphics
+namespace Injector
 {
-	const string Window::defaultTitle = "Injector Engine";
+	const std::string Window::defaultTitle = "Injector Engine";
 	const IntVector2 Window::defaultPosition = IntVector2(
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
 	const IntVector2 Window::defaultSize = IntVector2(800, 600);
 	const uint32_t Window::defaultFlags = SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE;
 
 	Window::Window(
-		const string& title,
+		const std::string& title,
 		IntVector2 position,
 		IntVector2 size,
 		uint32_t flags) :
@@ -30,7 +28,7 @@ namespace Injector::Graphics
 			position.x, position.y, size.x, size.y, flags);
 
 		if (!window)
-			throw GraphicsException("Failed to create SDL window, Error: " + string(SDL_GetError()));
+			throw GraphicsException("Failed to create SDL window, Error: " + std::string(SDL_GetError()));
 
 		SDL_SetWindowMinimumSize(window, 1, 1);
 	}
@@ -230,16 +228,16 @@ namespace Injector::Graphics
 		return SDL_SetRelativeMouseMode(static_cast<SDL_bool>(realtive)) == 0;
 	}
 
-	shared_ptr<CameraSystem> Window::createCameraSystem()
+	std::shared_ptr<CameraSystem> Window::createCameraSystem()
 	{
 		throw GraphicsException("Not implemented window function");
 	}
-	shared_ptr<RenderSystem> Window::createRenderSystem()
+	std::shared_ptr<RenderSystem> Window::createRenderSystem()
 	{
 		throw GraphicsException("Not implemented window function");
 	}
 
-	shared_ptr<Mesh> Window::createMesh(
+	std::shared_ptr<Mesh> Window::createMesh(
 		size_t indexCount,
 		BufferIndex indexType,
 		const void* vertexData,
@@ -251,16 +249,16 @@ namespace Injector::Graphics
 		throw GraphicsException("Not implemented window function");
 	}
 
-	shared_ptr<ColorPipeline> Window::createColorPipeline()
+	std::shared_ptr<ColorPipeline> Window::createColorPipeline()
 	{
 		throw GraphicsException("Not implemented window function");
 	}
-	shared_ptr<DiffusePipeline> Window::createDiffusePipeline()
+	std::shared_ptr<DiffusePipeline> Window::createDiffusePipeline()
 	{
 		throw GraphicsException("Not implemented window function");
 	}
 
-	shared_ptr<Mesh> Window::createSquareMeshV(bool staticUse)
+	std::shared_ptr<Mesh> Window::createSquareMeshV(bool staticUse)
 	{
 		return createMesh(
 			Primitive::squareIndices.size(),
@@ -271,9 +269,9 @@ namespace Injector::Graphics
 			Primitive::squareIndices.size() * sizeof(Vector3),
 			staticUse);
 	}
-	shared_ptr<Mesh> Window::createSquareMeshVN(bool staticUse)
+	std::shared_ptr<Mesh> Window::createSquareMeshVN(bool staticUse)
 	{
-		auto vertices = vector<Vector3>(
+		auto vertices = std::vector<Vector3>(
 			Primitive::squareVertices.size() + Primitive::squareNormals.size());
 
 		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 2)
@@ -291,7 +289,7 @@ namespace Injector::Graphics
 			Primitive::squareIndices.size() * sizeof(Vector3),
 			staticUse);
 	}
-	shared_ptr<Mesh> Window::createCubeMeshV(bool staticUse)
+	std::shared_ptr<Mesh> Window::createCubeMeshV(bool staticUse)
 	{
 		return createMesh(
 			Primitive::cubeIndices.size(),
@@ -302,9 +300,9 @@ namespace Injector::Graphics
 			Primitive::cubeIndices.size() * sizeof(Vector3),
 			staticUse);
 	}
-	shared_ptr<Mesh> Window::createCubeMeshVN(bool staticUse)
+	std::shared_ptr<Mesh> Window::createCubeMeshVN(bool staticUse)
 	{
-		auto vertices = vector<Vector3>(
+		auto vertices = std::vector<Vector3>(
 			Primitive::cubeVertices.size() + Primitive::cubeNormals.size());
 
 		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 2)
@@ -323,8 +321,8 @@ namespace Injector::Graphics
 			staticUse);
 	}
 
-	shared_ptr<Window> Window::create(
-		const string& title,
+	std::shared_ptr<Window> Window::create(
+		const std::string& title,
 		IntVector2 position,
 		IntVector2 size,
 		uint32_t flags)

@@ -6,11 +6,11 @@
 #include "Injector/Graphics/GlColorPipeline.hpp"
 #include "Injector/Graphics/GlDiffusePipeline.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	GlWindow::GlWindow(
 		bool _gles,
-		const string& title,
+		const std::string& title,
 		IntVector2 position,
 		IntVector2 size,
 		uint32_t flags) :
@@ -33,7 +33,7 @@ namespace Injector::Graphics
 		context = SDL_GL_CreateContext(window);
 
 		if (!context)
-			throw GraphicsException("Failed to create window OpenGL context, Error: " + string(SDL_GetError()));
+			throw GraphicsException("Failed to create window OpenGL context, Error: " + std::string(SDL_GetError()));
 
 		SDL_GL_MakeCurrent(window, context);
 
@@ -74,20 +74,20 @@ namespace Injector::Graphics
 		glViewport(0, 0, size.x, size.y);
 	}
 
-	shared_ptr<CameraSystem> GlWindow::createCameraSystem()
+	std::shared_ptr<CameraSystem> GlWindow::createCameraSystem()
 	{
-		auto system = make_shared<GlCameraSystem>(*this);
+		auto system = std::make_shared<GlCameraSystem>(*this);
 		systems.push_back(system);
 		return system;
 	}
-	shared_ptr<RenderSystem> GlWindow::createRenderSystem()
+	std::shared_ptr<RenderSystem> GlWindow::createRenderSystem()
 	{
-		auto system = make_shared<GlRenderSystem>(*this);
+		auto system = std::make_shared<GlRenderSystem>(*this);
 		systems.push_back(system);
 		return system;
 	}
 
-	shared_ptr<Mesh> GlWindow::createMesh(
+	std::shared_ptr<Mesh> GlWindow::createMesh(
 		size_t indexCount,
 		BufferIndex indexType,
 		const void* vertexData,
@@ -98,21 +98,21 @@ namespace Injector::Graphics
 	{
 		auto usage = staticUse ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
 
-		auto vertexBuffer = make_shared<GlBuffer>(
+		auto vertexBuffer = std::make_shared<GlBuffer>(
 			vertexSize, GL_ARRAY_BUFFER, usage, vertexData);
-		auto indexBuffer = make_shared<GlBuffer>(
+		auto indexBuffer = std::make_shared<GlBuffer>(
 			indexSize, GL_ELEMENT_ARRAY_BUFFER, usage, indexData);
 
-		return make_shared<GlMesh>(
+		return std::make_shared<GlMesh>(
 			indexCount, indexType, vertexBuffer, indexBuffer);
 	}
 
-	shared_ptr<ColorPipeline> GlWindow::createColorPipeline()
+	std::shared_ptr<ColorPipeline> GlWindow::createColorPipeline()
 	{
-		return make_shared<GlColorPipeline>(gles);
+		return std::make_shared<GlColorPipeline>(gles);
 	}
-	shared_ptr<DiffusePipeline> GlWindow::createDiffusePipeline()
+	std::shared_ptr<DiffusePipeline> GlWindow::createDiffusePipeline()
 	{
-		return make_shared<GlDiffusePipeline>(gles);
+		return std::make_shared<GlDiffusePipeline>(gles);
 	}
 }

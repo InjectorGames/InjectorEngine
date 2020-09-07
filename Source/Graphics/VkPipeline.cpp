@@ -1,7 +1,7 @@
 #include "Injector/Graphics/VkPipeline.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	VkPipeline::VkPipeline(
 		vk::Device _device) :

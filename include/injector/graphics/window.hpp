@@ -13,7 +13,7 @@
 #include <string>
 #include <cstdint>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class Window : public Manager
 	{
@@ -23,12 +23,12 @@ namespace Injector::Graphics
 		Vector3 rotation;
 		IntVector2 mouseMotion;
 	public:
-		static const string defaultTitle;
+		static const std::string defaultTitle;
 		static const IntVector2 defaultPosition;
 		static const IntVector2 defaultSize;
 		static const uint32_t defaultFlags;
 
-		Window(const string& title = defaultTitle,
+		Window(const std::string& title = defaultTitle,
 			IntVector2 position = defaultPosition,
 			IntVector2 size = defaultSize,
 			uint32_t flags = defaultFlags);
@@ -63,10 +63,10 @@ namespace Injector::Graphics
 		void setResizable(bool resizable) noexcept;
 		bool setMouseMode(bool realtive) noexcept;
 
-		virtual shared_ptr<CameraSystem> createCameraSystem();
-		virtual shared_ptr<RenderSystem> createRenderSystem();
+		virtual std::shared_ptr<CameraSystem> createCameraSystem();
+		virtual std::shared_ptr<RenderSystem> createRenderSystem();
 
-		virtual shared_ptr<Mesh> createMesh(
+		virtual std::shared_ptr<Mesh> createMesh(
 			size_t indexCount,
 			BufferIndex indexType,
 			const void* vertexData,
@@ -75,16 +75,16 @@ namespace Injector::Graphics
 			size_t indexSize,
 			bool staticUse);
 
-		virtual shared_ptr<ColorPipeline> createColorPipeline();
-		virtual shared_ptr<DiffusePipeline> createDiffusePipeline();
+		virtual std::shared_ptr<ColorPipeline> createColorPipeline();
+		virtual std::shared_ptr<DiffusePipeline> createDiffusePipeline();
 
-		shared_ptr<Mesh> createSquareMeshV(bool staticUse);
-		shared_ptr<Mesh> createSquareMeshVN(bool staticUse);
-		shared_ptr<Mesh> createCubeMeshV(bool staticUse);
-		shared_ptr<Mesh> createCubeMeshVN(bool staticUse);
+		std::shared_ptr<Mesh> createSquareMeshV(bool staticUse);
+		std::shared_ptr<Mesh> createSquareMeshVN(bool staticUse);
+		std::shared_ptr<Mesh> createCubeMeshV(bool staticUse);
+		std::shared_ptr<Mesh> createCubeMeshVN(bool staticUse);
 
-		static shared_ptr<Window> create(
-			const string& title = Window::defaultTitle,
+		static std::shared_ptr<Window> create(
+			const std::string& title = Window::defaultTitle,
 			IntVector2 position = Window::defaultPosition,
 			IntVector2 size = Window::defaultSize,
 			uint32_t flags = Window::defaultFlags);

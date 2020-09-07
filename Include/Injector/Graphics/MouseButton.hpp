@@ -2,7 +2,7 @@
 #include "SDL_mouse.h"
 #include <cstdint>
 
-namespace Injector::Graphics
+namespace Injector
 {
 	enum class MouseButton : uint32_t
 	{

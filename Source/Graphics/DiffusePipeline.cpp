@@ -1,7 +1,7 @@
 #include "Injector/Graphics/DiffusePipeline.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	DiffusePipeline::~DiffusePipeline()
 	{}

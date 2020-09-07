@@ -1,7 +1,7 @@
 #include "Injector/Graphics/Mesh.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	Mesh::Mesh(
 		size_t _indexCount,

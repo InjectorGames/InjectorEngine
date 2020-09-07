@@ -2,7 +2,7 @@
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/GlWindow.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	class GlCameraSystem : public CameraSystem
 	{

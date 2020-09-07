@@ -4,30 +4,29 @@
 #include "Injector/Graphics/GlVertexAttribute.hpp"
 
 #include <vector>
+#include <memory>
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace std;
-
 	class GlMesh : public Mesh
 	{
 	protected:
 		GLuint vertexArray;
-		shared_ptr<GlBuffer> vertexBuffer;
-		shared_ptr<GlBuffer> indexBuffer;
+		std::shared_ptr<GlBuffer> vertexBuffer;
+		std::shared_ptr<GlBuffer> indexBuffer;
 	public:
 		GlMesh(size_t indexCount,
 			BufferIndex indexType,
-			const shared_ptr<GlBuffer>& vertexBuffer,
-			const shared_ptr<GlBuffer>& indexBuffer);
+			const std::shared_ptr<GlBuffer>& vertexBuffer,
+			const std::shared_ptr<GlBuffer>& indexBuffer);
 		virtual ~GlMesh();
 
 		GLuint getVertexArray() const noexcept;
-		const shared_ptr<GlBuffer>& getVertexBuffer() const noexcept;
-		const shared_ptr<GlBuffer>& getIndexBuffer() const noexcept;
+		const std::shared_ptr<GlBuffer>& getVertexBuffer() const noexcept;
+		const std::shared_ptr<GlBuffer>& getIndexBuffer() const noexcept;
 
 		void draw(GLuint mode,
-			const vector<GlVertexAttribute>& vertexAttributes) noexcept;
+			const std::vector<GlVertexAttribute>& vertexAttributes) noexcept;
 
 		void setVertexData(void* data, size_t size) override;
 		void setVertexData(void* data, size_t size, size_t offset) override;

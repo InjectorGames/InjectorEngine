@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace Injector::Memory
+namespace Injector
 {
 	class ByteSwap final
 	{

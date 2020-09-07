@@ -1,6 +1,6 @@
 #include "Injector/Graphics/VkCameraSystem.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	VkCameraSystem::VkCameraSystem(VkWindow& _window) :
 		window(_window)

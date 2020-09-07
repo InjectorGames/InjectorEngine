@@ -13,7 +13,7 @@
 #include <vector>
 #include <iostream>
 
-namespace Injector::Graphics
+namespace Injector
 {
 #define VK_FRAME_LAG 2
 
@@ -24,25 +24,25 @@ namespace Injector::Graphics
 		void* pUserData)
 	{
 		if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
-			cout << "VULKAN VERBOSE: " << pCallbackData->pMessage << "\n";
+			std::cout << "VULKAN VERBOSE: " << pCallbackData->pMessage << "\n";
 		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-			cout << "VULKAN INFO: " << pCallbackData->pMessage << "\n";
+			std::cout << "VULKAN INFO: " << pCallbackData->pMessage << "\n";
 		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-			cout << "VULKAN WARNING: " << pCallbackData->pMessage << "\n";
+			std::cout << "VULKAN WARNING: " << pCallbackData->pMessage << "\n";
 		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-			cout << "VULKAN ERROR: " << pCallbackData->pMessage << "\n";
+			std::cout << "VULKAN ERROR: " << pCallbackData->pMessage << "\n";
 
 		return VK_FALSE;
 	}
 
 	vk::Instance VkWindow::createInstance(
 		SDL_Window* window,
-		const string& appName,
+		const std::string& appName,
 		uint32_t appVersion)
 	{
 		vk::Instance instance;
 
-		auto instanceLayers = vector<const char*>();
+		auto instanceLayers = std::vector<const char*>();
 
 #if !defined(NDEBUG)
 		instanceLayers.push_back("VK_LAYER_KHRONOS_validation");
@@ -66,18 +66,18 @@ namespace Injector::Graphics
 			}
 
 			if (!found)
-				throw GraphicsException("Failed to get Vulkan instance layer: " + string(layer));
+				throw GraphicsException("Failed to get Vulkan instance layer: " + std::string(layer));
 		}
 #endif
 
 		uint32_t extensionCount;
 		SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, nullptr);
 
-		auto instanceExtensions = vector<const char*>(extensionCount);
+		auto instanceExtensions = std::vector<const char*>(extensionCount);
 		SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, instanceExtensions.data());
 
 		if (extensionCount == 0)
-			throw GraphicsException("Failed to get Vulkan instance extensions: " + string(SDL_GetError()));
+			throw GraphicsException("Failed to get Vulkan instance extensions: " + std::string(SDL_GetError()));
 
 #if !defined(NDEBUG)
 		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -102,7 +102,7 @@ namespace Injector::Graphics
 			}
 
 			if (!found)
-				throw GraphicsException("Failed to get Vulkan instance extension: " + string(extension));
+				throw GraphicsException("Failed to get Vulkan instance extension: " + std::string(extension));
 		}
 
 		auto applicationInfo = vk::ApplicationInfo(
@@ -170,7 +170,7 @@ namespace Injector::Graphics
 		if (physicalDevices.size() == 0)
 			throw GraphicsException("Failed to get Vulkan physical devices");
 
-		auto targetPhysicalDevices = multimap<int, vk::PhysicalDevice>();
+		auto targetPhysicalDevices = std::multimap<int, vk::PhysicalDevice>();
 
 		for (auto& device : physicalDevices)
 		{
@@ -202,7 +202,7 @@ namespace Injector::Graphics
 			static_cast<VkInstance>(instance), &surfaceHandle);
 
 		if (result == SDL_FALSE)
-			throw GraphicsException("Failed to create Vulkan surface, Error: " + string(SDL_GetError()));
+			throw GraphicsException("Failed to create Vulkan surface, Error: " + std::string(SDL_GetError()));
 
 		return vk::SurfaceKHR(surfaceHandle);
 	}
@@ -259,7 +259,7 @@ namespace Injector::Graphics
 			throw GraphicsException("Failed to get Vulkan device extension properties");
 
 		// TODO: create extension request mechanism
-		auto deviceExtensions = vector<const char*>() =
+		auto deviceExtensions = std::vector<const char*>() =
 		{
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 		};
@@ -278,14 +278,14 @@ namespace Injector::Graphics
 			}
 
 			if (!found)
-				throw GraphicsException("Failed to find Vulkan device extension: " + string(extension));
+				throw GraphicsException("Failed to find Vulkan device extension: " + std::string(extension));
 		}
 
 		auto priority = 1.0f;
 		auto deviceQueueCreateInfo = vk::DeviceQueueCreateInfo(
 			{}, graphicsQueueFamilyIndex, 1, &priority);
 
-		auto deviceQueueCreateInfos = vector<vk::DeviceQueueCreateInfo>() =
+		auto deviceQueueCreateInfos = std::vector<vk::DeviceQueueCreateInfo>() =
 		{
 			deviceQueueCreateInfo,
 		};
@@ -486,10 +486,10 @@ namespace Injector::Graphics
 		if (surfaceCapabilities.currentExtent.width == UINT32_MAX)
 		{
 			return vk::Extent2D(
-				max(surfaceCapabilities.minImageExtent.width, min(
-					surfaceCapabilities.maxImageExtent.width, static_cast<uint32_t>(surfaceSize.x))),
-				max(surfaceCapabilities.minImageExtent.height, min(
-					surfaceCapabilities.maxImageExtent.height, static_cast<uint32_t>(surfaceSize.y))));
+				std::clamp(static_cast<uint32_t>(surfaceSize.x), 
+				surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width),
+				std::clamp(static_cast<uint32_t>(surfaceSize.x), 
+				surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width));
 		}
 		else
 		{
@@ -595,7 +595,7 @@ namespace Injector::Graphics
 	}
 
 	VkWindow::VkWindow(
-		const string& title,
+		const std::string& title,
 		IntVector2 position,
 		IntVector2 size,
 		uint32_t flags) :
@@ -621,10 +621,10 @@ namespace Injector::Graphics
 			memoryAllocator = createMemoryAllocator(
 				instance, physicalDevice, device);
 
-			fences = vector<vk::Fence>(VK_FRAME_LAG);
-			imageAcquiredSemaphores = vector<vk::Semaphore>(VK_FRAME_LAG);
-			drawCompleteSemaphores = vector<vk::Semaphore>(VK_FRAME_LAG);
-			imageOwnershipSemaphores = vector<vk::Semaphore>(VK_FRAME_LAG);
+			fences = std::vector<vk::Fence>(VK_FRAME_LAG);
+			imageAcquiredSemaphores = std::vector<vk::Semaphore>(VK_FRAME_LAG);
+			drawCompleteSemaphores = std::vector<vk::Semaphore>(VK_FRAME_LAG);
+			imageOwnershipSemaphores = std::vector<vk::Semaphore>(VK_FRAME_LAG);
 
 			for (size_t i = 0; i < VK_FRAME_LAG; i++)
 			{
@@ -684,11 +684,11 @@ namespace Injector::Graphics
 			frameIndex = 0;
 
 			auto images = device.getSwapchainImagesKHR(swapchain);
-			swapchainDatas = vector<shared_ptr<VkSwapchainData>>(images.size());
+			swapchainDatas = std::vector<std::shared_ptr<VkSwapchainData>>(images.size());
 
 			for (size_t i = 0; i < images.size(); i++)
 			{
-				swapchainDatas[i] = make_shared<VkSwapchainData>(
+				swapchainDatas[i] = std::make_shared<VkSwapchainData>(
 					device,
 					images[i],
 					renderPass,
@@ -698,7 +698,7 @@ namespace Injector::Graphics
 					surfaceExtent);
 			}
 		}
-		catch (const exception& exception)
+		catch (const std::exception& exception)
 		{
 #if !defined(NDEBUG)
 			instance.destroy(debugMessenger, nullptr, dispatchDynamic);
@@ -795,11 +795,11 @@ namespace Injector::Graphics
 		frameIndex = 0;
 
 		auto images = device.getSwapchainImagesKHR(swapchain);
-		swapchainDatas = vector<shared_ptr<VkSwapchainData>>(images.size());
+		swapchainDatas = std::vector<std::shared_ptr<VkSwapchainData>>(images.size());
 
 		for (size_t i = 0; i < images.size(); i++)
 		{
-			swapchainDatas[i] = make_shared<VkSwapchainData>(
+			swapchainDatas[i] = std::make_shared<VkSwapchainData>(
 				device,
 				images[i],
 				renderPass,
@@ -940,7 +940,7 @@ namespace Injector::Graphics
 			throw GraphicsException("Failed to begin Vulkan command buffer");
 
 		auto clearValues = vk::ClearValue(vk::ClearColorValue(
-			array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f}));
+			std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f}));
 		auto renderPassBeginInfo = vk::RenderPassBeginInfo(
 			renderPass, swapchainData->framebuffer,
 			vk::Rect2D({ 0, 0 }, surfaceExtent),
@@ -991,20 +991,20 @@ namespace Injector::Graphics
 		}
 	}
 
-	shared_ptr<CameraSystem> VkWindow::createCameraSystem()
+	std::shared_ptr<CameraSystem> VkWindow::createCameraSystem()
 	{
-		auto system = make_shared<VkCameraSystem>(*this);
+		auto system = std::make_shared<VkCameraSystem>(*this);
 		systems.push_back(system);
 		return system;
 	}
-	shared_ptr<RenderSystem> VkWindow::createRenderSystem()
+	std::shared_ptr<RenderSystem> VkWindow::createRenderSystem()
 	{
-		auto system = make_shared<VkRenderSystem>(*this);
+		auto system = std::make_shared<VkRenderSystem>(*this);
 		systems.push_back(system);
 		return system;
 	}
 
-	shared_ptr<Mesh> VkWindow::createMesh(
+	std::shared_ptr<Mesh> VkWindow::createMesh(
 		size_t indexCount,
 		BufferIndex indexType,
 		const void* vertexData,
@@ -1013,18 +1013,18 @@ namespace Injector::Graphics
 		size_t indexSize,
 		bool staticUse)
 	{
-		shared_ptr<VkBuffer> vertexBuffer;
-		shared_ptr<VkBuffer> indexBuffer;
+		std::shared_ptr<VkBuffer> vertexBuffer;
+		std::shared_ptr<VkBuffer> indexBuffer;
 
 		if (staticUse)
 		{
-			vertexBuffer = make_shared<VkBuffer>(
+			vertexBuffer = std::make_shared<VkBuffer>(
 				memoryAllocator,
 				vertexSize,
 				vk::BufferUsageFlagBits::eVertexBuffer |
 				vk::BufferUsageFlagBits::eTransferDst,
 				VMA_MEMORY_USAGE_GPU_ONLY);
-			indexBuffer = make_shared<VkBuffer>(
+			indexBuffer = std::make_shared<VkBuffer>(
 				memoryAllocator,
 				indexSize,
 				vk::BufferUsageFlagBits::eIndexBuffer |
@@ -1077,14 +1077,14 @@ namespace Injector::Graphics
 		}
 		else
 		{
-			vertexBuffer = make_shared<VkBuffer>(
+			vertexBuffer = std::make_shared<VkBuffer>(
 				memoryAllocator,
 				vertexSize,
 				vk::BufferUsageFlagBits::eVertexBuffer,
 				VMA_MEMORY_USAGE_CPU_TO_GPU);
 			vertexBuffer->setData(vertexData, vertexSize);
 
-			indexBuffer = make_shared<VkBuffer>(
+			indexBuffer = std::make_shared<VkBuffer>(
 				memoryAllocator,
 				indexSize,
 				vk::BufferUsageFlagBits::eVertexBuffer,
@@ -1092,13 +1092,13 @@ namespace Injector::Graphics
 			indexBuffer->setData(indexData, indexSize);
 		}
 
-		return make_shared<VkMesh>(
+		return std::make_shared<VkMesh>(
 			indexCount, indexType, vertexBuffer, indexBuffer);
 	}
 
-	shared_ptr<ColorPipeline> VkWindow::createColorPipeline()
+	std::shared_ptr<ColorPipeline> VkWindow::createColorPipeline()
 	{
-		auto pipeline = make_shared<VkColorPipeline>(
+		auto pipeline = std::make_shared<VkColorPipeline>(
 			device, renderPass, surfaceExtent);
 
 		if(!pipelines.emplace(pipeline).second)
@@ -1106,9 +1106,9 @@ namespace Injector::Graphics
 
 		return pipeline;
 	}
-	shared_ptr<DiffusePipeline> VkWindow::createDiffusePipeline()
+	std::shared_ptr<DiffusePipeline> VkWindow::createDiffusePipeline()
 	{
-		auto pipeline = make_shared<VkDiffusePipeline>(
+		auto pipeline = std::make_shared<VkDiffusePipeline>(
 			device, memoryAllocator, renderPass, swapchainDatas.size(), surfaceExtent);
 
 		if (!pipelines.emplace(pipeline).second)

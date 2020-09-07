@@ -35,9 +35,6 @@ add_subdirectory(Libraries/SDL)
 configure_file(CMake/Defines.hpp.in Injector/Defines.hpp)
 
 add_library(InjectorEngine STATIC
-	Source/File/FileException.cpp
-	Source/File/FileStream.cpp
-
 	Source/Graphics/CameraComponent.cpp
 	Source/Graphics/CameraSystem.cpp
 	Source/Graphics/ColorPipeline.cpp
@@ -94,6 +91,9 @@ add_library(InjectorEngine STATIC
 	Source/Mathematics/Vector4.cpp
 
 	Source/Memory/ByteSwap.cpp
+
+	Source/Storage/FileException.cpp
+	Source/Storage/FileStream.cpp
 
 	Source/Component.cpp
 	Source/Engine.cpp

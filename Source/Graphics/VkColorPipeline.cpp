@@ -1,12 +1,10 @@
 #include "Injector/Graphics/VkColorPipeline.hpp"
-#include "Injector/File/FileStream.hpp"
+#include "Injector/Storage/FileStream.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 #include "Injector/Graphics/VkShader.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace Injector::File;
-
 	vk::Pipeline VkColorPipeline::createPipeline(
 		vk::Device device,
 		vk::PipelineCache pipelineCache,
@@ -22,7 +20,7 @@ namespace Injector::Graphics
 			"resources/shaders/color.frag.spv");
 		auto fragmentShader = VkShader(device, fragmentCode);
 
-		auto pipelineShaderStageCreateInfos = vector<vk::PipelineShaderStageCreateInfo>
+		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>
 		{
 			vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eVertex,
 				vertexShader.getShaderModule(), "main", nullptr),

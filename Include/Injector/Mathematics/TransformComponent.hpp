@@ -3,7 +3,7 @@
 #include "Injector/Mathematics/Quaternion.hpp"
 #include "Injector/Mathematics/RotationOrigin.hpp"
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	struct TransformComponent : public Component
 	{

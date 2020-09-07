@@ -1,12 +1,10 @@
 #include "Injector/Graphics/VkDiffusePipeline.hpp"
-#include "Injector/File/FileStream.hpp"
+#include "Injector/Storage/FileStream.hpp"
 #include "Injector/Graphics/GraphicsException.hpp"
 #include "Injector/Graphics/VkShader.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace Injector::File;
-
 	vk::Pipeline VkDiffusePipeline::createPipeline(
 		vk::Device device,
 		vk::PipelineCache pipelineCache,
@@ -22,7 +20,7 @@ namespace Injector::Graphics
 			"resources/shaders/diffuse.frag.spv");
 		auto fragmentShader = VkShader(device, fragmentCode);
 
-		auto pipelineShaderStageCreateInfos = vector<vk::PipelineShaderStageCreateInfo>
+		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>
 		{
 			vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eVertex,
 				vertexShader.getShaderModule(), "main", nullptr),
@@ -33,7 +31,7 @@ namespace Injector::Graphics
 		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
 			0, sizeof(Vector3) * 2, vk::VertexInputRate::eVertex);
 
-		auto vertexInputAttributeDescriptions = vector<vk::VertexInputAttributeDescription>
+		auto vertexInputAttributeDescriptions = std::vector<vk::VertexInputAttributeDescription>
 		{
 			vk::VertexInputAttributeDescription(
 				0, 0, vk::Format::eR32G32B32Sfloat, 0),
@@ -117,15 +115,15 @@ namespace Injector::Graphics
 
 		return descriptorPool;
 	}
-	vector<shared_ptr<VkBuffer>> VkDiffusePipeline::createUniformBuffers(
+	std::vector<std::shared_ptr<VkBuffer>> VkDiffusePipeline::createUniformBuffers(
 		VmaAllocator allocator,
 		uint32_t imageCount)
 	{
-		auto uniformBuffers = vector<shared_ptr<VkBuffer>>(imageCount);
+		auto uniformBuffers = std::vector<std::shared_ptr<VkBuffer>>(imageCount);
 
 		for (size_t i = 0; i < imageCount; i++)
 		{
-			uniformBuffers[i] = make_shared<VkBuffer>(
+			uniformBuffers[i] = std::make_shared<VkBuffer>(
 				allocator,
 				sizeof(UniformBufferObject),
 				vk::BufferUsageFlagBits::eUniformBuffer,
@@ -134,19 +132,19 @@ namespace Injector::Graphics
 
 		return uniformBuffers;
 	}
-	vector<vk::DescriptorSet> VkDiffusePipeline::createDescriptorSets(
+	std::vector<vk::DescriptorSet> VkDiffusePipeline::createDescriptorSets(
 		vk::Device device,
 		vk::DescriptorPool descriptorPool,
 		vk::DescriptorSetLayout descriptorSetLayout,
 		size_t imageCount,
-		const vector<shared_ptr<VkBuffer>>& uniformBuffers)
+		const std::vector<std::shared_ptr<VkBuffer>>& uniformBuffers)
 	{
-		auto descriptorSetLayouts = vector<vk::DescriptorSetLayout>(
+		auto descriptorSetLayouts = std::vector<vk::DescriptorSetLayout>(
 			imageCount, descriptorSetLayout);
 		auto descriptorSetAllocateInfo = vk::DescriptorSetAllocateInfo(
 			descriptorPool, imageCount, descriptorSetLayouts.data());
 
-		auto descriptorSets = vector<vk::DescriptorSet>(imageCount);
+		auto descriptorSets = std::vector<vk::DescriptorSet>(imageCount);
 
 		auto result = device.allocateDescriptorSets(
 			&descriptorSetAllocateInfo, descriptorSets.data());

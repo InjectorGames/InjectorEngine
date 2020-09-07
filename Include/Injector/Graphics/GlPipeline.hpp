@@ -7,30 +7,28 @@
 #include <string>
 #include <vector>
 
-namespace Injector::Graphics
+namespace Injector
 {
-	using namespace std;
-
 	class GlPipeline : public Pipeline
 	{
 	protected:
 		GLuint program;
 		GLenum drawMode;
-		vector<GlVertexAttribute> vertexAttributes;
+		std::vector<GlVertexAttribute> vertexAttributes;
 	public:
 		GlPipeline(GLenum drawMode,
-			const vector<GlVertexAttribute>& vertexAttributes);
+			const std::vector<GlVertexAttribute>& vertexAttributes);
 		virtual ~GlPipeline();
 
 		GLuint getProgram() const noexcept;
 		GLenum getDrawMode() const noexcept;
-		const vector<GlVertexAttribute>& getVertexAttributes() const noexcept;
+		const std::vector<GlVertexAttribute>& getVertexAttributes() const noexcept;
 
 		virtual void flush();
 		virtual void bind();
 
 		static bool getLinkStatus(GLuint program) noexcept;
-		static string getInfoLog(GLuint program) noexcept;
-		static GLint getUniformLocation(GLuint program, const string& name);
+		static std::string getInfoLog(GLuint program) noexcept;
+		static GLint getUniformLocation(GLuint program, const std::string& name);
 	};
 }

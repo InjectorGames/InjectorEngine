@@ -1,12 +1,12 @@
 #include "Injector/Graphics/VkMesh.hpp"
 
-namespace Injector::Graphics
+namespace Injector
 {
 	VkMesh::VkMesh(
 		size_t indexCount,
 		BufferIndex indexType,
-		const shared_ptr<VkBuffer>& _vertexBuffer,
-		const shared_ptr<VkBuffer>& _indexBuffer) :
+		const std::shared_ptr<VkBuffer>& _vertexBuffer,
+		const std::shared_ptr<VkBuffer>& _indexBuffer) :
 		Mesh(indexCount, indexType),
 		vertexBuffer(_vertexBuffer),
 		indexBuffer(_indexBuffer)
@@ -14,11 +14,11 @@ namespace Injector::Graphics
 	VkMesh::~VkMesh()
 	{}
 
-	const shared_ptr<VkBuffer>& VkMesh::getVertexBuffer() const noexcept
+	const std::shared_ptr<VkBuffer>& VkMesh::getVertexBuffer() const noexcept
 	{
 		return vertexBuffer;
 	}
-	const shared_ptr<VkBuffer>& VkMesh::getIndexBuffer() const noexcept
+	const std::shared_ptr<VkBuffer>& VkMesh::getIndexBuffer() const noexcept
 	{
 		return indexBuffer;
 	}

@@ -2,7 +2,7 @@
 #include "Injector/Mathematics/Matrix2.hpp"
 #include "Injector/Mathematics/Vector3.hpp"
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	struct Matrix3
 	{

@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-namespace Injector::Mathematics
+namespace Injector
 {
 	TransformSystem::~TransformSystem()
 	{}
@@ -103,11 +103,11 @@ namespace Injector::Mathematics
 		return transforms.size();
 	}
 
-	bool TransformSystem::addTransform(const shared_ptr<Entity>& entity) noexcept
+	bool TransformSystem::addTransform(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		return transforms.emplace(entity).second;
 	}
-	bool TransformSystem::removeTransform(const shared_ptr<Entity>& entity) noexcept
+	bool TransformSystem::removeTransform(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;
@@ -125,11 +125,11 @@ namespace Injector::Mathematics
 		transforms.clear();
 	}
 
-	bool TransformSystem::addTranslate(const shared_ptr<Entity>& entity) noexcept
+	bool TransformSystem::addTranslate(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		return translates.emplace(entity).second;
 	}
-	bool TransformSystem::removeTranslate(const shared_ptr<Entity>& entity) noexcept
+	bool TransformSystem::removeTranslate(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;
@@ -147,11 +147,11 @@ namespace Injector::Mathematics
 		translates.clear();
 	}
 
-	bool TransformSystem::addRotate(const shared_ptr<Entity>& entity) noexcept
+	bool TransformSystem::addRotate(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		return rotates.emplace(entity).second;
 	}
-	bool TransformSystem::removeRotate(const shared_ptr<Entity>& entity) noexcept
+	bool TransformSystem::removeRotate(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;
@@ -169,11 +169,11 @@ namespace Injector::Mathematics
 		rotates.clear();
 	}
 
-	bool TransformSystem::addAttach(const shared_ptr<Entity>& entity) noexcept
+	bool TransformSystem::addAttach(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		return attaches.emplace(entity).second;
 	}
-	bool TransformSystem::removeAttach(const shared_ptr<Entity>& entity) noexcept
+	bool TransformSystem::removeAttach(const std::shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;
