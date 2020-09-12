@@ -237,14 +237,23 @@ namespace Injector
 		throw GraphicsException("Not implemented window function");
 	}
 
+	std::shared_ptr<Buffer> Window::createBuffer(
+		size_t size,
+		BufferType type,
+		bool mappable,
+		const void* data)
+	{
+		throw GraphicsException("Not implemented window function");
+	}
 	std::shared_ptr<Mesh> Window::createMesh(
 		size_t indexCount,
 		BufferIndex indexType,
-		const void* vertexData,
-		size_t vertexSize,
-		const void* indexData,
-		size_t indexSize,
-		bool staticUse)
+		const std::shared_ptr<Buffer>& vertexBuffer,
+		const std::shared_ptr<Buffer>& indexBuffer)
+	{
+		throw GraphicsException("Not implemented window function");
+	}
+	std::shared_ptr<Texture> Window::createTexture()
 	{
 		throw GraphicsException("Not implemented window function");
 	}
@@ -258,67 +267,197 @@ namespace Injector
 		throw GraphicsException("Not implemented window function");
 	}
 
-	std::shared_ptr<Mesh> Window::createSquareMeshV(bool staticUse)
+	std::shared_ptr<Mesh> Window::createSquareMeshV(bool mappable)
 	{
+		auto vertexBuffer = createBuffer(
+			Primitive::squareVertices.size() * sizeof(Vector3),
+			BufferType::Vertex, mappable,
+			Primitive::squareVertices.data());
+		auto indexBuffer = createBuffer(
+			Primitive::squareIndices.size() * sizeof(Vector3),
+			BufferType::Index, mappable,
+			Primitive::squareIndices.data());
+
 		return createMesh(
 			Primitive::squareIndices.size(),
 			BufferIndex::UnsignedShort,
-			Primitive::squareVertices.data(),
-			Primitive::squareVertices.size() * sizeof(Vector3),
-			Primitive::squareIndices.data(),
-			Primitive::squareIndices.size() * sizeof(Vector3),
-			staticUse);
+			vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Mesh> Window::createSquareMeshVN(bool staticUse)
+	std::shared_ptr<Mesh> Window::createSquareMeshVN(bool mappable)
 	{
-		auto vertices = std::vector<Vector3>(
-			Primitive::squareVertices.size() + Primitive::squareNormals.size());
+		auto vertices = std::vector<float>(
+			Primitive::squareVertices.size() * 3 +
+			Primitive::squareNormals.size() * 3);
 
-		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 2)
+		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 6)
 		{
 			memcpy(&vertices[j], &Primitive::squareVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 1], &Primitive::squareNormals[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &Primitive::squareNormals[i], sizeof(Vector3));
 		}
+
+		auto vertexBuffer = createBuffer(
+			vertices.size() * sizeof(float),
+			BufferType::Vertex, mappable,
+			vertices.data());
+		auto indexBuffer = createBuffer(
+			Primitive::squareIndices.size() * sizeof(Vector3),
+			BufferType::Index, mappable,
+			Primitive::squareIndices.data());
 
 		return createMesh(
 			Primitive::squareIndices.size(),
 			BufferIndex::UnsignedShort,
-			vertices.data(),
-			vertices.size() * sizeof(Vector3),
-			Primitive::squareIndices.data(),
-			Primitive::squareIndices.size() * sizeof(Vector3),
-			staticUse);
+			vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Mesh> Window::createCubeMeshV(bool staticUse)
+	std::shared_ptr<Mesh> Window::createSquareMeshVT(bool mappable)
 	{
-		return createMesh(
-			Primitive::cubeIndices.size(),
-			BufferIndex::UnsignedShort,
-			Primitive::cubeVertices.data(),
-			Primitive::cubeVertices.size() * sizeof(Vector3),
-			Primitive::cubeIndices.data(),
-			Primitive::cubeIndices.size() * sizeof(Vector3),
-			staticUse);
-	}
-	std::shared_ptr<Mesh> Window::createCubeMeshVN(bool staticUse)
-	{
-		auto vertices = std::vector<Vector3>(
-			Primitive::cubeVertices.size() + Primitive::cubeNormals.size());
+		auto vertices = std::vector<float>(
+			Primitive::squareVertices.size() * 3 +
+			Primitive::squareTexCoords.size() * 2);
 
-		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 2)
+		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 5)
 		{
-			memcpy(&vertices[j], &Primitive::cubeVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 1], &Primitive::cubeNormals[i], sizeof(Vector3));
+			memcpy(&vertices[j], &Primitive::squareVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &Primitive::squareTexCoords[i], sizeof(Vector2));
 		}
 
+		auto vertexBuffer = createBuffer(
+			vertices.size() * sizeof(float),
+			BufferType::Vertex, mappable,
+			vertices.data());
+		auto indexBuffer = createBuffer(
+			Primitive::squareIndices.size() * sizeof(Vector3),
+			BufferType::Index, mappable,
+			Primitive::squareIndices.data());
+
+		return createMesh(
+			Primitive::squareIndices.size(),
+			BufferIndex::UnsignedShort,
+			vertexBuffer, indexBuffer);
+	}
+	std::shared_ptr<Mesh> Window::createSquareMeshVNT(bool mappable)
+	{
+		auto vertices = std::vector<float>(
+			Primitive::squareVertices.size() * 3 +
+			Primitive::squareNormals.size() * 3 +
+			Primitive::squareTexCoords.size() * 2);
+
+		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 8)
+		{
+			memcpy(&vertices[j], &Primitive::squareVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &Primitive::squareNormals[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &Primitive::squareTexCoords[i], sizeof(Vector2));
+		}
+
+		auto vertexBuffer = createBuffer(
+			vertices.size() * sizeof(float),
+			BufferType::Vertex, mappable,
+			vertices.data());
+		auto indexBuffer = createBuffer(
+			Primitive::squareIndices.size() * sizeof(Vector3),
+			BufferType::Index, mappable,
+			Primitive::squareIndices.data());
+
+		return createMesh(
+			Primitive::squareIndices.size(),
+			BufferIndex::UnsignedShort,
+			vertexBuffer, indexBuffer);
+	}
+	std::shared_ptr<Mesh> Window::createCubeMeshV(bool mappable)
+	{
+		auto vertexBuffer = createBuffer(
+			Primitive::cubeVertices.size() * sizeof(Vector3),
+			BufferType::Vertex, mappable,
+			Primitive::cubeVertices.data());
+		auto indexBuffer = createBuffer(
+			Primitive::cubeIndices.size() * sizeof(Vector3),
+			BufferType::Index, mappable,
+			Primitive::cubeIndices.data());
+
 		return createMesh(
 			Primitive::cubeIndices.size(),
 			BufferIndex::UnsignedShort,
-			vertices.data(),
-			vertices.size() * sizeof(Vector3),
-			Primitive::cubeIndices.data(),
+			vertexBuffer, indexBuffer);
+	}
+	std::shared_ptr<Mesh> Window::createCubeMeshVN(bool mappable)
+	{
+		auto vertices = std::vector<float>(
+			Primitive::cubeVertices.size() * 3 + 
+			Primitive::cubeNormals.size() * 3);
+
+		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 6)
+		{
+			memcpy(&vertices[j], &Primitive::cubeVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &Primitive::cubeNormals[i], sizeof(Vector3));
+		}
+
+		auto vertexBuffer = createBuffer(
+			vertices.size() * sizeof(float),
+			BufferType::Vertex, mappable,
+			vertices.data());
+		auto indexBuffer = createBuffer(
 			Primitive::cubeIndices.size() * sizeof(Vector3),
-			staticUse);
+			BufferType::Index, mappable,
+			Primitive::cubeIndices.data());
+
+		return createMesh(
+			Primitive::cubeIndices.size(),
+			BufferIndex::UnsignedShort,
+			vertexBuffer, indexBuffer);
+	}
+	std::shared_ptr<Mesh> Window::createCubeMeshVT(bool mappable)
+	{
+		auto vertices = std::vector<float>(
+			Primitive::cubeVertices.size() * 3 + 
+			Primitive::cubeTexCoords.size() * 2);
+
+		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 5)
+		{
+			memcpy(&vertices[j], &Primitive::cubeVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &Primitive::cubeTexCoords[i], sizeof(Vector2));
+		}
+
+		auto vertexBuffer = createBuffer(
+			vertices.size() * sizeof(float),
+			BufferType::Vertex, mappable,
+			vertices.data());
+		auto indexBuffer = createBuffer(
+			Primitive::cubeIndices.size() * sizeof(Vector3),
+			BufferType::Index, mappable,
+			Primitive::cubeIndices.data());
+
+		return createMesh(
+			Primitive::cubeIndices.size(),
+			BufferIndex::UnsignedShort,
+			vertexBuffer, indexBuffer);
+	}
+	std::shared_ptr<Mesh> Window::createCubeMeshVNT(bool mappable)
+	{
+		auto vertices = std::vector<float>(
+			Primitive::cubeVertices.size() * 3 + 
+			Primitive::cubeNormals.size() * 3 +
+			Primitive::cubeTexCoords.size() * 2);
+
+		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 8)
+		{
+			memcpy(&vertices[j], &Primitive::cubeVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &Primitive::cubeNormals[i], sizeof(Vector3));
+			memcpy(&vertices[j + 6], &Primitive::cubeTexCoords[i], sizeof(Vector2));
+		}
+
+		auto vertexBuffer = createBuffer(
+			vertices.size() * sizeof(float),
+			BufferType::Vertex, mappable,
+			vertices.data());
+		auto indexBuffer = createBuffer(
+			Primitive::cubeIndices.size() * sizeof(Vector3),
+			BufferType::Index, mappable,
+			Primitive::cubeIndices.data());
+
+		return createMesh(
+			Primitive::cubeIndices.size(),
+			BufferIndex::UnsignedShort,
+			vertexBuffer, indexBuffer);
 	}
 
 	std::shared_ptr<Window> Window::create(

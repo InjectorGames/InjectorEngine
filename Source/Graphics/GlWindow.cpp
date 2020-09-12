@@ -87,24 +87,27 @@ namespace Injector
 		return system;
 	}
 
+	std::shared_ptr<Buffer> GlWindow::createBuffer(
+		size_t size,
+		BufferType type,
+		bool mappable,
+		const void* data)
+	{
+		auto usage = mappable ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW;
+		return std::make_shared<GlBuffer>(type, size, usage, data);
+	}
 	std::shared_ptr<Mesh> GlWindow::createMesh(
 		size_t indexCount,
 		BufferIndex indexType,
-		const void* vertexData,
-		size_t vertexSize,
-		const void* indexData,
-		size_t indexSize,
-		bool staticUse)
+		const std::shared_ptr<Buffer>& vertexBuffer,
+		const std::shared_ptr<Buffer>& indexBuffer)
 	{
-		auto usage = staticUse ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
-
-		auto vertexBuffer = std::make_shared<GlBuffer>(
-			vertexSize, GL_ARRAY_BUFFER, usage, vertexData);
-		auto indexBuffer = std::make_shared<GlBuffer>(
-			indexSize, GL_ELEMENT_ARRAY_BUFFER, usage, indexData);
-
 		return std::make_shared<GlMesh>(
 			indexCount, indexType, vertexBuffer, indexBuffer);
+	}
+	std::shared_ptr<Texture> GlWindow::createTexture()
+	{
+		return nullptr;
 	}
 
 	std::shared_ptr<ColorPipeline> GlWindow::createColorPipeline()

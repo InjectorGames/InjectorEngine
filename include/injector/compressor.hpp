@@ -13,6 +13,10 @@
 #  define SET_BINARY_MODE(file)
 #endif
 
+
+// TODO:
+
+
 namespace INJECT_NAMESPACE
 {
 	class Compressor

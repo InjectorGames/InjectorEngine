@@ -13,15 +13,13 @@ namespace Injector
 
     GlDiffusePipeline::GlDiffusePipeline(
         bool gles,
-        const Vector4& _objectColor,
-        const Vector4& _ambientColor,
-        const Vector4& _lightColor,
-        const Vector3& _lightDirection) :
+        const Vector4& objectColor,
+        const Vector4& ambientColor,
+        const Vector4& lightColor,
+        const Vector3& lightDirection) :
         GlPipeline(GL_TRIANGLES, vertexAttributes),
-		objectColor(_objectColor),
-        ambientColor(_ambientColor),
-        lightColor(_lightColor),
-        lightDirection(_lightDirection.getNormalized())
+		ubo(objectColor, ambientColor, lightColor,
+			lightDirection.getNormalized())
     {
         auto vertexSource = FileStream::readAllText(
 			"resources/shaders/diffuse.vert");
@@ -47,62 +45,56 @@ namespace Injector
 
 		mvpLocation = getUniformLocation(program, "u_MVP");
 		normalLocation = getUniformLocation(program, "u_Normal");
-        objectColorLocation = getUniformLocation(program, "u_ObjectColor");
-        ambientColorLocation = getUniformLocation(program, "u_AmbientColor");
-        lightColorLocation = getUniformLocation(program, "u_LightColor");
-        lightDirectionLocation = getUniformLocation(program, "u_LightDirection");
+
+		auto uniformBlockIndex = getUniformBlockIndex(program, "FragmentBufferObject");
+		glUniformBlockBinding(program, uniformBlockIndex, 0);
+
+		uniformBuffer = std::make_shared<GlBuffer>(BufferType::Uniform,
+			sizeof(UniformBufferObject), GL_DYNAMIC_DRAW, nullptr);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniformBuffer->getBuffer());
     }
     GlDiffusePipeline::~GlDiffusePipeline()
     {}
 
     const Vector4& GlDiffusePipeline::getObjectColor() const
     {
-        return objectColor;
+        return ubo.objectColor;
     }
 	void GlDiffusePipeline::setObjectColor(const Vector4& _objectColor)
     {
-        objectColor = Vector4(_objectColor);
+        ubo.objectColor = Vector4(_objectColor);
     }
 
     const Vector4& GlDiffusePipeline::getAmbientColor() const
     {
-        return ambientColor;
+        return ubo.ambientColor;
     }
 	void GlDiffusePipeline::setAmbientColor(const Vector4& _ambientColor)
     {
-        ambientColor = Vector4(_ambientColor);
+        ubo.ambientColor = Vector4(_ambientColor);
     }
 
 	const Vector4& GlDiffusePipeline::getLightColor() const
     {
-        return lightColor;
+        return ubo.lightColor;
     }
 	void GlDiffusePipeline::setLightColor(const Vector4& _lightColor)
     {
-        lightColor = Vector4(_lightColor);
+        ubo.lightColor = Vector4(_lightColor);
     }
 
 	const Vector3& GlDiffusePipeline::getLightDirection() const
     {
-        return lightDirection;
+        return ubo.lightDirection;
     }
 	void GlDiffusePipeline::setLightDirection(const Vector3& _lightDirection)
     {
-        lightDirection = Vector3(_lightDirection.getNormalized());
+        ubo.lightDirection = _lightDirection.getNormalized();
     }
 
     void GlDiffusePipeline::flush()
 	{
-		GlPipeline::bind();
-
-		glUniform4fv(objectColorLocation, GL_ONE, 
-			reinterpret_cast<const GLfloat*>(&objectColor));
-        glUniform4fv(ambientColorLocation, GL_ONE, 
-			reinterpret_cast<const GLfloat*>(&ambientColor));
-        glUniform4fv(lightColorLocation, GL_ONE, 
-			reinterpret_cast<const GLfloat*>(&lightColor));
-        glUniform3fv(lightDirectionLocation, GL_ONE, 
-			reinterpret_cast<const GLfloat*>(&lightDirection));
+		uniformBuffer->setData(&ubo, sizeof(UniformBufferObject));
 	}
 	void GlDiffusePipeline::bind()
 	{
@@ -112,7 +104,7 @@ namespace Injector
 		glDisable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
 		glCullFace(GL_BACK); 
-		glFrontFace(GL_CW); 
+		glFrontFace(GL_CW);
 	}
 
 	void GlDiffusePipeline::setUniforms(
@@ -122,7 +114,8 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-        auto normal = model.getInversed().getTransposed().getMatrix3();
+		auto normal = model.getInversed().getTransposed().getMatrix3();
+
 		glUniformMatrix4fv(mvpLocation, GL_ONE, GL_FALSE,
 			reinterpret_cast<const GLfloat*>(&mvp));
         glUniformMatrix3fv(normalLocation, GL_ONE, GL_FALSE,

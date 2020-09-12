@@ -1,6 +1,7 @@
 #pragma once
 #include "Injector/Manager.hpp"
 #include "Injector/Graphics/Mesh.hpp"
+#include "Injector/Graphics/Texture.hpp"
 #include "Injector/Graphics/Pipeline.hpp"
 #include "Injector/Graphics/MouseButton.hpp"
 #include "Injector/Graphics/RenderSystem.hpp"
@@ -66,22 +67,29 @@ namespace Injector
 		virtual std::shared_ptr<CameraSystem> createCameraSystem();
 		virtual std::shared_ptr<RenderSystem> createRenderSystem();
 
+		virtual std::shared_ptr<Buffer> createBuffer(
+			size_t size,
+			BufferType type,
+			bool mappable,
+			const void* data);
 		virtual std::shared_ptr<Mesh> createMesh(
 			size_t indexCount,
 			BufferIndex indexType,
-			const void* vertexData,
-			size_t vertexSize,
-			const void* indexData,
-			size_t indexSize,
-			bool staticUse);
+			const std::shared_ptr<Buffer>& vertexBuffer,
+			const std::shared_ptr<Buffer>& indexBuffer);
+		virtual std::shared_ptr<Texture> createTexture();
 
 		virtual std::shared_ptr<ColorPipeline> createColorPipeline();
 		virtual std::shared_ptr<DiffusePipeline> createDiffusePipeline();
 
-		std::shared_ptr<Mesh> createSquareMeshV(bool staticUse);
-		std::shared_ptr<Mesh> createSquareMeshVN(bool staticUse);
-		std::shared_ptr<Mesh> createCubeMeshV(bool staticUse);
-		std::shared_ptr<Mesh> createCubeMeshVN(bool staticUse);
+		std::shared_ptr<Mesh> createSquareMeshV(bool mappable);
+		std::shared_ptr<Mesh> createSquareMeshVN(bool mappable);
+		std::shared_ptr<Mesh> createSquareMeshVT(bool mappable);
+		std::shared_ptr<Mesh> createSquareMeshVNT(bool mappable);
+		std::shared_ptr<Mesh> createCubeMeshV(bool mappable);
+		std::shared_ptr<Mesh> createCubeMeshVN(bool mappable);
+		std::shared_ptr<Mesh> createCubeMeshVT(bool mappable);
+		std::shared_ptr<Mesh> createCubeMeshVNT(bool mappable);
 
 		static std::shared_ptr<Window> create(
 			const std::string& title = Window::defaultTitle,

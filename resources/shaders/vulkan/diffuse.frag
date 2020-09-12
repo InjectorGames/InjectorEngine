@@ -5,10 +5,10 @@ layout(location = 0) out vec4 o_Color;
 
 layout(binding = 0) uniform FragmentBufferObject
 {
-	layout(offset = 0) vec4 objectColor;
-	layout(offset = 16) vec4 ambientColor;
-	layout(offset = 32) vec4 lightColor;
-	layout(offset = 48) vec3 lightDirection;
+	vec4 objectColor;
+	vec4 ambientColor;
+	vec4 lightColor;
+	vec3 lightDirection;
 } fbo;
 
 void main()

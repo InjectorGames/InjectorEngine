@@ -29,6 +29,8 @@ namespace Injector
 
 		static bool getLinkStatus(GLuint program) noexcept;
 		static std::string getInfoLog(GLuint program) noexcept;
+
 		static GLint getUniformLocation(GLuint program, const std::string& name);
+		static GLuint getUniformBlockIndex(GLuint program, const std::string& name);
 	};
 }

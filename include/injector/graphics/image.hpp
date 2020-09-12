@@ -1,18 +1,27 @@
 #pragma once
 #include "Injector/Mathematics/IntVector2.hpp"
+
 #include <string>
+#include <cstdint>
 
 namespace Injector
 {
 	class Image
 	{
 	protected:
-		int channelCount;
 		IntVector2 size;
-		unsigned char* data;
+		uint8_t* data;
+		int channelCount;
 	public:
+		Image(const IntVector2& size,
+			uint8_t* data,
+			int channelCount);
 		Image(const std::string& filePath,
 			int channelCount = 0);
 		virtual ~Image();
+
+		const IntVector2& getSize() const noexcept;
+		const uint8_t* getData() const noexcept;
+		int getChannelCount() const noexcept;
 	};
 }

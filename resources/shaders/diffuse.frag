@@ -1,17 +1,20 @@
 in highp vec3 f_Normal;
 out highp vec4 o_Color;
 
-uniform highp vec4 u_ObjectColor;
-uniform highp vec4 u_AmbientColor;
-uniform highp vec4 u_LightColor;
-uniform highp vec3 u_LightDirection;
+layout(std140) uniform FragmentBufferObject
+{
+    highp vec4 objectColor;
+    highp vec4 ambientColor;
+    highp vec4 lightColor;
+    highp vec3 lightDirection;
+} fbo;
 
 void main()
 {
-    vec4 ambientColor = u_ObjectColor * u_AmbientColor;
+    vec4 ambientColor = fbo.objectColor * fbo.ambientColor;
 
-    float diffuse = max(dot(f_Normal, u_LightDirection), 0.0);
-    vec4 diffuseColor =  u_LightColor * diffuse;
+    float diffuse = max(dot(f_Normal, fbo.lightDirection.xyz), 0.0);
+    vec4 diffuseColor =  fbo.lightColor * diffuse;
 
-    o_Color = (ambientColor + diffuseColor) * u_ObjectColor;
+    o_Color = (ambientColor + diffuseColor) * fbo.objectColor;
 }

@@ -52,13 +52,23 @@ namespace Injector
 		glGetProgramInfoLog(program, length, &length, infoLog.data());
 		return infoLog;
 	}
+
 	GLint GlPipeline::getUniformLocation(GLuint program, const std::string& name)
 	{
 		auto location = glGetUniformLocation(program, name.c_str());
-
+		
 		if (location == -1)
-			throw GraphicsException("Failed to get uniform location");
+			throw GraphicsException("Failed to get OpenGL uniform location");
 
 		return location;
+	}
+	GLuint GlPipeline::getUniformBlockIndex(GLuint program, const std::string& name)
+	{
+		auto index = glGetUniformBlockIndex(program, name.c_str());
+		
+		if (index == GL_INVALID_INDEX)
+			throw GraphicsException("Failed to get OpenGL uniform block index");
+
+		return index;
 	}
 }

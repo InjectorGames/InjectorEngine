@@ -1,50 +1,38 @@
 #pragma once
-#include "Injector/Graphics/BufferAccess.hpp"
+#include "Injector/Graphics/Buffer.hpp"
 #include "GL/glew.h"
 
 #include <cstdint>
 
 namespace Injector
 {
-	class GlBuffer
+	class GlBuffer : public Buffer
 	{
 	protected:
 		GLuint buffer;
-		size_t size;
-		GLenum type;
-		bool mappable;
-		bool mapped;
-		BufferAccess mapAccess;
-		size_t mapSize;
-		size_t mapOffset;
+		GLenum glType;
 	public:
-		GlBuffer(size_t size,
-			GLenum type,
+		GlBuffer(BufferType type,
+			size_t size,
 			GLenum usage,
 			const void* data);
 		virtual ~GlBuffer();
 
 		GLuint getBuffer() const noexcept;
-		size_t getSize() const noexcept;
-		GLenum getType() const noexcept;
-		bool isMappable() const noexcept;
-		bool isMapped() const noexcept;
-		BufferAccess getMapAccess() const noexcept;
-		size_t getMapSize() const noexcept;
-		size_t getMapOffset() const noexcept;
+		GLenum getGlType() const noexcept;
 
-		void bind();
-		void unbind();
+		void bind() noexcept;
+		void unbind() noexcept;
 
-		void flush(size_t size, size_t offset);
+		void* map(BufferAccess access) override;
+		void* map(BufferAccess access, size_t size, size_t offset) override;
+		void unmap() override;
 
-		void* map(BufferAccess access);
-		void* map(BufferAccess access, size_t size, size_t offset);
-		void unmap();
+		void setData(const void* data, size_t size) override;
+		void setData(const void* data, size_t size, size_t offset) override;
 
-		void setData(const void* data, size_t size);
-		void setData(const void* data, size_t size, size_t offset);
-
+		static GLenum toGlType(BufferType type);
+		static bool isGlMappable(GLenum usage);
 		static GLbitfield toGlAccess(BufferAccess access);
 	};
 }

@@ -35,6 +35,7 @@ add_subdirectory(Libraries/SDL)
 configure_file(CMake/Defines.hpp.in Injector/Defines.hpp)
 
 add_library(InjectorEngine STATIC
+	Source/Graphics/Buffer.cpp
 	Source/Graphics/CameraComponent.cpp
 	Source/Graphics/CameraSystem.cpp
 	Source/Graphics/ColorPipeline.cpp
@@ -63,7 +64,6 @@ add_library(InjectorEngine STATIC
 	Source/Graphics/VkCameraSystem.cpp
 	Source/Graphics/VkColorPipeline.cpp
 	Source/Graphics/VkDiffusePipeline.cpp
-	Source/Graphics/VkImage.cpp
 	Source/Graphics/VkMesh.cpp
 	Source/Graphics/VkPipeline.cpp
 	Source/Graphics/VkRenderSystem.cpp
@@ -83,6 +83,9 @@ add_library(InjectorEngine STATIC
 	Source/Mathematics/Matrix4.cpp
 	Source/Mathematics/Quaternion.cpp
 	Source/Mathematics/RotateComponent.cpp
+	Source/Mathematics/SizeVector2.cpp
+	Source/Mathematics/SizeVector3.cpp
+	Source/Mathematics/SizeVector4.cpp
 	Source/Mathematics/TransformComponent.cpp
 	Source/Mathematics/TransformSystem.cpp
 	Source/Mathematics/TranslateComponent.cpp

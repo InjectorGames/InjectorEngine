@@ -129,14 +129,17 @@ namespace Injector
 		std::shared_ptr<CameraSystem> createCameraSystem() override;
 		std::shared_ptr<RenderSystem> createRenderSystem() override;
 
+		std::shared_ptr<Buffer> createBuffer(
+			size_t size,
+			BufferType type,
+			bool mappable,
+			const void* data) override;
 		std::shared_ptr<Mesh> createMesh(
 			size_t indexCount,
 			BufferIndex indexType,
-			const void* vertexData,
-			size_t vertexSize,
-			const void* indexData,
-			size_t indexSize,
-			bool staticUse) override;
+			const std::shared_ptr<Buffer>& vertexBuffer,
+			const std::shared_ptr<Buffer>& indexBuffer) override;
+		std::shared_ptr<Texture> createTexture() override;
 
 		std::shared_ptr<ColorPipeline> createColorPipeline() override;
 		std::shared_ptr<DiffusePipeline> createDiffusePipeline() override;

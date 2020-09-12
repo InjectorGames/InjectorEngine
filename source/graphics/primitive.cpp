@@ -16,6 +16,13 @@ namespace Injector
 		Vector3(0.0f, 0.0f, -1.0f),
 		Vector3(0.0f, 0.0f, -1.0f),
 	};
+	const std::vector<Vector2> Primitive::squareTexCoords =
+	{
+		Vector2(0.0f, 0.0f),
+		Vector2(0.0f, 1.0f),
+		Vector2(1.0f, 1.0f),
+		Vector2(1.0f, 0.0f),
+	};
 	const std::vector<uint16_t> Primitive::squareIndices =
 	{
 		0, 1, 2, 0, 2, 3,
@@ -52,6 +59,28 @@ namespace Injector
 		Vector3(0.5f, 0.5f, 0.5f),
 		Vector3(-0.5f, 0.5f, 0.5f),
 		Vector3(-0.5f, -0.5f, 0.5f),
+	};
+	const std::vector<Vector2> Primitive::cubeTexCoords =
+	{
+		Vector2(0.0f, 0.0f),
+		Vector2(0.0f, 1.0f),
+		Vector2(1.0f, 1.0f),
+		Vector2(1.0f, 0.0f),
+
+		Vector2(0.0f, 0.0f),
+		Vector2(0.0f, 1.0f),
+		Vector2(1.0f, 1.0f),
+		Vector2(1.0f, 0.0f),
+
+		Vector2(0.0f, 0.0f),
+		Vector2(0.0f, 1.0f),
+		Vector2(1.0f, 1.0f),
+		Vector2(1.0f, 0.0f),
+
+		Vector2(0.0f, 0.0f),
+		Vector2(0.0f, 1.0f),
+		Vector2(1.0f, 1.0f),
+		Vector2(1.0f, 0.0f),
 	};
 	const std::vector<Vector3> Primitive::cubeNormals =
 	{

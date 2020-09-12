@@ -1,5 +1,7 @@
 #include "Injector/Mathematics/IntVector4.hpp"
+
 #include <cmath>
+#include <cstdint>
 
 namespace Injector
 {
@@ -336,4 +338,6 @@ namespace Injector
 	const IntVector4 IntVector4::zero = IntVector4(0);
 	const IntVector4 IntVector4::minusOne = IntVector4(-1);
 	const IntVector4 IntVector4::one = IntVector4(1);
+	const IntVector4 IntVector4::minimum = IntVector4(INT32_MIN);
+	const IntVector4 IntVector4::maximum = IntVector4(INT32_MAX);
 }

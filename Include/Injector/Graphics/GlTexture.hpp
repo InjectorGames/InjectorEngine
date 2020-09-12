@@ -1,10 +1,35 @@
 #pragma once
 #include "Injector/Graphics/Texture.hpp"
+#include "Injector/Graphics/Image.hpp"
 
-namespace Injector::Graphics
+#include "GL/glew.h"
+
+namespace Injector
 {
     class GlTexture : public Texture
     {
-        
+    protected:
+        GLuint texture;
+        GLenum glType;
+    public:
+        GlTexture(TextureType type,
+            IntVector3 size,
+            TextureFormat format,
+            TextureFilter minFilter,
+            TextureFilter magFilter,
+            TextureWrap wrapU,
+            TextureWrap wrapV,
+            TextureWrap wrapW,
+            bool useMipmap,
+            const std::shared_ptr<Image>& image);
+        virtual ~GlTexture();
+
+        void bind() noexcept;
+	    void unbind() noexcept;
+
+        static GLenum toGlType(TextureType type);
+        static GLenum toGlFormat(TextureFormat format);
+        static GLint toGlFilter(TextureFilter filter);
+        static GLint toGlWrap(TextureWrap wrap);
     };
 }

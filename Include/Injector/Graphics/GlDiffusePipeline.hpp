@@ -1,23 +1,36 @@
 #pragma once
 #include "Injector/Graphics/GlPipeline.hpp"
 #include "Injector/Graphics/DiffusePipeline.hpp"
+#include "Injector/Graphics/GlBuffer.hpp"
 
 namespace Injector
 {
     class GlDiffusePipeline : public GlPipeline, public DiffusePipeline
     {
+    public:
+        struct UniformBufferObject
+		{
+			Vector4 objectColor;
+			Vector4 ambientColor;
+			Vector4 lightColor;
+			alignas(16) Vector3 lightDirection;
+
+			UniformBufferObject(
+				const Vector4& _objectColor,
+				const Vector4& _ambientColor,
+				const Vector4& _lightColor,
+				const Vector3& _lightDirection) :
+				objectColor(_objectColor),
+				ambientColor(_ambientColor),
+				lightColor(_lightColor),
+				lightDirection(_lightDirection)
+			{}
+		};
     protected:
         GLint mvpLocation;
         GLint normalLocation;
-		GLint objectColorLocation;
-        GLint ambientColorLocation;
-        GLint lightColorLocation;
-        GLint lightDirectionLocation;
-
-        Vector4 objectColor;
-        Vector4 ambientColor;
-        Vector4 lightColor;
-        Vector3 lightDirection;
+        std::shared_ptr<GlBuffer> uniformBuffer;
+        UniformBufferObject ubo;
     public:
         static const std::vector<GlVertexAttribute> vertexAttributes;
 

@@ -75,5 +75,7 @@ namespace Injector
 		static const IntVector3 zero;
 		static const IntVector3 minusOne;
 		static const IntVector3 one;
+		static const IntVector3 minimum;
+		static const IntVector3 maximum;
 	};
 }

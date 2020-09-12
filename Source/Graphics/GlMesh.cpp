@@ -1,26 +1,22 @@
 #include "Injector/Graphics/GlMesh.hpp"
-#include <stdexcept>
+#include "Injector/Graphics/GraphicsException.hpp"
 
 namespace Injector
 {
 	GlMesh::GlMesh(
 		size_t indexCount,
 		BufferIndex indexType,
-		const std::shared_ptr<GlBuffer>& _vertexBuffer,
-		const std::shared_ptr<GlBuffer>& _indexBuffer) :
-		Mesh(indexCount, indexType),
-		vertexBuffer(_vertexBuffer),
-		indexBuffer(_indexBuffer)
+		const std::shared_ptr<Buffer>& vertexBuffer,
+		const std::shared_ptr<Buffer>& indexBuffer) :
+		Mesh(indexCount, indexType, vertexBuffer, indexBuffer)
 	{
+		if(!std::dynamic_pointer_cast<GlBuffer>(vertexBuffer) ||
+			!std::dynamic_pointer_cast<GlBuffer>(indexBuffer))
+		{
+			throw GraphicsException("Failed to cast OpenGL buffer");
+		}	
+
 		glGenVertexArrays(GL_ONE, &vertexArray);
-
-		glBindVertexArray(vertexArray);
-		_vertexBuffer->bind();
-		_indexBuffer->bind();
-
-		glBindVertexArray(GL_ZERO);
-		_vertexBuffer->unbind();
-		_indexBuffer->unbind();
 	}
 	GlMesh::~GlMesh()
 	{
@@ -31,21 +27,16 @@ namespace Injector
 	{
 		return vertexArray;
 	}
-	const std::shared_ptr<GlBuffer>& GlMesh::getVertexBuffer() const noexcept
-	{
-		return vertexBuffer;
-	}
-	const std::shared_ptr<GlBuffer>& GlMesh::getIndexBuffer() const noexcept
-	{
-		return indexBuffer;
-	}
 
 	void GlMesh::draw(GLuint mode, 
 		const std::vector<GlVertexAttribute>& vertexAttributes) noexcept
 	{
+		auto glVertexBuffer = std::dynamic_pointer_cast<GlBuffer>(vertexBuffer);
+		auto glIndexBuffer = std::dynamic_pointer_cast<GlBuffer>(indexBuffer);
+
 		glBindVertexArray(vertexArray);
-		vertexBuffer->bind();
-		indexBuffer->bind();
+		glVertexBuffer->bind();
+		glIndexBuffer->bind();
 
 		for (auto& vertexAttribute : vertexAttributes)
 		{
@@ -59,25 +50,22 @@ namespace Injector
 		glDrawElements(mode, static_cast<GLsizei>(indexCount), index, nullptr);
 
 		glBindVertexArray(GL_ZERO);
-		vertexBuffer->unbind();
-		indexBuffer->unbind();
+		glVertexBuffer->unbind();
+		glIndexBuffer->unbind();
 	}
 
-	void GlMesh::setVertexData(void* data, size_t size)
+	void GlMesh::setVertexBuffer(const std::shared_ptr<Buffer>& _vertexBuffer)
 	{
-		vertexBuffer->setData(data, size);
-	}
-	void GlMesh::setVertexData(void* data, size_t size, size_t offset)
-	{
-		vertexBuffer->setData(data, size, offset);
-	}
+		if(!std::dynamic_pointer_cast<GlBuffer>(_vertexBuffer))
+			throw GraphicsException("Failed to cast OpenGL vertex buffer");
 
-	void GlMesh::setIndexData(void* data, size_t size)
-	{
-		indexBuffer->setData(data, size);
+		vertexBuffer = std::shared_ptr<Buffer>(_vertexBuffer);
 	}
-	void GlMesh::setIndexData(void* data, size_t size, size_t offset)
+	void GlMesh::setIndexBuffer(const std::shared_ptr<Buffer>& _indexBuffer)
 	{
-		indexBuffer->setData(data, size, offset);
+		if(!std::dynamic_pointer_cast<GlBuffer>(_indexBuffer))
+			throw GraphicsException("Failed to cast OpenGL index buffer");
+
+		indexBuffer = std::shared_ptr<Buffer>(_indexBuffer);
 	}
 }

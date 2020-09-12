@@ -5,27 +5,31 @@ namespace Injector
 {
 	Mesh::Mesh(
 		size_t _indexCount,
-		BufferIndex _indexType) :
+		BufferIndex _indexType,
+		const std::shared_ptr<Buffer>& _vertexBuffer,
+		const std::shared_ptr<Buffer>& _indexBuffer) :
 		indexCount(_indexCount),
-		indexType(_indexType)
+		indexType(_indexType),
+		vertexBuffer(_vertexBuffer),
+		indexBuffer(_indexBuffer)
 	{}
 	Mesh::~Mesh()
 	{}
 
-	void Mesh::setVertexData(void* data, size_t size)
+	const std::shared_ptr<Buffer>& Mesh::getVertexBuffer() const noexcept
 	{
-		throw GraphicsException("Not implemented mesh function");
+		return vertexBuffer;
 	}
-	void Mesh::setVertexData(void* data, size_t size, size_t offset)
+	const std::shared_ptr<Buffer>& Mesh::getIndexBuffer() const noexcept
 	{
-		throw GraphicsException("Not implemented mesh function");
+		return indexBuffer;
 	}
 
-	void Mesh::setIndexData(void* data, size_t size)
+	void Mesh::setVertexBuffer(const std::shared_ptr<Buffer>& vertexBuffers)
 	{
 		throw GraphicsException("Not implemented mesh function");
 	}
-	void Mesh::setIndexData(void* data, size_t size, size_t offset)
+	void Mesh::setIndexBuffer(const std::shared_ptr<Buffer>& indexBuffer)
 	{
 		throw GraphicsException("Not implemented mesh function");
 	}

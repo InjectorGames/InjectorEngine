@@ -5,21 +5,18 @@
 namespace Injector
 {
 	VkBuffer::VkBuffer(
+		BufferType type,
+		size_t size,
 		VmaAllocator _allocator,
-		size_t _size,
-		vk::BufferUsageFlags type,
+		vk::BufferUsageFlags usageFlags,
 		VmaMemoryUsage usage) :
-		allocator(_allocator),
-		size(_size),
-		mapped(false),
-		mapAccess(),
-		mapSize(),
-		mapOffset()
+		Buffer(type, size, isVkMappable(usage)),
+		allocator(_allocator)
 	{
 		VkBufferCreateInfo bufferCreateInfo = {};
 		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		bufferCreateInfo.size = size;
-		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(type);
+		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(toVkType(type) | usageFlags);
 
 		VmaAllocationCreateInfo allocationCreateInfo = {};
 		allocationCreateInfo.flags = VMA_ALLOCATION_CREATE_WITHIN_BUDGET_BIT;
@@ -29,25 +26,18 @@ namespace Injector
 		VkBuffer_T* bufferHandle;
 		allocation = nullptr;
 
-		VmaAllocationInfo allocationInfo;
-
 		auto result = vmaCreateBuffer(
 			_allocator,
 			&bufferCreateInfo,
 			&allocationCreateInfo,
 			&bufferHandle,
 			&allocation,
-			&allocationInfo);
+			nullptr);
 
 		if(result != VK_SUCCESS)
 			throw GraphicsException("Failed to create Vulkan buffer");
 
 		buffer = vk::Buffer(bufferHandle);
-
-		mappable =
-			usage == VMA_MEMORY_USAGE_CPU_ONLY ||
-			usage == VMA_MEMORY_USAGE_CPU_TO_GPU ||
-			usage == VMA_MEMORY_USAGE_GPU_TO_CPU;
 	}
 	VkBuffer::~VkBuffer()
 	{
@@ -66,30 +56,6 @@ namespace Injector
 	{
 		return allocation;
 	}
-	size_t VkBuffer::getSize() const noexcept
-	{
-		return size;
-	}
-	bool VkBuffer::isMappable() const noexcept
-	{
-		return mappable;
-	}
-	bool VkBuffer::isMapped() const noexcept
-	{
-		return mapped;
-	}
-	BufferAccess VkBuffer::getMapAccess() const noexcept
-	{
-		return mapAccess;
-	}
-	size_t VkBuffer::getMapSize() const noexcept
-	{
-		return mapSize;
-	}
-	size_t VkBuffer::getMapOffset() const noexcept
-	{
-		return mapOffset;
-	}
 
 	void VkBuffer::invalidate(size_t _size, size_t offset)
 	{
@@ -106,11 +72,7 @@ namespace Injector
 
 	void* VkBuffer::map(BufferAccess access)
 	{
-		if (!mappable)
-			throw GraphicsException("Failed to map Vulkan buffer, not mappable");
-		if (mapped)
-			throw GraphicsException("Failed to map Vulkan buffer, already mapped");
-
+		Buffer::map(access);
 		void* mappedData;
 
 		auto result = vmaMapMemory(allocator, allocation, &mappedData);
@@ -120,22 +82,11 @@ namespace Injector
 		if (access == BufferAccess::ReadOnly || access == BufferAccess::ReadWrite)
 			invalidate(size, 0);
 
-		mapped = true;
-		mapAccess = access;
-		mapSize = size;
-		mapOffset = 0;
-
 		return mappedData;
 	}
-	void* VkBuffer::map(BufferAccess access, size_t _size, size_t offset)
+	void* VkBuffer::map(BufferAccess access, size_t size, size_t offset)
 	{
-		if (!mappable)
-			throw GraphicsException("Failed to map Vulkan buffer, not mappable");
-		if (mapped)
-			throw GraphicsException("Failed to map Vulkan buffer, already mapped");
-		if (_size + offset > size)
-			throw GraphicsException("Failed to map Vulkan buffer, out of range");
-
+		Buffer::map(access);
 		void* mappedData;
 
 		auto result = vmaMapMemory(allocator, allocation, &mappedData);
@@ -143,19 +94,13 @@ namespace Injector
 			throw GraphicsException("Failed to map Vulkan buffer");
 
 		if (access == BufferAccess::ReadOnly || access == BufferAccess::ReadWrite)
-			invalidate(_size, offset);
-
-		mapped = true;
-		mapAccess = access;
-		mapSize = _size;
-		mapOffset = offset;
+			invalidate(size, offset);
 
 		return mappedData;
 	}
 	void VkBuffer::unmap()
 	{
-		if (!mapped)
-			throw GraphicsException("Failed to unmap Vulkan buffer, not mapped");
+		Buffer::unmap();
 
 		if (mapAccess == BufferAccess::WriteOnly || mapAccess == BufferAccess::ReadWrite)
 			flush(mapSize, mapOffset);
@@ -204,5 +149,39 @@ namespace Injector
 
 		flush(_size, offset);
 		vmaUnmapMemory(allocator, allocation);
+	}
+
+	vk::BufferUsageFlagBits VkBuffer::toVkType(BufferType type)
+	{
+		switch (type)
+		{
+		case BufferType::UniformTexel:
+			return vk::BufferUsageFlagBits::eUniformTexelBuffer;
+		case BufferType::StorageTexel:
+			return vk::BufferUsageFlagBits::eStorageTexelBuffer;
+		case BufferType::Uniform:
+			return vk::BufferUsageFlagBits::eUniformBuffer;
+		case BufferType::Storage:
+			return vk::BufferUsageFlagBits::eStorageBuffer;
+		case BufferType::Index:
+			return vk::BufferUsageFlagBits::eIndexBuffer;
+		case BufferType::Vertex:
+			return vk::BufferUsageFlagBits::eVertexBuffer;
+		case BufferType::Indirect:
+			return vk::BufferUsageFlagBits::eIndirectBuffer;
+		case BufferType::TransformFeedback:
+			return vk::BufferUsageFlagBits::eTransformFeedbackBufferEXT;
+		case BufferType::TransformFeedbackCounter:
+			return vk::BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT;
+		default:
+			throw GraphicsException("Unsupported Vulkan buffer type");
+		}
+	}
+	bool VkBuffer::isVkMappable(VmaMemoryUsage usage)
+	{
+		return 
+			usage == VMA_MEMORY_USAGE_CPU_ONLY ||
+			usage == VMA_MEMORY_USAGE_CPU_TO_GPU ||
+			usage == VMA_MEMORY_USAGE_GPU_TO_CPU;
 	}
 }

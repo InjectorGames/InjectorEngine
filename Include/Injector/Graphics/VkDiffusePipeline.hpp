@@ -16,7 +16,7 @@ namespace Injector
 			Vector4 objectColor;
 			Vector4 ambientColor;
 			Vector4 lightColor;
-			Vector3 lightDirection;
+			alignas(16) Vector3 lightDirection;
 
 			UniformBufferObject(
 				const Vector4& _objectColor,

@@ -4,27 +4,17 @@
 namespace Injector
 {
 	GlBuffer::GlBuffer(
-		size_t _size,
-		GLenum _type,
+		BufferType type,
+		size_t size,
 		GLenum usage,
 		const void* data) :
-		size(_size),
-		type(_type),
-		mapped(false),
-		mapAccess(),
-		mapSize(),
-		mapOffset()
+		Buffer(type, size, isGlMappable(usage)),
+		glType(toGlType(type))
 	{
 		glGenBuffers(GL_ONE, &buffer);
-		glBindBuffer(_type, buffer);
-		glBufferData(type, static_cast<GLsizeiptr>(size), data, usage);
-		glBindBuffer(type, GL_ZERO);
-
-		mappable =
-			usage == GL_DYNAMIC_DRAW ||
-			usage == GL_DYNAMIC_READ ||
-			usage == GL_STREAM_DRAW || 
-			usage == GL_STREAM_READ;
+		glBindBuffer(glType, buffer);
+		glBufferData(glType, static_cast<GLsizeiptr>(size), data, usage);
+		glBindBuffer(glType, GL_ZERO);
 	}
 	GlBuffer::~GlBuffer()
 	{
@@ -35,116 +25,64 @@ namespace Injector
 	{
 		return buffer;
 	}
-	size_t GlBuffer::getSize() const noexcept
+	GLenum GlBuffer::getGlType() const noexcept
 	{
-		return size;
-	}
-	GLenum GlBuffer::getType() const noexcept
-	{
-		return type;
-	}
-	bool GlBuffer::isMappable() const noexcept
-	{
-		return mappable;
-	}
-	bool GlBuffer::isMapped() const noexcept
-	{
-		return mapped;
-	}
-	BufferAccess GlBuffer::getMapAccess() const noexcept
-	{
-		return mapAccess;
-	}
-	size_t GlBuffer::getMapSize() const noexcept
-	{
-		return mapSize;
-	}
-	size_t GlBuffer::getMapOffset() const noexcept
-	{
-		return mapOffset;
+		return glType;
 	}
 
-	void GlBuffer::bind()
+	void GlBuffer::bind() noexcept
 	{
-		glBindBuffer(type, buffer);
+		glBindBuffer(glType, buffer);
 	}
-	void GlBuffer::unbind()
+	void GlBuffer::unbind() noexcept
 	{
-		glBindBuffer(type, GL_ZERO);
-	}
-
-	void GlBuffer::flush(size_t size, size_t offset)
-	{
-		glFlushMappedBufferRange(type,
-			static_cast<GLintptr>(offset),
-			static_cast<GLsizeiptr>(size));
+		glBindBuffer(glType, GL_ZERO);
 	}
 
 	void* GlBuffer::map(BufferAccess access)
 	{
-		if (!mappable)
-			throw GraphicsException("Failed to map OpenGL buffer, not mappable");
-		if (mapped)
-			throw GraphicsException("Failed to map OpenGL buffer, already mapped");
+		Buffer::map(access);
+		glBindBuffer(glType, buffer);
 
-		glBindBuffer(type, buffer);
-
-		auto mappedData = glMapBufferRange(type, 0,
+		auto mappedData = glMapBufferRange(glType, 0,
 			static_cast<GLsizeiptr>(size), toGlAccess(access));
 
 		if (!mappedData)
 			throw GraphicsException("Failed to map OpenGL buffer");
 
-		glBindBuffer(type, GL_ZERO);
-
-		mapped = true;
-		mapAccess = access;
-		mapSize = size;
-		mapOffset = 0;
-
+		glBindBuffer(glType, GL_ZERO);
 		return mappedData;
 	}
-	void* GlBuffer::map(BufferAccess access, size_t _size, size_t offset)
+	void* GlBuffer::map(BufferAccess access, size_t size, size_t offset)
 	{
-		if (!mappable)
-			throw GraphicsException("Failed to map OpenGL buffer, not mappable");
-		if (mapped)
-			throw GraphicsException("Failed to map OpenGL buffer, already mapped");
-		if (_size + offset > size)
-			throw GraphicsException("Failed to map OpenGL buffer, out of range");
+		Buffer::map(access, size, offset);
+		glBindBuffer(glType, buffer);
 
-		glBindBuffer(type, buffer);
-
-		auto mappedData = glMapBufferRange(type, static_cast<GLintptr>(offset),
+		auto mappedData = glMapBufferRange(glType, static_cast<GLintptr>(offset),
 			static_cast<GLsizeiptr>(size), toGlAccess(access));
 
 		if (!mappedData)
 			throw GraphicsException("Failed to map OpenGL buffer");
 
-		glBindBuffer(type, GL_ZERO);
-
-		mapped = true;
-		mapAccess = access;
-		mapSize = _size;
-		mapOffset = offset;
-
+		glBindBuffer(glType, GL_ZERO);
 		return mappedData;
 	}
 	void GlBuffer::unmap()
 	{
-		if (!mapped)
-			throw GraphicsException("Failed to unmap OpenGL buffer, not mapped");
-
-		glBindBuffer(type, buffer);
+		Buffer::unmap();
+		glBindBuffer(glType, buffer);
 
 		if (mapAccess == BufferAccess::WriteOnly || mapAccess == BufferAccess::ReadWrite)
-			flush(mapSize, mapOffset);
+		{
+			glFlushMappedBufferRange(glType,
+				static_cast<GLintptr>(mapSize),
+				static_cast<GLsizeiptr>(mapOffset));
+		}
 		
-		if(glUnmapBuffer(type) == GL_FALSE)
+		if(glUnmapBuffer(glType) == GL_FALSE)
 			throw GraphicsException("Failed to unmap OpenGL buffer");
 
-		glBindBuffer(type, GL_ZERO);
-		mapped = false;
+		glBindBuffer(glType, GL_ZERO);
 	}
 
 	void GlBuffer::setData(const void* data, size_t _size)
@@ -156,9 +94,9 @@ namespace Injector
 		if (_size > size)
 			throw GraphicsException("Failed to map OpenGL buffer, out of range");
 
-		glBindBuffer(type, buffer);
-		glBufferSubData(type, 0, static_cast<GLsizeiptr>(_size), data);
-		glBindBuffer(type, GL_ZERO);
+		glBindBuffer(glType, buffer);
+		glBufferSubData(glType, 0, static_cast<GLsizeiptr>(_size), data);
+		glBindBuffer(glType, GL_ZERO);
 	}
 	void GlBuffer::setData(const void* data, size_t _size, size_t offset)
 	{
@@ -169,12 +107,36 @@ namespace Injector
 		if (_size + offset > size)
 			throw GraphicsException("Failed to map OpenGL buffer, out of range");
 
-		glBindBuffer(type, buffer);
-		glBufferSubData(type, static_cast<GLintptr>(offset),
+		glBindBuffer(glType, buffer);
+		glBufferSubData(glType, static_cast<GLintptr>(offset),
 			static_cast<GLsizeiptr>(_size), data);
-		glBindBuffer(type, GL_ZERO);
+		glBindBuffer(glType, GL_ZERO);
 	}
 
+	GLenum GlBuffer::toGlType(BufferType type)
+	{
+		switch (type)
+		{
+		case BufferType::Uniform:
+			return GL_UNIFORM_BUFFER;
+		case BufferType::Index:
+			return GL_ELEMENT_ARRAY_BUFFER;
+		case BufferType::Vertex:
+			return GL_ARRAY_BUFFER;
+		case BufferType::TransformFeedback:
+			return GL_TRANSFORM_FEEDBACK_BUFFER;
+		default:
+			throw GraphicsException("Unsupported OpenGL buffer type");
+		}
+	}
+	bool GlBuffer::isGlMappable(GLenum usage)
+	{
+		return
+			usage == GL_DYNAMIC_DRAW ||
+			usage == GL_DYNAMIC_READ ||
+			usage == GL_STREAM_DRAW || 
+			usage == GL_STREAM_READ;
+	}
 	GLbitfield GlBuffer::toGlAccess(BufferAccess access)
 	{
 		if (access == BufferAccess::ReadOnly)

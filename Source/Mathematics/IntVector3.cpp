@@ -1,5 +1,7 @@
 #include "Injector/Mathematics/IntVector3.hpp"
+
 #include <cmath>
+#include <cstdint>
 
 namespace Injector
 {
@@ -318,4 +320,6 @@ namespace Injector
 	const IntVector3 IntVector3::zero = IntVector3(0);
 	const IntVector3 IntVector3::minusOne = IntVector3(-1);
 	const IntVector3 IntVector3::one = IntVector3(1);
+	const IntVector3 IntVector3::minimum = IntVector3(INT32_MIN);
+	const IntVector3 IntVector3::maximum = IntVector3(INT32_MAX);
 }

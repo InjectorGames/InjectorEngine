@@ -1004,46 +1004,34 @@ namespace Injector
 		return system;
 	}
 
-	std::shared_ptr<Mesh> VkWindow::createMesh(
-		size_t indexCount,
-		BufferIndex indexType,
-		const void* vertexData,
-		size_t vertexSize,
-		const void* indexData,
-		size_t indexSize,
-		bool staticUse)
+	std::shared_ptr<Buffer> VkWindow::createBuffer(
+		size_t size,
+		BufferType type,
+		bool mappable,
+		const void* data)
 	{
-		std::shared_ptr<VkBuffer> vertexBuffer;
-		std::shared_ptr<VkBuffer> indexBuffer;
+		std::shared_ptr<VkBuffer> buffer;
 
-		if (staticUse)
+		if(mappable)
 		{
-			vertexBuffer = std::make_shared<VkBuffer>(
-				memoryAllocator,
-				vertexSize,
-				vk::BufferUsageFlagBits::eVertexBuffer |
-				vk::BufferUsageFlagBits::eTransferDst,
-				VMA_MEMORY_USAGE_GPU_ONLY);
-			indexBuffer = std::make_shared<VkBuffer>(
-				memoryAllocator,
-				indexSize,
-				vk::BufferUsageFlagBits::eIndexBuffer |
+			buffer = std::make_shared<VkBuffer>(
+				type, size, memoryAllocator,
+				static_cast<vk::BufferUsageFlags>(0),
+				VMA_MEMORY_USAGE_CPU_TO_GPU);
+			buffer->setData(data, size);
+		}
+		else
+		{
+			buffer = std::make_shared<VkBuffer>(
+				type, size, memoryAllocator,
 				vk::BufferUsageFlagBits::eTransferDst,
 				VMA_MEMORY_USAGE_GPU_ONLY);
 
-			auto vertexStagingBuffer = VkBuffer(
-				memoryAllocator,
-				vertexSize,
+			auto stagingBuffer = VkBuffer(
+				type, size, memoryAllocator,
 				vk::BufferUsageFlagBits::eTransferSrc,
 				VMA_MEMORY_USAGE_CPU_ONLY);
-			vertexStagingBuffer.setData(vertexData, vertexSize);
-
-			auto indexStagingBuffer = VkBuffer(
-				memoryAllocator,
-				vertexSize,
-				vk::BufferUsageFlagBits::eTransferSrc,
-				VMA_MEMORY_USAGE_CPU_ONLY);
-			indexStagingBuffer.setData(indexData, indexSize);
+			stagingBuffer.setData(data, size);
 
 			vk::CommandBuffer commandBuffer;
 
@@ -1059,13 +1047,9 @@ namespace Injector
 				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 			commandBuffer.begin(commandBufferBeginInfo);
 
-			auto bufferCopy = vk::BufferCopy(0, 0, vertexSize);
+			auto bufferCopy = vk::BufferCopy(0, 0, size);
 			commandBuffer.copyBuffer(
-				vertexStagingBuffer.getBuffer(), vertexBuffer->getBuffer(), 1, &bufferCopy);
-
-			bufferCopy = vk::BufferCopy(0, 0, indexSize);
-			commandBuffer.copyBuffer(
-				indexStagingBuffer.getBuffer(), indexBuffer->getBuffer(), 1, &bufferCopy);
+				stagingBuffer.getBuffer(), buffer->getBuffer(), 1, &bufferCopy);
 
 			commandBuffer.end();
 
@@ -1075,25 +1059,21 @@ namespace Injector
 			graphicsQueue.waitIdle();
 			device.freeCommandBuffers(transferCommandPool, 1, &commandBuffer);
 		}
-		else
-		{
-			vertexBuffer = std::make_shared<VkBuffer>(
-				memoryAllocator,
-				vertexSize,
-				vk::BufferUsageFlagBits::eVertexBuffer,
-				VMA_MEMORY_USAGE_CPU_TO_GPU);
-			vertexBuffer->setData(vertexData, vertexSize);
 
-			indexBuffer = std::make_shared<VkBuffer>(
-				memoryAllocator,
-				indexSize,
-				vk::BufferUsageFlagBits::eVertexBuffer,
-				VMA_MEMORY_USAGE_CPU_TO_GPU);
-			indexBuffer->setData(indexData, indexSize);
-		}
-
+		return buffer;
+	}
+	std::shared_ptr<Mesh> VkWindow::createMesh(
+		size_t indexCount,
+		BufferIndex indexType,
+		const std::shared_ptr<Buffer>& vertexBuffer,
+		const std::shared_ptr<Buffer>& indexBuffer)
+	{
 		return std::make_shared<VkMesh>(
 			indexCount, indexType, vertexBuffer, indexBuffer);
+	}
+	std::shared_ptr<Texture> VkWindow::createTexture()
+	{
+		throw GraphicsException("Not implemented Vulkan window function");
 	}
 
 	std::shared_ptr<ColorPipeline> VkWindow::createColorPipeline()
