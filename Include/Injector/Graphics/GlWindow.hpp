@@ -40,7 +40,17 @@ namespace Injector
 			BufferIndex indexType,
 			const std::shared_ptr<Buffer>& vertexBuffer,
 			const std::shared_ptr<Buffer>& indexBuffer) override;
-		std::shared_ptr<Texture> createTexture() override;
+		std::shared_ptr<Texture> createTexture(
+			TextureType type,
+        	IntVector3 size,
+       		TextureFormat format,
+        	TextureFilter minFilter,
+    		TextureFilter magFilter,
+    		TextureWrap wrapU,
+        	TextureWrap wrapV,
+        	TextureWrap wrapW,
+        	bool useMipmap,
+			const std::shared_ptr<Image>& image) override;
 
 		std::shared_ptr<ColorPipeline> createColorPipeline() override;
 		std::shared_ptr<ColorPipeline> createColColorPipeline() override;

@@ -139,7 +139,6 @@ namespace Injector
 			BufferIndex indexType,
 			const std::shared_ptr<Buffer>& vertexBuffer,
 			const std::shared_ptr<Buffer>& indexBuffer) override;
-		std::shared_ptr<Texture> createTexture() override;
 
 		std::shared_ptr<ColorPipeline> createColorPipeline() override;
 		std::shared_ptr<DiffusePipeline> createDiffusePipeline() override;

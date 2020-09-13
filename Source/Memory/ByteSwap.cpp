@@ -1,34 +1,29 @@
 #include "Injector/Memory/ByteSwap.hpp"
+#include "Injector/Defines.hpp"
 
-// TODO: get these defines from CMake
-
-#if defined(_MSC_VER) && ( !defined(__clang__) || defined(__c2__) )
-
-#include <cstdlib>
-#define BYTE_SWAP_16(x) _byteswap_ushort(x)
-#define BYTE_SWAP_32(x) _byteswap_ulong(x)
-#define BYTE_SWAP_64(x) _byteswap_uint64(x)
-
-#elif (defined(__clang__) && __has_builtin(__builtin_bswap32) && __has_builtin(__builtin_bswap64)) \
-	|| (defined(__GNUC__ ) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)))
-
-#if (defined(__clang__) && __has_builtin(__builtin_bswap16)) \
-	|| (defined(__GNUC__) &&(__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)))
-#define BYTE_SWAP_16(x) __builtin_bswap16(x)
+#if INJECTOR_SYSTEM_LINUX
+	#include <byteswap.h>
+	#define BYTE_SWAP_16(x) bswap_16(x)
+	#define BYTE_SWAP_32(x) bswap_32(x)
+	#define BYTE_SWAP_64(x) bswap_64(x)
+#elif INJECTOR_SYSTEM_WINOWS
+	#define BYTE_SWAP_16(x) _byteswap_ushort(x)
+	#define BYTE_SWAP_32(x) _byteswap_ulong(x)
+	#define BYTE_SWAP_64(x) _byteswap_uint64(x)
+#elif INJECTOR_SYSTEM_MACOS
+	#define BYTE_SWAP_16(x) __builtin_bswap16(x)
+	#define BYTE_SWAP_32(x) __builtin_bswap32(x)
+	#define BYTE_SWAP_64(x) __builtin_bswap64(x)
 #else
-#define BYTE_SWAP_16(x) __builtin_bswap32((x) << 16)
+	#error Failed to detect OS
 #endif
 
-#define BYTE_SWAP_32(x) __builtin_bswap32(x)
-#define BYTE_SWAP_64(x) __builtin_bswap64(x)
-
-#elif defined(__linux__)
-
-#include <byteswap.h>
-#define BYTE_SWAP_16(x) bswap_16(x)
-#define BYTE_SWAP_32(x) bswap_32(x)
-#define BYTE_SWAP_64(x) bswap_64(x)
-
+#if INJECTOR_SYSTEM_32
+	#define BYTE_SWAP_SIZE(x) BYTE_SWAP_32(x)
+#elif INJECTOR_SYSTEM_64
+	#define BYTE_SWAP_SIZE(x) BYTE_SWAP_64(x)
+#else
+	#error Failed to detect architecture
 #endif
 
 namespace Injector
@@ -59,6 +54,11 @@ namespace Injector
 	{
 		auto result = BYTE_SWAP_64(*reinterpret_cast<uint64_t*>(&value));
 		return *reinterpret_cast<int64_t*>(&result);
+	}
+	size_t ByteSwap::swapEndian(size_t value) noexcept
+	{
+		auto result = BYTE_SWAP_SIZE(*reinterpret_cast<uint64_t*>(&value));
+		return *reinterpret_cast<size_t*>(&result);
 	}
 	float ByteSwap::swapEndian(float value) noexcept
 	{
@@ -112,6 +112,14 @@ namespace Injector
 #endif
 	}
 	int64_t ByteSwap::swapBigEndian(int64_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return value;
+#else
+		return swapEndian(value);
+#endif
+	}
+	size_t ByteSwap::swapBigEndian(size_t value) noexcept
 	{
 #if INJECTOR_BIG_ENDIAN
 		return value;
@@ -177,6 +185,14 @@ namespace Injector
 #endif
 	}
 	int64_t ByteSwap::swapLittleEndian(int64_t value) noexcept
+	{
+#if INJECTOR_BIG_ENDIAN
+		return swapEndian(value);
+#else
+		return value;
+#endif
+	}
+	size_t ByteSwap::swapLittleEndian(size_t value) noexcept
 	{
 #if INJECTOR_BIG_ENDIAN
 		return swapEndian(value);

@@ -5,6 +5,8 @@
 
 #include <entityx/entityx.h>
 
+// TODO: refactor
+
 namespace INJECT_NAMESPACE
 {
 	class UdpSocketSystem final :

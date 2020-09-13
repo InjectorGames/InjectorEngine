@@ -25,6 +25,7 @@ void init()
 	renderSystem->addCamera(camera);
 	
 	auto colorPipeline = window->createDiffusePipeline();
+	//auto boxTexture = window->createTexture();
 	auto squareMesh = window->createSquareMeshVN(true);
 	auto cubeMesh = window->createCubeMeshVN(true);
 

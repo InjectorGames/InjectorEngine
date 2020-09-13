@@ -1,6 +1,7 @@
 #pragma once
 #include "Injector/Manager.hpp"
 #include "Injector/Graphics/Mesh.hpp"
+#include "Injector/Graphics/Image.hpp"
 #include "Injector/Graphics/Texture.hpp"
 #include "Injector/Graphics/Pipeline.hpp"
 #include "Injector/Graphics/MouseButton.hpp"
@@ -77,7 +78,17 @@ namespace Injector
 			BufferIndex indexType,
 			const std::shared_ptr<Buffer>& vertexBuffer,
 			const std::shared_ptr<Buffer>& indexBuffer);
-		virtual std::shared_ptr<Texture> createTexture();
+		virtual std::shared_ptr<Texture> createTexture(
+			TextureType type,
+        	IntVector3 size,
+        	TextureFormat format,
+        	TextureFilter minFilter,
+    		TextureFilter magFilter,
+    		TextureWrap wrapU,
+        	TextureWrap wrapV,
+        	TextureWrap wrapW,
+        	bool useMipmap,
+			const std::shared_ptr<Image>& image);
 
 		virtual std::shared_ptr<ColorPipeline> createColorPipeline();
 		virtual std::shared_ptr<ColorPipeline> createColColorPipeline();

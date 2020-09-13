@@ -257,7 +257,17 @@ namespace Injector
 	{
 		throw NotImplementedException("Window", "createMesh");
 	}
-	std::shared_ptr<Texture> Window::createTexture()
+	std::shared_ptr<Texture> Window::createTexture(
+		TextureType type,
+        IntVector3 size,
+        TextureFormat format,
+        TextureFilter minFilter,
+    	TextureFilter magFilter,
+    	TextureWrap wrapU,
+        TextureWrap wrapV,
+        TextureWrap wrapW,
+        bool useMipmap,
+		const std::shared_ptr<Image>& image)
 	{
 		throw NotImplementedException("Window", "createTexture");
 	}

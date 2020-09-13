@@ -14,10 +14,40 @@ option(INJECTOR_BUILD_EDITOR "Build editor executable" ON)
 include(GNUInstallDirs)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 include(TestBigEndian)
 TEST_BIG_ENDIAN(INJECTOR_BIG_ENDIAN)
+
+set(INJECTOR_POINTER_SIZE ${CMAKE_SIZEOF_VOID_P})
+set(INJECTOR_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+set(INJECTOR_SYSTEM_VERSION ${CMAKE_SYSTEM_VERSION})
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+	set(INJECTOR_SYSTEM_32 1)
+	set(INJECTOR_SYSTEM_64 0)
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	set(INJECTOR_SYSTEM_32 0)
+	set(INJECTOR_SYSTEM_64 1)
+else()
+	message(FATAL_ERROR "Failed to detect system architecture")
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+	set(INJECTOR_SYSTEM_LINUX 1)
+	set(INJECTOR_SYSTEM_WINDOWS 0)
+	set(INJECTOR_SYSTEM_MACOS 0)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+	set(INJECTOR_SYSTEM_LINUX 0)
+	set(INJECTOR_SYSTEM_WINDOWS 1)
+	set(INJECTOR_SYSTEM_MACOS 0)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+	set(INJECTOR_SYSTEM_LINUX 0)
+	set(INJECTOR_SYSTEM_WINDOWS 0)
+	set(INJECTOR_SYSTEM_MACOS 1)
+else()
+	message(FATAL_ERROR "Failed to detect system name")
+endif()
 
 include(FindVulkan)
 include(CMake/asio.cmake)
@@ -101,6 +131,10 @@ add_library(InjectorEngine STATIC
 	Source/Mathematics/Vector4.cpp
 
 	Source/Memory/ByteSwap.cpp
+	Source/Memory/MemoryStream.cpp
+
+	Source/Network/Datagram.cpp
+	Source/Network/NetContextSystem.cpp
 
 	Source/Storage/FileStream.cpp
 

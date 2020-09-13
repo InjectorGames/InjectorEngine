@@ -1087,10 +1087,6 @@ namespace Injector
 		return std::make_shared<VkMesh>(
 			indexCount, indexType, vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Texture> VkWindow::createTexture()
-	{
-		throw Exception("VkWindow", "createTexture", "TODO");
-	}
 
 	std::shared_ptr<ColorPipeline> VkWindow::createColorPipeline()
 	{

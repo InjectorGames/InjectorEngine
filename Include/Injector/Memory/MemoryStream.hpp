@@ -1,19 +1,17 @@
 #pragma once
-#include <string>
-#include <vector>
-#include <fstream>
+#include <sstream>
 
 namespace Injector
 {
-	class FileStream : public std::fstream
+	class MemoryStream : public std::stringstream
 	{
 	public:
-		FileStream();
-		FileStream(const char* filePath,
-			std::ios::openmode mode = std::ios::in | std::ios::out);
-		FileStream(const std::string& filePath,
-			std::ios::openmode mode = std::ios::in | std::ios::out);
-		virtual ~FileStream();
+		MemoryStream(const std::ios::openmode mode =
+			ios_base::in | ios_base::out);
+		MemoryStream(const std::string& string,
+			const std::ios::openmode mode =
+			ios_base::in | ios_base::out);
+		virtual ~MemoryStream();
 
 		std::istream& read(char& value);
 		std::istream& read(char* values, size_t count);
@@ -57,27 +55,27 @@ namespace Injector
 		std::istream& readLittleEndian(double& value);
 
 		std::ostream& write(char value);
-		std::ostream& write(const char* values, size_t count);
+		std::ostream& write(const char* value, size_t count);
 		std::ostream& write(uint8_t value);
-		std::ostream& write(const uint8_t* values, size_t count);
+		std::ostream& write(const uint8_t* value, size_t count);
 		std::ostream& write(int8_t value);
-		std::ostream& write(const int8_t* values, size_t count);
+		std::ostream& write(const int8_t* value, size_t count);
 		std::ostream& write(uint16_t value);
-		std::ostream& write(const uint16_t* values, size_t count);
+		std::ostream& write(const uint16_t* value, size_t count);
 		std::ostream& write(int16_t value);
-		std::ostream& write(const int16_t* values, size_t count);
+		std::ostream& write(const int16_t* value, size_t count);
 		std::ostream& write(uint32_t value);
-		std::ostream& write(const uint32_t* values, size_t count);
+		std::ostream& write(const uint32_t* value, size_t count);
 		std::ostream& write(int32_t value);
-		std::ostream& write(const int32_t* values, size_t count);
+		std::ostream& write(const int32_t* value, size_t count);
 		std::ostream& write(uint64_t value);
-		std::ostream& write(const uint64_t* values, size_t count);
+		std::ostream& write(const uint64_t* value, size_t count);
 		std::ostream& write(int64_t value);
-		std::ostream& write(const int64_t* values, size_t count);
+		std::ostream& write(const int64_t* value, size_t count);
 		std::ostream& write(float value);
-		std::ostream& write(const float* values, size_t count);
+		std::ostream& write(const float* value, size_t count);
 		std::ostream& write(double value);
-		std::ostream& write(const double* values, size_t count);
+		std::ostream& write(const double* value, size_t count);
 
 		std::ostream& writeBigEndian(uint16_t value);
 		std::ostream& writeBigEndian(int16_t value);
@@ -96,25 +94,5 @@ namespace Injector
 		std::ostream& writeLittleEndian(int64_t value);
 		std::ostream& writeLittleEndian(float value);
 		std::ostream& writeLittleEndian(double value);
-
-		static std::string readAllText(
-			const std::string& filePath);
-		static void writeAllText(
-			const std::string& filePath,
-			const char* text,
-			size_t count);
-		static void writeAllText(
-			const std::string& filePath,
-			const std::string& text);
-
-		static std::vector<char> readAllBytes(
-			const std::string& filePath);
-		static void writeAllBytes(
-			const std::string& filePath,
-			const char* bytes,
-			size_t count);
-		static void writeAllBytes(
-			const std::string& filePath,
-			const std::vector<char>& bytes);
 	};
 }

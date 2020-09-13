@@ -11,10 +11,13 @@ namespace Injector
     public:
         OutOfRangeException(const std::string& className,
             const std::string& functionName,
+            char value, char range);
+        OutOfRangeException(const std::string& className,
+            const std::string& functionName,
             uint8_t value, uint8_t range);
         OutOfRangeException(const std::string& className,
             const std::string& functionName,
-            char value, char range);
+            int8_t value, int8_t range);
         OutOfRangeException(const std::string& className,
             const std::string& functionName,
             uint16_t value, uint16_t range);

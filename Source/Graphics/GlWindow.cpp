@@ -109,9 +109,20 @@ namespace Injector
 		return std::make_shared<GlMesh>(
 			indexCount, indexType, vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Texture> GlWindow::createTexture()
+	std::shared_ptr<Texture> GlWindow::createTexture(
+		TextureType type,
+        IntVector3 size,
+        TextureFormat format,
+        TextureFilter minFilter,
+    	TextureFilter magFilter,
+    	TextureWrap wrapU,
+        TextureWrap wrapV,
+        TextureWrap wrapW,
+        bool useMipmap,
+		const std::shared_ptr<Image>& image)
 	{
-		return nullptr;
+		return std::make_shared<GlTexture>(type, size, format,
+			minFilter, magFilter,wrapU, wrapV, wrapW, useMipmap, image);
 	}
 
 	std::shared_ptr<ColorPipeline> GlWindow::createColorPipeline()
