@@ -1,7 +1,7 @@
 #include "Injector/Graphics/VkColorPipeline.hpp"
-#include "Injector/Storage/FileStream.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
 #include "Injector/Graphics/VkShader.hpp"
+#include "Injector/Storage/FileStream.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
@@ -85,7 +85,7 @@ namespace Injector
 		auto resultValue = device.createGraphicsPipeline(pipelineCache, graphicsPipelineCreateInfo);
 
 		if (resultValue.result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan color pipeline");
+			throw Exception("VkColorPipeline", "createPipeline", "Failed to create pipeline");
 
 		return resultValue.value;
 	}
@@ -115,7 +115,7 @@ namespace Injector
 			&pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan pipeline layout");
+			throw Exception("VkColorPipeline", "VkColorPipeline", "Failed to create pipeline layout");
 
 		pipeline = createPipeline(
 			device, pipelineCache, pipelineLayout, renderPass, surfaceExtent);

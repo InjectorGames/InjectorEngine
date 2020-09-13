@@ -1,13 +1,11 @@
 #include "Injector/Graphics/GlPipeline.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
 	GlPipeline::GlPipeline(
-		GLenum _drawMode,
-		const std::vector<GlVertexAttribute>& _vertexAttributes) : 
-		drawMode(_drawMode),
-		vertexAttributes(_vertexAttributes)
+		GLenum _drawMode) : 
+		drawMode(_drawMode)
 	{
 		program = glCreateProgram();
 	}
@@ -24,18 +22,18 @@ namespace Injector
 	{
 		return drawMode;
 	}
-	const std::vector<GlVertexAttribute>& GlPipeline::getVertexAttributes() const noexcept
-	{
-		return vertexAttributes;
-	}
 
-	void GlPipeline::flush()
-	{
-		throw GraphicsException("Not implemented OpenGL pipeline function");
-	}
 	void GlPipeline::bind()
 	{
 		glUseProgram(program);
+	}
+	void GlPipeline::flush()
+	{
+		throw NotImplementedException("GlPipeline", "flush");
+	}
+	void GlPipeline::setAttributes()
+	{
+		throw NotImplementedException("GlPipeline", "setAttributes");
 	}
 
 	bool GlPipeline::getLinkStatus(GLuint program) noexcept
@@ -58,7 +56,7 @@ namespace Injector
 		auto location = glGetUniformLocation(program, name.c_str());
 		
 		if (location == -1)
-			throw GraphicsException("Failed to get OpenGL uniform location");
+			throw Exception("GlPipeline", "getUniformLocation", "Incorrect name");
 
 		return location;
 	}
@@ -67,8 +65,70 @@ namespace Injector
 		auto index = glGetUniformBlockIndex(program, name.c_str());
 		
 		if (index == GL_INVALID_INDEX)
-			throw GraphicsException("Failed to get OpenGL uniform block index");
+			throw Exception("GlPipeline", "getUniformBlockIndex", "Incorrect name");
 
 		return index;
+	}
+
+	void GlPipeline::setVertexAttributePointer(GLuint index, GLint size, GLenum type,
+		GLboolean normalized, size_t stride, size_t offset) noexcept
+	{
+		glVertexAttribPointer(index, size, type, normalized, 
+			static_cast<GLsizei>(stride), reinterpret_cast<const GLvoid*>(offset));
+	}
+
+	void GlPipeline::setUniform(GLint location, int32_t value) noexcept
+	{
+		glUniform1iv(location, 1, &value);
+	}
+	void GlPipeline::setUniform(GLint location, uint32_t value) noexcept
+	{
+		glUniform1uiv(location, 1, &value);
+	}
+	void GlPipeline::setUniform(GLint location, float value) noexcept
+	{
+		glUniform1fv(location, 1, &value);
+	}
+	void GlPipeline::setUniform(GLint location, const IntVector2& value) noexcept
+	{
+		glUniform2iv(location, 1, reinterpret_cast<const GLint*>(&value));
+	}
+	void GlPipeline::setUniform(GLint location, const IntVector3& value) noexcept
+	{
+		glUniform3iv(location, 1, reinterpret_cast<const GLint*>(&value));
+	}
+	void GlPipeline::setUniform(GLint location, const IntVector4& value) noexcept
+	{
+		glUniform4iv(location, 1, reinterpret_cast<const GLint*>(&value));
+	}
+	void GlPipeline::setUniform(GLint location, const Vector2& value) noexcept
+	{
+		glUniform2fv(location, 1, reinterpret_cast<const GLfloat*>(&value));
+	}
+	void GlPipeline::setUniform(GLint location, const Vector3& value) noexcept
+	{
+		glUniform3fv(location, 1, reinterpret_cast<const GLfloat*>(&value));
+	}
+	void GlPipeline::setUniform(GLint location, const Vector4& value) noexcept
+	{
+		glUniform4fv(location, 1, reinterpret_cast<const GLfloat*>(&value));
+	}
+	void GlPipeline::setUniform(GLint location, const Matrix2& value,
+		GLboolean transpose) noexcept
+	{
+		glUniformMatrix2fv(location, 1, transpose,
+			reinterpret_cast<const GLfloat*>(&value));
+	}
+	void GlPipeline::setUniform(GLint location, const Matrix3& value,
+		GLboolean transpose) noexcept
+	{
+		glUniformMatrix3fv(location, 1, transpose,
+			reinterpret_cast<const GLfloat*>(&value));
+	}
+	void GlPipeline::setUniform(GLint location, const Matrix4& value,
+		GLboolean transpose) noexcept
+	{
+		glUniformMatrix4fv(location, 1, transpose,
+			reinterpret_cast<const GLfloat*>(&value));
 	}
 }

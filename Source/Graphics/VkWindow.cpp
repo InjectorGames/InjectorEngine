@@ -1,6 +1,6 @@
 #include "Injector/Graphics/VkWindow.hpp"
 #include "Injector/Defines.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/Exception.hpp"
 #include "Injector/Graphics/VkMesh.hpp"
 #include "Injector/Graphics/VkCameraSystem.hpp"
 #include "Injector/Graphics/VkRenderSystem.hpp"
@@ -50,7 +50,7 @@ namespace Injector
 		auto instanceLayerProperties = vk::enumerateInstanceLayerProperties();
 
 		if (instanceLayerProperties.size() == 0)
-			throw GraphicsException("Failed to get Vulkan instance layer properties");
+			throw Exception("VkWindow", "createInstance", "Failed to get instance layer properties");
 
 		for (auto layer : instanceLayers)
 		{
@@ -66,7 +66,10 @@ namespace Injector
 			}
 
 			if (!found)
-				throw GraphicsException("Failed to get Vulkan instance layer: " + std::string(layer));
+			{
+				throw Exception("VkWindow", "createInstance",
+					"Failed to get instance layer \"" + std::string(layer) + "\"");
+			}
 		}
 #endif
 
@@ -77,7 +80,10 @@ namespace Injector
 		SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, instanceExtensions.data());
 
 		if (extensionCount == 0)
-			throw GraphicsException("Failed to get Vulkan instance extensions: " + std::string(SDL_GetError()));
+		{
+			throw Exception("VkWindow", "createInstance",
+				"Failed to get instance extensions, " + std::string(SDL_GetError()));
+		}
 
 #if !defined(NDEBUG)
 		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -86,7 +92,7 @@ namespace Injector
 		auto instanceExtensionProperties = vk::enumerateInstanceExtensionProperties();
 
 		if (instanceExtensionProperties.size() == 0)
-			throw GraphicsException("Failed to get Vulkan instance extension properties");
+			throw Exception("VkWindow", "createInstance", "Failed to get instance extension properties");
 
 		for (auto extension : instanceExtensions)
 		{
@@ -102,7 +108,10 @@ namespace Injector
 			}
 
 			if (!found)
-				throw GraphicsException("Failed to get Vulkan instance extension: " + std::string(extension));
+			{
+				throw Exception("VkWindow", "createInstance",
+					"Failed to get instance extension \"" + std::string(extension) + "\"");
+			}
 		}
 
 		auto applicationInfo = vk::ApplicationInfo(
@@ -132,7 +141,7 @@ namespace Injector
 		auto reslut = vk::createInstance(&instanceCreateInfo, nullptr, &instance);
 
 		if (reslut != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan instance");
+			throw Exception("VkWindow", "createInstance", "Failed to create instance");
 
 		return instance;
 	}
@@ -155,7 +164,7 @@ namespace Injector
 			&debugUtilsMessengerCreateInfo, nullptr, &debugMessenger, dispatchDynamic);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan debug report");
+			throw Exception("VkWindow", "createDebugMessenger", "Failed to create debug messenger");
 
 		return debugMessenger;
 #else
@@ -168,7 +177,7 @@ namespace Injector
 		auto physicalDevices = instance.enumeratePhysicalDevices();
 
 		if (physicalDevices.size() == 0)
-			throw GraphicsException("Failed to get Vulkan physical devices");
+			throw Exception("VkWindow", "getBestPhysicalDevice", "Failed to get physical devices");
 
 		auto targetPhysicalDevices = std::multimap<int, vk::PhysicalDevice>();
 
@@ -202,7 +211,11 @@ namespace Injector
 			static_cast<VkInstance>(instance), &surfaceHandle);
 
 		if (result == SDL_FALSE)
-			throw GraphicsException("Failed to create Vulkan surface, Error: " + std::string(SDL_GetError()));
+		{
+			throw Exception("VkWindow", "createSurface",
+				"Failed to create surface, " + std::string(SDL_GetError()));
+		}
+
 
 		return vk::SurfaceKHR(surfaceHandle);
 	}
@@ -215,7 +228,7 @@ namespace Injector
 		auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
 		if (queueFamilyProperties.size() == 0)
-			throw GraphicsException("Failed to get Vulkan queue family properties");
+			throw Exception("VkWindow", "getQueueFamilyIndices", "Failed to get queue family properties");
 
 		graphicsQueueFamilyIndex = UINT32_MAX;
 		presentQueueFamilyIndex = UINT32_MAX;
@@ -242,9 +255,9 @@ namespace Injector
 		}
 
 		if (graphicsQueueFamilyIndex == UINT32_MAX)
-			throw GraphicsException("Failed to find Vulkan graphics queue family");
+			throw Exception("VkWindow", "getQueueFamilyIndices", "Failed to find graphics queue family");
 		if (presentQueueFamilyIndex == UINT32_MAX)
-			throw GraphicsException("Failed to find Vulkan present queue family");
+			throw Exception("VkWindow", "getQueueFamilyIndices", "Failed to find present queue family");
 	}
 	vk::Device VkWindow::createDevice(
 		vk::PhysicalDevice physicalDevice,
@@ -256,7 +269,7 @@ namespace Injector
 		auto deviceExtensionProperties = physicalDevice.enumerateDeviceExtensionProperties();
 
 		if (deviceExtensionProperties.size() == 0)
-			throw GraphicsException("Failed to get Vulkan device extension properties");
+			throw Exception("VkWindow", "createDevice", "Failed to get device extension properties");
 
 		// TODO: create extension request mechanism
 		auto deviceExtensions = std::vector<const char*>() =
@@ -278,7 +291,10 @@ namespace Injector
 			}
 
 			if (!found)
-				throw GraphicsException("Failed to find Vulkan device extension: " + std::string(extension));
+			{
+				throw Exception("VkWindow", "createDevice",
+					"Failed to find device extension \"" + std::string(extension) + "\"");
+			}
 		}
 
 		auto priority = 1.0f;
@@ -309,7 +325,7 @@ namespace Injector
 		auto result = physicalDevice.createDevice(&deviceCreateInfo, nullptr, &device);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan logical device");
+			throw Exception("VkWindow", "createDevice", "Failed to create device");
 
 		return device;
 	}
@@ -328,7 +344,7 @@ namespace Injector
 		auto result = vmaCreateAllocator(&allocatorInfo, &allocator);
 
 		if (result != VK_SUCCESS)
-			throw GraphicsException("Failed to create Vulkan memory allocator");
+			throw Exception("VkWindow", "createMemoryAllocator", "Failed to create memory allocator");
 
 		return allocator;
 	}
@@ -342,7 +358,7 @@ namespace Injector
 		auto result = device.createFence(&fenceCreateInfo, nullptr, &fence);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan fence");
+			throw Exception("VkWindow", "createFence", "Failed to create fence");
 
 		return fence;
 	}
@@ -356,7 +372,7 @@ namespace Injector
 		auto result = device.createSemaphore(&fenceCreateInfo, nullptr, &semaphore);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan fence");
+			throw Exception("VkWindow", "createSemaphore", "Failed to create semaphore");
 
 		return semaphore;
 	}
@@ -368,7 +384,7 @@ namespace Injector
 		auto queue = device.getQueue(queueFamilyIndex, queueIndex);
 
 		if (!queue)
-			throw GraphicsException("Failed to get Vulkan queue");
+			throw Exception("VkWindow", "getQueue", "Failed to get queue");
 
 		return queue;
 	}
@@ -390,7 +406,7 @@ namespace Injector
 		auto surfaceFormats = physicalDevice.getSurfaceFormatsKHR(surface);
 
 		if (surfaceFormats.size() == 0)
-			throw GraphicsException("Failed to get Vulkan surface formats");
+			throw Exception("VkWindow", "getBestSurfaceFormat", "Failed to get surface formats");
 
 		auto surfaceFormat = surfaceFormats[0];
 
@@ -416,7 +432,7 @@ namespace Injector
 		auto surfacePresentModes = physicalDevice.getSurfacePresentModesKHR(surface);
 
 		if (surfacePresentModes.size() == 0)
-			throw GraphicsException("Failed to get Vulkan surface present modes");
+			throw Exception("VkWindow", "getBestSurfacePresentMode", "Failed to get surface present modes");
 
 		auto presentMode = vk::PresentModeKHR::eFifo;
 
@@ -477,7 +493,7 @@ namespace Injector
 			vk::CompositeAlphaFlagBitsKHR::eInherit)
 			return vk::CompositeAlphaFlagBitsKHR::eInherit;
 		else
-			throw GraphicsException("Failed to get Vulkan surface composite alpha");
+			throw Exception("VkWindow", "getBestSurfaceCompositeAlpha", "Failed to get surface composite alpha");
 	}
 	vk::Extent2D VkWindow::getBestSurfaceExtent(
 		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
@@ -526,7 +542,7 @@ namespace Injector
 		auto result = device.createSwapchainKHR(&swapchainCreateInfo, nullptr, &swapchain);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan swapchain");
+			throw Exception("VkWindow", "createSwapchain", "Failed to create swapchain");
 
 		return swapchain;
 	}
@@ -572,7 +588,7 @@ namespace Injector
 		auto result = device.createRenderPass(&renderPassCreateInfo, nullptr, &renderPass);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan render pass");
+			throw Exception("VkWindow", "createRenderPass", "Failed to create render pass");
 
 		return renderPass;
 	}
@@ -589,7 +605,7 @@ namespace Injector
 			&commandPoolCreateInfo, nullptr, &commandPool);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan command pool");
+			throw Exception("VkWindow", "createCommandPool", "Failed to create command pool");
 
 		return commandPool;
 	}
@@ -859,7 +875,7 @@ namespace Injector
 			}
 			else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
 			{
-				throw GraphicsException("Failed to acquire next Vulkan image");
+				throw Exception("VkWindow", "beginImage", "Failed to acquire next image");
 			}
 		}
 		while (result != vk::Result::eSuccess);
@@ -882,7 +898,7 @@ namespace Injector
 		auto result = graphicsQueue.submit(1, &submitInfo, fences[frameIndex]);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to submit Vulkan graphics queue");
+			throw Exception("VkWindow", "endImage", "Failed to submit graphics queue");
 
 		auto presentInfo = vk::PresentInfoKHR(
 			1, &drawCompleteSemaphores[frameIndex],
@@ -898,7 +914,7 @@ namespace Injector
 			result = presentQueue.submit(1, &submitInfo, vk::Fence());
 
 			if (result != vk::Result::eSuccess)
-				throw GraphicsException("Failed to submit Vulkan graphics queue");
+				throw Exception("VkWindow", "endImage", "Failed to submit present queue");
 
 			presentInfo.pWaitSemaphores = &imageOwnershipSemaphores[frameIndex];
 		}
@@ -923,7 +939,7 @@ namespace Injector
 		}
 		else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
 		{
-			throw GraphicsException("Failed to present next Vulkan image");
+			throw Exception("VkWindow", "endImage", "Failed to present next image");
 		}
 	}
 
@@ -937,7 +953,7 @@ namespace Injector
 		auto result = graphicsCommandBuffer.begin(&commandBufferBeginInfo);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to begin Vulkan command buffer");
+			throw Exception("VkWindow", "beginRecord", "Failed to begin command buffer");
 
 		auto clearValues = vk::ClearValue(vk::ClearColorValue(
 			std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f}));
@@ -976,7 +992,7 @@ namespace Injector
 			auto result = presentCommandBuffer.begin(&commandBufferBeginInfo);
 
 			if (result != vk::Result::eSuccess)
-				throw GraphicsException("Failed to begin Vulkan command buffer");
+				throw Exception("VkWindow", "endRecord", "Failed to begin command buffer");
 
 			auto imageMemoryBarrier = vk::ImageMemoryBarrier({}, {},
 				vk::ImageLayout::ePresentSrcKHR, vk::ImageLayout::ePresentSrcKHR,
@@ -1041,7 +1057,7 @@ namespace Injector
 				&commandBufferAlocateInfo, &commandBuffer);
 
 			if (result != vk::Result::eSuccess)
-				throw GraphicsException("Failed to allocate Vulkan staging command buffer");
+				throw Exception("VkWindow", "createBuffer", "Failed to allocate command buffer");
 
 			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
 				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
@@ -1073,7 +1089,7 @@ namespace Injector
 	}
 	std::shared_ptr<Texture> VkWindow::createTexture()
 	{
-		throw GraphicsException("Not implemented Vulkan window function");
+		throw Exception("VkWindow", "createTexture", "TODO");
 	}
 
 	std::shared_ptr<ColorPipeline> VkWindow::createColorPipeline()
@@ -1082,7 +1098,7 @@ namespace Injector
 			device, renderPass, surfaceExtent);
 
 		if(!pipelines.emplace(pipeline).second)
-			throw GraphicsException("Failed to add created Vulkan color pipeline");
+			throw Exception("VkWindow", "createColorPipeline", "Failed to add pipeline");
 
 		return pipeline;
 	}
@@ -1092,7 +1108,7 @@ namespace Injector
 			device, memoryAllocator, renderPass, swapchainDatas.size(), surfaceExtent);
 
 		if (!pipelines.emplace(pipeline).second)
-			throw GraphicsException("Failed to add created Vulkan diffuse pipeline");
+			throw Exception("VkWindow", "createDiffusePipeline", "Failed to add pipeline");
 
 		return pipeline;
 	}

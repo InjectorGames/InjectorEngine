@@ -1,5 +1,5 @@
 #include "Injector/Graphics/DiffusePipeline.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
@@ -8,37 +8,37 @@ namespace Injector
 
 	const Vector4& DiffusePipeline::getObjectColor() const
 	{
-		throw GraphicsException("Not implemented diffuse pipeline function");
+		throw NotImplementedException("DiffusePipeline", "getObjectColor");
 	}
 	void DiffusePipeline::setObjectColor(const Vector4& color)
 	{
-		throw GraphicsException("Not implemented diffuse pipeline function");
+		throw NotImplementedException("DiffusePipeline", "setObjectColor");
 	}
 
 	const Vector4& DiffusePipeline::getAmbientColor() const
 	{
-		throw GraphicsException("Not implemented diffuse pipeline function");
+		throw NotImplementedException("DiffusePipeline", "getAmbientColor");
 	}
 	void DiffusePipeline::setAmbientColor(const Vector4& color)
 	{
-		throw GraphicsException("Not implemented diffuse pipeline function");
+		throw NotImplementedException("DiffusePipeline", "setAmbientColor");
 	}
 
 	const Vector4& DiffusePipeline::getLightColor() const
 	{
-		throw GraphicsException("Not implemented diffuse pipeline function");
+		throw NotImplementedException("DiffusePipeline", "getLightColor");
 	}
 	void DiffusePipeline::setLightColor(const Vector4& color)
 	{
-		throw GraphicsException("Not implemented diffuse pipeline function");
+		throw NotImplementedException("DiffusePipeline", "setLightColor");
 	}
 
 	const Vector3& DiffusePipeline::getLightDirection() const
 	{
-		throw GraphicsException("Not implemented diffuse pipeline function");
+		throw NotImplementedException("DiffusePipeline", "getLightDirection");
 	}
 	void DiffusePipeline::setLightDirection(const Vector3& lightDirection)
 	{
-		throw GraphicsException("Not implemented diffuse pipeline function");
+		throw NotImplementedException("DiffusePipeline", "setLightDirection");
 	}
 }

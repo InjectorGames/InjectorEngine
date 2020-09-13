@@ -1,7 +1,8 @@
 #include "Injector/Graphics/VkDiffusePipeline.hpp"
-#include "Injector/Storage/FileStream.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
 #include "Injector/Graphics/VkShader.hpp"
+#include "Injector/Storage/FileStream.hpp"
+#include "Injector/Exception/Exception.hpp"
+
 
 namespace Injector
 {
@@ -92,7 +93,7 @@ namespace Injector
 		auto resultValue = device.createGraphicsPipeline(pipelineCache, graphicsPipelineCreateInfo);
 
 		if (resultValue.result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan diffuse pipeline");
+			throw Exception("VkDiffusePipeline", "createPipeline", "Failed to create pipeline");
 
 		return resultValue.value;
 	}
@@ -111,7 +112,7 @@ namespace Injector
 			&descriptorPoolCreateInfo, nullptr, &descriptorPool);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan descriptor pool");
+			throw Exception("VkDiffusePipeline", "createDescriptorPool", "Failed to create descriptor pool");
 
 		return descriptorPool;
 	}
@@ -149,7 +150,7 @@ namespace Injector
 			&descriptorSetAllocateInfo, descriptorSets.data());
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to allocate Vulkan descriptor sets");
+			throw Exception("VkDiffusePipeline", "createDescriptorSets", "Failed to allocate descriptor sets");
 
 		for (size_t i = 0; i < imageCount; i++)
 		{
@@ -200,7 +201,7 @@ namespace Injector
 			&pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan pipeline layout");
+			throw Exception("VkDiffusePipeline", "VkDiffusePipeline", "Failed to create pipeline layout");
 
 		pipeline = createPipeline(
 			device, pipelineCache, pipelineLayout, renderPass, surfaceExtent);

@@ -1,10 +1,10 @@
 #include "Injector/Graphics/GlWindow.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/CastException.hpp"
 #include "Injector/Graphics/GlMesh.hpp"
 #include "Injector/Graphics/GlCameraSystem.hpp"
 #include "Injector/Graphics/GlRenderSystem.hpp"
-#include "Injector/Graphics/GlColorPipeline.hpp"
-#include "Injector/Graphics/GlDiffusePipeline.hpp"
+#include "Injector/Graphics/GlColColorPipeline.hpp"
+#include "Injector/Graphics/GlTexDiffusePipeline.hpp"
 
 namespace Injector
 {
@@ -33,12 +33,16 @@ namespace Injector
 		context = SDL_GL_CreateContext(window);
 
 		if (!context)
-			throw GraphicsException("Failed to create window OpenGL context, Error: " + std::string(SDL_GetError()));
+		{
+			throw Exception("GlWindow", "GlWindow",
+				"Failed to create context, " + std::string(SDL_GetError()));
+		}
+			
 
 		SDL_GL_MakeCurrent(window, context);
 
 		if (glewInit() != GLEW_OK)
-			throw GraphicsException("Failed to initialize window GLEW.");
+			throw Exception("GlWindow", "GlWindow", "Failed to initialize GLEW");
 
 		SDL_GL_SetSwapInterval(0);
 		//glEnable(GL_DEPTH_TEST);
@@ -114,8 +118,22 @@ namespace Injector
 	{
 		return std::make_shared<GlColorPipeline>(gles);
 	}
+	std::shared_ptr<ColorPipeline> GlWindow::createColColorPipeline()
+	{
+		return std::make_shared<GlColColorPipeline>(gles);
+	}
 	std::shared_ptr<DiffusePipeline> GlWindow::createDiffusePipeline()
 	{
 		return std::make_shared<GlDiffusePipeline>(gles);
+	}
+	std::shared_ptr<TexDiffusePipeline> GlWindow::createTexDiffusePipeline(
+		const std::shared_ptr<Texture>& texture)
+	{
+		auto glTexture = std::dynamic_pointer_cast<GlTexture>(texture);
+
+		if(!glTexture)
+			throw CastException("GlWindow", "createTexDiffusePipeline", "texture"); 
+			
+		return std::make_shared<GlTexDiffusePipeline>(gles, glTexture);
 	}
 }

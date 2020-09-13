@@ -1,6 +1,6 @@
 #include "Injector/Engine.hpp"
 #include "Injector/Defines.hpp"
-#include "Injector/EngineException.hpp"
+#include "Injector/Exception/Exception.hpp"
 #include "Injector/Graphics/GlWindow.hpp"
 #include "Injector/Graphics/VkWindow.hpp"
 
@@ -57,7 +57,7 @@ namespace Injector
 	void Engine::initializeEngine()
 	{
 		if (engineInitialized)
-			throw EngineException("Engine is already initialized");
+			throw Exception("Engine", "initializeEngine", "Already initialized");
 
 		engineInitialized = true;
 
@@ -69,7 +69,7 @@ namespace Injector
 	void Engine::terminateEngine()
 	{
 		if (!engineInitialized)
-			throw EngineException("Engine is already terminated");
+			throw Exception("Engine", "terminateEngine", "Already terminated");
 
 		managers.clear();
 
@@ -92,19 +92,19 @@ namespace Injector
 	void Engine::initializeVideo(GraphicsApi _graphicsApi)
 	{
 		if (engineInitialized)
-			throw EngineException("Engine is already initialized");
+			throw Exception("Engine", "initializeVideo", "Engine is already initialized");
 		if (videoInitialized)
-			throw EngineException("Video subsystem is already initialized");
+			throw Exception("Engine", "initializeVideo", "Video subsystem is already initialized");
 
 		if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0)
-			throw EngineException("Failed to intialize video subsystem, Error: " + std::string(SDL_GetError()));
+			throw Exception("Engine", "initializeVideo", "Failed to intialize, " + std::string(SDL_GetError()));
 
 		if (_graphicsApi == GraphicsApi::Vulkan)
 		{
 			if (SDL_Vulkan_LoadLibrary(nullptr) != 0)
 			{
 				SDL_QuitSubSystem(SDL_INIT_VIDEO);
-				throw EngineException("Failed to load Vulkan library, Error: " + std::string(SDL_GetError()));
+				throw Exception("Engine", "initializeVideo", "Failed to load Vulkan library, " + std::string(SDL_GetError()));
 			}
 		}
 		
@@ -116,9 +116,9 @@ namespace Injector
 	void Engine::terminateVideo()
 	{
 		if (!engineInitialized)
-			throw EngineException("Engine is already terminated");
+			throw Exception("Engine", "terminateVideo", "Engine is already terminated");
 		if (!videoInitialized)
-			throw EngineException("Video subsystem is already terminated");
+			throw Exception("Engine", "terminateVideo", "Video subsystem is already terminated");
 
 		if (graphicsApi == GraphicsApi::Vulkan)
 			SDL_Vulkan_UnloadLibrary();
@@ -142,12 +142,12 @@ namespace Injector
 	void Engine::initializeEvents()
 	{
 		if (engineInitialized)
-			throw EngineException("Engine is already initialized");
+			throw Exception("Engine", "initializeEvents", "Engine is already initialized");
 		if (eventsInitialized)
-			throw EngineException("Events subsystem is already initialized");
+			throw Exception("Engine", "initializeEvents", "Events subsystem is already initialized");
 
 		if (SDL_InitSubSystem(SDL_INIT_EVENTS) != 0)
-			throw EngineException("Failed to intialize events subsystem. Error: " + std::string(SDL_GetError()));
+			throw Exception("Engine", "initializeEvents", "Failed to intialize events subsystem, " + std::string(SDL_GetError()));
 
 		eventsInitialized = true;
 
@@ -156,9 +156,9 @@ namespace Injector
 	void Engine::terminateEvents()
 	{
 		if (!engineInitialized)
-			throw EngineException("Engine is already terminated");
+			throw Exception("Engine", "terminateEvents", "Engine is already terminated");
 		if (!eventsInitialized)
-			throw EngineException("Events subsystem is already terminated");
+			throw Exception("Engine", "terminateEvents","Events subsystem is already terminated");
 
 		SDL_QuitSubSystem(SDL_INIT_EVENTS);
 		eventsInitialized = false;
@@ -173,7 +173,7 @@ namespace Injector
 	void Engine::startUpdateLoop()
 	{
 		if (updateRunning)
-			throw EngineException("Update is already started");
+			throw Exception("Engine", "startUpdateLoop", "Already started");
 
 		updateRunning = true;
 
@@ -216,7 +216,7 @@ namespace Injector
 	void Engine::stopUpdateLoop()
 	{
 		if (!updateRunning)
-			throw EngineException("Update is already stopped");
+			throw Exception("Engine", "stopUpdateLoop", "Already stopped");
 
 		updateRunning = false;
 	}

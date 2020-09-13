@@ -1,5 +1,5 @@
 #include "Injector/Graphics/Mesh.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
@@ -16,21 +16,21 @@ namespace Injector
 	Mesh::~Mesh()
 	{}
 
-	const std::shared_ptr<Buffer>& Mesh::getVertexBuffer() const noexcept
+	std::shared_ptr<Buffer> Mesh::getVertexBuffer() const noexcept
 	{
 		return vertexBuffer;
 	}
-	const std::shared_ptr<Buffer>& Mesh::getIndexBuffer() const noexcept
+	std::shared_ptr<Buffer> Mesh::getIndexBuffer() const noexcept
 	{
 		return indexBuffer;
 	}
 
 	void Mesh::setVertexBuffer(const std::shared_ptr<Buffer>& vertexBuffers)
 	{
-		throw GraphicsException("Not implemented mesh function");
+		throw NotImplementedException("Mesh", "setVertexBuffer");
 	}
 	void Mesh::setIndexBuffer(const std::shared_ptr<Buffer>& indexBuffer)
 	{
-		throw GraphicsException("Not implemented mesh function");
+		throw NotImplementedException("Mesh", "setIndexBuffer");
 	}
 }

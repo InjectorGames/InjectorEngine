@@ -1,5 +1,5 @@
 #include "Injector/Graphics/ColorPipeline.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
@@ -8,10 +8,10 @@ namespace Injector
 
 	const Vector4& ColorPipeline::getColor() const
 	{
-		throw GraphicsException("Not implemented color pipeline function");
+		throw NotImplementedException("ColorPipeline", "getColor");
 	}
 	void ColorPipeline::setColor(const Vector4& _color)
 	{
-		throw GraphicsException("Not implemented color pipeline function");
+		throw NotImplementedException("ColorPipeline", "setColor");
 	}
 }

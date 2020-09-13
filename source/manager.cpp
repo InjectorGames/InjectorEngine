@@ -1,5 +1,5 @@
 #include "Injector/Manager.hpp"
-#include "Injector/EngineException.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
@@ -35,7 +35,7 @@ namespace Injector
 		auto entity = std::make_shared<Entity>();
 
 		if (!entities.emplace(entity).second)
-			throw EngineException("Failed to create manager entity");
+			throw Exception("Manager", "createEntity", "Failed to create entity");
 
 		return entity;
 	}

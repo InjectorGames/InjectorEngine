@@ -1,5 +1,5 @@
 #include "Injector/Graphics/Pipeline.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
@@ -13,6 +13,6 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-		throw GraphicsException("Not implemented pipeline function");
+		throw NotImplementedException("Pipeline", "setUniforms");
 	}
 }

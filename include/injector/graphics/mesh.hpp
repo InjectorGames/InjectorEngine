@@ -22,8 +22,8 @@ namespace Injector
 			const std::shared_ptr<Buffer>& indexBuffer);
 		virtual ~Mesh();
 
-		const std::shared_ptr<Buffer>& getVertexBuffer() const noexcept;
-		const std::shared_ptr<Buffer>& getIndexBuffer() const noexcept;
+		std::shared_ptr<Buffer> getVertexBuffer() const noexcept;
+		std::shared_ptr<Buffer> getIndexBuffer() const noexcept;
 
 		virtual void setVertexBuffer(const std::shared_ptr<Buffer>& vertexBuffer);
 		virtual void setIndexBuffer(const std::shared_ptr<Buffer>& indexBuffer);

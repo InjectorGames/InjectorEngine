@@ -1,5 +1,5 @@
 #include "Injector/Graphics/VkShader.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
@@ -14,7 +14,7 @@ namespace Injector
 			 &shaderModuleCreateInfo, nullptr, &shaderModule);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan shader module");
+			throw Exception("VkShader", "VkShader", "Failed to create shader module");
 	}
 	VkShader::VkShader(
 		const vk::Device& _device,
@@ -27,7 +27,7 @@ namespace Injector
 			&shaderModuleCreateInfo, nullptr, &shaderModule);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan shader module");
+			throw Exception("VkShader", "VkShader", "Failed to create shader module");
 	}
 	VkShader::~VkShader()
 	{

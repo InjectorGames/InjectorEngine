@@ -35,6 +35,12 @@ add_subdirectory(Libraries/SDL)
 configure_file(CMake/Defines.hpp.in Injector/Defines.hpp)
 
 add_library(InjectorEngine STATIC
+	Source/Exception/CastException.cpp
+	Source/Exception/Exception.cpp
+	Source/Exception/NotImplementedException.cpp
+	Source/Exception/NullException.cpp
+	Source/Exception/OutOfRangeException.cpp
+
 	Source/Graphics/Buffer.cpp
 	Source/Graphics/CameraComponent.cpp
 	Source/Graphics/CameraSystem.cpp
@@ -43,22 +49,23 @@ add_library(InjectorEngine STATIC
 	Source/Graphics/FlyTransformSystem.cpp
 	Source/Graphics/GlBuffer.cpp
 	Source/Graphics/GlCameraSystem.cpp
+	Source/Graphics/GlColColorPipeline.cpp
 	Source/Graphics/GlColorPipeline.cpp
 	Source/Graphics/GlDiffusePipeline.cpp
 	Source/Graphics/GlMesh.cpp
 	Source/Graphics/GlPipeline.cpp
 	Source/Graphics/GlRenderSystem.cpp
 	Source/Graphics/GlShader.cpp
+	Source/Graphics/GlTexDiffusePipeline.cpp
 	Source/Graphics/GlTexture.cpp
-	Source/Graphics/GlVertexAttribute.cpp
 	Source/Graphics/GlWindow.cpp
-	Source/Graphics/GraphicsException.cpp
 	Source/Graphics/Image.cpp
 	Source/Graphics/Mesh.cpp
 	Source/Graphics/Pipeline.cpp
 	Source/Graphics/Primitive.cpp
 	Source/Graphics/RenderComponent.cpp
 	Source/Graphics/RenderSystem.cpp
+	Source/Graphics/TexDiffusePipeline.cpp
 	Source/Graphics/Texture.cpp
 	Source/Graphics/VkBuffer.cpp
 	Source/Graphics/VkCameraSystem.cpp
@@ -95,14 +102,11 @@ add_library(InjectorEngine STATIC
 
 	Source/Memory/ByteSwap.cpp
 
-	Source/Storage/FileException.cpp
 	Source/Storage/FileStream.cpp
 
 	Source/Component.cpp
 	Source/Engine.cpp
-	Source/EngineException.cpp
 	Source/Entity.cpp
-	Source/Exception.cpp
 	Source/Manager.cpp
 	Source/System.cpp
 )

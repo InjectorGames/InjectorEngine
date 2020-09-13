@@ -1,5 +1,5 @@
 #include "Injector/Graphics/VkSwapchainData.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
@@ -29,7 +29,7 @@ namespace Injector
 		auto result = _device.createImageView(&imageViewCreateInfo, nullptr, &imageView);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan swapchain image view");
+			throw Exception("VkSwapchainData", "VkSwapchainData", "Failed to create image view");
 
 		auto framebufferCreateInfo = vk::FramebufferCreateInfo({},
 			renderPass,
@@ -40,7 +40,7 @@ namespace Injector
 		result = _device.createFramebuffer(&framebufferCreateInfo, nullptr, &framebuffer);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan framebuffer");
+			throw Exception("VkSwapchainData", "VkSwapchainData", "Failed to create framebuffer");
 
 		auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo(
 			_graphicsCommandPool, vk::CommandBufferLevel::ePrimary, 1);
@@ -48,7 +48,7 @@ namespace Injector
 			&commandBufferAllocateInfo, &graphicsCommandBuffer);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to allocate Vulkan command buffers");
+			throw Exception("VkSwapchainData", "VkSwapchainData", "Failed to allocate command buffers");
 
 		if (_graphicsCommandPool != _presentCommandPool)
 		{
@@ -57,7 +57,7 @@ namespace Injector
 				&commandBufferAllocateInfo, &presentCommandBuffer);
 
 			if (result != vk::Result::eSuccess)
-				throw GraphicsException("Failed to allocate Vulkan command buffers");
+				throw Exception("VkSwapchainData", "VkSwapchainData", "Failed to allocate command buffers");
 		}
 		else
 		{

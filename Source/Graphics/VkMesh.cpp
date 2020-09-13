@@ -1,5 +1,5 @@
 #include "Injector/Graphics/VkMesh.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/CastException.hpp"
 
 namespace Injector
 {
@@ -10,11 +10,10 @@ namespace Injector
 		const std::shared_ptr<Buffer>& indexBuffer) :
 		Mesh(indexCount, indexType, vertexBuffer, indexBuffer)
 	{
-		if(!std::dynamic_pointer_cast<VkBuffer>(vertexBuffer) ||
-			!std::dynamic_pointer_cast<VkBuffer>(indexBuffer))
-		{
-			throw GraphicsException("Failed to cast Vulkan buffer");
-		}	
+		if(!std::dynamic_pointer_cast<VkBuffer>(vertexBuffer))
+			throw CastException("VkBuffer", "VkBuffer", "vertexBuffer");
+		if(!std::dynamic_pointer_cast<VkBuffer>(vertexBuffer))
+			throw CastException("VkBuffer", "VkBuffer", "indexBuffer");
 	}
 	VkMesh::~VkMesh()
 	{}
@@ -37,14 +36,14 @@ namespace Injector
 	void VkMesh::setVertexBuffer(const std::shared_ptr<Buffer>& _vertexBuffer)
 	{
 		if(!std::dynamic_pointer_cast<VkBuffer>(_vertexBuffer))
-			throw GraphicsException("Failed to cast Vulkan vertex buffer");
+			throw CastException("VkBuffer", "setVertexBuffer", "vertexBuffer");
 
 		vertexBuffer = std::shared_ptr<Buffer>(_vertexBuffer);
 	}
 	void VkMesh::setIndexBuffer(const std::shared_ptr<Buffer>& _indexBuffer)
 	{
 		if(!std::dynamic_pointer_cast<VkBuffer>(_indexBuffer))
-			throw GraphicsException("Failed to cast Vulkan index buffer");
+			throw CastException("VkBuffer", "setIndexBuffer", "indexBuffer");
 
 		indexBuffer = std::shared_ptr<Buffer>(_indexBuffer);
 	}

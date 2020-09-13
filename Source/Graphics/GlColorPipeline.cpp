@@ -1,19 +1,14 @@
 #include "Injector/Graphics/GlColorPipeline.hpp"
-#include "Injector/Storage/FileStream.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
 #include "Injector/Graphics/GlShader.hpp"
+#include "Injector/Storage/FileStream.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
-	const std::vector<GlVertexAttribute> GlColorPipeline::vertexAttributes =
-	{
-		GlVertexAttribute(0, 3, GL_FLOAT, false, sizeof(Vector3), 0),
-	};
-
 	GlColorPipeline::GlColorPipeline(
 		bool gles,
 		const Vector4& _color) :
-		GlPipeline(GL_TRIANGLES, vertexAttributes),
+		GlPipeline(GL_TRIANGLES),
 		color(_color)
 	{
 		auto vertexSource = FileStream::readAllText(
@@ -35,7 +30,8 @@ namespace Injector
 			auto log = getInfoLog(program);
 			glDeleteProgram(program);
 
-			throw GraphicsException("Failed to link OpenGL program: " + log);
+			throw Exception("GlColorPipeline", "GlColorPipeline",
+				"Failed to link program, " + log);
 		}
 
 		mvpLocation = getUniformLocation(program, "u_MVP");
@@ -53,13 +49,6 @@ namespace Injector
 		color = Vector4(_color);
 	}
 
-	void GlColorPipeline::flush()
-	{
-		GlPipeline::bind();
-
-		glUniform4fv(colorLocation, GL_ONE, 
-			reinterpret_cast<const GLfloat*>(&color));
-	}
 	void GlColorPipeline::bind()
 	{
 		GlPipeline::bind();
@@ -70,6 +59,16 @@ namespace Injector
 		glCullFace(GL_BACK); 
 		glFrontFace(GL_CW); 
 	}
+	void GlColorPipeline::flush()
+	{
+		GlPipeline::bind();
+		setUniform(colorLocation, color);
+	}
+	void GlColorPipeline::setAttributes()
+	{
+		glEnableVertexAttribArray(0);
+		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3));
+	}
 
 	void GlColorPipeline::setUniforms(
 		const Matrix4& model,
@@ -78,7 +77,6 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-		glUniformMatrix4fv(mvpLocation, GL_ONE, GL_FALSE,
-			reinterpret_cast<const GLfloat*>(&mvp));
+		setUniform(mvpLocation, mvp);
 	}
 }

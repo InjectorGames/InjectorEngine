@@ -7,7 +7,7 @@
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/ColorPipeline.hpp"
-#include "Injector/Graphics/DiffusePipeline.hpp"
+#include "Injector/Graphics/TexDiffusePipeline.hpp"
 
 #include "SDL.h"
 
@@ -80,7 +80,10 @@ namespace Injector
 		virtual std::shared_ptr<Texture> createTexture();
 
 		virtual std::shared_ptr<ColorPipeline> createColorPipeline();
+		virtual std::shared_ptr<ColorPipeline> createColColorPipeline();
 		virtual std::shared_ptr<DiffusePipeline> createDiffusePipeline();
+		virtual std::shared_ptr<TexDiffusePipeline> createTexDiffusePipeline(
+			const std::shared_ptr<Texture>& texture);
 
 		std::shared_ptr<Mesh> createSquareMeshV(bool mappable);
 		std::shared_ptr<Mesh> createSquareMeshVN(bool mappable);

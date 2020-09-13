@@ -1,5 +1,5 @@
 #include "Injector/Graphics/VkTexture.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {

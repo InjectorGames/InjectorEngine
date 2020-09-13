@@ -43,6 +43,9 @@ namespace Injector
 		std::shared_ptr<Texture> createTexture() override;
 
 		std::shared_ptr<ColorPipeline> createColorPipeline() override;
+		std::shared_ptr<ColorPipeline> createColColorPipeline() override;
 		std::shared_ptr<DiffusePipeline> createDiffusePipeline() override;
+		std::shared_ptr<TexDiffusePipeline> createTexDiffusePipeline(
+			const std::shared_ptr<Texture>& texture) override;
 	};
 }

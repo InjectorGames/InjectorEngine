@@ -1,23 +1,17 @@
 #include "Injector/Graphics/GlDiffusePipeline.hpp"
-#include "Injector/Storage/FileStream.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
 #include "Injector/Graphics/GlShader.hpp"
+#include "Injector/Storage/FileStream.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
-    const std::vector<GlVertexAttribute> GlDiffusePipeline::vertexAttributes =
-	{
-		GlVertexAttribute(0, 3, GL_FLOAT, false, sizeof(Vector3) * 2, 0),
-        GlVertexAttribute(1, 3, GL_FLOAT, false, sizeof(Vector3) * 2, sizeof(Vector3)),
-	};
-
     GlDiffusePipeline::GlDiffusePipeline(
         bool gles,
         const Vector4& objectColor,
         const Vector4& ambientColor,
         const Vector4& lightColor,
         const Vector3& lightDirection) :
-        GlPipeline(GL_TRIANGLES, vertexAttributes),
+        GlPipeline(GL_TRIANGLES),
 		ubo(objectColor, ambientColor, lightColor,
 			lightDirection.getNormalized())
     {
@@ -40,7 +34,8 @@ namespace Injector
 			auto log = getInfoLog(program);
 			glDeleteProgram(program);
 
-			throw GraphicsException("Failed to link OpenGL program: " + log);
+			throw Exception("GlDiffusePipeline", "GlDiffusePipeline",
+				"Failed to link program, " + log);
 		}
 
 		mvpLocation = getUniformLocation(program, "u_MVP");
@@ -92,11 +87,7 @@ namespace Injector
         ubo.lightDirection = _lightDirection.getNormalized();
     }
 
-    void GlDiffusePipeline::flush()
-	{
-		uniformBuffer->setData(&ubo, sizeof(UniformBufferObject));
-	}
-	void GlDiffusePipeline::bind()
+	void GlDiffusePipeline::bind()	
 	{
 		GlPipeline::bind();
 		glEnable(GL_DEPTH_TEST);
@@ -106,6 +97,18 @@ namespace Injector
 		glCullFace(GL_BACK); 
 		glFrontFace(GL_CW);
 	}
+    void GlDiffusePipeline::flush()
+	{
+		uniformBuffer->setData(&ubo, sizeof(UniformBufferObject));
+	}
+	void GlDiffusePipeline::setAttributes()
+	{
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+
+		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3) * 2);
+		setVertexAttributePointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3) * 2, sizeof(Vector3));
+	}
 
 	void GlDiffusePipeline::setUniforms(
 		const Matrix4& model,
@@ -114,11 +117,7 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-		auto normal = model.getInversed().getTransposed().getMatrix3();
-
-		glUniformMatrix4fv(mvpLocation, GL_ONE, GL_FALSE,
-			reinterpret_cast<const GLfloat*>(&mvp));
-        glUniformMatrix3fv(normalLocation, GL_ONE, GL_FALSE,
-			reinterpret_cast<const GLfloat*>(&normal));
+		setUniform(mvpLocation, mvp);
+		setUniform(normalLocation, model.getInversed().getMatrix3(), GL_TRUE);
 	}
 }

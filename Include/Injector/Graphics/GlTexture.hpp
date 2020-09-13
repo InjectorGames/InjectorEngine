@@ -24,6 +24,9 @@ namespace Injector
             const std::shared_ptr<Image>& image);
         virtual ~GlTexture();
 
+        GLuint getTexture() const noexcept;
+		GLenum getGlType() const noexcept;
+
         void bind() noexcept;
 	    void unbind() noexcept;
 

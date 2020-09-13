@@ -1,5 +1,5 @@
 #include "Injector/Graphics/GlBuffer.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/OutOfRangeException.hpp"
 
 namespace Injector
 {
@@ -48,7 +48,7 @@ namespace Injector
 			static_cast<GLsizeiptr>(size), toGlAccess(access));
 
 		if (!mappedData)
-			throw GraphicsException("Failed to map OpenGL buffer");
+			throw Exception("GlBuffer", "map", "Failed to map buffer");
 
 		glBindBuffer(glType, GL_ZERO);
 		return mappedData;
@@ -62,7 +62,7 @@ namespace Injector
 			static_cast<GLsizeiptr>(size), toGlAccess(access));
 
 		if (!mappedData)
-			throw GraphicsException("Failed to map OpenGL buffer");
+			throw Exception("GlBuffer", "map", "Failed to map buffer");
 
 		glBindBuffer(glType, GL_ZERO);
 		return mappedData;
@@ -80,7 +80,7 @@ namespace Injector
 		}
 		
 		if(glUnmapBuffer(glType) == GL_FALSE)
-			throw GraphicsException("Failed to unmap OpenGL buffer");
+			throw Exception("GlBuffer", "unmap", "Failed to unmap buffer");
 
 		glBindBuffer(glType, GL_ZERO);
 	}
@@ -88,11 +88,11 @@ namespace Injector
 	void GlBuffer::setData(const void* data, size_t _size)
 	{
 		if (!mappable)
-			throw GraphicsException("Failed to set Vulkan buffer data, not mappable");
+			throw Exception("GlBuffer", "setData", "Not mappable");
 		if (mapped)
-			throw GraphicsException("Failed to set Vulkan buffer data, already mapped");
+			throw Exception("GlBuffer", "setData", "Already mapped");
 		if (_size > size)
-			throw GraphicsException("Failed to map OpenGL buffer, out of range");
+			throw OutOfRangeException("GlBuffer", "setData", _size, size);
 
 		glBindBuffer(glType, buffer);
 		glBufferSubData(glType, 0, static_cast<GLsizeiptr>(_size), data);
@@ -101,11 +101,11 @@ namespace Injector
 	void GlBuffer::setData(const void* data, size_t _size, size_t offset)
 	{
 		if (!mappable)
-			throw GraphicsException("Failed to set OpenGL buffer data, not mappable");
+			throw Exception("GlBuffer", "setData", "Not mappable");
 		if (mapped)
-			throw GraphicsException("Failed to set OpenGL buffer data, already mapped");
+			throw Exception("GlBuffer", "setData", "Already mapped");
 		if (_size + offset > size)
-			throw GraphicsException("Failed to map OpenGL buffer, out of range");
+			throw OutOfRangeException("GlBuffer", "setData", _size + offset, size);
 
 		glBindBuffer(glType, buffer);
 		glBufferSubData(glType, static_cast<GLintptr>(offset),
@@ -126,7 +126,7 @@ namespace Injector
 		case BufferType::TransformFeedback:
 			return GL_TRANSFORM_FEEDBACK_BUFFER;
 		default:
-			throw GraphicsException("Unsupported OpenGL buffer type");
+			throw Exception("GlBuffer", "toGlType", "Unsupported type");
 		}
 	}
 	bool GlBuffer::isGlMappable(GLenum usage)
@@ -150,6 +150,6 @@ namespace Injector
 			GL_MAP_WRITE_BIT |
 			GL_MAP_FLUSH_EXPLICIT_BIT;
 		else
-			throw GraphicsException("Unsupported OpenGL buffer access type");
+			throw Exception("GlBuffer", "toGlAccess", "Unsupported access");
 	}
 }

@@ -1,6 +1,6 @@
 #define VMA_IMPLEMENTATION
 #include "Injector/Graphics/VkBuffer.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/OutOfRangeException.hpp"
 
 namespace Injector
 {
@@ -35,7 +35,7 @@ namespace Injector
 			nullptr);
 
 		if(result != VK_SUCCESS)
-			throw GraphicsException("Failed to create Vulkan buffer");
+			throw Exception("VkBuffer", "VkBuffer", "Failed to create buffer");
 
 		buffer = vk::Buffer(bufferHandle);
 	}
@@ -61,13 +61,13 @@ namespace Injector
 	{
 		auto result = vmaInvalidateAllocation(allocator, allocation, offset, _size);
 		if (result != VK_SUCCESS)
-			throw GraphicsException("Failed to invalidate Vulkan buffer");
+			throw Exception("VkBuffer", "invalidate", "Failed to invalidate");
 	}
 	void VkBuffer::flush(size_t _size, size_t offset)
 	{
 		auto result = vmaFlushAllocation(allocator, allocation, offset, _size);
 		if (result != VK_SUCCESS)
-			throw GraphicsException("Failed to flush Vulkan buffer");
+			throw Exception("VkBuffer", "fkush", "Failed to flush");
 	}
 
 	void* VkBuffer::map(BufferAccess access)
@@ -77,7 +77,7 @@ namespace Injector
 
 		auto result = vmaMapMemory(allocator, allocation, &mappedData);
 		if (result != VK_SUCCESS)
-			throw GraphicsException("Failed to map Vulkan buffer");
+			throw Exception("VkBuffer", "map", "Failed to map");
 
 		if (access == BufferAccess::ReadOnly || access == BufferAccess::ReadWrite)
 			invalidate(size, 0);
@@ -91,7 +91,7 @@ namespace Injector
 
 		auto result = vmaMapMemory(allocator, allocation, &mappedData);
 		if (result != VK_SUCCESS)
-			throw GraphicsException("Failed to map Vulkan buffer");
+			throw Exception("VkBuffer", "map", "Failed to map");
 
 		if (access == BufferAccess::ReadOnly || access == BufferAccess::ReadWrite)
 			invalidate(size, offset);
@@ -112,17 +112,17 @@ namespace Injector
 	void VkBuffer::setData(const void* data, size_t _size)
 	{
 		if (!mappable)
-			throw GraphicsException("Failed to set Vulkan buffer data, not mappable");
+			throw Exception("VkBuffer", "setData", "Not mappable");
 		if (mapped)
-			throw GraphicsException("Failed to set Vulkan buffer data, already mapped");
+			throw Exception("VkBuffer", "setData", "Already mapped");
 		if(_size > size)
-			throw GraphicsException("Failed to set Vulkan buffer data, out of range");
+			throw OutOfRangeException("VkBuffer", "setData", _size, size);
 
 		void* mappedData;
 
 		auto result = vmaMapMemory(allocator, allocation, &mappedData);
 		if (result != VK_SUCCESS)
-			throw GraphicsException("Failed to map Vulkan buffer");
+			throw Exception("VkBuffer", "setData", "Failed to map");
 
 		memcpy(mappedData, data, _size);
 
@@ -132,17 +132,17 @@ namespace Injector
 	void VkBuffer::setData(const void* data, size_t _size, size_t offset)
 	{
 		if (!mappable)
-			throw GraphicsException("Failed to set Vulkan buffer data, not mappable");
+			throw Exception("VkBuffer", "setData", "Not mappable");
 		if (mapped)
-			throw GraphicsException("Failed to set Vulkan buffer data, already mapped");
+			throw Exception("VkBuffer", "setData", "Already mapped");
 		if (_size + offset > size)
-			throw GraphicsException("Failed to set Vulkan buffer data, out of range");
+			throw OutOfRangeException("VkBuffer", "setData", _size + offset, size);
 
 		void* mappedData;
 
 		auto result = vmaMapMemory(allocator, allocation, &mappedData);
 		if (result != VK_SUCCESS)
-			throw GraphicsException("Failed to map Vulkan buffer");
+			throw Exception("VkBuffer", "setData", "Failed to map");
 
 		auto castedData = static_cast<char*>(mappedData);
 		memcpy(castedData + offset, data, _size);
@@ -174,7 +174,7 @@ namespace Injector
 		case BufferType::TransformFeedbackCounter:
 			return vk::BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT;
 		default:
-			throw GraphicsException("Unsupported Vulkan buffer type");
+			throw Exception("VkBuffer", "toVkType", "Unsupported type");
 		}
 	}
 	bool VkBuffer::isVkMappable(VmaMemoryUsage usage)

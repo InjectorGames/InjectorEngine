@@ -1,5 +1,6 @@
 #include "Injector/Graphics/Buffer.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/OutOfRangeException.hpp"
+#include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
@@ -50,9 +51,9 @@ namespace Injector
     void* Buffer::map(BufferAccess access)
     {
         if (!mappable)
-			throw GraphicsException("Failed to map buffer, not mappable");
+			throw Exception("Buffer", "map", "Not mappable");
 		if (mapped)
-			throw GraphicsException("Failed to map buffer, already mapped");
+			throw Exception("Buffer", "map", "Already mapped");
 
         mapped = true;
 		mapAccess = access;
@@ -62,11 +63,11 @@ namespace Injector
 	void* Buffer::map(BufferAccess access, size_t _size, size_t offset)
     {
         if (!mappable)
-			throw GraphicsException("Failed to map buffer, not mappable");
+			throw Exception("Buffer", "map", "Not mappable");
 		if (mapped)
-			throw GraphicsException("Failed to map buffer, already mapped");
+			throw Exception("Buffer", "map", "Already mapped");
 		if (_size + offset > size)
-			throw GraphicsException("Failed to map buffer, out of range");
+			throw OutOfRangeException("Buffer", "map", _size + offset, size);
 
         mapped = true;
 		mapAccess = access;
@@ -76,17 +77,17 @@ namespace Injector
 	void Buffer::unmap()
     {
         if (!mapped)
-			throw GraphicsException("Failed to unmap buffer, not mapped");
+			throw Exception("Buffer", "map", "Not mapped");
 
         mapped = false;
     }
 
 	void Buffer::setData(const void* data, size_t size)
     {
-        throw GraphicsException("Not implemented buffer function");
+        throw NotImplementedException("Buffer", "setData");
     }
 	void Buffer::setData(const void* data, size_t size, size_t offset)
     {
-        throw GraphicsException("Not implemented buffer function");
+        throw NotImplementedException("Buffer", "setData");
     }
 }

@@ -1,5 +1,5 @@
 #include "Injector/Graphics/VkPipeline.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
@@ -13,7 +13,7 @@ namespace Injector
 			&pipelineCacheCreateInfo, nullptr, &pipelineCache);
 
 		if (result != vk::Result::eSuccess)
-			throw GraphicsException("Failed to create Vulkan pipeline cache");
+			throw Exception("VkPipeline", "VkPipeline", "Failed to create pipeline cache");
 	}
 	VkPipeline::~VkPipeline()
 	{
@@ -35,12 +35,12 @@ namespace Injector
 		uint32_t imageCount,
 		const vk::Extent2D& surfaceExtent)
 	{
-		throw GraphicsException("Not implemented Vulkan pipeline function");
+		throw NotImplementedException("VkPipeline", "recreate");
 	}
 	void VkPipeline::flush(
 		size_t imageIndex)
 	{
-		throw GraphicsException("Not implemented Vulkan pipeline function");
+		throw NotImplementedException("VkPipeline", "flush");
 	}
 	void VkPipeline::bind(
 		vk::CommandBuffer commandBuffer,

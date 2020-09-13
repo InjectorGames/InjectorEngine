@@ -1,6 +1,6 @@
 #include "Injector/Graphics/FlyTransformSystem.hpp"
 #include "Injector/Engine.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/NullException.hpp"
 
 #include <algorithm>
 
@@ -16,7 +16,7 @@ namespace Injector
 		sensitivity(0.0025f)
 	{
 		if (!_window)
-			throw GraphicsException("Fly transform system window is null");
+			throw NullException("FlyTransformSystem", "FlyTransformSystem", "window");
 	}
 	FlyTransformSystem::~FlyTransformSystem()
 	{}

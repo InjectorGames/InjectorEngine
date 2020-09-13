@@ -1,5 +1,5 @@
 #include "Injector/Graphics/GlTexture.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
@@ -35,7 +35,7 @@ namespace Injector
         else if(channelCount == 4)
             dataFormat = GL_RGBA;
         else
-            throw GraphicsException("Unsupported OpenGL texture channel count");
+            throw Exception("GlTexture", "GlTexture", "Unsupported channel count");
 
         if(type == TextureType::T1D)
         {
@@ -70,6 +70,15 @@ namespace Injector
         glDeleteTextures(GL_ONE, &texture);
     }
 
+    GLuint GlTexture::getTexture() const noexcept
+	{
+        return texture;
+	}
+	GLenum GlTexture::getGlType() const noexcept
+    {
+        return glType;
+    }
+
     void GlTexture::bind() noexcept
 	{
 		glBindTexture(glType, texture);
@@ -88,7 +97,7 @@ namespace Injector
         else if(type == TextureType::T3D)
             return GL_TEXTURE_3D;
         else
-            throw GraphicsException("Unsupported OpenGL texture type");
+            throw Exception("GlTexture", "toGlType", "Unsupported type");
     }
     GLenum GlTexture::toGlFormat(TextureFormat format)
     {
@@ -167,7 +176,7 @@ namespace Injector
         case TextureFormat::RGBA32I:
             return GL_RGBA32I;
         default:
-            throw GraphicsException("Unsupported OpenGL texture format");
+            throw Exception("GlTexture", "toGlFormat", "Unsupported format");
         }
     }
     GLint GlTexture::toGlFilter(TextureFilter filter)
@@ -177,7 +186,7 @@ namespace Injector
         else if(filter == TextureFilter::Linear)
             return GL_LINEAR;
         else
-            throw GraphicsException("Unsupported OpenGL texture filter");
+            throw Exception("GlTexture", "toGlFilter", "Unsupported filter");
     }
     GLint GlTexture::toGlWrap(TextureWrap wrap)
     {
@@ -194,7 +203,7 @@ namespace Injector
         case TextureWrap::MirrorClampToEdge:
             return GL_MIRROR_CLAMP_TO_EDGE;
         default:
-            throw GraphicsException("Unsupported OpenGL texture wrap");
+            throw Exception("GlTexture", "toGlWrap", "Unsupported wrap");
         }
     }
 }

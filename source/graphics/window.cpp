@@ -1,9 +1,10 @@
 #include "Injector/Graphics/Window.hpp"
 #include "Injector/Engine.hpp"
+#include "Injector/Exception/NotImplementedException.hpp"
 #include "Injector/Graphics/Primitive.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
 #include "Injector/Graphics/GlWindow.hpp"
 #include "Injector/Graphics/VkWindow.hpp"
+
 
 #include "SDL_events.h"
 
@@ -28,7 +29,10 @@ namespace Injector
 			position.x, position.y, size.x, size.y, flags);
 
 		if (!window)
-			throw GraphicsException("Failed to create SDL window, Error: " + std::string(SDL_GetError()));
+		{
+			throw Exception("Window", "Window",
+				"Failed to create SDL window, " + std::string(SDL_GetError()));
+		}
 
 		SDL_SetWindowMinimumSize(window, 1, 1);
 	}
@@ -137,7 +141,7 @@ namespace Injector
 	}
 	void Window::onResize(IntVector2 size)
 	{
-		throw GraphicsException("Not implemented window function");
+		throw NotImplementedException("Window", "onResize");
 	}
 
 	uint32_t Window::getID() const noexcept
@@ -230,11 +234,11 @@ namespace Injector
 
 	std::shared_ptr<CameraSystem> Window::createCameraSystem()
 	{
-		throw GraphicsException("Not implemented window function");
+		throw NotImplementedException("Window", "createCameraSystem");
 	}
 	std::shared_ptr<RenderSystem> Window::createRenderSystem()
 	{
-		throw GraphicsException("Not implemented window function");
+		throw NotImplementedException("Window", "createRenderSystem");
 	}
 
 	std::shared_ptr<Buffer> Window::createBuffer(
@@ -243,7 +247,7 @@ namespace Injector
 		bool mappable,
 		const void* data)
 	{
-		throw GraphicsException("Not implemented window function");
+		throw NotImplementedException("Window", "createBuffer");
 	}
 	std::shared_ptr<Mesh> Window::createMesh(
 		size_t indexCount,
@@ -251,20 +255,29 @@ namespace Injector
 		const std::shared_ptr<Buffer>& vertexBuffer,
 		const std::shared_ptr<Buffer>& indexBuffer)
 	{
-		throw GraphicsException("Not implemented window function");
+		throw NotImplementedException("Window", "createMesh");
 	}
 	std::shared_ptr<Texture> Window::createTexture()
 	{
-		throw GraphicsException("Not implemented window function");
+		throw NotImplementedException("Window", "createTexture");
 	}
 
 	std::shared_ptr<ColorPipeline> Window::createColorPipeline()
 	{
-		throw GraphicsException("Not implemented window function");
+		throw NotImplementedException("Window", "createColorPipeline");
+	}
+	std::shared_ptr<ColorPipeline> Window::createColColorPipeline()
+	{
+		throw NotImplementedException("Window", "createColColorPipeline");
 	}
 	std::shared_ptr<DiffusePipeline> Window::createDiffusePipeline()
 	{
-		throw GraphicsException("Not implemented window function");
+		throw NotImplementedException("Window", "createDiffusePipeline");
+	}
+	std::shared_ptr<TexDiffusePipeline> Window::createTexDiffusePipeline(
+		const std::shared_ptr<Texture>& texture)
+	{
+		throw NotImplementedException("Window", "createTexDiffusePipeline");
 	}
 
 	std::shared_ptr<Mesh> Window::createSquareMeshV(bool mappable)
@@ -475,6 +488,6 @@ namespace Injector
 		else if (graphicsApi == GraphicsApi::Vulkan)
 			return Engine::createManager<VkWindow>(title, position, size, flags);
 		else
-			throw GraphicsException("Failed to create window, unknown graphics API");
+			throw Exception("Window", "createWindow", "Unknown graphics API");
 	}
 }

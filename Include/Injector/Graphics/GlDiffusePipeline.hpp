@@ -32,8 +32,6 @@ namespace Injector
         std::shared_ptr<GlBuffer> uniformBuffer;
         UniformBufferObject ubo;
     public:
-        static const std::vector<GlVertexAttribute> vertexAttributes;
-
         GlDiffusePipeline(bool gles,
             const Vector4& objectColor = Vector4::one,
 			const Vector4& ambientColor = Vector4::one / 2,
@@ -53,8 +51,9 @@ namespace Injector
 		const Vector3& getLightDirection() const override;
 		void setLightDirection(const Vector3& lightDirection) override;
 
-		void flush() override;
 		void bind() override;
+        void flush() override;
+        void setAttributes() override;
 
 		void setUniforms(
 			const Matrix4& model,

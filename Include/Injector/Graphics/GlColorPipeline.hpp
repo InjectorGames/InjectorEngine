@@ -12,8 +12,6 @@ namespace Injector
 
 		Vector4 color;
 	public:
-		static const std::vector<GlVertexAttribute> vertexAttributes;
-
 		GlColorPipeline(bool gles,
 			const Vector4& color = Vector4::one);
 		virtual ~GlColorPipeline();
@@ -21,8 +19,9 @@ namespace Injector
 		const Vector4& getColor() const override;
 		void setColor(const Vector4& color) override;
 
-		void flush() override;
 		void bind() override;
+		void flush() override;
+		void setAttributes() override;
 
 		void setUniforms(
 			const Matrix4& model,

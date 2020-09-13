@@ -1,6 +1,6 @@
 #include "Injector/Storage/FileStream.hpp"
-#include "Injector/Storage/FileException.hpp"
 #include "Injector/Memory/ByteSwap.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
@@ -11,13 +11,19 @@ namespace Injector
 		std::fstream(filePath, mode)
 	{
 		if(!is_open())
-			throw FileException("Failed to open file", std::string(filePath));
+		{
+			throw Exception("FileStream", "FileStream",
+				"Failed to open file \"" + std::string(filePath) + "\"");
+		}
 	}
 	FileStream::FileStream(const std::string& filePath, std::ios::openmode mode) :
 		std::fstream(filePath, mode)
 	{
 		if(!is_open())
-			throw FileException("Failed to open file", filePath);
+		{
+			throw Exception("FileStream", "FileStream",
+				"Failed to open file \"" + filePath + "\"");
+		}
 	}
 	FileStream::~FileStream()
 	{}

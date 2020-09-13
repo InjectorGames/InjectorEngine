@@ -1,5 +1,5 @@
 #include "Injector/Mathematics/Quaternion.hpp"
-#include "Injector/EngineException.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 #include <cmath>
 #include <limits>
@@ -110,7 +110,7 @@ namespace Injector
 			z = biggestValue;
 			w = (matrix.m01 - matrix.m10) * multiplier;
 		default:
-			throw EngineException("Something went wrong");
+			throw Exception("Quaternion", "Quaternion", "Something went wrong");
 		}
 	}
 	Quaternion::Quaternion(const Matrix4& matrix)
@@ -165,7 +165,7 @@ namespace Injector
 			z = biggestValue;
 			w = (matrix.m01 - matrix.m10) * multiplier;
 		default:
-			throw EngineException("Something went wrong");
+			throw Exception("Quaternion", "Quaternion", "Something went wrong");
 		}
 	}
 

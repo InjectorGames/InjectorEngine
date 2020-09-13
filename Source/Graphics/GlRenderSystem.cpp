@@ -96,9 +96,7 @@ namespace Injector
 
 				renderData.pipeline->setUniforms(
 					modelMatrix, viewMatrix, projMatrix, viewProjMatrix, mvpMatrix);
-				renderData.mesh->draw(
-					renderData.pipeline->getDrawMode(),
-					renderData.pipeline->getVertexAttributes());
+				renderData.mesh->draw(renderData.pipeline);
 			}
 		}
 

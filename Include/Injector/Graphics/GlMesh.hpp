@@ -1,7 +1,7 @@
 #pragma once
 #include "Injector/Graphics/Mesh.hpp"
 #include "Injector/Graphics/GlBuffer.hpp"
-#include "Injector/Graphics/GlVertexAttribute.hpp"
+#include "Injector/Graphics/GlPipeline.hpp"
 
 #include <vector>
 #include <memory>
@@ -21,8 +21,7 @@ namespace Injector
 
 		GLuint getVertexArray() const noexcept;
 
-		void draw(GLuint mode,
-			const std::vector<GlVertexAttribute>& vertexAttributes) noexcept;
+		void draw(const std::shared_ptr<GlPipeline>& pipeline) noexcept;
 
 		void setVertexBuffer(const std::shared_ptr<Buffer>& vertexBuffer) override;
 		void setIndexBuffer(const std::shared_ptr<Buffer>& indexBuffer) override;

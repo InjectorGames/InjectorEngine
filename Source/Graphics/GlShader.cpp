@@ -1,5 +1,5 @@
 #include "Injector/Graphics/GlShader.hpp"
-#include "Injector/Graphics/GraphicsException.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 #include <vector>
 
@@ -25,8 +25,7 @@ namespace Injector
 
 		shader = glCreateShader(stage);
 
-		glShaderSource(
-			shader, 
+		glShaderSource(shader, 
 			static_cast<GLsizei>(sources.size()), 
 			static_cast<const GLchar* const*>(sources.data()),
 			nullptr);
@@ -38,7 +37,8 @@ namespace Injector
 			auto log = getInfoLog(shader);
 			glDeleteShader(shader);
 
-			throw GraphicsException("Failed to compile OpenGL shader: " + log);
+			throw Exception("GlShader", "GlShader", 
+				"Failed to compile shader: " + log);
 		}
 	}
 	GlShader::~GlShader()
