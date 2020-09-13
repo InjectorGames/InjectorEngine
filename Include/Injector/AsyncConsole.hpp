@@ -7,6 +7,8 @@
 #include <string>
 #include <iostream>
 
+// TODO: refactor
+
 namespace INJECT_NAMESPACE
 {
 	class AsyncConsole
