@@ -20,8 +20,8 @@ namespace Injector
     {
         glGenTextures(GL_ONE, &texture);
         glBindTexture(glType, texture);
-        glTexParameteri(glType, GL_TEXTURE_MIN_FILTER, toGlFilter(minFilter));
-        glTexParameteri(glType, GL_TEXTURE_MAG_FILTER, toGlFilter(magFilter));
+        glTexParameteri(glType, GL_TEXTURE_MIN_FILTER, toGlFilter(minFilter, useMipmap));
+        glTexParameteri(glType, GL_TEXTURE_MAG_FILTER, toGlFilter(magFilter, false));
 
         GLenum dataFormat;
         auto channelCount = image->getChannelCount();
@@ -179,14 +179,26 @@ namespace Injector
             throw Exception("GlTexture", "toGlFormat", "Unsupported format");
         }
     }
-    GLint GlTexture::toGlFilter(TextureFilter filter)
+    GLint GlTexture::toGlFilter(TextureFilter filter, bool useMipmap)
     {
         if(filter == TextureFilter::Nearest)
-            return GL_NEAREST;
+        {
+            if(useMipmap)
+                return GL_NEAREST_MIPMAP_LINEAR;
+            else
+                return GL_NEAREST;
+        }
         else if(filter == TextureFilter::Linear)
-            return GL_LINEAR;
+        {
+            if(useMipmap)
+                return GL_LINEAR_MIPMAP_LINEAR;
+            else
+                return GL_LINEAR;
+        }
         else
+        {
             throw Exception("GlTexture", "toGlFilter", "Unsupported filter");
+        } 
     }
     GLint GlTexture::toGlWrap(TextureWrap wrap)
     {

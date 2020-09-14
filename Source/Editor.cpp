@@ -24,21 +24,24 @@ void init()
 	cameraSystem->addCamera(camera);
 	renderSystem->addCamera(camera);
 	
-	auto colorPipeline = window->createDiffusePipeline();
-	//auto boxTexture = window->createTexture();
-	auto squareMesh = window->createSquareMeshVN(true);
-	auto cubeMesh = window->createCubeMeshVN(true);
+	auto boxImage = std::make_shared<Image>("Resources/Images/GrayBox.png", 3);
+	auto boxTexture = window->createTexture(boxImage->getSize(),
+		TextureFormat::RGB8, TextureFilter::Nearest, TextureFilter::Nearest,
+		TextureWrap::Repeat, TextureWrap::Repeat, true, boxImage);
+	auto texDiffusePipeline = window->createTexDiffusePipeline(boxTexture);
+	auto squareMesh = window->createSquareMeshVNT(false);
+	auto cubeMesh = window->createCubeMeshVNT(false);
 
 	auto floor = window->createEntity();
 	floor->createComponent<TransformComponent>(Vector3::zero,
 		Quaternion(Vector3(Converter::toRadians(-90.0f), 0.0f, 0.0f)), Vector3::one * 10);
-	floor->createComponent<RenderComponent>(colorPipeline, squareMesh);
+	floor->createComponent<RenderComponent>(texDiffusePipeline, squareMesh);
 	transformSystem->addTransform(floor);
 	cameraComponent->renders.emplace(floor);
 
 	auto cube1 = window->createEntity();
 	cube1->createComponent<TransformComponent>(Vector3(-5.0f, 0.5f, -5.0f));
-	cube1->createComponent<RenderComponent>(colorPipeline, cubeMesh);
+	cube1->createComponent<RenderComponent>(texDiffusePipeline, cubeMesh);
 	transformSystem->addTransform(cube1);
 	cameraComponent->renders.emplace(cube1);
 	

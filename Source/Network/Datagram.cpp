@@ -1,4 +1,3 @@
-#pragma once
 #include "Injector/Network/Datagram.hpp"
 #include "Injector/Exception/NotImplementedException.hpp"
 

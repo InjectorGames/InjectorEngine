@@ -14,11 +14,11 @@ namespace Injector
 		const vk::Extent2D& surfaceExtent)
 	{
 		auto vertexCode = FileStream::readAllBytes(
-			"resources/shaders/diffuse.vert.spv");
+			"Resources/Shaders/Diffuse.vert.spv");
 		auto vertexShader = VkShader(device, vertexCode);
 
 		auto fragmentCode = FileStream::readAllBytes(
-			"resources/shaders/diffuse.frag.spv");
+			"Resources/Shaders/Diffuse.frag.spv");
 		auto fragmentShader = VkShader(device, fragmentCode);
 
 		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>

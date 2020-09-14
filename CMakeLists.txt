@@ -177,6 +177,8 @@ if(INJECTOR_BUILD_EDITOR)
 endif()
 
 set(INJECTOR_RESOURCES
+	Images/GrayBox.png
+
 	Shaders/Color.frag
 	Shaders/Color.vert
 	Shaders/Diffuse.frag

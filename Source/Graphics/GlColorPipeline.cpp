@@ -12,11 +12,11 @@ namespace Injector
 		color(_color)
 	{
 		auto vertexSource = FileStream::readAllText(
-			"resources/shaders/color.vert");
+			"Resources/Shaders/Color.vert");
 		auto vertexShader = GlShader(GL_VERTEX_SHADER, vertexSource, gles);
 
 		auto fragmentSource = FileStream::readAllText(
-			"resources/shaders/color.frag");
+			"Resources/Shaders/Color.frag");
 		auto fragmentShader = GlShader(GL_FRAGMENT_SHADER, fragmentSource, gles);
 
 		glAttachShader(program, vertexShader.getShader());

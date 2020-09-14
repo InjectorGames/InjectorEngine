@@ -13,9 +13,6 @@ namespace Injector
 		uint8_t* data;
 		int channelCount;
 	public:
-		Image(const IntVector2& size,
-			uint8_t* data,
-			int channelCount);
 		Image(const std::string& filePath,
 			int channelCount = 0);
 		virtual ~Image();

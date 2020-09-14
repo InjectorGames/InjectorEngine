@@ -67,7 +67,7 @@ namespace Injector
 			const Vector4& objectColor = Vector4::one,
 			const Vector4& ambientColor = Vector4::one / 4.0f,
 			const Vector4& lightColor = Vector4::one,
-			const Vector3& lightDirection = Vector3(1.0f, 2.0f, 4.0f));
+			const Vector3& lightDirection = Vector3(1.0f, 2.0f, 3.0f));
 		virtual ~VkDiffusePipeline();
 
 		void recreate(

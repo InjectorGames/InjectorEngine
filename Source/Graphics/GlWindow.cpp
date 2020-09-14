@@ -110,8 +110,32 @@ namespace Injector
 			indexCount, indexType, vertexBuffer, indexBuffer);
 	}
 	std::shared_ptr<Texture> GlWindow::createTexture(
-		TextureType type,
-        IntVector3 size,
+        int size,
+        TextureFormat format,
+        TextureFilter minFilter,
+    	TextureFilter magFilter,
+    	TextureWrap wrapU,
+        bool useMipmap,
+		const std::shared_ptr<Image>& image)
+	{
+		return std::make_shared<GlTexture>(TextureType::T1D, IntVector3(size, 0, 0), format,
+			minFilter, magFilter, wrapU, TextureWrap::Repeat, TextureWrap::Repeat, useMipmap, image);
+	}
+	std::shared_ptr<Texture> GlWindow::createTexture(
+        const IntVector2& size,
+        TextureFormat format,
+        TextureFilter minFilter,
+    	TextureFilter magFilter,
+    	TextureWrap wrapU,
+        TextureWrap wrapV,
+        bool useMipmap,
+		const std::shared_ptr<Image>& image)
+	{
+		return std::make_shared<GlTexture>(TextureType::T2D, IntVector3(size, 0), format,
+			minFilter, magFilter, wrapU, wrapV, TextureWrap::Repeat, useMipmap, image);
+	}
+	std::shared_ptr<Texture> GlWindow::createTexture(
+        const IntVector3& size,
         TextureFormat format,
         TextureFilter minFilter,
     	TextureFilter magFilter,
@@ -121,8 +145,8 @@ namespace Injector
         bool useMipmap,
 		const std::shared_ptr<Image>& image)
 	{
-		return std::make_shared<GlTexture>(type, size, format,
-			minFilter, magFilter,wrapU, wrapV, wrapW, useMipmap, image);
+		return std::make_shared<GlTexture>(TextureType::T3D, size, format,
+			minFilter, magFilter, wrapU, wrapV, wrapW, useMipmap, image);
 	}
 
 	std::shared_ptr<ColorPipeline> GlWindow::createColorPipeline()

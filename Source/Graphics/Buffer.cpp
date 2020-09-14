@@ -59,6 +59,7 @@ namespace Injector
 		mapAccess = access;
 		mapSize = size;
 		mapOffset = 0;
+		return nullptr;
     }
 	void* Buffer::map(BufferAccess access, size_t _size, size_t offset)
     {
@@ -73,6 +74,7 @@ namespace Injector
 		mapAccess = access;
 		mapSize = _size;
 		mapOffset = offset;
+		return nullptr;
     }
 	void Buffer::unmap()
     {

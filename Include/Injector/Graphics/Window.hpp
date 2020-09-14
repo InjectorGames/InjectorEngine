@@ -79,8 +79,24 @@ namespace Injector
 			const std::shared_ptr<Buffer>& vertexBuffer,
 			const std::shared_ptr<Buffer>& indexBuffer);
 		virtual std::shared_ptr<Texture> createTexture(
-			TextureType type,
-        	IntVector3 size,
+        	int size,
+        	TextureFormat format,
+        	TextureFilter minFilter,
+    		TextureFilter magFilter,
+    		TextureWrap wrapU,
+        	bool useMipmap,
+			const std::shared_ptr<Image>& image);
+		virtual std::shared_ptr<Texture> createTexture(
+        	const IntVector2& size,
+        	TextureFormat format,
+        	TextureFilter minFilter,
+    		TextureFilter magFilter,
+    		TextureWrap wrapU,
+        	TextureWrap wrapV,
+        	bool useMipmap,
+			const std::shared_ptr<Image>& image);
+		virtual std::shared_ptr<Texture> createTexture(
+        	const IntVector3& size,
         	TextureFormat format,
         	TextureFilter minFilter,
     		TextureFilter magFilter,

@@ -16,11 +16,11 @@ namespace Injector
 			lightDirection.getNormalized())
     {
         auto vertexSource = FileStream::readAllText(
-			"resources/shaders/diffuse.vert");
+			"Resources/Shaders/Diffuse.vert");
 		auto vertexShader = GlShader(GL_VERTEX_SHADER, vertexSource, gles);
 
 		auto fragmentSource = FileStream::readAllText(
-			"resources/shaders/diffuse.frag");
+			"Resources/Shaders/Diffuse.frag");
 		auto fragmentShader = GlShader(GL_FRAGMENT_SHADER, fragmentSource, gles);
 
 		glAttachShader(program, vertexShader.getShader());

@@ -258,8 +258,30 @@ namespace Injector
 		throw NotImplementedException("Window", "createMesh");
 	}
 	std::shared_ptr<Texture> Window::createTexture(
-		TextureType type,
-        IntVector3 size,
+        int size,
+        TextureFormat format,
+        TextureFilter minFilter,
+    	TextureFilter magFilter,
+    	TextureWrap wrapU,
+        bool useMipmap,
+		const std::shared_ptr<Image>& image)
+	{
+		throw NotImplementedException("Window", "createTexture");
+	}
+	std::shared_ptr<Texture> Window::createTexture(
+        const IntVector2& size,
+        TextureFormat format,
+        TextureFilter minFilter,
+    	TextureFilter magFilter,
+    	TextureWrap wrapU,
+		TextureWrap wrapV,
+        bool useMipmap,
+		const std::shared_ptr<Image>& image)
+	{
+		throw NotImplementedException("Window", "createTexture");
+	}
+	std::shared_ptr<Texture> Window::createTexture(
+        const IntVector3& size,
         TextureFormat format,
         TextureFilter minFilter,
     	TextureFilter magFilter,
@@ -297,7 +319,7 @@ namespace Injector
 			BufferType::Vertex, mappable,
 			Primitive::squareVertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::squareIndices.size() * sizeof(Vector3),
+			Primitive::squareIndices.size() * sizeof(uint16_t),
 			BufferType::Index, mappable,
 			Primitive::squareIndices.data());
 
@@ -308,9 +330,7 @@ namespace Injector
 	}
 	std::shared_ptr<Mesh> Window::createSquareMeshVN(bool mappable)
 	{
-		auto vertices = std::vector<float>(
-			Primitive::squareVertices.size() * 3 +
-			Primitive::squareNormals.size() * 3);
+		auto vertices = std::vector<float>(Primitive::squareVertices.size() * 6);
 
 		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 6)
 		{
@@ -323,7 +343,7 @@ namespace Injector
 			BufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::squareIndices.size() * sizeof(Vector3),
+			Primitive::squareIndices.size() * sizeof(uint16_t),
 			BufferType::Index, mappable,
 			Primitive::squareIndices.data());
 
@@ -334,9 +354,7 @@ namespace Injector
 	}
 	std::shared_ptr<Mesh> Window::createSquareMeshVT(bool mappable)
 	{
-		auto vertices = std::vector<float>(
-			Primitive::squareVertices.size() * 3 +
-			Primitive::squareTexCoords.size() * 2);
+		auto vertices = std::vector<float>(Primitive::squareVertices.size() * 5);
 
 		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 5)
 		{
@@ -349,7 +367,7 @@ namespace Injector
 			BufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::squareIndices.size() * sizeof(Vector3),
+			Primitive::squareIndices.size() * sizeof(uint16_t),
 			BufferType::Index, mappable,
 			Primitive::squareIndices.data());
 
@@ -360,16 +378,13 @@ namespace Injector
 	}
 	std::shared_ptr<Mesh> Window::createSquareMeshVNT(bool mappable)
 	{
-		auto vertices = std::vector<float>(
-			Primitive::squareVertices.size() * 3 +
-			Primitive::squareNormals.size() * 3 +
-			Primitive::squareTexCoords.size() * 2);
+		auto vertices = std::vector<float>(Primitive::squareVertices.size() * 8);
 
 		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 8)
 		{
 			memcpy(&vertices[j], &Primitive::squareVertices[i], sizeof(Vector3));
 			memcpy(&vertices[j + 3], &Primitive::squareNormals[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &Primitive::squareTexCoords[i], sizeof(Vector2));
+			memcpy(&vertices[j + 6], &Primitive::squareTexCoords[i], sizeof(Vector2));
 		}
 
 		auto vertexBuffer = createBuffer(
@@ -377,7 +392,7 @@ namespace Injector
 			BufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::squareIndices.size() * sizeof(Vector3),
+			Primitive::squareIndices.size() * sizeof(uint16_t),
 			BufferType::Index, mappable,
 			Primitive::squareIndices.data());
 
@@ -393,7 +408,7 @@ namespace Injector
 			BufferType::Vertex, mappable,
 			Primitive::cubeVertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::cubeIndices.size() * sizeof(Vector3),
+			Primitive::cubeIndices.size() * sizeof(uint16_t),
 			BufferType::Index, mappable,
 			Primitive::cubeIndices.data());
 
@@ -404,9 +419,7 @@ namespace Injector
 	}
 	std::shared_ptr<Mesh> Window::createCubeMeshVN(bool mappable)
 	{
-		auto vertices = std::vector<float>(
-			Primitive::cubeVertices.size() * 3 + 
-			Primitive::cubeNormals.size() * 3);
+		auto vertices = std::vector<float>(Primitive::cubeVertices.size() * 6);
 
 		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 6)
 		{
@@ -419,7 +432,7 @@ namespace Injector
 			BufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::cubeIndices.size() * sizeof(Vector3),
+			Primitive::cubeIndices.size() * sizeof(uint16_t),
 			BufferType::Index, mappable,
 			Primitive::cubeIndices.data());
 
@@ -430,9 +443,7 @@ namespace Injector
 	}
 	std::shared_ptr<Mesh> Window::createCubeMeshVT(bool mappable)
 	{
-		auto vertices = std::vector<float>(
-			Primitive::cubeVertices.size() * 3 + 
-			Primitive::cubeTexCoords.size() * 2);
+		auto vertices = std::vector<float>(Primitive::cubeVertices.size() * 5);
 
 		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 5)
 		{
@@ -445,7 +456,7 @@ namespace Injector
 			BufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::cubeIndices.size() * sizeof(Vector3),
+			Primitive::cubeIndices.size() * sizeof(uint16_t),
 			BufferType::Index, mappable,
 			Primitive::cubeIndices.data());
 
@@ -456,10 +467,7 @@ namespace Injector
 	}
 	std::shared_ptr<Mesh> Window::createCubeMeshVNT(bool mappable)
 	{
-		auto vertices = std::vector<float>(
-			Primitive::cubeVertices.size() * 3 + 
-			Primitive::cubeNormals.size() * 3 +
-			Primitive::cubeTexCoords.size() * 2);
+		auto vertices = std::vector<float>(Primitive::cubeVertices.size() * 8);
 
 		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 8)
 		{
@@ -473,7 +481,7 @@ namespace Injector
 			BufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::cubeIndices.size() * sizeof(Vector3),
+			Primitive::cubeIndices.size() * sizeof(uint16_t),
 			BufferType::Index, mappable,
 			Primitive::cubeIndices.data());
 

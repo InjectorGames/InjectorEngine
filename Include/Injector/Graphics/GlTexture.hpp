@@ -32,7 +32,7 @@ namespace Injector
 
         static GLenum toGlType(TextureType type);
         static GLenum toGlFormat(TextureFormat format);
-        static GLint toGlFilter(TextureFilter filter);
+        static GLint toGlFilter(TextureFilter filter, bool useMipmap);
         static GLint toGlWrap(TextureWrap wrap);
     };
 }
