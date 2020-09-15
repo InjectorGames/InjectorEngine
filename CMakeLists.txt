@@ -49,6 +49,11 @@ else()
 	message(FATAL_ERROR "Failed to detect system name")
 endif()
 
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "")
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "")
+set(ASSIMP_INSTALL OFF CACHE BOOL "")
+add_subdirectory(Libraries/assimp)
+
 include(FindVulkan)
 include(CMake/asio.cmake)
 include(CMake/stb.cmake)
@@ -91,6 +96,7 @@ add_library(InjectorEngine STATIC
 	Source/Graphics/GlWindow.cpp
 	Source/Graphics/Image.cpp
 	Source/Graphics/Mesh.cpp
+	Source/Graphics/Model.cpp
 	Source/Graphics/Pipeline.cpp
 	Source/Graphics/Primitive.cpp
 	Source/Graphics/RenderComponent.cpp
@@ -146,6 +152,7 @@ add_library(InjectorEngine STATIC
 )
 target_link_libraries(InjectorEngine PUBLIC
 	asio
+	assimp
 	glew_s
 	SDL2main
 	SDL2-static

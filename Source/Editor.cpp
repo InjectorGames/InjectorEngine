@@ -40,7 +40,7 @@ void init()
 	cameraComponent->renders.emplace(floor);
 
 	auto cube1 = window->createEntity();
-	cube1->createComponent<TransformComponent>(Vector3(-5.0f, 0.5f, -5.0f));
+	cube1->createComponent<TransformComponent>(Vector3(-4.5f, 0.5f, -4.5f));
 	cube1->createComponent<RenderComponent>(texDiffusePipeline, cubeMesh);
 	transformSystem->addTransform(cube1);
 	cameraComponent->renders.emplace(cube1);

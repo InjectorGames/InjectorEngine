@@ -11,10 +11,13 @@
 
 ## Third-Party
 * [asio](https://github.com/chriskohlhoff/asio) (Boost License)
+* [assimp](https://github.com/assimp/assimp) (Custom License)
 * [glew](https://github.com/nigels-com/glew) (Custom License)
-* [glm](https://github.com/g-truc/glm) (MIT License)
 * [SDL](https://hg.libsdl.org/SDL) (zlib License)
+* [stb](https://github.com/nothings/stb) (MIT License)
+* [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) (MIT License)
 
 ## Inspired by
 * [bgfx](https://github.com/bkaradzic/bgfx/)
 * [entityx](https://github.com/alecthomas/entityx/)
+* [glm](https://github.com/g-truc/glm)
