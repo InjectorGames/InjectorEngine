@@ -9,116 +9,201 @@ project(InjectorEngine
 	LANGUAGES CXX
 )
 
-option(INJECTOR_BUILD_EDITOR "Build in editor executable" ON)
+option(INJECTOR_BUILD_EDITOR "Build editor executable" ON)
 
 include(GNUInstallDirs)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 include(TestBigEndian)
 TEST_BIG_ENDIAN(INJECTOR_BIG_ENDIAN)
 
+set(INJECTOR_POINTER_SIZE ${CMAKE_SIZEOF_VOID_P})
+set(INJECTOR_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+set(INJECTOR_SYSTEM_VERSION ${CMAKE_SYSTEM_VERSION})
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+	set(INJECTOR_SYSTEM_32 1)
+	set(INJECTOR_SYSTEM_64 0)
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	set(INJECTOR_SYSTEM_32 0)
+	set(INJECTOR_SYSTEM_64 1)
+else()
+	message(FATAL_ERROR "Failed to detect system architecture")
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+	set(INJECTOR_SYSTEM_LINUX 1)
+	set(INJECTOR_SYSTEM_WINDOWS 0)
+	set(INJECTOR_SYSTEM_MACOS 0)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+	set(INJECTOR_SYSTEM_LINUX 0)
+	set(INJECTOR_SYSTEM_WINDOWS 1)
+	set(INJECTOR_SYSTEM_MACOS 0)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+	set(INJECTOR_SYSTEM_LINUX 0)
+	set(INJECTOR_SYSTEM_WINDOWS 0)
+	set(INJECTOR_SYSTEM_MACOS 1)
+else()
+	message(FATAL_ERROR "Failed to detect system name")
+endif()
+
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "")
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "")
+set(ASSIMP_INSTALL OFF CACHE BOOL "")
+add_subdirectory(Libraries/assimp)
+
 include(FindVulkan)
-include(cmake/asio.cmake)
+include(CMake/asio.cmake)
+include(CMake/stb.cmake)
+include(CMake/VulkanMemoryAllocator.cmake)
 
 set(BUILD_UTILS OFF CACHE BOOL "")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
+
 set(GLEW_REGAL OFF CACHE BOOL "")
 set(GLEW_OSMESA OFF CACHE BOOL "")
-add_subdirectory(3rdparty/glew/build/cmake)
+add_subdirectory(Libraries/glew/build/cmake)
 
-add_subdirectory(3rdparty/glm)
-add_subdirectory(3rdparty/sdl)
-#add_subdirectory(3rdparty/zlib)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
+set(GLFW_INSTALL OFF CACHE BOOL "")
+set(GLFW_VULKAN_STATIC OFF CACHE BOOL "")
+add_subdirectory(Libraries/glfw)
 
-configure_file(cmake/defines.hpp.in injector/defines.hpp)
+#add_subdirectory(Libraries/zlib)
+
+configure_file(CMake/Defines.hpp.in Injector/Defines.hpp)
 
 add_library(InjectorEngine STATIC
-	source/graphics/gl_attribute.cpp
-	source/graphics/gl_batch.cpp
-	source/graphics/gl_buffer.cpp
-	source/graphics/gl_color_material.cpp
-	source/graphics/gl_material.cpp
-	source/graphics/gl_mesh.cpp
-	source/graphics/gl_primitives.cpp
-	source/graphics/gl_shader.cpp
-	source/graphics/gl_window.cpp
-	source/graphics/image.cpp
-	source/graphics/material.cpp
-	source/graphics/mesh.cpp
-	source/graphics/shader.cpp
-	source/graphics/vk_window.cpp
-	source/graphics/window.cpp
+	Source/Exception/CastException.cpp
+	Source/Exception/Exception.cpp
+	Source/Exception/NotImplementedException.cpp
+	Source/Exception/NullException.cpp
+	Source/Exception/OutOfRangeException.cpp
 
-	source/mathematics/int_vector2.cpp
-	source/mathematics/int_vector3.cpp
-	source/mathematics/int_vector4.cpp
-	source/mathematics/matrix2.cpp
-	source/mathematics/matrix3.cpp
-	source/mathematics/matrix4.cpp
-	source/mathematics/quaternion.cpp
-	source/mathematics/vector2.cpp
-	source/mathematics/vector3.cpp
-	source/mathematics/vector4.cpp
+	Source/Graphics/Buffer.cpp
+	Source/Graphics/CameraComponent.cpp
+	Source/Graphics/CameraSystem.cpp
+	Source/Graphics/ColorPipeline.cpp
+	Source/Graphics/DiffusePipeline.cpp
+	Source/Graphics/FlyTransformSystem.cpp
+	Source/Graphics/GlBuffer.cpp
+	Source/Graphics/GlCameraSystem.cpp
+	Source/Graphics/GlColColorPipeline.cpp
+	Source/Graphics/GlColorPipeline.cpp
+	Source/Graphics/GlDiffusePipeline.cpp
+	Source/Graphics/GlMesh.cpp
+	Source/Graphics/GlPipeline.cpp
+	Source/Graphics/GlRenderSystem.cpp
+	Source/Graphics/GlShader.cpp
+	Source/Graphics/GlTexDiffusePipeline.cpp
+	Source/Graphics/GlTexture.cpp
+	Source/Graphics/GlWindow.cpp
+	Source/Graphics/Image.cpp
+	Source/Graphics/Mesh.cpp
+	Source/Graphics/Model.cpp
+	Source/Graphics/Pipeline.cpp
+	Source/Graphics/Primitive.cpp
+	Source/Graphics/RenderComponent.cpp
+	Source/Graphics/RenderSystem.cpp
+	Source/Graphics/TexDiffusePipeline.cpp
+	Source/Graphics/Texture.cpp
+	Source/Graphics/VkBuffer.cpp
+	Source/Graphics/VkCameraSystem.cpp
+	Source/Graphics/VkColorPipeline.cpp
+	Source/Graphics/VkDiffusePipeline.cpp
+	Source/Graphics/VkMesh.cpp
+	Source/Graphics/VkPipeline.cpp
+	Source/Graphics/VkRenderSystem.cpp
+	Source/Graphics/VkShader.cpp
+	Source/Graphics/VkSwapchainData.cpp
+	Source/Graphics/VkTexture.cpp
+	Source/Graphics/VkWindow.cpp
+	Source/Graphics/Window.cpp
 
-	source/camera_component.cpp
-	source/camera_system.cpp
-	source/engine.cpp
-	source/entity.cpp
-	source/file_stream.cpp
-	source/manager.cpp
-	source/render_component.cpp
-	source/render_system.cpp
-	source/rotate_component.cpp
-	source/system.cpp
-	source/transform_component.cpp
-	source/transform_system.cpp
-	source/translate_component.cpp
-	source/window_component.cpp
-	source/window_system.cpp
+	Source/Mathematics/AttachComponent.cpp
+	Source/Mathematics/Converter.cpp
+	Source/Mathematics/IntVector2.cpp
+	Source/Mathematics/IntVector3.cpp
+	Source/Mathematics/IntVector4.cpp
+	Source/Mathematics/Matrix2.cpp
+	Source/Mathematics/Matrix3.cpp
+	Source/Mathematics/Matrix4.cpp
+	Source/Mathematics/Quaternion.cpp
+	Source/Mathematics/RotateComponent.cpp
+	Source/Mathematics/SizeVector2.cpp
+	Source/Mathematics/SizeVector3.cpp
+	Source/Mathematics/SizeVector4.cpp
+	Source/Mathematics/TransformComponent.cpp
+	Source/Mathematics/TransformSystem.cpp
+	Source/Mathematics/TranslateComponent.cpp
+	Source/Mathematics/Vector2.cpp
+	Source/Mathematics/Vector3.cpp
+	Source/Mathematics/Vector4.cpp
+
+	Source/Memory/ByteSwap.cpp
+	Source/Memory/MemoryStream.cpp
+
+	Source/Network/Datagram.cpp
+	Source/Network/NetContextSystem.cpp
+
+	Source/Storage/FileStream.cpp
+
+	Source/Component.cpp
+	Source/Engine.cpp
+	Source/Entity.cpp
+	Source/Manager.cpp
+	Source/System.cpp
 )
 target_link_libraries(InjectorEngine PUBLIC
 	asio
+	assimp
 	glew_s
-	glm::glm
-	SDL2main
-	SDL2-static
+	glfw
+	stb
+	VulkanMemoryAllocator
 	Vulkan::Vulkan
 	#zlibstatic
 )
 target_include_directories(InjectorEngine PUBLIC
 	${PROJECT_BINARY_DIR}
-	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/3rdparty/glew/include
+	${PROJECT_SOURCE_DIR}/Include
+	${PROJECT_SOURCE_DIR}/Libraries/glew/include
 	${Vulkan_INCLUDE_DIRS}
-	#${PROJECT_SOURCE_DIR}/3rdparty/zlib
-	#${PROJECT_BINARY_DIR}/3rdparty/zlib
+	#${PROJECT_SOURCE_DIR}/Libraries/zlib
+	#${PROJECT_BINARY_DIR}/Libraries/zlib
 )
 
 if(INJECTOR_BUILD_EDITOR)
 	add_executable(InjectorEditor
-	    source/editor.cpp
+	    Source/Editor.cpp
 	)
 	target_link_libraries(InjectorEditor PUBLIC 
 	    InjectorEngine
 	)
 	target_include_directories(InjectorEditor PUBLIC
 		${PROJECT_BINARY_DIR}
-		${PROJECT_SOURCE_DIR}/include
+		${PROJECT_SOURCE_DIR}/Include
 	)
 endif()
 
 set(INJECTOR_RESOURCES
-	shaders/col_color.frag
-	shaders/col_color.vert
-	shaders/color.frag
-	shaders/color.vert
-	shaders/diffuse.frag
-	shaders/diffuse.vert
-	shaders/gradient_sky.frag
-	shaders/gradient_sky.vert
+	Images/GrayBox.png
+
+	Shaders/Color.frag
+	Shaders/Color.vert
+	Shaders/Diffuse.frag
+	Shaders/Diffuse.vert
+
+	Shaders/Color.frag.spv
+	Shaders/Color.vert.spv
+	Shaders/Diffuse.frag.spv
+	Shaders/Diffuse.vert.spv
 )
 
 foreach(FILE ${INJECTOR_RESOURCES})
-    configure_file(resources/${FILE} resources/${FILE} COPYONLY)
+    configure_file(Resources/${FILE} Resources/${FILE} COPYONLY)
 endforeach(FILE)
