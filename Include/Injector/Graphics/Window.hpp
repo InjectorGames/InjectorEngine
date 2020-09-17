@@ -4,9 +4,11 @@
 #include "Injector/Graphics/Image.hpp"
 #include "Injector/Graphics/Texture.hpp"
 #include "Injector/Graphics/Pipeline.hpp"
+#include "Injector/Graphics/MouseIcon.hpp"
 #include "Injector/Graphics/MouseMode.hpp"
 #include "Injector/Graphics/MouseButton.hpp"
 #include "Injector/Graphics/ButtonState.hpp"
+#include "Injector/Graphics/KeyboardButton.hpp"
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/ColorPipeline.hpp"
@@ -24,7 +26,8 @@ namespace Injector
 		Vector2 deltaScroll;
 		bool isResized;
 
-		static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+		static void scrollCallback(GLFWwindow* window, double x, double y);
+		static void cursorPositionCallback(GLFWwindow* window, double x, double y);
 		static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 	public:
 		static const std::string defaultTitle;
@@ -43,6 +46,7 @@ namespace Injector
 		IntVector2 getPosition() const noexcept;
 		Vector2 getMousePosition() const noexcept;
 		ButtonState getMouseButton(MouseButton button) const noexcept;
+		ButtonState getKeyboardButton(KeyboardButton button) const noexcept;
 
 		void setSize(const IntVector2& size);
 		void setSizeLimits(const IntVector2& min, const IntVector2& max);

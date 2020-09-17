@@ -11,10 +11,10 @@ namespace Injector
 	const std::string Window::defaultTitle = "Injector Engine";
 	const IntVector2 Window::defaultSize = IntVector2(800, 600);
 
-	void Window::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+	void Window::scrollCallback(GLFWwindow* window, double x, double y)
 	{
 		auto instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
-		instance->deltaScroll = Vector2(static_cast<float>(xoffset), static_cast<float>(yoffset));
+		instance->deltaScroll += Vector2(static_cast<float>(x), static_cast<float>(y));
 	}
 	void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
 	{
@@ -63,6 +63,7 @@ namespace Injector
 			if(!isMinimized())
 				Manager::update();
 
+			deltaScroll = {};
 			active = true;
 		}
 		else
@@ -102,6 +103,11 @@ namespace Injector
 	ButtonState Window::getMouseButton(MouseButton button) const noexcept
 	{
 		return static_cast<ButtonState>(glfwGetMouseButton(
+			window, static_cast<int>(button)));
+	}
+	ButtonState Window::getKeyboardButton(KeyboardButton button) const noexcept
+	{
+		return static_cast<ButtonState>(glfwGetKey(
 			window, static_cast<int>(button)));
 	}
 
