@@ -37,7 +37,7 @@ namespace Injector
 	{
 		throw NotImplementedException("DiffusePipeline", "getLightDirection");
 	}
-	void DiffusePipeline::setLightDirection(const Vector3& lightDirection)
+	void DiffusePipeline::setLightDirection(const Vector3& direction)
 	{
 		throw NotImplementedException("DiffusePipeline", "setLightDirection");
 	}

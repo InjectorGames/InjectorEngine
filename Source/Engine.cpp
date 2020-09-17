@@ -4,9 +4,6 @@
 #include "Injector/Graphics/GlWindow.hpp"
 #include "Injector/Graphics/VkWindow.hpp"
 
-#include "SDL.h"
-#include "SDL_vulkan.h"
-
 #include <thread>
 #include <iostream>
 
@@ -14,7 +11,6 @@ namespace Injector
 {
 	bool Engine::engineInitialized = false;
 	bool Engine::videoInitialized = false;
-	bool Engine::eventsInitialized = false;
 
 	GraphicsApi Engine::graphicsApi = GraphicsApi::Unknown;
 
@@ -61,7 +57,7 @@ namespace Injector
 
 		engineInitialized = true;
 
-		std::cout << "Initialized engine (" <<
+		std::cout << "Initialized Injector Engine (" <<
 			INJECTOR_VERSION_MAJOR << "." <<
 			INJECTOR_VERSION_MINOR << "." <<
 			INJECTOR_VERSION_PATCH << ")\n";
@@ -75,38 +71,34 @@ namespace Injector
 
 		if (videoInitialized)
 			terminateVideo();
-		if (eventsInitialized)
-			terminateEvents();
-
-		SDL_Quit();
 		
 		engineInitialized = false;
 
-		std::cout << "Terminated engine\n";
+		std::cout << "Terminated Injector Engine\n";
 	}
 	bool Engine::getEngineInitialized() noexcept
 	{
 		return engineInitialized;
 	}
 
+	void Engine::videoErrorCallback(int error, const char* description)
+	{
+		throw Exception("Engine", "videoErrorCallback", std::string(description));
+	}
 	void Engine::initializeVideo(GraphicsApi _graphicsApi)
 	{
 		if (engineInitialized)
 			throw Exception("Engine", "initializeVideo", "Engine is already initialized");
 		if (videoInitialized)
 			throw Exception("Engine", "initializeVideo", "Video subsystem is already initialized");
+		
+		glfwSetErrorCallback(videoErrorCallback);
 
-		if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0)
-			throw Exception("Engine", "initializeVideo", "Failed to intialize, " + std::string(SDL_GetError()));
+		if (!glfwInit())
+    		throw Exception("Engine", "initializeVideo", "Failed to initialize GLFW");
 
-		if (_graphicsApi == GraphicsApi::Vulkan)
-		{
-			if (SDL_Vulkan_LoadLibrary(nullptr) != 0)
-			{
-				SDL_QuitSubSystem(SDL_INIT_VIDEO);
-				throw Exception("Engine", "initializeVideo", "Failed to load Vulkan library, " + std::string(SDL_GetError()));
-			}
-		}
+		if(_graphicsApi == GraphicsApi::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
+			throw Exception("Engine", "initializeVideo", "Vulkan is not supported");
 		
 		graphicsApi = _graphicsApi;
 		videoInitialized = true;
@@ -120,10 +112,7 @@ namespace Injector
 		if (!videoInitialized)
 			throw Exception("Engine", "terminateVideo", "Video subsystem is already terminated");
 
-		if (graphicsApi == GraphicsApi::Vulkan)
-			SDL_Vulkan_UnloadLibrary();
-
-		SDL_QuitSubSystem(SDL_INIT_VIDEO);
+		glfwTerminate();
 
 		graphicsApi = GraphicsApi::Unknown;
 		videoInitialized = false;
@@ -139,37 +128,6 @@ namespace Injector
 		return graphicsApi;
 	}
 
-	void Engine::initializeEvents()
-	{
-		if (engineInitialized)
-			throw Exception("Engine", "initializeEvents", "Engine is already initialized");
-		if (eventsInitialized)
-			throw Exception("Engine", "initializeEvents", "Events subsystem is already initialized");
-
-		if (SDL_InitSubSystem(SDL_INIT_EVENTS) != 0)
-			throw Exception("Engine", "initializeEvents", "Failed to intialize events subsystem, " + std::string(SDL_GetError()));
-
-		eventsInitialized = true;
-
-		std::cout << "Initialized events subsytem\n";
-	}
-	void Engine::terminateEvents()
-	{
-		if (!engineInitialized)
-			throw Exception("Engine", "terminateEvents", "Engine is already terminated");
-		if (!eventsInitialized)
-			throw Exception("Engine", "terminateEvents","Events subsystem is already terminated");
-
-		SDL_QuitSubSystem(SDL_INIT_EVENTS);
-		eventsInitialized = false;
-
-		std::cout << "Terminated events subsystem\n";
-	}
-	bool Engine::getEventsInitialized() noexcept
-	{
-		return eventsInitialized;
-	}
-
 	void Engine::startUpdateLoop()
 	{
 		if (updateRunning)
@@ -183,7 +141,7 @@ namespace Injector
 			updateDeltaTime = std::chrono::duration_cast<
 				std::chrono::duration<double>>(tick - updateStartTick).count();
 			updateStartTick = tick;
-
+			
 			for (auto& manager : managers)
 				manager->update();
 
@@ -211,6 +169,9 @@ namespace Injector
 				if (delayTime > 0)
 					std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<uint64_t>(delayTime)));
 			}
+
+			if(videoInitialized)
+				glfwPollEvents();
 		}
 	}
 	void Engine::stopUpdateLoop()

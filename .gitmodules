@@ -14,3 +14,6 @@
 [submodule "Libraries/assimp"]
 	path = Libraries/assimp
 	url = https://github.com/InjectorGames/assimp
+[submodule "Libraries/glfw"]
+	path = Libraries/glfw
+	url = https://github.com/InjectorGames/glfw

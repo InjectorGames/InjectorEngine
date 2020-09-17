@@ -13,7 +13,7 @@
 * [asio](https://github.com/chriskohlhoff/asio) (Boost License)
 * [assimp](https://github.com/assimp/assimp) (Custom License)
 * [glew](https://github.com/nigels-com/glew) (Custom License)
-* [SDL](https://hg.libsdl.org/SDL) (zlib License)
+* [glfw](https://github.com/glfw/glfw) (zlib License)
 * [stb](https://github.com/nothings/stb) (MIT License)
 * [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) (MIT License)
 

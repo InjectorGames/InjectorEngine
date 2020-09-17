@@ -7,8 +7,6 @@
 #include "Injector/Graphics/VkColorPipeline.hpp"
 #include "Injector/Graphics/VkDiffusePipeline.hpp"
 
-#include "SDL_vulkan.h"
-
 #include <map>
 #include <vector>
 #include <iostream>
@@ -35,8 +33,16 @@ namespace Injector
 		return VK_FALSE;
 	}
 
+	GLFWwindow* VkWindow::createWindow(
+		const std::string& title,
+		const IntVector2& size)
+	{
+		glfwDefaultWindowHints();
+
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		return glfwCreateWindow(size.x, size.y, title.c_str(), nullptr, nullptr);
+	}
 	vk::Instance VkWindow::createInstance(
-		SDL_Window* window,
 		const std::string& appName,
 		uint32_t appVersion)
 	{
@@ -72,18 +78,18 @@ namespace Injector
 			}
 		}
 #endif
-
+		
 		uint32_t extensionCount;
-		SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, nullptr);
-
-		auto instanceExtensions = std::vector<const char*>(extensionCount);
-		SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, instanceExtensions.data());
+		auto glfwInstanceExtensions = glfwGetRequiredInstanceExtensions(&extensionCount);
 
 		if (extensionCount == 0)
-		{
-			throw Exception("VkWindow", "createInstance",
-				"Failed to get instance extensions, " + std::string(SDL_GetError()));
-		}
+			throw Exception("VkWindow", "createInstance", "Failed to get instance extensions");
+
+		auto instanceExtensions = std::vector<const char*>();
+
+		for (size_t i = 0; i < extensionCount; i++)
+			instanceExtensions.push_back(glfwInstanceExtensions[i]);
+		
 
 #if !defined(NDEBUG)
 		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -203,19 +209,13 @@ namespace Injector
 	}
 	vk::SurfaceKHR VkWindow::createSurface(
 		vk::Instance instance,
-		SDL_Window* window)
+		GLFWwindow* window)
 	{
 		VkSurfaceKHR surfaceHandle;
+		auto result = glfwCreateWindowSurface(instance, window, NULL, &surfaceHandle);
 
-		auto result = SDL_Vulkan_CreateSurface(window,
-			static_cast<VkInstance>(instance), &surfaceHandle);
-
-		if (result == SDL_FALSE)
-		{
-			throw Exception("VkWindow", "createSurface",
-				"Failed to create surface, " + std::string(SDL_GetError()));
-		}
-
+		if (result != VK_SUCCESS)
+			throw Exception("VkWindow", "createSurface", "Failed to create surface");
 
 		return vk::SurfaceKHR(surfaceHandle);
 	}
@@ -612,12 +612,13 @@ namespace Injector
 
 	VkWindow::VkWindow(
 		const std::string& title,
-		IntVector2 position,
-		IntVector2 size,
-		uint32_t flags) :
-		Window(title, position, size, flags | SDL_WINDOW_VULKAN)
+		const IntVector2& size,
+		bool stereo) :
+		Window(createWindow(title, size))
 	{
-		instance = createInstance(window, title.c_str(), 1);
+		// TODO: stereo rendering
+
+		instance = createInstance(title.c_str(), 1);
 
 		try
 		{
@@ -778,7 +779,7 @@ namespace Injector
 		return swapchainDatas.at(imageIndex)->presentCommandBuffer;
 	}
 
-	void VkWindow::onResize(IntVector2 size)
+	void VkWindow::onFramebufferResize(const IntVector2& size)
 	{
 		device.waitIdle();
 
@@ -862,16 +863,16 @@ namespace Injector
 
 			if (result == vk::Result::eErrorOutOfDateKHR)
 			{
-				auto size = getSize();
-				onResize(size);
+				auto size = getFramebufferSize();
+				onFramebufferResize(size);
 			}
 			else if (result == vk::Result::eErrorSurfaceLostKHR)
 			{
 				instance.destroySurfaceKHR(surface);
 				surface = createSurface(instance, window);
 
-				auto size = getSize();
-				onResize(size);
+				auto size = getFramebufferSize();
+				onFramebufferResize(size);
 			}
 			else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
 			{
@@ -881,7 +882,6 @@ namespace Injector
 		while (result != vk::Result::eSuccess);
 
 		vmaSetCurrentFrameIndex(memoryAllocator, imageIndex);
-
 		return imageIndex;
 	}
 	void VkWindow::endImage(uint32_t imageIndex)
@@ -926,16 +926,16 @@ namespace Injector
 
 		if (result == vk::Result::eErrorOutOfDateKHR)
 		{
-			auto size = getSize();
-			onResize(size);
+			auto size = getFramebufferSize();
+			onFramebufferResize(size);
 		}
 		else if (result == vk::Result::eErrorSurfaceLostKHR)
 		{
 			instance.destroySurfaceKHR(surface);
 			surface = createSurface(instance, window);
 
-			auto size = getSize();
-			onResize(size);
+			auto size = getFramebufferSize();
+			onFramebufferResize(size);
 		}
 		else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
 		{

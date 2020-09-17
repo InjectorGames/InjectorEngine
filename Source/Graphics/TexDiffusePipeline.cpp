@@ -15,7 +15,7 @@ namespace Injector
     {
         throw NotImplementedException("TexDiffusePipeline", "getTextureScale");
     }
-    void TexDiffusePipeline::setTextureScale(const Vector2& textureScale)
+    void TexDiffusePipeline::setTextureScale(const Vector2& scale)
     {
         throw NotImplementedException("TexDiffusePipeline", "setTextureScale");
     }
@@ -24,7 +24,7 @@ namespace Injector
     {
         throw NotImplementedException("TexDiffusePipeline", "getTextureOffset");
     }
-	void TexDiffusePipeline::setTextureOffset(const Vector2& textureOffset)
+	void TexDiffusePipeline::setTextureOffset(const Vector2& offset)
     {
         throw NotImplementedException("TexDiffusePipeline", "setTextureOffset");
     }

@@ -18,7 +18,7 @@ namespace Injector
 		virtual ~Image();
 
 		const IntVector2& getSize() const noexcept;
-		const uint8_t* getData() const noexcept;
+		uint8_t* getData() const noexcept;
 		int getChannelCount() const noexcept;
 	};
 }

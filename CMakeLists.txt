@@ -60,11 +60,19 @@ include(CMake/stb.cmake)
 include(CMake/VulkanMemoryAllocator.cmake)
 
 set(BUILD_UTILS OFF CACHE BOOL "")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
+
 set(GLEW_REGAL OFF CACHE BOOL "")
 set(GLEW_OSMESA OFF CACHE BOOL "")
 add_subdirectory(Libraries/glew/build/cmake)
 
-add_subdirectory(Libraries/SDL)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
+set(GLFW_INSTALL OFF CACHE BOOL "")
+set(GLFW_VULKAN_STATIC OFF CACHE BOOL "")
+add_subdirectory(Libraries/glfw)
+
 #add_subdirectory(Libraries/zlib)
 
 configure_file(CMake/Defines.hpp.in Injector/Defines.hpp)
@@ -154,8 +162,7 @@ target_link_libraries(InjectorEngine PUBLIC
 	asio
 	assimp
 	glew_s
-	SDL2main
-	SDL2-static
+	glfw
 	stb
 	VulkanMemoryAllocator
 	Vulkan::Vulkan

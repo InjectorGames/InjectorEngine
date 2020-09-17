@@ -25,7 +25,7 @@ namespace Injector
 	{
 		return size;
 	}
-	const uint8_t* Image::getData() const noexcept
+	uint8_t* Image::getData() const noexcept
 	{
 		return data;
 	}

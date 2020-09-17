@@ -73,54 +73,54 @@ namespace Injector
     {
         return ubo.objectColor;
     }
-	void GlTexDiffusePipeline::setObjectColor(const Vector4& _objectColor)
+	void GlTexDiffusePipeline::setObjectColor(const Vector4& color)
     {
-        ubo.objectColor = Vector4(_objectColor);
+        ubo.objectColor = Vector4(color);
     }
 
     const Vector4& GlTexDiffusePipeline::getAmbientColor() const
     {
         return ubo.ambientColor;
     }
-	void GlTexDiffusePipeline::setAmbientColor(const Vector4& _ambientColor)
+	void GlTexDiffusePipeline::setAmbientColor(const Vector4& color)
     {
-        ubo.ambientColor = Vector4(_ambientColor);
+        ubo.ambientColor = Vector4(color);
     }
 
 	const Vector4& GlTexDiffusePipeline::getLightColor() const
     {
         return ubo.lightColor;
     }
-	void GlTexDiffusePipeline::setLightColor(const Vector4& _lightColor)
+	void GlTexDiffusePipeline::setLightColor(const Vector4& color)
     {
-        ubo.lightColor = Vector4(_lightColor);
+        ubo.lightColor = Vector4(color);
     }
 
 	const Vector3& GlTexDiffusePipeline::getLightDirection() const
     {
         return ubo.lightDirection;
     }
-	void GlTexDiffusePipeline::setLightDirection(const Vector3& _lightDirection)
+	void GlTexDiffusePipeline::setLightDirection(const Vector3& direction)
     {
-        ubo.lightDirection = _lightDirection.getNormalized();
+        ubo.lightDirection = direction.getNormalized();
     }
 
     const Vector2& GlTexDiffusePipeline::getTextureScale() const
     {
         return ubo.textureScale;
     }
-	void GlTexDiffusePipeline::setTextureScale(const Vector2& _textureScale)
+	void GlTexDiffusePipeline::setTextureScale(const Vector2& scale)
     {
-        ubo.textureScale = Vector2(_textureScale);
+        ubo.textureScale = Vector2(scale);
     }
 
     const Vector2& GlTexDiffusePipeline::getTextureOffset() const
     {
         return ubo.textureOffset;
     }
-	void GlTexDiffusePipeline::setTextureOffset(const Vector2& _textureOffset)
+	void GlTexDiffusePipeline::setTextureOffset(const Vector2& offset)
     {
-        ubo.textureOffset = Vector2(_textureOffset);
+        ubo.textureOffset = Vector2(offset);
     }
 
 	void GlTexDiffusePipeline::bind()

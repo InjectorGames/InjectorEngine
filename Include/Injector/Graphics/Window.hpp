@@ -4,13 +4,13 @@
 #include "Injector/Graphics/Image.hpp"
 #include "Injector/Graphics/Texture.hpp"
 #include "Injector/Graphics/Pipeline.hpp"
+#include "Injector/Graphics/MouseMode.hpp"
 #include "Injector/Graphics/MouseButton.hpp"
+#include "Injector/Graphics/ButtonState.hpp"
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/ColorPipeline.hpp"
 #include "Injector/Graphics/TexDiffusePipeline.hpp"
-
-#include "SDL.h"
 
 #include <string>
 #include <cstdint>
@@ -20,50 +20,51 @@ namespace Injector
 	class Window : public Manager
 	{
 	protected:
-		SDL_Window* window;
-		Vector3 translation;
-		Vector3 rotation;
-		IntVector2 mouseMotion;
+		GLFWwindow* window;
+		Vector2 deltaScroll;
+		bool isResized;
+
+		static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+		static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 	public:
 		static const std::string defaultTitle;
-		static const IntVector2 defaultPosition;
 		static const IntVector2 defaultSize;
-		static const uint32_t defaultFlags;
 
-		Window(const std::string& title = defaultTitle,
-			IntVector2 position = defaultPosition,
-			IntVector2 size = defaultSize,
-			uint32_t flags = defaultFlags);
+		Window(GLFWwindow* window);
 		virtual ~Window();
 
-		const Vector3& getTranslation() const noexcept;
-		const Vector3& getRotation() const noexcept;
-		const IntVector2& getMouseMotion() const noexcept;
+		const Vector2& getDeltaScroll() const noexcept;
 
 		void update() override;
-		virtual void onResize(IntVector2 size);
+		virtual void onFramebufferResize(const IntVector2& size);
 
-		uint32_t getID() const noexcept;
-		uint32_t getFlags() const noexcept;
 		IntVector2 getSize() const noexcept;
-		IntVector2 getMousePosition() const noexcept;
-		IntVector2 getGlobalMousePosition() const noexcept;
-		uint32_t getMouseButtons() const noexcept;
-		uint32_t getGlobalMouseButtons() const noexcept;
-		void getMouseState(IntVector2& position, uint32_t& buttons) const noexcept;
-		void getGlobalMouseState(IntVector2& position, uint32_t& buttons) const noexcept;
-		bool isHidden() const noexcept;
-		bool isShown() const noexcept;
+		IntVector2 getFramebufferSize() const noexcept;
+		IntVector2 getPosition() const noexcept;
+		Vector2 getMousePosition() const noexcept;
+		ButtonState getMouseButton(MouseButton button) const noexcept;
+
+		void setSize(const IntVector2& size);
+		void setSizeLimits(const IntVector2& min, const IntVector2& max);
+		void setPosition(const IntVector2& position);	
+		void setTitle(const std::string& title);
+		void setIcons(const std::vector<std::shared_ptr<Image>>& icons);
+		void setMouseMode(MouseMode mode);
+		void setResizable(bool resizable);
+		void setDecorated(bool decorated);
+
+		bool isFocused() const noexcept;
 		bool isMinimized() const noexcept;
-		bool isMaximized() const noexcept;
+		bool isVisible() const noexcept;
 		bool isResizable() const noexcept;
+		bool isDecorated() const noexcept;
 
 		void hide() noexcept;
 		void show() noexcept;
 		void minimize() noexcept;
 		void maximize() noexcept;
-		void setResizable(bool resizable) noexcept;
-		bool setMouseMode(bool realtive) noexcept;
+		void focus() noexcept;
+		void requestAttention() noexcept;
 
 		virtual std::shared_ptr<CameraSystem> createCameraSystem();
 		virtual std::shared_ptr<RenderSystem> createRenderSystem();
@@ -122,9 +123,7 @@ namespace Injector
 		std::shared_ptr<Mesh> createCubeMeshVNT(bool mappable);
 
 		static std::shared_ptr<Window> create(
-			const std::string& title = Window::defaultTitle,
-			IntVector2 position = Window::defaultPosition,
-			IntVector2 size = Window::defaultSize,
-			uint32_t flags = Window::defaultFlags);
+			const std::string& title = defaultTitle,
+			const IntVector2& size = defaultSize);
 	};
 }

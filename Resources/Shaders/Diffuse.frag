@@ -6,7 +6,7 @@ layout(std140) uniform FragmentBufferObject
     highp vec4 objectColor;
     highp vec4 ambientColor;
     highp vec4 lightColor;
-    highp vec3 lightDirection;
+    highp vec4 lightDirection;
 } fbo;
 
 void main()

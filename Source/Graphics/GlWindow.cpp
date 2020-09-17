@@ -8,73 +8,73 @@
 
 namespace Injector
 {
-	GlWindow::GlWindow(
-		bool _gles,
+	GLFWwindow* GlWindow::createWindow(
+		bool gles,
 		const std::string& title,
-		IntVector2 position,
-		IntVector2 size,
-		uint32_t flags) :
-		Window(title, position, size, flags | SDL_WINDOW_OPENGL),
-		gles(_gles)
+		const IntVector2& size)
 	{
-		if (_gles)
+		glfwDefaultWindowHints();
+
+		glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef NDEBUG
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_FALSE);
+#else
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
+
+		if (gles)
 		{
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 		}
 		else
 		{
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		}
-		
-		context = SDL_GL_CreateContext(window);
 
-		if (!context)
-		{
-			throw Exception("GlWindow", "GlWindow",
-				"Failed to create context, " + std::string(SDL_GetError()));
-		}
-			
+		return glfwCreateWindow(size.x, size.y, title.c_str(), nullptr, nullptr);
+	}
 
-		SDL_GL_MakeCurrent(window, context);
+	GlWindow::GlWindow(
+		bool _gles,
+		const std::string& title,
+		const IntVector2& position) :
+		Window(createWindow(_gles, title, position)),
+		gles(_gles)
+	{
+		glfwMakeContextCurrent(window);
 
 		if (glewInit() != GLEW_OK)
 			throw Exception("GlWindow", "GlWindow", "Failed to initialize GLEW");
 
-		SDL_GL_SetSwapInterval(0);
-		//glEnable(GL_DEPTH_TEST);
-		//glEnable(GL_STENCIL_TEST);
+		glfwSwapInterval(0);
 	}
 	GlWindow::~GlWindow()
-	{
-		SDL_GL_DeleteContext(context);
-		context = nullptr;
-	}
+	{}
 
 	bool GlWindow::isGLES() const noexcept
 	{
 		return gles;
 	}
-	SDL_GLContext GlWindow::getContext() const noexcept
-	{
-		return context;
-	}
 
 	void GlWindow::makeCurrent() noexcept
 	{
-		SDL_GL_MakeCurrent(window, context);
+		glfwMakeContextCurrent(window);
 	}
 	void GlWindow::swapBuffers() noexcept
 	{
-		SDL_GL_SwapWindow(window);
+		glfwSwapBuffers(window);
 	}
 
-	void GlWindow::onResize(IntVector2 size)
+	void GlWindow::onFramebufferResize(const IntVector2& size)
 	{
-		makeCurrent();
+		glfwMakeContextCurrent(window);
 		glViewport(0, 0, size.x, size.y);
 	}
 

@@ -1,8 +1,8 @@
 #pragma once
-#include"Injector/Graphics/Window.hpp"
+#include "Injector/Graphics/Window.hpp"
 
 #include "GL/glew.h"
-#include "SDL_opengl.h"
+#include "GLFW/glfw3.h"
 
 namespace Injector
 {
@@ -10,22 +10,23 @@ namespace Injector
 	{
 	protected:
 		bool gles;
-		SDL_GLContext context;
-	public:
+		
+		static GLFWwindow* createWindow(
+			bool gles,
+			const std::string& title,
+			const IntVector2& size);
+	public:	
 		GlWindow(bool gles = false,
 			const std::string& title = defaultTitle,
-			IntVector2 position = defaultPosition,
-			IntVector2 size = defaultSize,
-			uint32_t flags = defaultFlags);
+			const IntVector2& size = defaultSize);
 		virtual ~GlWindow();
 
 		bool isGLES() const noexcept;
-		SDL_GLContext getContext() const noexcept;
 
 		void makeCurrent() noexcept;
 		void swapBuffers() noexcept;
 
-		void onResize(IntVector2 size) override;
+		void onFramebufferResize(const IntVector2& size) override;
 
 		std::shared_ptr<CameraSystem> createCameraSystem() override;
 		std::shared_ptr<RenderSystem> createRenderSystem() override;

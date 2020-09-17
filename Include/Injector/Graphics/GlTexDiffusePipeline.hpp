@@ -55,22 +55,22 @@ namespace Injector
         std::shared_ptr<Texture> getTexture() const override;
 
         const Vector4& getObjectColor() const override;
-		void setObjectColor(const Vector4& objectColor) override;
+		void setObjectColor(const Vector4& color) override;
 
 		const Vector4& getAmbientColor() const override;
-		void setAmbientColor(const Vector4& ambientColor) override;
+		void setAmbientColor(const Vector4& color) override;
 
 		const Vector4& getLightColor() const override;
-		void setLightColor(const Vector4& lightColor) override;
+		void setLightColor(const Vector4& color) override;
 
 		const Vector3& getLightDirection() const override;
-		void setLightDirection(const Vector3& lightDirection) override;
+		void setLightDirection(const Vector3& direction) override;
 
         const Vector2& getTextureScale() const override;
-		void setTextureScale(const Vector2& textureScale) override;
+		void setTextureScale(const Vector2& scale) override;
 
         const Vector2& getTextureOffset() const override;
-		void setTextureOffset(const Vector2& textureOffset) override;
+		void setTextureOffset(const Vector2& offset) override;
 
 		void bind() override;
         void flush() override;

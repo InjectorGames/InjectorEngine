@@ -28,28 +28,24 @@ namespace Injector
 		if (!transform || !transform->getComponent(transformComponent))
 			return;
 
-		uint32_t mouseButtons;
-		IntVector2 mousePosition;
-		window->getMouseState(mousePosition, mouseButtons);
-
-		if (mouseButtons & MouseButton::Right)
+		if (window->getMouseButton(MouseButton::Right) == ButtonState::Press)
 		{
 			if (!rotating)
 			{
 				rotating = true;
-				window->setMouseMode(true);
+				window->setMouseMode(MouseMode::Disabled);
 			}
 
 			auto deltaTime = static_cast<float>(Engine::getUpdateDeltaTime());
 			// TODO: fix side move bug
-			auto& translation = window->getTranslation();
+			/*auto& translation = window->getTranslation();
 			transformComponent->position += 
 				transformComponent->rotation * translation * -speed * deltaTime;
 
 			auto& rotation = window->getRotation();
 			eulerAngles += rotation * sensitivity;
 			eulerAngles.x = std::clamp(eulerAngles.x,
-				-Converter::toRadians(89.9f), Converter::toRadians(89.9f));
+				-Converter::toRadians(89.9f), Converter::toRadians(89.9f));*/
 
 			transformComponent->rotation = Quaternion(eulerAngles);
 			transformComponent->changed = true;
@@ -59,7 +55,7 @@ namespace Injector
 			if (rotating)
 			{
 				rotating = false;
-				window->setMouseMode(false);
+				window->setMouseMode(MouseMode::Normal);
 			}
 		}
 	}

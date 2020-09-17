@@ -1,4 +1,6 @@
 #pragma once
+#define GLFW_INCLUDE_VULKAN
+
 #include "Injector/Graphics/Window.hpp"
 #include "Injector/Graphics/VkBuffer.hpp"
 #include "Injector/Graphics/VkPipeline.hpp"
@@ -42,8 +44,10 @@ namespace Injector
 			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 			void* pUserData);
 
+		static GLFWwindow* createWindow(
+			const std::string& title,
+			const IntVector2& size);
 		static vk::Instance createInstance(
-			SDL_Window* window,
 			const std::string& appName,
 			uint32_t appVersion);
 		static vk::DebugUtilsMessengerEXT createDebugMessenger(
@@ -53,7 +57,7 @@ namespace Injector
 			vk::Instance instance);
 		static vk::SurfaceKHR createSurface(
 			vk::Instance instance,
-			SDL_Window* window);
+			GLFWwindow* window);
 		static void getQueueFamilyIndices(
 			vk::PhysicalDevice physicalDevice,
 			vk::SurfaceKHR surface,
@@ -110,15 +114,14 @@ namespace Injector
 			uint32_t queueFamilyIndex);
 	public:
 		VkWindow(const std::string& title = defaultTitle,
-			IntVector2 position = defaultPosition,
-			IntVector2 size = defaultSize,
-			uint32_t flags = defaultFlags);
+			const IntVector2& size = defaultSize,
+			bool stereo = false);
 		virtual ~VkWindow();
 
 		vk::CommandBuffer getGraphicsCommandBuffer(uint32_t imageIndex) const;
 		vk::CommandBuffer getPresentCommandBuffer(uint32_t imageIndex) const;
 
-		void onResize(IntVector2 size) override;
+		void onFramebufferResize(const IntVector2& size) override;
 
 		uint32_t beginImage();
 		void endImage(uint32_t imageIndex);

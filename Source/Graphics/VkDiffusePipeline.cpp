@@ -274,35 +274,35 @@ namespace Injector
 	{
 		return ubo.objectColor;
 	}
-	void VkDiffusePipeline::setObjectColor(const Vector4& objectColor)
+	void VkDiffusePipeline::setObjectColor(const Vector4& color)
 	{
-		ubo.objectColor = Vector4(objectColor);
+		ubo.objectColor = Vector4(color);
 	}
 
 	const Vector4& VkDiffusePipeline::getAmbientColor() const
 	{
 		return ubo.ambientColor;
 	}
-	void VkDiffusePipeline::setAmbientColor(const Vector4& ambientColor)
+	void VkDiffusePipeline::setAmbientColor(const Vector4& color)
 	{
-		ubo.ambientColor = Vector4(ambientColor);
+		ubo.ambientColor = Vector4(color);
 	}
 
 	const Vector4& VkDiffusePipeline::getLightColor() const
 	{
 		return ubo.lightColor;
 	}
-	void VkDiffusePipeline::setLightColor(const Vector4& lightColor)
+	void VkDiffusePipeline::setLightColor(const Vector4& color)
 	{
-		ubo.lightColor = Vector4(lightColor);
+		ubo.lightColor = Vector4(color);
 	}
 
 	const Vector3& VkDiffusePipeline::getLightDirection() const
 	{
 		return ubo.lightDirection;
 	}
-	void VkDiffusePipeline::setLightDirection(const Vector3& lightDirection)
+	void VkDiffusePipeline::setLightDirection(const Vector3& direction)
 	{
-		ubo.lightDirection = Vector3(lightDirection.getNormalized());
+		ubo.lightDirection = Vector3(direction.getNormalized());
 	}
 }

@@ -14,9 +14,9 @@ namespace Injector
 		virtual std::shared_ptr<Texture> getTexture() const;
 
 		virtual const Vector2& getTextureScale() const;
-		virtual void setTextureScale(const Vector2& textureScale);
+		virtual void setTextureScale(const Vector2& scale);
 
         virtual const Vector2& getTextureOffset() const;
-		virtual void setTextureOffset(const Vector2& textureOffset);
+		virtual void setTextureOffset(const Vector2& offset);
 	};
 }

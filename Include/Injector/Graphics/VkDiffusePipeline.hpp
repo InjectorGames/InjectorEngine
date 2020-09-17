@@ -88,15 +88,15 @@ namespace Injector
 			const Matrix4& mvp) override;
 
 		const Vector4& getObjectColor() const override;
-		void setObjectColor(const Vector4& objectColor) override;
+		void setObjectColor(const Vector4& color) override;
 
 		const Vector4& getAmbientColor() const override;
-		void setAmbientColor(const Vector4& ambientColor) override;
+		void setAmbientColor(const Vector4& color) override;
 
 		const Vector4& getLightColor() const override;
-		void setLightColor(const Vector4& lightColor) override;
+		void setLightColor(const Vector4& color) override;
 
 		const Vector3& getLightDirection() const override;
-		void setLightDirection(const Vector3& lightDirection) override;
+		void setLightDirection(const Vector3& direction) override;
 	};
 }

@@ -13,7 +13,6 @@ namespace Injector
 	private:
 		static bool engineInitialized;
 		static bool videoInitialized;
-		static bool eventsInitialized;
 
 		static GraphicsApi graphicsApi;
 
@@ -39,14 +38,11 @@ namespace Injector
 		static void terminateEngine();
 		static bool getEngineInitialized() noexcept;
 
+		static void videoErrorCallback(int error, const char* description);
 		static void initializeVideo(GraphicsApi graphicsApi = GraphicsApi::OpenGL);
 		static void terminateVideo();
 		static bool getVideoInitialized() noexcept;
 		static GraphicsApi getGraphicsApi() noexcept;
-
-		static void initializeEvents();
-		static void terminateEvents();
-		static bool getEventsInitialized() noexcept;
 
 		static void startUpdateLoop();
 		static void stopUpdateLoop();

@@ -1,235 +1,202 @@
 #include "Injector/Graphics/Window.hpp"
 #include "Injector/Engine.hpp"
+#include "Injector/Exception/NullException.hpp"
 #include "Injector/Exception/NotImplementedException.hpp"
 #include "Injector/Graphics/Primitive.hpp"
 #include "Injector/Graphics/GlWindow.hpp"
 #include "Injector/Graphics/VkWindow.hpp"
 
-
-#include "SDL_events.h"
-
 namespace Injector
 {
 	const std::string Window::defaultTitle = "Injector Engine";
-	const IntVector2 Window::defaultPosition = IntVector2(
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
 	const IntVector2 Window::defaultSize = IntVector2(800, 600);
-	const uint32_t Window::defaultFlags = SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE;
 
-	Window::Window(
-		const std::string& title,
-		IntVector2 position,
-		IntVector2 size,
-		uint32_t flags) :
-		translation(),
-		rotation(),
-		mouseMotion()
+	void Window::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 	{
-		window = SDL_CreateWindow(title.c_str(),
-			position.x, position.y, size.x, size.y, flags);
+		auto instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
+		instance->deltaScroll = Vector2(static_cast<float>(xoffset), static_cast<float>(yoffset));
+	}
+	void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
+	{
+		auto instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
+		instance->isResized = true;
+	}
 
+	Window::Window(GLFWwindow* _window) :
+		window(_window),
+		deltaScroll(),
+		isResized()
+	{
 		if (!window)
-		{
-			throw Exception("Window", "Window",
-				"Failed to create SDL window, " + std::string(SDL_GetError()));
-		}
+			throw NullException("Window", "Window", "window");
 
-		SDL_SetWindowMinimumSize(window, 1, 1);
+		glfwSetWindowUserPointer(window, this);
+		glfwSetWindowSizeLimits(window, 1, 1, GLFW_DONT_CARE, GLFW_DONT_CARE);
+		glfwSetScrollCallback(window, scrollCallback);
+		glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+		if (glfwRawMouseMotionSupported() == GLFW_TRUE)
+    		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 	}
 	Window::~Window()
 	{
-		SDL_DestroyWindow(window);
+		glfwDestroyWindow(window);
 		window = nullptr;
 	}
 
-	const Vector3& Window::getTranslation() const noexcept
+	const Vector2& Window::getDeltaScroll() const noexcept
 	{
-		return translation;
-	}
-	const Vector3& Window::getRotation() const noexcept
-	{
-		return rotation;
-	}
-	const IntVector2& Window::getMouseMotion() const noexcept
-	{
-		return mouseMotion;
+		return deltaScroll;
 	}
 
 	void Window::update()
 	{
-		SDL_Event event;
-
-		mouseMotion = IntVector2::zero;
-
-		while (SDL_PollEvent(&event) != 0)
+		if(!glfwWindowShouldClose(window))
 		{
-			auto windowID = getID();
+			if(isResized)
+			{
+				auto size = getFramebufferSize();
+				onFramebufferResize(size);
+				isResized = false;
+			}
 
-			if (event.type == SDL_WINDOWEVENT && event.window.windowID == windowID)
-			{
-				switch (event.window.event)
-				{
-				case SDL_WINDOWEVENT_SIZE_CHANGED:
-					onResize(IntVector2(event.window.data1, event.window.data2));
-					break;
-				case SDL_WINDOWEVENT_CLOSE:
-					active = false;
-					break;
-				}
-			}
-			else if (event.type == SDL_MOUSEMOTION && event.motion.windowID == windowID)
-			{
-				mouseMotion += IntVector2(event.motion.xrel, event.motion.yrel);
-			}
-			else if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.windowID == windowID)
-			{
-				if (event.key.keysym.sym == SDLK_a)
-				{
-					if (event.key.state == SDL_PRESSED)
-						translation.x = -1.0f;
-					else
-						translation.x = 0.0f;
-				}
-				else if (event.key.keysym.sym == SDLK_d)
-				{
-					if (event.key.state == SDL_PRESSED)
-						translation.x = 1.0f;
-					else
-						translation.x = 0.0f;
-				}
-				else if (event.key.keysym.sym == SDLK_LCTRL)
-				{
-					if (event.key.state == SDL_PRESSED)
-						translation.y = -1.0f;
-					else
-						translation.y = 0.0f;
-				}
-				else if (event.key.keysym.sym == SDLK_SPACE)
-				{
-					if (event.key.state == SDL_PRESSED)
-						translation.y = 1.0f;
-					else
-						translation.y = 0.0f;
-				}
-				else if (event.key.keysym.sym == SDLK_s)
-				{
-					if (event.key.state == SDL_PRESSED)
-						translation.z = -1.0f;
-					else
-						translation.z = 0.0f;
-				}
-				else if (event.key.keysym.sym == SDLK_w)
-				{
-					if (event.key.state == SDL_PRESSED)
-						translation.z = 1.0f;
-					else
-						translation.z = 0.0f;
-				}
-			}
-			/*
-			// TODO: add mouse fire
-			else if ((event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) && event.button.windowID == id)
-			{
-				events.emit<MouseButtonEvent>(event.button);
-			}*/
+			if(!isMinimized())
+				Manager::update();
+
+			active = true;
 		}
-
-		rotation = Vector3(mouseMotion.y, mouseMotion.x, 0.0f);
-
-		if(!isMinimized())
-			Manager::update();
+		else
+		{
+			active = false;
+		}
 	}
-	void Window::onResize(IntVector2 size)
+	void Window::onFramebufferResize(const IntVector2& size)
 	{
 		throw NotImplementedException("Window", "onResize");
 	}
 
-	uint32_t Window::getID() const noexcept
-	{
-		return SDL_GetWindowID(window);
-	}
-	uint32_t Window::getFlags() const noexcept
-	{
-		return SDL_GetWindowFlags(window);
-	}
 	IntVector2 Window::getSize() const noexcept
 	{
 		auto size = IntVector2();
-		SDL_GetWindowSize(window, &size.x, &size.y);
+		glfwGetWindowSize(window, &size.x, &size.y);
 		return size;
 	}
-	IntVector2 Window::getMousePosition() const noexcept
+	IntVector2 Window::getFramebufferSize() const noexcept
 	{
-		auto position = IntVector2();
-		SDL_GetMouseState(&position.x, &position.y);
-		return position;
+		auto size = IntVector2();
+		glfwGetFramebufferSize(window, &size.x, &size.y);
+		return size;
 	}
-	IntVector2 Window::getGlobalMousePosition() const noexcept
+	IntVector2 Window::getPosition() const noexcept
 	{
-		auto position = IntVector2();
-		SDL_GetGlobalMouseState(&position.x, &position.y);
-		return position;
+		auto size = IntVector2();
+		glfwGetWindowPos(window, &size.x, &size.y);
+		return size;
 	}
-	uint32_t Window::getMouseButtons() const noexcept
+	Vector2 Window::getMousePosition() const noexcept
 	{
-		return static_cast<uint32_t>(SDL_GetMouseState(nullptr, nullptr));
+		double x, y;
+		glfwGetCursorPos(window, &x, &y);
+		return Vector2(static_cast<float>(x), static_cast<int>(y));
 	}
-	uint32_t Window::getGlobalMouseButtons() const noexcept
+	ButtonState Window::getMouseButton(MouseButton button) const noexcept
 	{
-		return static_cast<uint32_t>(SDL_GetGlobalMouseState(nullptr, nullptr));
+		return static_cast<ButtonState>(glfwGetMouseButton(
+			window, static_cast<int>(button)));
 	}
-	void Window::getMouseState(IntVector2& position, uint32_t& buttons) const noexcept
+
+	void Window::setSize(const IntVector2& size)
 	{
-		buttons = static_cast<uint32_t>(SDL_GetMouseState(&position.x, &position.y));
+		glfwSetWindowSize(window, size.x, size.y);
 	}
-	void Window::getGlobalMouseState(IntVector2& position, uint32_t& buttons) const noexcept
+	void Window::setSizeLimits(const IntVector2& min, const IntVector2& max)
 	{
-		buttons = static_cast<uint32_t>(SDL_GetGlobalMouseState(&position.x, &position.y));
+		if(min.x < 1 || min.y < 1 || max.x < 1 || max.y < 1)
+			throw Exception("Window", "setSizeLimits", "Size can not be less than one");
+
+		glfwSetWindowSizeLimits(window, min.x, min.y, max.x, max.y);
 	}
-	bool Window::isHidden() const noexcept
+	void Window::setPosition(const IntVector2& position)
 	{
-		return SDL_GetWindowFlags(window) & SDL_WINDOW_HIDDEN;
+		glfwSetWindowPos(window, position.x, position.y);
 	}
-	bool Window::isShown() const noexcept
+	void Window::setTitle(const std::string& title)
 	{
-		return SDL_GetWindowFlags(window) & SDL_WINDOW_SHOWN;
+		glfwSetWindowTitle(window, title.c_str());
+	}
+	void Window::setIcons(const std::vector<std::shared_ptr<Image>>& icons)
+	{
+		GLFWimage glfwIncons[icons.size()];
+
+		for (size_t i = 0; i < icons.size(); i++)
+		{
+			auto& icon = icons[i];
+			auto& glflwIcon = glfwIncons[i];
+			auto& size = icon->getSize();
+			glflwIcon.width = size.x;
+			glflwIcon.height = size.y;
+			glflwIcon.pixels = icon->getData();
+		}
+		
+		glfwSetWindowIcon(window, icons.size(), glfwIncons);
+	}
+	void Window::setMouseMode(MouseMode mode)
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, static_cast<int>(mode));
+	}
+	void Window::setResizable(bool resizable)
+	{
+		glfwSetWindowAttrib(window, GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
+	}
+	void Window::setDecorated(bool decorated)
+	{
+		glfwSetWindowAttrib(window, GLFW_DECORATED, decorated ? GLFW_TRUE : GLFW_FALSE);
+	}
+
+	bool Window::isFocused() const noexcept
+	{
+		return glfwGetWindowAttrib(window, GLFW_FOCUSED) == GLFW_TRUE;
 	}
 	bool Window::isMinimized() const noexcept
 	{
-		return SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED;
+		return glfwGetWindowAttrib(window, GLFW_ICONIFIED) == GLFW_TRUE;
 	}
-	bool Window::isMaximized() const noexcept
+	bool Window::isVisible() const noexcept
 	{
-		return SDL_GetWindowFlags(window) & SDL_WINDOW_MAXIMIZED;
+		return glfwGetWindowAttrib(window, GLFW_VISIBLE) == GLFW_TRUE;
 	}
 	bool Window::isResizable() const noexcept
 	{
-		return SDL_GetWindowFlags(window) & SDL_WINDOW_RESIZABLE;
+		return glfwGetWindowAttrib(window, GLFW_RESIZABLE) == GLFW_TRUE;
+	}
+	bool Window::isDecorated() const noexcept
+	{
+		return glfwGetWindowAttrib(window, GLFW_DECORATED) == GLFW_TRUE;
 	}
 
 	void Window::hide() noexcept
 	{
-		SDL_HideWindow(window);
+		glfwHideWindow(window);
 	}
 	void Window::show() noexcept
 	{
-		SDL_ShowWindow(window);
+		glfwShowWindow(window);
 	}
 	void Window::minimize() noexcept
 	{
-		SDL_MinimizeWindow(window);
+		glfwIconifyWindow(window);
 	}
 	void Window::maximize() noexcept
 	{
-		SDL_MaximizeWindow(window);
+		glfwRestoreWindow(window);
 	}
-	void Window::setResizable(bool resizable) noexcept
+	void Window::focus() noexcept
 	{
-		SDL_SetWindowResizable(window, static_cast<SDL_bool>(resizable));
+		glfwFocusWindow(window);
 	}
-	bool Window::setMouseMode(bool realtive) noexcept
+	void Window::requestAttention() noexcept
 	{
-		return SDL_SetRelativeMouseMode(static_cast<SDL_bool>(realtive)) == 0;
+		glfwRequestWindowAttention(window);
 	}
 
 	std::shared_ptr<CameraSystem> Window::createCameraSystem()
@@ -493,18 +460,16 @@ namespace Injector
 
 	std::shared_ptr<Window> Window::create(
 		const std::string& title,
-		IntVector2 position,
-		IntVector2 size,
-		uint32_t flags)
+		const IntVector2& size)
 	{
 		auto graphicsApi = Engine::getGraphicsApi();
 
 		if (graphicsApi == GraphicsApi::OpenGL)
-			return Engine::createManager<GlWindow>(false, title, position, size, flags);
+			return Engine::createManager<GlWindow>(false, title, size);
 		else if (graphicsApi == GraphicsApi::OpenGLES)
-			return Engine::createManager<GlWindow>(true, title, position, size, flags);
+			return Engine::createManager<GlWindow>(true, title, size);
 		else if (graphicsApi == GraphicsApi::Vulkan)
-			return Engine::createManager<VkWindow>(title, position, size, flags);
+			return Engine::createManager<VkWindow>(title, size);
 		else
 			throw Exception("Window", "createWindow", "Unknown graphics API");
 	}
