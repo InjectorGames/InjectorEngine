@@ -37,6 +37,9 @@ namespace Injector
 
 		if (glfwRawMouseMotionSupported() == GLFW_TRUE)
     		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+
+		cursor = glfwCreateStandardCursor(static_cast<int>(MouseIcon::Arrow));
+		glfwSetCursor(window, cursor);
 	}
 	Window::~Window()
 	{
@@ -149,6 +152,28 @@ namespace Injector
 	void Window::setMouseMode(MouseMode mode)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, static_cast<int>(mode));
+	}
+	void Window::setMouseIcon(MouseIcon icon)
+	{
+		glfwSetCursor(window, nullptr);
+		glfwDestroyCursor(cursor);
+
+		cursor = glfwCreateStandardCursor(static_cast<int>(MouseIcon::Arrow));
+		glfwSetCursor(window, cursor);
+	}
+	void Window::setMouseIcon(const std::shared_ptr<Image>& image, const IntVector2& hotspot)
+	{
+		glfwSetCursor(window, nullptr);
+		glfwDestroyCursor(cursor);
+
+		auto glfwImage = GLFWimage();
+		auto size = image->getSize();
+		glfwImage.width = size.x;
+		glfwImage.height = size.y;
+		glfwImage.pixels = image->getData();
+
+		cursor = glfwCreateCursor(&glfwImage, hotspot.x, hotspot.y);
+		glfwSetCursor(window, cursor);
 	}
 	void Window::setResizable(bool resizable)
 	{

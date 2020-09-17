@@ -23,6 +23,7 @@ namespace Injector
 	{
 	protected:
 		GLFWwindow* window;
+		GLFWcursor* cursor;
 		Vector2 deltaScroll;
 		bool isResized;
 
@@ -54,6 +55,8 @@ namespace Injector
 		void setTitle(const std::string& title);
 		void setIcons(const std::vector<std::shared_ptr<Image>>& icons);
 		void setMouseMode(MouseMode mode);
+		void setMouseIcon(MouseIcon icon);
+		void setMouseIcon(const std::shared_ptr<Image>& image, const IntVector2& hotspot);
 		void setResizable(bool resizable);
 		void setDecorated(bool decorated);
 
