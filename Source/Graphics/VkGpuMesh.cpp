@@ -13,7 +13,7 @@ namespace Injector
 	VkGpuMesh::~VkGpuMesh()
 	{}
 
-	void VkGpuMesh::draw(vk::CommandBuffer commandBuffer) noexcept
+	void VkGpuMesh::draw(vk::CommandBuffer commandBuffer)
 	{
 		const VkDeviceSize offset = 0;
 

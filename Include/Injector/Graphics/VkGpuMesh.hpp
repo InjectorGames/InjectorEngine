@@ -15,6 +15,6 @@ namespace Injector
 			const std::shared_ptr<GpuBuffer>& indexBuffer);
 		virtual ~VkGpuMesh();
 
-		void draw(vk::CommandBuffer commandBuffer) noexcept;
+		void draw(vk::CommandBuffer commandBuffer);
 	};
 }
