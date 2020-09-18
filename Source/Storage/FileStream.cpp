@@ -4,29 +4,49 @@
 
 namespace Injector
 {
-	FileStream::FileStream() :
-		std::fstream()
-	{}
 	FileStream::FileStream(const char* filePath, std::ios::openmode mode) :
-		std::fstream(filePath, mode)
+		std::fstream(filePath, mode | std::ios::ate)
 	{
 		if(!is_open())
 		{
 			throw Exception("FileStream", "FileStream",
-				"Failed to open file \"" + std::string(filePath) + "\"");
+				"Failed to open file '" + std::string(filePath) + "'");
 		}
+
+		size = static_cast<size_t>(tellg());
+		seekg(0, beg);
 	}
 	FileStream::FileStream(const std::string& filePath, std::ios::openmode mode) :
-		std::fstream(filePath, mode)
+		std::fstream(filePath, mode | std::ios::ate)
 	{
 		if(!is_open())
 		{
 			throw Exception("FileStream", "FileStream",
-				"Failed to open file \"" + filePath + "\"");
+				"Failed to open file '" + filePath + "'");
 		}
+
+		size = static_cast<size_t>(tellg());
+		seekg(0, beg);
+	}
+	FileStream::FileStream(const std::filesystem::path& filePath, std::ios::openmode mode) :
+		std::fstream(filePath, mode | std::ios::ate)
+	{
+		if(!is_open())
+		{
+			throw Exception("FileStream", "FileStream",
+				"Failed to open file '" + filePath.string() + "'");
+		}
+
+		size = static_cast<size_t>(tellg());
+		seekg(0, beg);
 	}
 	FileStream::~FileStream()
 	{}
+
+	size_t FileStream::getSize() const noexcept
+	{
+		return size;
+	}
 
 	std::istream& FileStream::read(char& value)
 	{
@@ -384,64 +404,5 @@ namespace Injector
 	{
 		value = ByteSwap::swapLittleEndian(value);
 		return std::fstream::write(reinterpret_cast<const char*>(&value), sizeof(double));
-	}
-
-	std::string FileStream::readAllText(
-		const std::string& filePath)
-	{
-		auto fileStream = FileStream(filePath, std::ios::in | std::ios::ate);
-
-		auto size = static_cast<size_t>(fileStream.tellg());
-		fileStream.seekg(0, fileStream.beg);
-
-		auto text = std::string(size, ' ');
-		fileStream.read(text.data(), size);
-
-		return text;
-	}
-	void FileStream::writeAllText(
-		const std::string& filePath,
-		const char* text,
-		size_t count)
-	{
-		auto fileStream = FileStream(filePath, std::ios::out);
-		fileStream.write(text, count);
-	}
-	void FileStream::writeAllText(
-		const std::string& filePath,
-		const std::string& text)
-	{
-		auto fileStream = FileStream(filePath, std::ios::out);
-		fileStream.write(text.data(), text.size());
-	}
-	
-	std::vector<char> FileStream::readAllBytes(
-		const std::string& filePath)
-	{
-		auto fileStream = FileStream(
-			filePath, std::ios::in | std::ios::ate | std::ios::binary);
-
-		auto size = static_cast<size_t>(fileStream.tellg());
-		fileStream.seekg(0, fileStream.beg);
-
-		auto bytes = std::vector<char>(size);
-		fileStream.read(bytes.data(), size);
-
-		return bytes;
-	}
-	void FileStream::writeAllBytes(
-		const std::string& filePath,
-		const char* bytes,
-		size_t count)
-	{
-		auto fileStream = FileStream(filePath, std::ios::out);
-		fileStream.write(bytes, count);
-	}
-	void FileStream::writeAllBytes(
-		const std::string& filePath,
-		const std::vector<char>& bytes)
-	{
-		auto fileStream = FileStream(filePath, std::ios::out | std::ios::binary);
-		fileStream.write(bytes.data(), bytes.size());
 	}
 }

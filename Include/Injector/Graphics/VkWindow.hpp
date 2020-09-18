@@ -2,8 +2,8 @@
 #define GLFW_INCLUDE_VULKAN
 
 #include "Injector/Graphics/Window.hpp"
-#include "Injector/Graphics/VkBuffer.hpp"
-#include "Injector/Graphics/VkPipeline.hpp"
+#include "Injector/Graphics/VkGpuBuffer.hpp"
+#include "Injector/Graphics/VkGpuPipeline.hpp"
 #include "Injector/Graphics/VkSwapchainData.hpp"
 
 #include <set>
@@ -36,7 +36,7 @@ namespace Injector
 		vk::RenderPass renderPass;
 		uint32_t frameIndex;
 		std::vector<std::shared_ptr<VkSwapchainData>> swapchainDatas;
-		std::set<std::shared_ptr<VkPipeline>> pipelines;
+		std::set<std::shared_ptr<VkGpuPipeline>> pipelines;
 
 		static VkBool32 VKAPI_CALL debugMessengerCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -132,18 +132,23 @@ namespace Injector
 		std::shared_ptr<CameraSystem> createCameraSystem() override;
 		std::shared_ptr<RenderSystem> createRenderSystem() override;
 
-		std::shared_ptr<Buffer> createBuffer(
+		std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,
-			BufferType type,
+			GpuBufferType type,
 			bool mappable,
 			const void* data) override;
-		std::shared_ptr<Mesh> createMesh(
+		std::shared_ptr<GpuMesh> createMesh(
 			size_t indexCount,
-			BufferIndex indexType,
-			const std::shared_ptr<Buffer>& vertexBuffer,
-			const std::shared_ptr<Buffer>& indexBuffer) override;
+			GpuBufferIndex indexType,
+			const std::shared_ptr<GpuBuffer>& vertexBuffer,
+			const std::shared_ptr<GpuBuffer>& indexBuffer) override;
+		std::shared_ptr<ShaderData> readShaderData(
+			const std::string& filePath) override;
+		std::shared_ptr<GpuShader> createShader(
+			GpuShaderStage stage,
+			const std::shared_ptr<ShaderData>& data) override;
 
-		std::shared_ptr<ColorPipeline> createColorPipeline() override;
-		std::shared_ptr<DiffusePipeline> createDiffusePipeline() override;
+		/*std::shared_ptr<ColorPipeline> createColorPipeline() override;
+		std::shared_ptr<DiffusePipeline> createDiffusePipeline() override;*/
 	};
 }

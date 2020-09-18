@@ -12,5 +12,5 @@ void main()
 {
     gl_Position = u_MVP * vec4(v_Position, 1.0);
     f_Normal = normalize(u_Normal * v_Normal);
-    f_TexCoord = v_TexCoord;
+    f_TexCoord = vec2(v_TexCoord.x, -v_TexCoord.y);
 }

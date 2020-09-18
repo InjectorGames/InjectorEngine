@@ -31,48 +31,61 @@ namespace Injector
 		std::shared_ptr<CameraSystem> createCameraSystem() override;
 		std::shared_ptr<RenderSystem> createRenderSystem() override;
 
-		std::shared_ptr<Buffer> createBuffer(
+		std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,
-			BufferType type,
+			GpuBufferType type,
 			bool mappable,
 			const void* data) override;
-		std::shared_ptr<Mesh> createMesh(
+		std::shared_ptr<GpuMesh> createMesh(
 			size_t indexCount,
-			BufferIndex indexType,
-			const std::shared_ptr<Buffer>& vertexBuffer,
-			const std::shared_ptr<Buffer>& indexBuffer) override;
-		std::shared_ptr<Texture> createTexture(
+			GpuBufferIndex indexType,
+			const std::shared_ptr<GpuBuffer>& vertexBuffer,
+			const std::shared_ptr<GpuBuffer>& indexBuffer) override;
+		std::shared_ptr<ShaderData> readShaderData(
+			const std::string& filePath) override;
+		std::shared_ptr<GpuShader> createShader(
+			GpuShaderStage stage,
+			const std::shared_ptr<ShaderData>& data) override;
+		std::shared_ptr<GpuImage> createImage(
         	int size,
-       		TextureFormat format,
-        	TextureFilter minFilter,
-    		TextureFilter magFilter,
-    		TextureWrap wrapU,
+       		GpuImageFormat format,
+        	GpuImageFilter minFilter,
+    		GpuImageFilter magFilter,
+    		GpuImageWrap wrapU,
         	bool useMipmap,
-			const std::shared_ptr<Image>& image) override;
-		std::shared_ptr<Texture> createTexture(
+			const std::shared_ptr<ImageData>& data) override;
+		std::shared_ptr<GpuImage> createImage(
         	const IntVector2& size,
-       		TextureFormat format,
-        	TextureFilter minFilter,
-    		TextureFilter magFilter,
-    		TextureWrap wrapU,
-        	TextureWrap wrapV,
+       		GpuImageFormat format,
+        	GpuImageFilter minFilter,
+    		GpuImageFilter magFilter,
+    		GpuImageWrap wrapU,
+        	GpuImageWrap wrapV,
         	bool useMipmap,
-			const std::shared_ptr<Image>& image) override;
-		std::shared_ptr<Texture> createTexture(
+			const std::shared_ptr<ImageData>& data) override;
+		std::shared_ptr<GpuImage> createImage(
         	const IntVector3& size,
-       		TextureFormat format,
-        	TextureFilter minFilter,
-    		TextureFilter magFilter,
-    		TextureWrap wrapU,
-        	TextureWrap wrapV,
-        	TextureWrap wrapW,
+       		GpuImageFormat format,
+        	GpuImageFilter minFilter,
+    		GpuImageFilter magFilter,
+    		GpuImageWrap wrapU,
+        	GpuImageWrap wrapV,
+        	GpuImageWrap wrapW,
         	bool useMipmap,
-			const std::shared_ptr<Image>& image) override;
+			const std::shared_ptr<ImageData>& data) override;
 
-		std::shared_ptr<ColorPipeline> createColorPipeline() override;
-		std::shared_ptr<ColorPipeline> createColColorPipeline() override;
-		std::shared_ptr<DiffusePipeline> createDiffusePipeline() override;
-		std::shared_ptr<TexDiffusePipeline> createTexDiffusePipeline(
-			const std::shared_ptr<Texture>& texture) override;
+		std::shared_ptr<ColorGpuPipeline> createColorPipeline(
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader) override;
+		std::shared_ptr<ColorGpuPipeline> createColColorPipeline(
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader) override;
+		std::shared_ptr<DiffuseGpuPipeline> createDiffusePipeline(
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader) override;
+		std::shared_ptr<TexDiffuseGpuPipeline> createTexDiffusePipeline(
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const std::shared_ptr<GpuImage>& texture) override;
 	};
 }

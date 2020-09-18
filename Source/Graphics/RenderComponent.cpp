@@ -3,8 +3,8 @@
 namespace Injector
 {
 	RenderComponent::RenderComponent(
-		const std::shared_ptr<Pipeline>& _pipeline,
-		const std::shared_ptr<Mesh>& _mesh,
+		const std::shared_ptr<GpuPipeline>& _pipeline,
+		const std::shared_ptr<GpuMesh>& _mesh,
 		bool _render) :
 		pipeline(_pipeline),
 		mesh(_mesh),

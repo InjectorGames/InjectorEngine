@@ -10,6 +10,13 @@ void init()
 {
 	auto window = Window::create();
 
+	window->setIcons(std::vector<std::shared_ptr<ImageData>>
+	{
+		ImageData::readFromFile("Resources/Images/Logo16.png", 4, false),
+		ImageData::readFromFile("Resources/Images/Logo32.png", 4, false),
+		ImageData::readFromFile("Resources/Images/Logo48.png", 4, false),
+	});
+
 	auto flyTransformSystem = window->createSystem<FlyTransformSystem>(window);
 	auto transformSystem = window->createSystem<TransformSystem>();
 	auto cameraSystem = window->createCameraSystem();
@@ -24,33 +31,36 @@ void init()
 	cameraSystem->addCamera(camera);
 	renderSystem->addCamera(camera);
 	
-	auto boxImage = std::make_shared<Image>("Resources/Images/GrayBox.png", 3);
-	auto boxTexture = window->createTexture(boxImage->getSize(),
-		TextureFormat::RGB8, TextureFilter::Nearest, TextureFilter::Nearest,
-		TextureWrap::Repeat, TextureWrap::Repeat, true, boxImage);
-	auto texDiffusePipeline = window->createTexDiffusePipeline(boxTexture);
+	auto vertexShader = window->createShader(GpuShaderStage::Vertex,
+		window->readShaderData("Resources/Shaders/TexDiffuse.vert"));
+	auto fragmentShader = window->createShader(GpuShaderStage::Fragment,
+		window->readShaderData("Resources/Shaders/TexDiffuse.frag"));
+	auto boxImageData = ImageData::readFromFile(
+		"Resources/Images/GrayBox.png", 3, false);
+	auto boxImage = window->createImage(boxImageData->size,
+		GpuImageFormat::RGB8, GpuImageFilter::Nearest, GpuImageFilter::Nearest,
+		GpuImageWrap::Repeat, GpuImageWrap::Repeat, true, boxImageData);
+	auto pipeline = window->createTexDiffusePipeline(
+		vertexShader, fragmentShader, boxImage);
 	auto squareMesh = window->createSquareMeshVNT(false);
 	auto cubeMesh = window->createCubeMeshVNT(false);
 
 	auto floor = window->createEntity();
 	floor->createComponent<TransformComponent>(Vector3::zero,
 		Quaternion(Vector3(Converter::toRadians(-90.0f), 0.0f, 0.0f)), Vector3::one * 10);
-	floor->createComponent<RenderComponent>(texDiffusePipeline, squareMesh);
+	floor->createComponent<RenderComponent>(pipeline, squareMesh);
 	transformSystem->addTransform(floor);
 	cameraComponent->renders.emplace(floor);
 
 	auto cube1 = window->createEntity();
 	cube1->createComponent<TransformComponent>(Vector3(-4.5f, 0.5f, -4.5f));
-	cube1->createComponent<RenderComponent>(texDiffusePipeline, cubeMesh);
+	cube1->createComponent<RenderComponent>(pipeline, cubeMesh);
 	transformSystem->addTransform(cube1);
 	cameraComponent->renders.emplace(cube1);
-	
-	window->show();
 }
 
 int main(int argc, char* args[])
 {
-	//Engine::initializeEvents();
 	//Engine::initializeVideo(GraphicsApi::Vulkan);
 	Engine::initializeVideo(GraphicsApi::OpenGL);
 	Engine::initializeEngine();

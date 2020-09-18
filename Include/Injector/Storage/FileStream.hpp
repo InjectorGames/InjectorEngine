@@ -2,18 +2,24 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <filesystem>
 
 namespace Injector
 {
 	class FileStream : public std::fstream
 	{
+	protected:
+		size_t size;
 	public:
-		FileStream();
 		FileStream(const char* filePath,
 			std::ios::openmode mode = std::ios::in | std::ios::out);
 		FileStream(const std::string& filePath,
 			std::ios::openmode mode = std::ios::in | std::ios::out);
+		FileStream(const std::filesystem::path& filePath,
+			std::ios::openmode mode = std::ios::in | std::ios::out);
 		virtual ~FileStream();
+
+		size_t getSize() const noexcept;
 
 		std::istream& read(char& value);
 		std::istream& read(char* values, size_t count);
@@ -96,25 +102,5 @@ namespace Injector
 		std::ostream& writeLittleEndian(int64_t value);
 		std::ostream& writeLittleEndian(float value);
 		std::ostream& writeLittleEndian(double value);
-
-		static std::string readAllText(
-			const std::string& filePath);
-		static void writeAllText(
-			const std::string& filePath,
-			const char* text,
-			size_t count);
-		static void writeAllText(
-			const std::string& filePath,
-			const std::string& text);
-
-		static std::vector<char> readAllBytes(
-			const std::string& filePath);
-		static void writeAllBytes(
-			const std::string& filePath,
-			const char* bytes,
-			size_t count);
-		static void writeAllBytes(
-			const std::string& filePath,
-			const std::vector<char>& bytes);
 	};
 }
