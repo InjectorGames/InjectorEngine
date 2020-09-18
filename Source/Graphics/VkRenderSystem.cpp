@@ -1,6 +1,7 @@
 #include "Injector/Graphics/VkRenderSystem.hpp"
-#include "Injector/Graphics/VkPipeline.hpp"
-#include "Injector/Graphics/VkMesh.hpp"
+#include "Injector/Graphics/VkGpuMesh.hpp"
+#include "Injector/Graphics/VkGpuPipeline.hpp"
+
 
 #include <map>
 
@@ -24,8 +25,8 @@ namespace Injector
 
 		struct RenderData
 		{
-			std::shared_ptr<VkPipeline> pipeline;
-			std::shared_ptr<VkMesh> mesh;
+			std::shared_ptr<VkGpuPipeline> pipeline;
+			std::shared_ptr<VkGpuMesh> mesh;
 			TransformComponent* transform;
 		};
 
@@ -64,9 +65,9 @@ namespace Injector
 					!renderComponent->mesh)
 					continue;
 
-				renderData.pipeline = std::dynamic_pointer_cast<VkPipeline>(
+				renderData.pipeline = std::dynamic_pointer_cast<VkGpuPipeline>(
 					renderComponent->pipeline);
-				renderData.mesh = std::dynamic_pointer_cast<VkMesh>(
+				renderData.mesh = std::dynamic_pointer_cast<VkGpuMesh>(
 					renderComponent->mesh);
 
 				if (!renderData.pipeline || !renderData.mesh)
@@ -82,7 +83,7 @@ namespace Injector
 			auto& projMatrix = cameraData.camera->matrix;
 			auto viewProjMatrix = projMatrix * viewMatrix;
 
-			std::shared_ptr<VkPipeline> lastPipeline = nullptr;
+			std::shared_ptr<VkGpuPipeline> lastPipeline = nullptr;
 
 			for (auto& renderPair : renderPairs)
 			{

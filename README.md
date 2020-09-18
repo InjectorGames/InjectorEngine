@@ -14,6 +14,7 @@
 * [assimp](https://github.com/assimp/assimp) (Custom License)
 * [glew](https://github.com/nigels-com/glew) (Custom License)
 * [glfw](https://github.com/glfw/glfw) (zlib License)
+* [lz4](https://github.com/lz4/lz4) (Custom License)
 * [stb](https://github.com/nothings/stb) (MIT License)
 * [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) (MIT License)
 

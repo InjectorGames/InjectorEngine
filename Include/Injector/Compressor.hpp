@@ -1,37 +1,38 @@
 #pragma once
-#include <inject/defines.hpp>
+#include <vector>
+#include <cstdint>
 
-#include <zlib.h>
-
-#include <stdio.h>
-
-#if defined(MSDOS) || defined(OS2) || defined(WIN32) || defined(__CYGWIN__)
-#  include <fcntl.h>
-#  include <io.h>
-#  define SET_BINARY_MODE(file) setmode(fileno(file), O_BINARY)
-#else
-#  define SET_BINARY_MODE(file)
-#endif
-
-
-// TODO:
-
-
-namespace INJECT_NAMESPACE
+namespace Injector
 {
 	class Compressor
 	{
 	public:
-		inline static const int compress(
-			FILE* source, FILE* dest, int level = -1)
+		static int getCompressSize(int sourceSize);
+
+		static int compress(const void* source, int sourceSize,
+			void* destination, int destinationSize);
+		static int decompress(const void* source, int sourceSize,
+			void* destination, int destinationSize);
+
+		template<class T = uint8_t>
+		static std::vector<T> compress(const void* source, int size)
 		{
-			z_stream strm;
-			strm.zalloc = Z_NULL;
-			strm.zfree = Z_NULL;
-			strm.opaque = Z_NULL;
-			auto ret = deflateInit(&strm, level);
-			if (ret != Z_OK)
-				return ret;
+			auto compressSize = getCompressSize(size);
+			auto destination = new std::vector<T>(compressSize / sizeof(T));
+			auto count = compress(source, size,
+				destination.data(), compressSize);
+			destination.resize(count / sizeof(T));
+			return destination;
+		}
+		template<class DT = uint8_t, class ST = uint8_t>
+		static std::vector<DT> compress(const std::vector<ST>& source)
+		{
+			auto compressSize = getCompressSize(source.size() * sizeof(ST));
+			auto destination = new std::vector<DT>(compressSize / sizeof(DT));
+			auto count = compress(source.data(), source.size() * sizeof(ST),
+				destination.data(), compressSize);
+			destination.resize(count / sizeof(DT));
+			return destination;
 		}
 	};
 }

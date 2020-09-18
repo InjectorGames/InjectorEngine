@@ -1,6 +1,6 @@
 #include "Injector/Graphics/GlRenderSystem.hpp"
-#include "Injector/Graphics/GlPipeline.hpp"
-#include "Injector/Graphics/GlMesh.hpp"
+#include "Injector/Graphics/GlGpuMesh.hpp"
+#include "Injector/Graphics/GlGpuPipeline.hpp"
 
 #include <map>
 
@@ -22,8 +22,8 @@ namespace Injector
 
 		struct RenderData
 		{
-			std::shared_ptr<GlPipeline> pipeline;
-			std::shared_ptr<GlMesh> mesh;
+			std::shared_ptr<GlGpuPipeline> pipeline;
+			std::shared_ptr<GlGpuMesh> mesh;
 			TransformComponent* transform;
 		};
 
@@ -61,9 +61,9 @@ namespace Injector
 					!renderComponent->mesh)
 					continue;
 
-				renderData.pipeline = std::dynamic_pointer_cast<GlPipeline>(
+				renderData.pipeline = std::dynamic_pointer_cast<GlGpuPipeline>(
 					renderComponent->pipeline);
-				renderData.mesh = std::dynamic_pointer_cast<GlMesh>(
+				renderData.mesh = std::dynamic_pointer_cast<GlGpuMesh>(
 					renderComponent->mesh);
 
 				if (!renderData.pipeline || !renderData.mesh)
@@ -79,7 +79,7 @@ namespace Injector
 			auto& projMatrix = cameraData.camera->matrix;
 			auto viewProjMatrix = projMatrix * viewMatrix;
 
-			std::shared_ptr<GlPipeline> lastPipeline = nullptr;
+			std::shared_ptr<GlGpuPipeline> lastPipeline = nullptr;
 
 			for (auto& renderPair : renderPairs)
 			{

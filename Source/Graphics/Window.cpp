@@ -1,10 +1,12 @@
 #include "Injector/Graphics/Window.hpp"
 #include "Injector/Engine.hpp"
+#include "Injector/Defines.hpp"
+#include "Injector/Graphics/BasicModel.hpp"
+#include "Injector/Graphics/VkWindow.hpp"
+#include "Injector/Graphics/GlWindow.hpp"
+#include "Injector/Graphics/BasicModel.hpp"
 #include "Injector/Exception/NullException.hpp"
 #include "Injector/Exception/NotImplementedException.hpp"
-#include "Injector/Graphics/Primitive.hpp"
-#include "Injector/Graphics/GlWindow.hpp"
-#include "Injector/Graphics/VkWindow.hpp"
 
 namespace Injector
 {
@@ -133,21 +135,22 @@ namespace Injector
 	{
 		glfwSetWindowTitle(window, title.c_str());
 	}
-	void Window::setIcons(const std::vector<std::shared_ptr<Image>>& icons)
+	void Window::setIcons(const std::vector<std::shared_ptr<ImageData>>& icons)
 	{
-		GLFWimage glfwIncons[icons.size()];
+#if INJECTOR_SYSTEM_WINDOWS
+		GLFWimage images[icons.size()];
 
 		for (size_t i = 0; i < icons.size(); i++)
 		{
 			auto& icon = icons[i];
-			auto& glflwIcon = glfwIncons[i];
-			auto& size = icon->getSize();
-			glflwIcon.width = size.x;
-			glflwIcon.height = size.y;
-			glflwIcon.pixels = icon->getData();
+			auto& image = images[i];
+			image.width = icon->psize.x;
+			image.height = icon->psize.y;
+			image.pixels = icon->pixels.data();
 		}
 		
-		glfwSetWindowIcon(window, icons.size(), glfwIncons);
+		glfwSetWindowIcon(window, icons.size(), images);
+#endif
 	}
 	void Window::setMouseMode(MouseMode mode)
 	{
@@ -161,18 +164,17 @@ namespace Injector
 		cursor = glfwCreateStandardCursor(static_cast<int>(MouseIcon::Arrow));
 		glfwSetCursor(window, cursor);
 	}
-	void Window::setMouseIcon(const std::shared_ptr<Image>& image, const IntVector2& hotspot)
+	void Window::setMouseIcon(const std::shared_ptr<ImageData>& icon, const IntVector2& hotspot)
 	{
 		glfwSetCursor(window, nullptr);
 		glfwDestroyCursor(cursor);
 
-		auto glfwImage = GLFWimage();
-		auto size = image->getSize();
-		glfwImage.width = size.x;
-		glfwImage.height = size.y;
-		glfwImage.pixels = image->getData();
+		auto image = GLFWimage();
+		image.width = icon->size.x;
+		image.height = icon->size.y;
+		image.pixels = icon->pixels.data();
 
-		cursor = glfwCreateCursor(&glfwImage, hotspot.x, hotspot.y);
+		cursor = glfwCreateCursor(&image, hotspot.x, hotspot.y);
 		glfwSetCursor(window, cursor);
 	}
 	void Window::setResizable(bool resizable)
@@ -239,253 +241,272 @@ namespace Injector
 		throw NotImplementedException("Window", "createRenderSystem");
 	}
 
-	std::shared_ptr<Buffer> Window::createBuffer(
+	std::shared_ptr<GpuBuffer> Window::createBuffer(
 		size_t size,
-		BufferType type,
+		GpuBufferType type,
 		bool mappable,
 		const void* data)
 	{
 		throw NotImplementedException("Window", "createBuffer");
 	}
-	std::shared_ptr<Mesh> Window::createMesh(
+	std::shared_ptr<GpuMesh> Window::createMesh(
 		size_t indexCount,
-		BufferIndex indexType,
-		const std::shared_ptr<Buffer>& vertexBuffer,
-		const std::shared_ptr<Buffer>& indexBuffer)
+		GpuBufferIndex indexType,
+		const std::shared_ptr<GpuBuffer>& vertexBuffer,
+		const std::shared_ptr<GpuBuffer>& indexBuffer)
 	{
 		throw NotImplementedException("Window", "createMesh");
 	}
-	std::shared_ptr<Texture> Window::createTexture(
+	std::shared_ptr<ShaderData> Window::readShaderData(
+		const std::string& filePath)
+	{
+		throw NotImplementedException("Window", "readShaderData");
+	}
+	std::shared_ptr<GpuShader> Window::createShader(
+		GpuShaderStage stage,
+		const std::shared_ptr<ShaderData>& data)
+	{
+		throw NotImplementedException("Window", "createShader");
+	}
+	std::shared_ptr<GpuImage> Window::createImage(
         int size,
-        TextureFormat format,
-        TextureFilter minFilter,
-    	TextureFilter magFilter,
-    	TextureWrap wrapU,
+        GpuImageFormat format,
+        GpuImageFilter minFilter,
+    	GpuImageFilter magFilter,
+    	GpuImageWrap wrapU,
         bool useMipmap,
-		const std::shared_ptr<Image>& image)
+		const std::shared_ptr<ImageData>& data)
 	{
-		throw NotImplementedException("Window", "createTexture");
+		throw NotImplementedException("Window", "createImage");
 	}
-	std::shared_ptr<Texture> Window::createTexture(
+	std::shared_ptr<GpuImage> Window::createImage(
         const IntVector2& size,
-        TextureFormat format,
-        TextureFilter minFilter,
-    	TextureFilter magFilter,
-    	TextureWrap wrapU,
-		TextureWrap wrapV,
+        GpuImageFormat format,
+        GpuImageFilter minFilter,
+    	GpuImageFilter magFilter,
+    	GpuImageWrap wrapU,
+		GpuImageWrap wrapV,
         bool useMipmap,
-		const std::shared_ptr<Image>& image)
+		const std::shared_ptr<ImageData>& data)
 	{
-		throw NotImplementedException("Window", "createTexture");
+		throw NotImplementedException("Window", "createImage");
 	}
-	std::shared_ptr<Texture> Window::createTexture(
+	std::shared_ptr<GpuImage> Window::createImage(
         const IntVector3& size,
-        TextureFormat format,
-        TextureFilter minFilter,
-    	TextureFilter magFilter,
-    	TextureWrap wrapU,
-        TextureWrap wrapV,
-        TextureWrap wrapW,
+        GpuImageFormat format,
+        GpuImageFilter minFilter,
+    	GpuImageFilter magFilter,
+    	GpuImageWrap wrapU,
+        GpuImageWrap wrapV,
+        GpuImageWrap wrapW,
         bool useMipmap,
-		const std::shared_ptr<Image>& image)
+		const std::shared_ptr<ImageData>& data)
 	{
-		throw NotImplementedException("Window", "createTexture");
+		throw NotImplementedException("Window", "createImage");
 	}
 
-	std::shared_ptr<ColorPipeline> Window::createColorPipeline()
+	std::shared_ptr<ColorGpuPipeline> Window::createColorPipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
 		throw NotImplementedException("Window", "createColorPipeline");
 	}
-	std::shared_ptr<ColorPipeline> Window::createColColorPipeline()
+	std::shared_ptr<ColorGpuPipeline> Window::createColColorPipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
 		throw NotImplementedException("Window", "createColColorPipeline");
 	}
-	std::shared_ptr<DiffusePipeline> Window::createDiffusePipeline()
+	std::shared_ptr<DiffuseGpuPipeline> Window::createDiffusePipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
 		throw NotImplementedException("Window", "createDiffusePipeline");
 	}
-	std::shared_ptr<TexDiffusePipeline> Window::createTexDiffusePipeline(
-		const std::shared_ptr<Texture>& texture)
+	std::shared_ptr<TexDiffuseGpuPipeline> Window::createTexDiffusePipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const std::shared_ptr<GpuImage>& texture)
 	{
 		throw NotImplementedException("Window", "createTexDiffusePipeline");
 	}
 
-	std::shared_ptr<Mesh> Window::createSquareMeshV(bool mappable)
+	std::shared_ptr<GpuMesh> Window::createSquareMeshV(bool mappable)
 	{
 		auto vertexBuffer = createBuffer(
-			Primitive::squareVertices.size() * sizeof(Vector3),
-			BufferType::Vertex, mappable,
-			Primitive::squareVertices.data());
+			BasicModel::squareVertices.size() * sizeof(Vector3),
+			GpuBufferType::Vertex, mappable,
+			BasicModel::squareVertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::squareIndices.size() * sizeof(uint16_t),
-			BufferType::Index, mappable,
-			Primitive::squareIndices.data());
+			BasicModel::squareIndices.size() * sizeof(uint16_t),
+			GpuBufferType::Index, mappable,
+			BasicModel::squareIndices.data());
 
 		return createMesh(
-			Primitive::squareIndices.size(),
-			BufferIndex::UnsignedShort,
+			BasicModel::squareIndices.size(),
+			GpuBufferIndex::UnsignedShort,
 			vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Mesh> Window::createSquareMeshVN(bool mappable)
+	std::shared_ptr<GpuMesh> Window::createSquareMeshVN(bool mappable)
 	{
-		auto vertices = std::vector<float>(Primitive::squareVertices.size() * 6);
+		auto vertices = std::vector<float>(BasicModel::squareVertices.size() * 6);
 
-		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 6)
+		for (size_t i = 0, j = 0; i < BasicModel::squareVertices.size(); i++, j += 6)
 		{
-			memcpy(&vertices[j], &Primitive::squareVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &Primitive::squareNormals[i], sizeof(Vector3));
+			memcpy(&vertices[j], &BasicModel::squareVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &BasicModel::squareNormals[i], sizeof(Vector3));
 		}
 
 		auto vertexBuffer = createBuffer(
 			vertices.size() * sizeof(float),
-			BufferType::Vertex, mappable,
+			GpuBufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::squareIndices.size() * sizeof(uint16_t),
-			BufferType::Index, mappable,
-			Primitive::squareIndices.data());
+			BasicModel::squareIndices.size() * sizeof(uint16_t),
+			GpuBufferType::Index, mappable,
+			BasicModel::squareIndices.data());
 
 		return createMesh(
-			Primitive::squareIndices.size(),
-			BufferIndex::UnsignedShort,
+			BasicModel::squareIndices.size(),
+			GpuBufferIndex::UnsignedShort,
 			vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Mesh> Window::createSquareMeshVT(bool mappable)
+	std::shared_ptr<GpuMesh> Window::createSquareMeshVT(bool mappable)
 	{
-		auto vertices = std::vector<float>(Primitive::squareVertices.size() * 5);
+		auto vertices = std::vector<float>(BasicModel::squareVertices.size() * 5);
 
-		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 5)
+		for (size_t i = 0, j = 0; i < BasicModel::squareVertices.size(); i++, j += 5)
 		{
-			memcpy(&vertices[j], &Primitive::squareVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &Primitive::squareTexCoords[i], sizeof(Vector2));
+			memcpy(&vertices[j], &BasicModel::squareVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &BasicModel::squareTexCoords[i], sizeof(Vector2));
 		}
 
 		auto vertexBuffer = createBuffer(
 			vertices.size() * sizeof(float),
-			BufferType::Vertex, mappable,
+			GpuBufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::squareIndices.size() * sizeof(uint16_t),
-			BufferType::Index, mappable,
-			Primitive::squareIndices.data());
+			BasicModel::squareIndices.size() * sizeof(uint16_t),
+			GpuBufferType::Index, mappable,
+			BasicModel::squareIndices.data());
 
 		return createMesh(
-			Primitive::squareIndices.size(),
-			BufferIndex::UnsignedShort,
+			BasicModel::squareIndices.size(),
+			GpuBufferIndex::UnsignedShort,
 			vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Mesh> Window::createSquareMeshVNT(bool mappable)
+	std::shared_ptr<GpuMesh> Window::createSquareMeshVNT(bool mappable)
 	{
-		auto vertices = std::vector<float>(Primitive::squareVertices.size() * 8);
+		auto vertices = std::vector<float>(BasicModel::squareVertices.size() * 8);
 
-		for (size_t i = 0, j = 0; i < Primitive::squareVertices.size(); i++, j += 8)
+		for (size_t i = 0, j = 0; i < BasicModel::squareVertices.size(); i++, j += 8)
 		{
-			memcpy(&vertices[j], &Primitive::squareVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &Primitive::squareNormals[i], sizeof(Vector3));
-			memcpy(&vertices[j + 6], &Primitive::squareTexCoords[i], sizeof(Vector2));
+			memcpy(&vertices[j], &BasicModel::squareVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &BasicModel::squareNormals[i], sizeof(Vector3));
+			memcpy(&vertices[j + 6], &BasicModel::squareTexCoords[i], sizeof(Vector2));
 		}
 
 		auto vertexBuffer = createBuffer(
 			vertices.size() * sizeof(float),
-			BufferType::Vertex, mappable,
+			GpuBufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::squareIndices.size() * sizeof(uint16_t),
-			BufferType::Index, mappable,
-			Primitive::squareIndices.data());
+			BasicModel::squareIndices.size() * sizeof(uint16_t),
+			GpuBufferType::Index, mappable,
+			BasicModel::squareIndices.data());
 
 		return createMesh(
-			Primitive::squareIndices.size(),
-			BufferIndex::UnsignedShort,
+			BasicModel::squareIndices.size(),
+			GpuBufferIndex::UnsignedShort,
 			vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Mesh> Window::createCubeMeshV(bool mappable)
+	std::shared_ptr<GpuMesh> Window::createCubeMeshV(bool mappable)
 	{
 		auto vertexBuffer = createBuffer(
-			Primitive::cubeVertices.size() * sizeof(Vector3),
-			BufferType::Vertex, mappable,
-			Primitive::cubeVertices.data());
+			BasicModel::cubeVertices.size() * sizeof(Vector3),
+			GpuBufferType::Vertex, mappable,
+			BasicModel::cubeVertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::cubeIndices.size() * sizeof(uint16_t),
-			BufferType::Index, mappable,
-			Primitive::cubeIndices.data());
+			BasicModel::cubeIndices.size() * sizeof(uint16_t),
+			GpuBufferType::Index, mappable,
+			BasicModel::cubeIndices.data());
 
 		return createMesh(
-			Primitive::cubeIndices.size(),
-			BufferIndex::UnsignedShort,
+			BasicModel::cubeIndices.size(),
+			GpuBufferIndex::UnsignedShort,
 			vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Mesh> Window::createCubeMeshVN(bool mappable)
+	std::shared_ptr<GpuMesh> Window::createCubeMeshVN(bool mappable)
 	{
-		auto vertices = std::vector<float>(Primitive::cubeVertices.size() * 6);
+		auto vertices = std::vector<float>(BasicModel::cubeVertices.size() * 6);
 
-		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 6)
+		for (size_t i = 0, j = 0; i < BasicModel::cubeVertices.size(); i++, j += 6)
 		{
-			memcpy(&vertices[j], &Primitive::cubeVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &Primitive::cubeNormals[i], sizeof(Vector3));
+			memcpy(&vertices[j], &BasicModel::cubeVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &BasicModel::cubeNormals[i], sizeof(Vector3));
 		}
 
 		auto vertexBuffer = createBuffer(
 			vertices.size() * sizeof(float),
-			BufferType::Vertex, mappable,
+			GpuBufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::cubeIndices.size() * sizeof(uint16_t),
-			BufferType::Index, mappable,
-			Primitive::cubeIndices.data());
+			BasicModel::cubeIndices.size() * sizeof(uint16_t),
+			GpuBufferType::Index, mappable,
+			BasicModel::cubeIndices.data());
 
 		return createMesh(
-			Primitive::cubeIndices.size(),
-			BufferIndex::UnsignedShort,
+			BasicModel::cubeIndices.size(),
+			GpuBufferIndex::UnsignedShort,
 			vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Mesh> Window::createCubeMeshVT(bool mappable)
+	std::shared_ptr<GpuMesh> Window::createCubeMeshVT(bool mappable)
 	{
-		auto vertices = std::vector<float>(Primitive::cubeVertices.size() * 5);
+		auto vertices = std::vector<float>(BasicModel::cubeVertices.size() * 5);
 
-		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 5)
+		for (size_t i = 0, j = 0; i < BasicModel::cubeVertices.size(); i++, j += 5)
 		{
-			memcpy(&vertices[j], &Primitive::cubeVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &Primitive::cubeTexCoords[i], sizeof(Vector2));
+			memcpy(&vertices[j], &BasicModel::cubeVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &BasicModel::cubeTexCoords[i], sizeof(Vector2));
 		}
 
 		auto vertexBuffer = createBuffer(
 			vertices.size() * sizeof(float),
-			BufferType::Vertex, mappable,
+			GpuBufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::cubeIndices.size() * sizeof(uint16_t),
-			BufferType::Index, mappable,
-			Primitive::cubeIndices.data());
+			BasicModel::cubeIndices.size() * sizeof(uint16_t),
+			GpuBufferType::Index, mappable,
+			BasicModel::cubeIndices.data());
 
 		return createMesh(
-			Primitive::cubeIndices.size(),
-			BufferIndex::UnsignedShort,
+			BasicModel::cubeIndices.size(),
+			GpuBufferIndex::UnsignedShort,
 			vertexBuffer, indexBuffer);
 	}
-	std::shared_ptr<Mesh> Window::createCubeMeshVNT(bool mappable)
+	std::shared_ptr<GpuMesh> Window::createCubeMeshVNT(bool mappable)
 	{
-		auto vertices = std::vector<float>(Primitive::cubeVertices.size() * 8);
+		auto vertices = std::vector<float>(BasicModel::cubeVertices.size() * 8);
 
-		for (size_t i = 0, j = 0; i < Primitive::cubeVertices.size(); i++, j += 8)
+		for (size_t i = 0, j = 0; i < BasicModel::cubeVertices.size(); i++, j += 8)
 		{
-			memcpy(&vertices[j], &Primitive::cubeVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &Primitive::cubeNormals[i], sizeof(Vector3));
-			memcpy(&vertices[j + 6], &Primitive::cubeTexCoords[i], sizeof(Vector2));
+			memcpy(&vertices[j], &BasicModel::cubeVertices[i], sizeof(Vector3));
+			memcpy(&vertices[j + 3], &BasicModel::cubeNormals[i], sizeof(Vector3));
+			memcpy(&vertices[j + 6], &BasicModel::cubeTexCoords[i], sizeof(Vector2));
 		}
 
 		auto vertexBuffer = createBuffer(
 			vertices.size() * sizeof(float),
-			BufferType::Vertex, mappable,
+			GpuBufferType::Vertex, mappable,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			Primitive::cubeIndices.size() * sizeof(uint16_t),
-			BufferType::Index, mappable,
-			Primitive::cubeIndices.data());
+			BasicModel::cubeIndices.size() * sizeof(uint16_t),
+			GpuBufferType::Index, mappable,
+			BasicModel::cubeIndices.data());
 
 		return createMesh(
-			Primitive::cubeIndices.size(),
-			BufferIndex::UnsignedShort,
+			BasicModel::cubeIndices.size(),
+			GpuBufferIndex::UnsignedShort,
 			vertexBuffer, indexBuffer);
 	}
 

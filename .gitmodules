@@ -17,3 +17,6 @@
 [submodule "Libraries/glfw"]
 	path = Libraries/glfw
 	url = https://github.com/InjectorGames/glfw
+[submodule "Libraries/lz4"]
+	path = Libraries/lz4
+	url = https://github.com/InjectorGames/lz4

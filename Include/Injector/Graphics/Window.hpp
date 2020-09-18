@@ -1,18 +1,20 @@
 #pragma once
 #include "Injector/Manager.hpp"
-#include "Injector/Graphics/Mesh.hpp"
-#include "Injector/Graphics/Image.hpp"
-#include "Injector/Graphics/Texture.hpp"
-#include "Injector/Graphics/Pipeline.hpp"
+#include "Injector/Graphics/GpuMesh.hpp"
+#include "Injector/Graphics/GpuImage.hpp"
+#include "Injector/Graphics/GpuShader.hpp"
+#include "Injector/Graphics/ImageData.hpp"
 #include "Injector/Graphics/MouseIcon.hpp"
 #include "Injector/Graphics/MouseMode.hpp"
+#include "Injector/Graphics/ShaderData.hpp"
+#include "Injector/Graphics/GpuPipeline.hpp"
 #include "Injector/Graphics/MouseButton.hpp"
 #include "Injector/Graphics/ButtonState.hpp"
-#include "Injector/Graphics/KeyboardButton.hpp"
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Graphics/CameraSystem.hpp"
-#include "Injector/Graphics/ColorPipeline.hpp"
-#include "Injector/Graphics/TexDiffusePipeline.hpp"
+#include "Injector/Graphics/KeyboardButton.hpp"
+#include "Injector/Graphics/ColorGpuPipeline.hpp"
+#include "Injector/Graphics/TexDiffuseGpuPipeline.hpp"
 
 #include <string>
 #include <cstdint>
@@ -53,10 +55,10 @@ namespace Injector
 		void setSizeLimits(const IntVector2& min, const IntVector2& max);
 		void setPosition(const IntVector2& position);	
 		void setTitle(const std::string& title);
-		void setIcons(const std::vector<std::shared_ptr<Image>>& icons);
+		void setIcons(const std::vector<std::shared_ptr<ImageData>>& icons);
 		void setMouseMode(MouseMode mode);
 		void setMouseIcon(MouseIcon icon);
-		void setMouseIcon(const std::shared_ptr<Image>& image, const IntVector2& hotspot);
+		void setMouseIcon(const std::shared_ptr<ImageData>& icon, const IntVector2& hotspot);
 		void setResizable(bool resizable);
 		void setDecorated(bool decorated);
 
@@ -76,58 +78,71 @@ namespace Injector
 		virtual std::shared_ptr<CameraSystem> createCameraSystem();
 		virtual std::shared_ptr<RenderSystem> createRenderSystem();
 
-		virtual std::shared_ptr<Buffer> createBuffer(
+		virtual std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,
-			BufferType type,
+			GpuBufferType type,
 			bool mappable,
 			const void* data);
-		virtual std::shared_ptr<Mesh> createMesh(
+		virtual std::shared_ptr<GpuMesh> createMesh(
 			size_t indexCount,
-			BufferIndex indexType,
-			const std::shared_ptr<Buffer>& vertexBuffer,
-			const std::shared_ptr<Buffer>& indexBuffer);
-		virtual std::shared_ptr<Texture> createTexture(
+			GpuBufferIndex indexType,
+			const std::shared_ptr<GpuBuffer>& vertexBuffer,
+			const std::shared_ptr<GpuBuffer>& indexBuffer);
+		virtual std::shared_ptr<ShaderData> readShaderData(
+			const std::string& filePath);
+		virtual std::shared_ptr<GpuShader> createShader(
+			GpuShaderStage stage,
+			const std::shared_ptr<ShaderData>& data);
+		virtual std::shared_ptr<GpuImage> createImage(
         	int size,
-        	TextureFormat format,
-        	TextureFilter minFilter,
-    		TextureFilter magFilter,
-    		TextureWrap wrapU,
+        	GpuImageFormat format,
+        	GpuImageFilter minFilter,
+    		GpuImageFilter magFilter,
+    		GpuImageWrap wrapU,
         	bool useMipmap,
-			const std::shared_ptr<Image>& image);
-		virtual std::shared_ptr<Texture> createTexture(
+			const std::shared_ptr<ImageData>& data);
+		virtual std::shared_ptr<GpuImage> createImage(
         	const IntVector2& size,
-        	TextureFormat format,
-        	TextureFilter minFilter,
-    		TextureFilter magFilter,
-    		TextureWrap wrapU,
-        	TextureWrap wrapV,
+        	GpuImageFormat format,
+        	GpuImageFilter minFilter,
+    		GpuImageFilter magFilter,
+    		GpuImageWrap wrapU,
+        	GpuImageWrap wrapV,
         	bool useMipmap,
-			const std::shared_ptr<Image>& image);
-		virtual std::shared_ptr<Texture> createTexture(
+			const std::shared_ptr<ImageData>& data);
+		virtual std::shared_ptr<GpuImage> createImage(
         	const IntVector3& size,
-        	TextureFormat format,
-        	TextureFilter minFilter,
-    		TextureFilter magFilter,
-    		TextureWrap wrapU,
-        	TextureWrap wrapV,
-        	TextureWrap wrapW,
+        	GpuImageFormat format,
+        	GpuImageFilter minFilter,
+    		GpuImageFilter magFilter,
+    		GpuImageWrap wrapU,
+        	GpuImageWrap wrapV,
+        	GpuImageWrap wrapW,
         	bool useMipmap,
-			const std::shared_ptr<Image>& image);
+			const std::shared_ptr<ImageData>& data);
 
-		virtual std::shared_ptr<ColorPipeline> createColorPipeline();
-		virtual std::shared_ptr<ColorPipeline> createColColorPipeline();
-		virtual std::shared_ptr<DiffusePipeline> createDiffusePipeline();
-		virtual std::shared_ptr<TexDiffusePipeline> createTexDiffusePipeline(
-			const std::shared_ptr<Texture>& texture);
+		virtual std::shared_ptr<ColorGpuPipeline> createColorPipeline(
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader);
+		virtual std::shared_ptr<ColorGpuPipeline> createColColorPipeline(
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader);
+		virtual std::shared_ptr<DiffuseGpuPipeline> createDiffusePipeline(
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader);
+		virtual std::shared_ptr<TexDiffuseGpuPipeline> createTexDiffusePipeline(
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const std::shared_ptr<GpuImage>& texture);
 
-		std::shared_ptr<Mesh> createSquareMeshV(bool mappable);
-		std::shared_ptr<Mesh> createSquareMeshVN(bool mappable);
-		std::shared_ptr<Mesh> createSquareMeshVT(bool mappable);
-		std::shared_ptr<Mesh> createSquareMeshVNT(bool mappable);
-		std::shared_ptr<Mesh> createCubeMeshV(bool mappable);
-		std::shared_ptr<Mesh> createCubeMeshVN(bool mappable);
-		std::shared_ptr<Mesh> createCubeMeshVT(bool mappable);
-		std::shared_ptr<Mesh> createCubeMeshVNT(bool mappable);
+		std::shared_ptr<GpuMesh> createSquareMeshV(bool mappable);
+		std::shared_ptr<GpuMesh> createSquareMeshVN(bool mappable);
+		std::shared_ptr<GpuMesh> createSquareMeshVT(bool mappable);
+		std::shared_ptr<GpuMesh> createSquareMeshVNT(bool mappable);
+		std::shared_ptr<GpuMesh> createCubeMeshV(bool mappable);
+		std::shared_ptr<GpuMesh> createCubeMeshVN(bool mappable);
+		std::shared_ptr<GpuMesh> createCubeMeshVT(bool mappable);
+		std::shared_ptr<GpuMesh> createCubeMeshVNT(bool mappable);
 
 		static std::shared_ptr<Window> create(
 			const std::string& title = defaultTitle,

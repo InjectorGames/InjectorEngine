@@ -1,11 +1,12 @@
 #include "Injector/Graphics/VkWindow.hpp"
 #include "Injector/Defines.hpp"
+#include "Injector/Storage/FileStream.hpp"
+#include "Injector/Graphics/VkGpuMesh.hpp"
 #include "Injector/Exception/Exception.hpp"
-#include "Injector/Graphics/VkMesh.hpp"
 #include "Injector/Graphics/VkCameraSystem.hpp"
 #include "Injector/Graphics/VkRenderSystem.hpp"
-#include "Injector/Graphics/VkColorPipeline.hpp"
-#include "Injector/Graphics/VkDiffusePipeline.hpp"
+#include "Injector/Graphics/VkColorGpuPipeline.hpp"
+#include "Injector/Graphics/VkDiffuseGpuPipeline.hpp"
 
 #include <map>
 #include <vector>
@@ -1020,17 +1021,17 @@ namespace Injector
 		return system;
 	}
 
-	std::shared_ptr<Buffer> VkWindow::createBuffer(
+	std::shared_ptr<GpuBuffer> VkWindow::createBuffer(
 		size_t size,
-		BufferType type,
+		GpuBufferType type,
 		bool mappable,
 		const void* data)
 	{
-		std::shared_ptr<VkBuffer> buffer;
+		std::shared_ptr<VkGpuBuffer> buffer;
 
 		if(mappable)
 		{
-			buffer = std::make_shared<VkBuffer>(
+			buffer = std::make_shared<VkGpuBuffer>(
 				type, size, memoryAllocator,
 				static_cast<vk::BufferUsageFlags>(0),
 				VMA_MEMORY_USAGE_CPU_TO_GPU);
@@ -1038,12 +1039,12 @@ namespace Injector
 		}
 		else
 		{
-			buffer = std::make_shared<VkBuffer>(
+			buffer = std::make_shared<VkGpuBuffer>(
 				type, size, memoryAllocator,
 				vk::BufferUsageFlagBits::eTransferDst,
 				VMA_MEMORY_USAGE_GPU_ONLY);
 
-			auto stagingBuffer = VkBuffer(
+			auto stagingBuffer = VkGpuBuffer(
 				type, size, memoryAllocator,
 				vk::BufferUsageFlagBits::eTransferSrc,
 				VMA_MEMORY_USAGE_CPU_ONLY);
@@ -1078,17 +1079,32 @@ namespace Injector
 
 		return buffer;
 	}
-	std::shared_ptr<Mesh> VkWindow::createMesh(
+	std::shared_ptr<GpuMesh> VkWindow::createMesh(
 		size_t indexCount,
-		BufferIndex indexType,
-		const std::shared_ptr<Buffer>& vertexBuffer,
-		const std::shared_ptr<Buffer>& indexBuffer)
+		GpuBufferIndex indexType,
+		const std::shared_ptr<GpuBuffer>& vertexBuffer,
+		const std::shared_ptr<GpuBuffer>& indexBuffer)
 	{
-		return std::make_shared<VkMesh>(
+		return std::make_shared<VkGpuMesh>(
 			indexCount, indexType, vertexBuffer, indexBuffer);
 	}
+	std::shared_ptr<ShaderData> VkWindow::readShaderData(
+		const std::string& filePath)
+	{
+		auto fileStream = FileStream(filePath, std::ios::in | std::ios::binary);
+		auto shaderData = std::make_shared<ShaderData>();
+		shaderData->code = std::vector<uint8_t>(fileStream.getSize());
+		fileStream.read(shaderData->code.data(), fileStream.getSize());
+		return shaderData;
+	}
+	std::shared_ptr<GpuShader> VkWindow::createShader(
+		GpuShaderStage stage,
+		const std::shared_ptr<ShaderData>& data)
+	{
+		return nullptr;
+	}
 
-	std::shared_ptr<ColorPipeline> VkWindow::createColorPipeline()
+	/*std::shared_ptr<ColorPipeline> VkWindow::createColorPipeline()
 	{
 		auto pipeline = std::make_shared<VkColorPipeline>(
 			device, renderPass, surfaceExtent);
@@ -1107,5 +1123,5 @@ namespace Injector
 			throw Exception("VkWindow", "createDiffusePipeline", "Failed to add pipeline");
 
 		return pipeline;
-	}
+	}*/
 }

@@ -61,9 +61,8 @@ include(CMake/VulkanMemoryAllocator.cmake)
 
 set(BUILD_UTILS OFF CACHE BOOL "")
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
+set(BUILD_STATIC_LIBS ON CACHE BOOL "")
 
-set(GLEW_REGAL OFF CACHE BOOL "")
-set(GLEW_OSMESA OFF CACHE BOOL "")
 add_subdirectory(Libraries/glew/build/cmake)
 
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
@@ -73,7 +72,7 @@ set(GLFW_INSTALL OFF CACHE BOOL "")
 set(GLFW_VULKAN_STATIC OFF CACHE BOOL "")
 add_subdirectory(Libraries/glfw)
 
-#add_subdirectory(Libraries/zlib)
+add_subdirectory(Libraries/lz4/build/cmake)
 
 configure_file(CMake/Defines.hpp.in Injector/Defines.hpp)
 
@@ -84,43 +83,46 @@ add_library(InjectorEngine STATIC
 	Source/Exception/NullException.cpp
 	Source/Exception/OutOfRangeException.cpp
 
-	Source/Graphics/Buffer.cpp
+	Source/Graphics/BasicModel.cpp
 	Source/Graphics/CameraComponent.cpp
 	Source/Graphics/CameraSystem.cpp
-	Source/Graphics/ColorPipeline.cpp
-	Source/Graphics/DiffusePipeline.cpp
+	Source/Graphics/ColorGpuPipeline.cpp
+	Source/Graphics/DiffuseGpuPipeline.cpp
 	Source/Graphics/FlyTransformSystem.cpp
-	Source/Graphics/GlBuffer.cpp
 	Source/Graphics/GlCameraSystem.cpp
-	Source/Graphics/GlColColorPipeline.cpp
-	Source/Graphics/GlColorPipeline.cpp
-	Source/Graphics/GlDiffusePipeline.cpp
-	Source/Graphics/GlMesh.cpp
-	Source/Graphics/GlPipeline.cpp
+	Source/Graphics/GlColColorGpuPipeline.cpp
+	Source/Graphics/GlColorGpuPipeline.cpp
+	Source/Graphics/GlDiffuseGpuPipeline.cpp
+	Source/Graphics/GlGpuBuffer.cpp
+	Source/Graphics/GlGpuShader.cpp
+	Source/Graphics/GlGpuImage.cpp
+	Source/Graphics/GlGpuMesh.cpp
+	Source/Graphics/GlGpuPipeline.cpp
+	Source/Graphics/GlGpuShader.cpp
 	Source/Graphics/GlRenderSystem.cpp
-	Source/Graphics/GlShader.cpp
-	Source/Graphics/GlTexDiffusePipeline.cpp
-	Source/Graphics/GlTexture.cpp
+	Source/Graphics/GlTexDiffuseGpuPipeline.cpp
 	Source/Graphics/GlWindow.cpp
-	Source/Graphics/Image.cpp
-	Source/Graphics/Mesh.cpp
-	Source/Graphics/Model.cpp
-	Source/Graphics/Pipeline.cpp
-	Source/Graphics/Primitive.cpp
+	Source/Graphics/GpuBuffer.cpp
+	Source/Graphics/GpuImage.cpp
+	Source/Graphics/GpuMesh.cpp
+	Source/Graphics/GpuPipeline.cpp
+	Source/Graphics/GpuShader.cpp
+	Source/Graphics/ImageData.cpp
+	Source/Graphics/ModelData.cpp
 	Source/Graphics/RenderComponent.cpp
 	Source/Graphics/RenderSystem.cpp
-	Source/Graphics/TexDiffusePipeline.cpp
-	Source/Graphics/Texture.cpp
-	Source/Graphics/VkBuffer.cpp
+	Source/Graphics/ShaderData.cpp
+	Source/Graphics/TexDiffuseGpuPipeline.cpp
 	Source/Graphics/VkCameraSystem.cpp
-	Source/Graphics/VkColorPipeline.cpp
-	Source/Graphics/VkDiffusePipeline.cpp
-	Source/Graphics/VkMesh.cpp
-	Source/Graphics/VkPipeline.cpp
+	Source/Graphics/VkColorGpuPipeline.cpp
+	Source/Graphics/VkDiffuseGpuPipeline.cpp
+	Source/Graphics/VkGpuBuffer.cpp
+	Source/Graphics/VkGpuImage.cpp
+	Source/Graphics/VkGpuMesh.cpp
+	Source/Graphics/VkGpuPipeline.cpp
+	Source/Graphics/VkGpuShader.cpp
 	Source/Graphics/VkRenderSystem.cpp
-	Source/Graphics/VkShader.cpp
 	Source/Graphics/VkSwapchainData.cpp
-	Source/Graphics/VkTexture.cpp
 	Source/Graphics/VkWindow.cpp
 	Source/Graphics/Window.cpp
 
@@ -153,6 +155,7 @@ add_library(InjectorEngine STATIC
 	Source/Storage/FileStream.cpp
 
 	Source/Component.cpp
+	Source/Compressor.cpp
 	Source/Engine.cpp
 	Source/Entity.cpp
 	Source/Manager.cpp
@@ -163,15 +166,16 @@ target_link_libraries(InjectorEngine PUBLIC
 	assimp
 	glew_s
 	glfw
+	lz4_static
 	stb
 	VulkanMemoryAllocator
 	Vulkan::Vulkan
-	#zlibstatic
 )
 target_include_directories(InjectorEngine PUBLIC
 	${PROJECT_BINARY_DIR}
 	${PROJECT_SOURCE_DIR}/Include
 	${PROJECT_SOURCE_DIR}/Libraries/glew/include
+	${PROJECT_SOURCE_DIR}/Libraries/lz4/lib
 	${Vulkan_INCLUDE_DIRS}
 	#${PROJECT_SOURCE_DIR}/Libraries/zlib
 	#${PROJECT_BINARY_DIR}/Libraries/zlib
@@ -192,11 +196,18 @@ endif()
 
 set(INJECTOR_RESOURCES
 	Images/GrayBox.png
+	Images/Logo16.png
+	Images/Logo32.png
+	Images/Logo48.png
 
 	Shaders/Color.frag
 	Shaders/Color.vert
+	Shaders/ColColor.frag
+	Shaders/ColColor.vert
 	Shaders/Diffuse.frag
 	Shaders/Diffuse.vert
+	Shaders/TexDiffuse.frag
+	Shaders/TexDiffuse.vert
 
 	Shaders/Color.frag.spv
 	Shaders/Color.vert.spv
