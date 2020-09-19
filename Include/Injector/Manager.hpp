@@ -10,11 +10,11 @@ namespace Injector
 {
 	class Manager
 	{
-	protected:
+	 protected:
 		bool active;
 		std::set<std::shared_ptr<Entity>> entities;
 		std::vector<std::shared_ptr<System>> systems;
-	public:
+	 public:
 		Manager(bool active = true);
 		virtual ~Manager();
 
@@ -34,7 +34,7 @@ namespace Injector
 			systems.push_back(system);
 			return system;
 		}
-		
+
 		bool removeEntity(const std::shared_ptr<Entity>& entity) noexcept;
 		bool destroySystem(const std::shared_ptr<System>& system) noexcept;
 

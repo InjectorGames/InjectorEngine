@@ -3,5 +3,6 @@
 namespace Injector
 {
 	Component::~Component()
-	{}
+	{
+	}
 }

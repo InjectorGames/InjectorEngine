@@ -9,9 +9,11 @@ namespace Injector
 		transforms(),
 		translates(),
 		rotates()
-	{}
+	{
+	}
 	TransformSystem::~TransformSystem()
-	{}
+	{
+	}
 
 	void TransformSystem::update()
 	{
@@ -78,7 +80,7 @@ namespace Injector
 			if (!transform->getComponent(transformComponent))
 				continue;
 
-			if(transformComponent->parent)
+			if (transformComponent->parent)
 			{
 				auto parent = transformComponent->parent;
 				auto matrix = transformComponent->matrix;

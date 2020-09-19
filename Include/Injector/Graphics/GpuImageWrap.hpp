@@ -2,12 +2,12 @@
 
 namespace Injector
 {
-    enum class GpuImageWrap
-    {
-        Repeat,
-        MirroredRepeat,
-        ClampToEdge,
-        ClampToBorder,
-        MirrorClampToEdge,
-    };
+	enum class GpuImageWrap
+	{
+		Repeat,
+		MirroredRepeat,
+		ClampToEdge,
+		ClampToBorder,
+		MirrorClampToEdge,
+	};
 }

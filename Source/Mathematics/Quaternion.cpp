@@ -8,10 +8,12 @@ namespace Injector
 {
 	Quaternion::Quaternion() :
 		x(0.0f), y(0.0f), z(0.0f), w(0.0f)
-	{}
+	{
+	}
 	Quaternion::Quaternion(float _x, float _y, float _z, float _w) :
 		x(_x), y(_y), z(_z), w(_w)
-	{}
+	{
+	}
 	Quaternion::Quaternion(float angle, const Vector3& axis)
 	{
 		auto v = axis * sin(angle * 0.5f);
@@ -55,7 +57,6 @@ namespace Injector
 			t = a.getCrossProduct(b);
 		}
 
-		// TODO: NOT SURE ABOUT ORDER
 		*this = Quaternion(t.x, t.y, t.z, real).getNormalized();
 	}
 	Quaternion::Quaternion(const Matrix3& matrix)
@@ -204,7 +205,7 @@ namespace Injector
 		const Vector3& direction, const Vector3& up) const noexcept
 	{
 		auto c0 = up.getCrossProduct(direction) *
-			(1.0f / sqrt(fmaxf(0.00001f, direction.getDotProduct(direction))));
+				  (1.0f / sqrt(fmaxf(0.00001f, direction.getDotProduct(direction))));
 		return Quaternion(Matrix3(c0, direction.getCrossProduct(c0), direction));
 	}
 
@@ -287,7 +288,7 @@ namespace Injector
 	bool Quaternion::operator==(const Quaternion& quaternion) const noexcept
 	{
 		return x == quaternion.x && y == quaternion.y &&
-			z == quaternion.z && w == quaternion.w;
+			   z == quaternion.z && w == quaternion.w;
 	}
 	bool Quaternion::operator!=(const Quaternion& quaternion) const noexcept
 	{
@@ -296,24 +297,36 @@ namespace Injector
 
 	Quaternion& Quaternion::operator--() noexcept
 	{
-		--x; --y; --z; --w;
+		--x;
+		--y;
+		--z;
+		--w;
 		return *this;
 	}
 	Quaternion& Quaternion::operator++() noexcept
 	{
-		++x; ++y; ++z; ++w;
+		++x;
+		++y;
+		++z;
+		++w;
 		return *this;
 	}
 	Quaternion Quaternion::operator--(int) noexcept
 	{
 		auto result = Quaternion(*this);
-		--x; --y; --z; --w;
+		--x;
+		--y;
+		--z;
+		--w;
 		return result;
 	}
 	Quaternion Quaternion::operator++(int) noexcept
 	{
 		auto result = Quaternion(*this);
-		++x; ++y; ++z; ++w;
+		++x;
+		++y;
+		++z;
+		++w;
 		return result;
 	}
 

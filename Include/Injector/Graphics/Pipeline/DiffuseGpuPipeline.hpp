@@ -5,7 +5,7 @@ namespace Injector
 {
 	class DiffuseGpuPipeline : public GpuPipeline
 	{
-	public:
+	 public:
 		virtual ~DiffuseGpuPipeline();
 
 		virtual const Vector4& getObjectColor() const;

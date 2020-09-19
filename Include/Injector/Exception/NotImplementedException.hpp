@@ -3,11 +3,12 @@
 
 namespace Injector
 {
-    class NotImplementedException : public Exception
-    {
-    public:
-        NotImplementedException(const std::string& className,
-            const std::string& functionName);
-        virtual ~NotImplementedException();
-    };
+	class NotImplementedException : public Exception
+	{
+	 public:
+		NotImplementedException(
+			const std::string& className,
+			const std::string& functionName);
+		virtual ~NotImplementedException();
+	};
 }

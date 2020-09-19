@@ -8,10 +8,10 @@ namespace Injector
 {
 	class GlGpuBuffer : public GpuBuffer
 	{
-	protected:
+	 protected:
 		GLuint buffer;
 		GLenum glType;
-	public:
+	 public:
 		GlGpuBuffer(
 			GpuBufferType type,
 			size_t size,

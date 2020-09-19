@@ -6,7 +6,7 @@ namespace Injector
 {
 	class BasicModel
 	{
-	public:
+	 public:
 		static const std::vector<Vector3> squareVertices;
 		static const std::vector<Vector3> squareNormals;
 		static const std::vector<Vector2> squareTexCoords;

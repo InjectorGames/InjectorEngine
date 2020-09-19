@@ -8,7 +8,7 @@ namespace Injector
 {
 	class TexDiffuseGpuPipeline : public DiffuseGpuPipeline
 	{
-	public:
+	 public:
 		virtual ~TexDiffuseGpuPipeline();
 
 		virtual std::shared_ptr<GpuImage> getTexture() const;
@@ -16,7 +16,7 @@ namespace Injector
 		virtual const Vector2& getTextureScale() const;
 		virtual void setTextureScale(const Vector2& scale);
 
-        virtual const Vector2& getTextureOffset() const;
+		virtual const Vector2& getTextureOffset() const;
 		virtual void setTextureOffset(const Vector2& offset);
 	};
 }

@@ -38,7 +38,7 @@ namespace Injector
 		glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
 		if (glfwRawMouseMotionSupported() == GLFW_TRUE)
-    		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+			glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
 		cursor = glfwCreateStandardCursor(static_cast<int>(MouseIcon::Arrow));
 		glfwSetCursor(window, cursor);
@@ -56,16 +56,16 @@ namespace Injector
 
 	void Window::update()
 	{
-		if(!glfwWindowShouldClose(window))
+		if (!glfwWindowShouldClose(window))
 		{
-			if(isResized)
+			if (isResized)
 			{
 				auto size = getFramebufferSize();
 				onFramebufferResize(size);
 				isResized = false;
 			}
 
-			if(!isMinimized())
+			if (!isMinimized())
 				Manager::update();
 
 			deltaScroll = {};
@@ -122,7 +122,7 @@ namespace Injector
 	}
 	void Window::setSizeLimits(const IntVector2& min, const IntVector2& max)
 	{
-		if(min.x < 1 || min.y < 1 || max.x < 1 || max.y < 1)
+		if (min.x < 1 || min.y < 1 || max.x < 1 || max.y < 1)
 			throw Exception("Window", "setSizeLimits", "Size can not be less than one");
 
 		glfwSetWindowSizeLimits(window, min.x, min.y, max.x, max.y);
@@ -270,14 +270,14 @@ namespace Injector
 	}
 	std::shared_ptr<GpuImage> Window::createImage(
 		GpuImageType type,
-        const IntVector3& size,
-        GpuImageFormat format,
-        GpuImageFilter minFilter,
-    	GpuImageFilter magFilter,
-    	GpuImageWrap wrapU,
-        GpuImageWrap wrapV,
-        GpuImageWrap wrapW,
-        bool useMipmap,
+		const IntVector3& size,
+		GpuImageFormat format,
+		GpuImageFilter minFilter,
+		GpuImageFilter magFilter,
+		GpuImageWrap wrapU,
+		GpuImageWrap wrapV,
+		GpuImageWrap wrapW,
+		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
 		throw NotImplementedException("Window", "createImage");
@@ -495,39 +495,39 @@ namespace Injector
 	}
 
 	std::shared_ptr<GpuImage> Window::createImage(
-        int size,
-        GpuImageFormat format,
-        GpuImageFilter minFilter,
-    	GpuImageFilter magFilter,
-    	GpuImageWrap wrapU,
-        bool useMipmap,
+		int size,
+		GpuImageFormat format,
+		GpuImageFilter minFilter,
+		GpuImageFilter magFilter,
+		GpuImageWrap wrapU,
+		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
 		return createImage(GpuImageType::Image1D, IntVector3(size, 0, 0), format,
 			minFilter, magFilter, wrapU, GpuImageWrap::Repeat, GpuImageWrap::Repeat, useMipmap, data);
 	}
 	std::shared_ptr<GpuImage> Window::createImage(
-        const IntVector2& size,
-        GpuImageFormat format,
-        GpuImageFilter minFilter,
-    	GpuImageFilter magFilter,
-    	GpuImageWrap wrapU,
-        GpuImageWrap wrapV,
-        bool useMipmap,
+		const IntVector2& size,
+		GpuImageFormat format,
+		GpuImageFilter minFilter,
+		GpuImageFilter magFilter,
+		GpuImageWrap wrapU,
+		GpuImageWrap wrapV,
+		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
 		return createImage(GpuImageType::Image2D, IntVector3(size, 0), format,
 			minFilter, magFilter, wrapU, wrapV, GpuImageWrap::Repeat, useMipmap, data);
 	}
 	std::shared_ptr<GpuImage> Window::createImage(
-        const IntVector3& size,
-        GpuImageFormat format,
-        GpuImageFilter minFilter,
-    	GpuImageFilter magFilter,
-    	GpuImageWrap wrapU,
-        GpuImageWrap wrapV,
-        GpuImageWrap wrapW,
-        bool useMipmap,
+		const IntVector3& size,
+		GpuImageFormat format,
+		GpuImageFilter minFilter,
+		GpuImageFilter magFilter,
+		GpuImageWrap wrapU,
+		GpuImageWrap wrapV,
+		GpuImageWrap wrapW,
+		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
 		return createImage(GpuImageType::Image3D, size, format,

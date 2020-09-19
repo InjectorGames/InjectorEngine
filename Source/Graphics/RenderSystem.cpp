@@ -7,9 +7,11 @@ namespace Injector
 {
 	RenderSystem::RenderSystem() :
 		cameras()
-	{}
+	{
+	}
 	RenderSystem::~RenderSystem()
-	{}
+	{
+	}
 
 	size_t RenderSystem::getCameraCount() const noexcept
 	{

@@ -4,7 +4,7 @@ namespace Injector
 {
 	class System
 	{
-	public:
+	 public:
 		virtual ~System();
 		virtual void update();
 	};

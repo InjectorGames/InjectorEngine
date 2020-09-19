@@ -7,28 +7,36 @@ namespace Injector
 {
 	IntVector4::IntVector4() :
 		x(0), y(0), z(0), w(0)
-	{}
+	{
+	}
 	IntVector4::IntVector4(int xyzw) :
 		x(xyzw), y(xyzw), z(xyzw), w(xyzw)
-	{}
+	{
+	}
 	IntVector4::IntVector4(int _x, int _y, int _z, int _w) :
 		x(_x), y(_y), z(_z), w(_w)
-	{}
+	{
+	}
 	IntVector4::IntVector4(const IntVector2& vector, int _z, int _w) :
 		x(vector.x), y(vector.y), z(_z), w(_w)
-	{}
+	{
+	}
 	IntVector4::IntVector4(int _x, const IntVector2& vector, int _w) :
 		x(_x), y(vector.x), z(vector.y), w(_w)
-	{}
+	{
+	}
 	IntVector4::IntVector4(int _x, int _y, const IntVector2& vector) :
 		x(_x), y(_y), z(vector.x), w(vector.y)
-	{}
+	{
+	}
 	IntVector4::IntVector4(const IntVector3& vector, int _w) :
 		x(vector.x), y(vector.y), z(vector.z), w(_w)
-	{}
+	{
+	}
 	IntVector4::IntVector4(int _x, const IntVector3& vector) :
 		x(_x), y(vector.x), z(vector.y), w(vector.z)
-	{}
+	{
+	}
 
 	int IntVector4::getDotProduct(const IntVector4& vector) const noexcept
 	{
@@ -41,7 +49,7 @@ namespace Injector
 	}
 	float IntVector4::getDistance(const IntVector4& vector) const noexcept
 	{
-		return  sqrtf(static_cast<float>(getDotProduct(*this - vector)));
+		return sqrtf(static_cast<float>(getDotProduct(*this - vector)));
 	}
 	IntVector4 IntVector4::getReflected(const IntVector4& normal) const noexcept
 	{
@@ -68,24 +76,36 @@ namespace Injector
 
 	IntVector4& IntVector4::operator--() noexcept
 	{
-		--x; --y; --z; --w;
+		--x;
+		--y;
+		--z;
+		--w;
 		return *this;
 	}
 	IntVector4& IntVector4::operator++() noexcept
 	{
-		++x; ++y; ++z; ++w;
+		++x;
+		++y;
+		++z;
+		++w;
 		return *this;
 	}
 	IntVector4 IntVector4::operator--(int) noexcept
 	{
 		auto result = IntVector4(*this);
-		--x; --y; --z; --w;
+		--x;
+		--y;
+		--z;
+		--w;
 		return result;
 	}
 	IntVector4 IntVector4::operator++(int) noexcept
 	{
 		auto result = IntVector4(*this);
-		++x; ++y; ++z; ++w;
+		++x;
+		++y;
+		++z;
+		++w;
 		return result;
 	}
 	IntVector4 IntVector4::operator-() const noexcept

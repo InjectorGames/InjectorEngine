@@ -7,13 +7,16 @@ namespace Injector
 {
 	IntVector2::IntVector2() :
 		x(0), y(0)
-	{}
+	{
+	}
 	IntVector2::IntVector2(int xy) :
 		x(xy), y(xy)
-	{}
+	{
+	}
 	IntVector2::IntVector2(int _x, int _y) :
 		x(_x), y(_y)
-	{}
+	{
+	}
 
 	int IntVector2::getDotProduct(const IntVector2& vector) const noexcept
 	{
@@ -44,24 +47,28 @@ namespace Injector
 
 	IntVector2& IntVector2::operator--() noexcept
 	{
-		--x; --y;
+		--x;
+		--y;
 		return *this;
 	}
 	IntVector2& IntVector2::operator++() noexcept
 	{
-		++x; ++y;
+		++x;
+		++y;
 		return *this;
 	}
 	IntVector2 IntVector2::operator--(int) noexcept
 	{
 		auto result = IntVector2(*this);
-		--x; --y;
+		--x;
+		--y;
 		return result;
 	}
 	IntVector2 IntVector2::operator++(int) noexcept
 	{
 		auto result = IntVector2(*this);
-		++x; ++y;
+		++x;
+		++y;
 		return result;
 	}
 	IntVector2 IntVector2::operator-() const noexcept

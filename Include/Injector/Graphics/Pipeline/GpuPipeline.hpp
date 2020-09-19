@@ -5,7 +5,7 @@ namespace Injector
 {
 	class GpuPipeline
 	{
-	public:
+	 public:
 		virtual ~GpuPipeline();
 
 		virtual void setUniforms(

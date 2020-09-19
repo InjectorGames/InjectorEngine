@@ -9,7 +9,9 @@ namespace Injector
 		pipeline(_pipeline),
 		mesh(_mesh),
 		render(_render)
-	{}
+	{
+	}
 	RenderComponent::~RenderComponent()
-	{}
+	{
+	}
 }

@@ -9,13 +9,14 @@ namespace Injector
 {
 	class GpuMesh
 	{
-	public:
+	 public:
 		size_t indexCount;
 		GpuBufferIndex indexType;
 		std::shared_ptr<GpuBuffer> vertexBuffer;
 		std::shared_ptr<GpuBuffer> indexBuffer;
 
-		GpuMesh(size_t indexCount,
+		GpuMesh(
+			size_t indexCount,
 			GpuBufferIndex indexType,
 			const std::shared_ptr<GpuBuffer>& vertexBuffer,
 			const std::shared_ptr<GpuBuffer>& indexBuffer);

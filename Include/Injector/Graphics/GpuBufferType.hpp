@@ -2,16 +2,16 @@
 
 namespace Injector
 {
-    enum class GpuBufferType
-    {
-        UniformTexel,
-        StorageTexel,
-        Uniform,
-        Storage,
-        Index,
-        Vertex,
-        Indirect,
-        TransformFeedback,
-        TransformFeedbackCounter,
-    };
+	enum class GpuBufferType
+	{
+		UniformTexel,
+		StorageTexel,
+		Uniform,
+		Storage,
+		Index,
+		Vertex,
+		Indirect,
+		TransformFeedback,
+		TransformFeedbackCounter,
+	};
 }

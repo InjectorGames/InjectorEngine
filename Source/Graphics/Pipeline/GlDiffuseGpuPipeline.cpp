@@ -4,19 +4,19 @@
 
 namespace Injector
 {
-    GlDiffuseGpuPipeline::GlDiffuseGpuPipeline(
-        const std::shared_ptr<GlGpuShader>& vertexShader,
+	GlDiffuseGpuPipeline::GlDiffuseGpuPipeline(
+		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
-        const Vector4& objectColor,
-        const Vector4& ambientColor,
-        const Vector4& lightColor,
-        const Vector3& lightDirection) :
-        GlGpuPipeline(GL_TRIANGLES),
+		const Vector4& objectColor,
+		const Vector4& ambientColor,
+		const Vector4& lightColor,
+		const Vector3& lightDirection) :
+		GlGpuPipeline(GL_TRIANGLES),
 		ubo(objectColor, ambientColor, lightColor,
 			lightDirection.getNormalized())
-    {
+	{
 		if (!vertexShader || !fragmentShader)
-			throw NullException("GlDiffuseGpuPipeline", "GlDiffuseGpuPipeline", "shader");	
+			throw NullException("GlDiffuseGpuPipeline", "GlDiffuseGpuPipeline", "shader");
 
 		glAttachShader(program, vertexShader->getShader());
 		glAttachShader(program, fragmentShader->getShader());
@@ -41,60 +41,61 @@ namespace Injector
 
 		uniformBuffer = std::make_shared<GlGpuBuffer>(GpuBufferType::Uniform,
 			sizeof(UniformBufferObject), GL_DYNAMIC_DRAW, nullptr);
-    }
-    GlDiffuseGpuPipeline::~GlDiffuseGpuPipeline()
-    {}
+	}
+	GlDiffuseGpuPipeline::~GlDiffuseGpuPipeline()
+	{
+	}
 
-    const Vector4& GlDiffuseGpuPipeline::getObjectColor() const
-    {
-        return ubo.objectColor;
-    }
+	const Vector4& GlDiffuseGpuPipeline::getObjectColor() const
+	{
+		return ubo.objectColor;
+	}
 	void GlDiffuseGpuPipeline::setObjectColor(const Vector4& color)
-    {
-        ubo.objectColor = Vector4(color);
-    }
+	{
+		ubo.objectColor = Vector4(color);
+	}
 
-    const Vector4& GlDiffuseGpuPipeline::getAmbientColor() const
-    {
-        return ubo.ambientColor;
-    }
+	const Vector4& GlDiffuseGpuPipeline::getAmbientColor() const
+	{
+		return ubo.ambientColor;
+	}
 	void GlDiffuseGpuPipeline::setAmbientColor(const Vector4& color)
-    {
-        ubo.ambientColor = Vector4(color);
-    }
+	{
+		ubo.ambientColor = Vector4(color);
+	}
 
 	const Vector4& GlDiffuseGpuPipeline::getLightColor() const
-    {
-        return ubo.lightColor;
-    }
+	{
+		return ubo.lightColor;
+	}
 	void GlDiffuseGpuPipeline::setLightColor(const Vector4& color)
-    {
-        ubo.lightColor = Vector4(color);
-    }
+	{
+		ubo.lightColor = Vector4(color);
+	}
 
 	const Vector3& GlDiffuseGpuPipeline::getLightDirection() const
-    {
-        return ubo.lightDirection;
-    }
+	{
+		return ubo.lightDirection;
+	}
 	void GlDiffuseGpuPipeline::setLightDirection(const Vector3& direction)
-    {
-        ubo.lightDirection = direction.getNormalized();
-    }
+	{
+		ubo.lightDirection = direction.getNormalized();
+	}
 
-	void GlDiffuseGpuPipeline::bind()	
+	void GlDiffuseGpuPipeline::bind()
 	{
 		GlGpuPipeline::bind();
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glDisable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
-		glCullFace(GL_BACK); 
+		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);
 
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0,
 			uniformBuffer->getBuffer());
 	}
-    void GlDiffuseGpuPipeline::flush()
+	void GlDiffuseGpuPipeline::flush()
 	{
 		uniformBuffer->setData(&ubo, sizeof(UniformBufferObject));
 	}

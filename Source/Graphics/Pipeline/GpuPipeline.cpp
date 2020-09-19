@@ -4,7 +4,8 @@
 namespace Injector
 {
 	GpuPipeline::~GpuPipeline()
-	{}
+	{
+	}
 
 	void GpuPipeline::setUniforms(
 		const Matrix4& model,

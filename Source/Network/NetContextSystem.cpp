@@ -2,10 +2,11 @@
 
 namespace Injector
 {
-    NetContextSystem::NetContextSystem(
-        const std::shared_ptr<asio::io_context>& _context) :
+	NetContextSystem::NetContextSystem(
+		const std::shared_ptr<asio::io_context>& _context) :
 		context(_context)
-	{}
+	{
+	}
 
 	void NetContextSystem::update()
 	{

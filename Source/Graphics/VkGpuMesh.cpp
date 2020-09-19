@@ -9,9 +9,11 @@ namespace Injector
 		const std::shared_ptr<GpuBuffer>& vertexBuffer,
 		const std::shared_ptr<GpuBuffer>& indexBuffer) :
 		GpuMesh(indexCount, indexType, vertexBuffer, indexBuffer)
-	{}
+	{
+	}
 	VkGpuMesh::~VkGpuMesh()
-	{}
+	{
+	}
 
 	void VkGpuMesh::draw(vk::CommandBuffer commandBuffer)
 	{
@@ -20,13 +22,13 @@ namespace Injector
 		auto vkVertexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(vertexBuffer);
 		auto vkIndexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(vertexBuffer);
 
-		if(!vkVertexBuffer || !vkIndexBuffer)
+		if (!vkVertexBuffer || !vkIndexBuffer)
 			throw CastException("VkGpuMesh", "VkGpuMesh", "buffer");
 
 		auto buffer = vkVertexBuffer->getBuffer();
 		commandBuffer.bindVertexBuffers(0, 1, &buffer, &offset);
 
-		auto index = (indexType == GpuBufferIndex::UnsignedShort) ? 
+		auto index = (indexType == GpuBufferIndex::UnsignedShort) ?
 			vk::IndexType::eUint16 : vk::IndexType::eUint32;
 
 		commandBuffer.bindIndexBuffer(vkIndexBuffer->getBuffer(), 0, index);

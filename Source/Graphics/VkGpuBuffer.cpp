@@ -34,7 +34,7 @@ namespace Injector
 			&allocation,
 			nullptr);
 
-		if(result != VK_SUCCESS)
+		if (result != VK_SUCCESS)
 			throw Exception("VkGpuBuffer", "VkGpuBuffer", "Failed to create buffer");
 
 		buffer = vk::Buffer(bufferHandle);
@@ -108,7 +108,7 @@ namespace Injector
 	{
 		GpuBuffer::unmap();
 
-		if (mapAccess == GpuBufferAccess::WriteOnly || 
+		if (mapAccess == GpuBufferAccess::WriteOnly ||
 			mapAccess == GpuBufferAccess::ReadWrite)
 		{
 			flush(mapSize, mapOffset);
@@ -124,7 +124,7 @@ namespace Injector
 			throw Exception("VkGpuBuffer", "setData", "Not mappable");
 		if (mapped)
 			throw Exception("VkGpuBuffer", "setData", "Already mapped");
-		if(_size > size)
+		if (_size > size)
 			throw OutOfRangeException("VkGpuBuffer", "setData", _size, size);
 
 		void* mappedData;
@@ -188,7 +188,7 @@ namespace Injector
 	}
 	bool VkGpuBuffer::isVkMappable(VmaMemoryUsage usage)
 	{
-		return 
+		return
 			usage == VMA_MEMORY_USAGE_CPU_ONLY ||
 			usage == VMA_MEMORY_USAGE_CPU_TO_GPU ||
 			usage == VMA_MEMORY_USAGE_GPU_TO_CPU;

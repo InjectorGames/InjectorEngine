@@ -7,19 +7,24 @@ namespace Injector
 {
 	IntVector3::IntVector3() :
 		x(0), y(0), z(0)
-	{}
+	{
+	}
 	IntVector3::IntVector3(int xyz) :
 		x(xyz), y(xyz), z(xyz)
-	{}
+	{
+	}
 	IntVector3::IntVector3(int _x, int _y, int _z) :
 		x(_x), y(_y), z(_z)
-	{}
+	{
+	}
 	IntVector3::IntVector3(const IntVector2& vector, int _z) :
 		x(vector.x), y(vector.y), z(_z)
-	{}
+	{
+	}
 	IntVector3::IntVector3(int _x, const IntVector2& vector) :
 		x(_x), y(vector.x), z(vector.y)
-	{}
+	{
+	}
 
 	int IntVector3::getDotProduct(const IntVector3& vector) const noexcept
 	{

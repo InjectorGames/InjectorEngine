@@ -5,15 +5,15 @@
 
 namespace Injector
 {
-    class ModelData
-    {
-    public:
-        ModelData();
-        virtual ~ModelData();
+	class ModelData
+	{
+	 public:
+		ModelData();
+		virtual ~ModelData();
 
-        static std::shared_ptr<ModelData> readFromFile(
+		static std::shared_ptr<ModelData> readFromFile(
 			const std::string& filePath);
 
-        static const ModelData square;
-    };
+		static const ModelData square;
+	};
 }

@@ -3,19 +3,22 @@
 
 namespace Injector
 {
-    MemoryStream::MemoryStream(
+	MemoryStream::MemoryStream(
 		const std::ios::openmode mode) :
 		std::stringstream(mode)
-	{}
+	{
+	}
 	MemoryStream::MemoryStream(
-	    const std::string& string,
+		const std::string& string,
 		const std::ios::openmode mode) :
 		std::stringstream(string, mode)
-	{}
+	{
+	}
 	MemoryStream::~MemoryStream()
-	{}
+	{
+	}
 
-    std::istream& MemoryStream::read(char& value)
+	std::istream& MemoryStream::read(char& value)
 	{
 		return std::stringstream::read(reinterpret_cast<char*>(&value), sizeof(char));
 	}
@@ -37,7 +40,7 @@ namespace Injector
 	}
 	std::istream& MemoryStream::read(int8_t* values, size_t count)
 	{
-	    return std::stringstream::read(reinterpret_cast<char*>(values), sizeof(int8_t) * count);
+		return std::stringstream::read(reinterpret_cast<char*>(values), sizeof(int8_t) * count);
 	}
 	std::istream& MemoryStream::read(uint16_t& value)
 	{
@@ -53,7 +56,7 @@ namespace Injector
 	}
 	std::istream& MemoryStream::read(int16_t* values, size_t count)
 	{
-	    return std::stringstream::read(reinterpret_cast<char*>(values), sizeof(int16_t) * count);
+		return std::stringstream::read(reinterpret_cast<char*>(values), sizeof(int16_t) * count);
 	}
 	std::istream& MemoryStream::read(uint32_t& value)
 	{
@@ -146,7 +149,7 @@ namespace Injector
 		value = ByteSwap::swapBigEndian(value);
 		return stream;
 	}
-    std::istream& MemoryStream::readBigEndian(double& value)
+	std::istream& MemoryStream::readBigEndian(double& value)
 	{
 		auto& stream = std::stringstream::read(reinterpret_cast<char*>(&value), sizeof(double));
 		value = ByteSwap::swapBigEndian(value);
@@ -195,14 +198,14 @@ namespace Injector
 		value = ByteSwap::swapLittleEndian(value);
 		return stream;
 	}
-    std::istream& MemoryStream::readLittleEndian(double& value)
+	std::istream& MemoryStream::readLittleEndian(double& value)
 	{
 		auto& stream = std::stringstream::read(reinterpret_cast<char*>(&value), sizeof(double));
 		value = ByteSwap::swapLittleEndian(value);
 		return stream;
 	}
 
-    std::ostream& MemoryStream::write(char value)
+	std::ostream& MemoryStream::write(char value)
 	{
 		return std::stringstream::write(reinterpret_cast<const char*>(&value), sizeof(char));
 	}
@@ -326,7 +329,7 @@ namespace Injector
 		value = ByteSwap::swapBigEndian(value);
 		return std::stringstream::write(reinterpret_cast<const char*>(&value), sizeof(float));
 	}
-    std::ostream& MemoryStream::writeBigEndian(double value)
+	std::ostream& MemoryStream::writeBigEndian(double value)
 	{
 		value = ByteSwap::swapBigEndian(value);
 		return std::stringstream::write(reinterpret_cast<const char*>(&value), sizeof(double));
@@ -367,7 +370,7 @@ namespace Injector
 		value = ByteSwap::swapLittleEndian(value);
 		return std::stringstream::write(reinterpret_cast<const char*>(&value), sizeof(float));
 	}
-    std::ostream& MemoryStream::writeLittleEndian(double value)
+	std::ostream& MemoryStream::writeLittleEndian(double value)
 	{
 		value = ByteSwap::swapLittleEndian(value);
 		return std::stringstream::write(reinterpret_cast<const char*>(&value), sizeof(double));

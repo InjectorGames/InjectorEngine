@@ -6,7 +6,7 @@ namespace Injector
 {
 	class ByteSwap final
 	{
-	public:
+	 public:
 		static uint16_t swapEndian(uint16_t value) noexcept;
 		static int16_t swapEndian(int16_t value) noexcept;
 		static uint32_t swapEndian(uint32_t value) noexcept;
@@ -37,5 +37,5 @@ namespace Injector
 		static float swapLittleEndian(float value) noexcept;
 		static double swapLittleEndian(double value) noexcept;
 	};
-	
+
 }

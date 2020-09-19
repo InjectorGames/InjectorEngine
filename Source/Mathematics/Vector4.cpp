@@ -5,64 +5,78 @@ namespace Injector
 {
 	Vector4::Vector4() :
 		x(0.0f), y(0.0f), z(0.0f), w(0.0f)
-	{}
+	{
+	}
 	Vector4::Vector4(float xyzw) :
 		x(xyzw), y(xyzw), z(xyzw), w(xyzw)
-	{}
+	{
+	}
 	Vector4::Vector4(float _x, float _y, float _z, float _w) :
 		x(_x), y(_y), z(_z), w(_w)
-	{}
+	{
+	}
 	Vector4::Vector4(const Vector2& vector, float _z, float _w) :
 		x(vector.x), y(vector.y), z(_z), w(_w)
-	{}
+	{
+	}
 	Vector4::Vector4(float _x, const Vector2& vector, float _w) :
 		x(_x), y(vector.x), z(vector.y), w(_w)
-	{}
+	{
+	}
 	Vector4::Vector4(float _x, float _y, const Vector2& vector) :
 		x(_x), y(_y), z(vector.x), w(vector.y)
-	{}
+	{
+	}
 	Vector4::Vector4(const Vector3& vector, float _w) :
 		x(vector.x), y(vector.y), z(vector.z), w(_w)
-	{}
+	{
+	}
 	Vector4::Vector4(float _x, const Vector3& vector) :
 		x(_x), y(vector.x), z(vector.y), w(vector.z)
-	{}
+	{
+	}
 	Vector4::Vector4(const IntVector4& vector) :
 		x(static_cast<float>(vector.x)),
 		y(static_cast<float>(vector.y)),
 		z(static_cast<float>(vector.z)),
 		w(static_cast<float>(vector.w))
-	{}
+	{
+	}
 	Vector4::Vector4(const IntVector2& vector, float _z, float _w) :
 		x(static_cast<float>(vector.x)),
 		y(static_cast<float>(vector.y)),
 		z(_z),
 		w(_w)
-	{}
+	{
+	}
 	Vector4::Vector4(float _x, const IntVector2& vector, float _w) :
 		x(_x),
 		y(static_cast<float>(vector.x)),
 		z(static_cast<float>(vector.y)),
 		w(_w)
-	{}
+	{
+	}
 	Vector4::Vector4(float _x, float _y, const IntVector2& vector) :
 		x(_x),
 		y(_y),
 		z(static_cast<float>(vector.x)),
 		w(static_cast<float>(vector.y))
-	{}
+	{
+	}
 	Vector4::Vector4(const IntVector3& vector, float _w) :
 		x(static_cast<float>(vector.x)),
 		y(static_cast<float>(vector.y)),
 		z(static_cast<float>(vector.z)),
 		w(_w)
-	{}
+	{
+	}
 	Vector4::Vector4(float _x, const IntVector3& vector) :
 		x(_x),
 		y(static_cast<float>(vector.x)),
 		z(static_cast<float>(vector.y)),
 		w(static_cast<float>(vector.z))
-	{}
+	{
+	}
 
 	float Vector4::getDotProduct(const Vector4& vector) const noexcept
 	{
@@ -92,12 +106,12 @@ namespace Injector
 	}
 	Vector4 Vector4::getReflected(const Vector4& normal) const noexcept
 	{
-		return  *this - normal * getDotProduct(normal) * 2.0f;
+		return *this - normal * getDotProduct(normal) * 2.0f;
 	}
 	Vector4 Vector4::getRefracted(const Vector4& normal, float eta) const noexcept
 	{
 		auto dot = getDotProduct(normal);
-		auto  k = (1.0f - eta * eta * (1.0f - dot * dot));
+		auto k = (1.0f - eta * eta * (1.0f - dot * dot));
 		return Vector4(k >= 0.0f ? (*this * eta - normal * (eta * dot + sqrt(k))) : Vector4(0.0f));
 	}
 	Vector4 Vector4::getSine() const noexcept
@@ -137,24 +151,36 @@ namespace Injector
 
 	Vector4& Vector4::operator--() noexcept
 	{
-		--x; --y; --z; --w;
+		--x;
+		--y;
+		--z;
+		--w;
 		return *this;
 	}
 	Vector4& Vector4::operator++() noexcept
 	{
-		++x; ++y; ++z; ++w;
+		++x;
+		++y;
+		++z;
+		++w;
 		return *this;
 	}
 	Vector4 Vector4::operator--(int) noexcept
 	{
 		auto result = Vector4(*this);
-		--x; --y; --z; --w;
+		--x;
+		--y;
+		--z;
+		--w;
 		return result;
 	}
 	Vector4 Vector4::operator++(int) noexcept
 	{
 		auto result = Vector4(*this);
-		++x; ++y; ++z; ++w;
+		++x;
+		++y;
+		++z;
+		++w;
 		return result;
 	}
 	Vector4 Vector4::operator-() const noexcept

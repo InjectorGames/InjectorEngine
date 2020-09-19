@@ -6,9 +6,9 @@ namespace Injector
 {
 	class VkRenderSystem : public RenderSystem
 	{
-	protected:
+	 protected:
 		VkWindow& window;
-	public:
+	 public:
 		VkRenderSystem(VkWindow& window);
 		virtual ~VkRenderSystem();
 

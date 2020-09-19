@@ -14,9 +14,10 @@ namespace Injector
 		int componentCount;
 		bool component16;
 		std::vector<uint8_t> pixels;
-		
+
 		ImageData();
-		ImageData(const IntVector2& size,
+		ImageData(
+			const IntVector2& size,
 			int componentCount,
 			bool component16,
 			const std::vector<uint8_t>& pixels);

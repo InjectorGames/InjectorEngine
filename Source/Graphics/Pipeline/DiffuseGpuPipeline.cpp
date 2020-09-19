@@ -4,7 +4,8 @@
 namespace Injector
 {
 	DiffuseGpuPipeline::~DiffuseGpuPipeline()
-	{}
+	{
+	}
 
 	const Vector4& DiffuseGpuPipeline::getObjectColor() const
 	{

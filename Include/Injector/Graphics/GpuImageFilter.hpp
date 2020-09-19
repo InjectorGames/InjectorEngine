@@ -2,9 +2,9 @@
 
 namespace Injector
 {
-    enum class GpuImageFilter
-    {
-        Nearest,
-        Linear,
-    };
+	enum class GpuImageFilter
+	{
+		Nearest,
+		Linear,
+	};
 }

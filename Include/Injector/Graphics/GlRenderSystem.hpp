@@ -6,9 +6,9 @@ namespace Injector
 {
 	class GlRenderSystem : public RenderSystem
 	{
-	protected:
+	 protected:
 		GlWindow& window;
-	public:
+	 public:
 		GlRenderSystem(GlWindow& window);
 		virtual ~GlRenderSystem();
 

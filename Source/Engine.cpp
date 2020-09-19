@@ -58,9 +58,9 @@ namespace Injector
 		engineInitialized = true;
 
 		std::cout << "Initialized Injector Engine (" <<
-			INJECTOR_VERSION_MAJOR << "." <<
-			INJECTOR_VERSION_MINOR << "." <<
-			INJECTOR_VERSION_PATCH << ")\n";
+				  INJECTOR_VERSION_MAJOR << "." <<
+				  INJECTOR_VERSION_MINOR << "." <<
+				  INJECTOR_VERSION_PATCH << ")\n";
 	}
 	void Engine::terminateEngine()
 	{
@@ -71,7 +71,7 @@ namespace Injector
 
 		if (videoInitialized)
 			terminateVideo();
-		
+
 		engineInitialized = false;
 
 		std::cout << "Terminated Injector Engine\n";
@@ -91,15 +91,15 @@ namespace Injector
 			throw Exception("Engine", "initializeVideo", "Engine is already initialized");
 		if (videoInitialized)
 			throw Exception("Engine", "initializeVideo", "Video subsystem is already initialized");
-		
+
 		glfwSetErrorCallback(videoErrorCallback);
 
 		if (!glfwInit())
-    		throw Exception("Engine", "initializeVideo", "Failed to initialize GLFW");
+			throw Exception("Engine", "initializeVideo", "Failed to initialize GLFW");
 
-		if(_graphicsApi == GraphicsApi::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
+		if (_graphicsApi == GraphicsApi::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
 			throw Exception("Engine", "initializeVideo", "Vulkan is not supported");
-		
+
 		graphicsApi = _graphicsApi;
 		videoInitialized = true;
 
@@ -141,7 +141,7 @@ namespace Injector
 			updateDeltaTime = std::chrono::duration_cast<
 				std::chrono::duration<double>>(tick - updateStartTick).count();
 			updateStartTick = tick;
-			
+
 			for (auto& manager : managers)
 				manager->update();
 
@@ -153,7 +153,7 @@ namespace Injector
 				{
 					existActive = true;
 					break;
-				}	
+				}
 			}
 
 			if (!existActive)
@@ -170,7 +170,7 @@ namespace Injector
 					std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<uint64_t>(delayTime)));
 			}
 
-			if(videoInitialized)
+			if (videoInitialized)
 				glfwPollEvents();
 		}
 	}

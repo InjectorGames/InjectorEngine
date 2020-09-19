@@ -11,7 +11,8 @@ namespace Injector
 		componentCount(),
 		component16(),
 		pixels()
-	{}
+	{
+	}
 	ImageData::ImageData(
 		const IntVector2& _size,
 		int _componentCount,
@@ -21,9 +22,11 @@ namespace Injector
 		componentCount(_componentCount),
 		component16(_component16),
 		pixels(_pixels)
-	{}
+	{
+	}
 	ImageData::~ImageData()
-	{}
+	{
+	}
 
 	std::shared_ptr<ImageData> ImageData::readFromFile(
 		const std::string& filePath,
@@ -33,7 +36,7 @@ namespace Injector
 		void* data;
 		IntVector2 size;
 
-		if(component16)
+		if (component16)
 		{
 			data = stbi_load_16(filePath.c_str(), &size.x, &size.y,
 				&componentCount, componentCount);
@@ -44,7 +47,7 @@ namespace Injector
 				&componentCount, componentCount);
 		}
 
-		if(!data)
+		if (!data)
 		{
 			throw Exception("ImageData", "readFromFile",
 				"Failed to load image, " + std::string(stbi_failure_reason()));

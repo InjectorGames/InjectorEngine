@@ -8,7 +8,7 @@ namespace INJECT_NAMESPACE
 {
 	class UdpSocket : public asio::ip::udp::socket
 	{
-	public:
+	 public:
 		using Context = asio::io_context;
 		using ErrorCode = asio::error_code;
 		using Socket = asio::ip::udp::socket;
@@ -16,23 +16,28 @@ namespace INJECT_NAMESPACE
 		using Handler = std::function<void(const ErrorCode&, size_t)>;
 
 		inline static constexpr uint16_t defaultPort = 0;
-	protected:
+	 protected:
 		std::shared_ptr<Context> context;
-	public:
+	 public:
 		UdpSocket(
-			const std::shared_ptr<Context>& _context = std::make_shared<Context>(),
-			const Endpoint& localEndpoint = Endpoint(asio::ip::udp::v6(), defaultPort)) :
+			const std::shared_ptr<Context>& _context =
+				std::make_shared<Context>(),
+			const Endpoint& localEndpoint =
+				Endpoint(asio::ip::udp::v6(), defaultPort)) :
 			asio::ip::udp::socket(*_context, localEndpoint),
 			context(_context)
-		{}
+		{
+		}
 		UdpSocket(
 			const std::shared_ptr<Context>& _context = std::make_shared<Context>(),
 			const uint16_t localPort = defaultPort) :
 			asio::ip::udp::socket(*_context, Endpoint(asio::ip::udp::v6(), localPort)),
 			context(_context)
-		{}
+		{
+		}
 		virtual ~UdpSocket()
-		{}
+		{
+		}
 
 		inline const std::shared_ptr<Context>& getContext() const noexcept
 		{

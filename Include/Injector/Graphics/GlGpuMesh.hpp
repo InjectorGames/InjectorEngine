@@ -10,10 +10,11 @@ namespace Injector
 {
 	class GlGpuMesh : public GpuMesh
 	{
-	protected:
+	 protected:
 		GLuint vertexArray;
-	public:
-		GlGpuMesh(size_t indexCount,
+	 public:
+		GlGpuMesh(
+			size_t indexCount,
 			GpuBufferIndex indexType,
 			const std::shared_ptr<GpuBuffer>& vertexBuffer,
 			const std::shared_ptr<GpuBuffer>& indexBuffer);

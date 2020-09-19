@@ -2,15 +2,17 @@
 
 namespace Injector
 {
-    GpuShader::GpuShader(
-        GpuShaderStage _stage) :
-        stage(_stage)
-    {}
-    GpuShader::~GpuShader()
-    {}
+	GpuShader::GpuShader(
+		GpuShaderStage _stage) :
+		stage(_stage)
+	{
+	}
+	GpuShader::~GpuShader()
+	{
+	}
 
-    GpuShaderStage GpuShader::getStage() const noexcept
-    {
-        return stage;
-    }
+	GpuShaderStage GpuShader::getStage() const noexcept
+	{
+		return stage;
+	}
 }

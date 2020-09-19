@@ -33,7 +33,8 @@ namespace Injector
 		colorLocation = getUniformLocation(program, "u_Color");
 	}
 	GlColorGpuPipeline::~GlColorGpuPipeline()
-	{}
+	{
+	}
 
 	const Vector4& GlColorGpuPipeline::getColor() const
 	{
@@ -51,8 +52,8 @@ namespace Injector
 		glEnable(GL_CULL_FACE);
 		glDisable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
-		glCullFace(GL_BACK); 
-		glFrontFace(GL_CW); 
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CW);
 	}
 	void GlColorGpuPipeline::flush()
 	{

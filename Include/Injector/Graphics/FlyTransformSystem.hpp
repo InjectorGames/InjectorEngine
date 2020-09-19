@@ -6,17 +6,18 @@ namespace Injector
 {
 	class FlyTransformSystem : public System
 	{
-	protected:
+	 protected:
 		std::shared_ptr<Window> window;
 		bool rotating;
 		Vector3 eulerAngles;
 		Vector2 lastMousePosition;
-	public:
+	 public:
 		std::shared_ptr<Entity> transform;
 		float speed;
 		float sensitivity;
 
-		FlyTransformSystem(const std::shared_ptr<Window>& window);
+		FlyTransformSystem(
+			const std::shared_ptr<Window>& window);
 		virtual ~FlyTransformSystem();
 
 		void update() override;

@@ -27,14 +27,14 @@ namespace Injector
 		auto glVertexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(vertexBuffer);
 		auto glIndexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(indexBuffer);
 
-		if(!glVertexBuffer || !glIndexBuffer)
+		if (!glVertexBuffer || !glIndexBuffer)
 			throw CastException("GlGpuMesh", "GlGpuMesh", "buffer");
 
 		glBindVertexArray(vertexArray);
 		glVertexBuffer->bind();
 		glIndexBuffer->bind();
 		pipeline->setAttributes();
-		
+
 		auto index = (indexType == GpuBufferIndex::UnsignedShort) ?
 			GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
 

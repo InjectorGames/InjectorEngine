@@ -6,10 +6,12 @@
 
 namespace Injector
 {
-    class GlDiffuseGpuPipeline : public GlGpuPipeline, public DiffuseGpuPipeline
-    {
-    public:
-        struct UniformBufferObject
+	class GlDiffuseGpuPipeline :
+		public GlGpuPipeline,
+		public DiffuseGpuPipeline
+	{
+	 public:
+		struct UniformBufferObject
 		{
 			Vector4 objectColor;
 			Vector4 ambientColor;
@@ -27,24 +29,25 @@ namespace Injector
 				lightColor(_lightColor),
 				lightDirection(_lightDirection),
 				aligment()
-			{}
+			{
+			}
 		};
-    protected:
-        GLint mvpLocation;
-        GLint normalLocation;
-        std::shared_ptr<GlGpuBuffer> uniformBuffer;
-        UniformBufferObject ubo;
-    public:
-        GlDiffuseGpuPipeline(
+	 protected:
+		GLint mvpLocation;
+		GLint normalLocation;
+		std::shared_ptr<GlGpuBuffer> uniformBuffer;
+		UniformBufferObject ubo;
+	 public:
+		GlDiffuseGpuPipeline(
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
-            const Vector4& objectColor = Vector4::one,
+			const Vector4& objectColor = Vector4::one,
 			const Vector4& ambientColor = Vector4::one / 2,
 			const Vector4& lightColor = Vector4::one,
 			const Vector3& lightDirection = Vector3(1.0f, 2.0f, 3.0f));
-        virtual ~GlDiffuseGpuPipeline();
+		virtual ~GlDiffuseGpuPipeline();
 
-        const Vector4& getObjectColor() const override;
+		const Vector4& getObjectColor() const override;
 		void setObjectColor(const Vector4& objectColor) override;
 
 		const Vector4& getAmbientColor() const override;
@@ -57,8 +60,8 @@ namespace Injector
 		void setLightDirection(const Vector3& lightDirection) override;
 
 		void bind() override;
-        void flush() override;
-        void setAttributes() override;
+		void flush() override;
+		void setAttributes() override;
 
 		void setUniforms(
 			const Matrix4& model,
@@ -66,5 +69,5 @@ namespace Injector
 			const Matrix4& proj,
 			const Matrix4& viewProj,
 			const Matrix4& mvp) override;
-    };
+	};
 }

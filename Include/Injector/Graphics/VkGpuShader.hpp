@@ -6,13 +6,15 @@ namespace Injector
 {
 	class VkGpuShader
 	{
-	protected:
+	 protected:
 		vk::Device device;
 		vk::ShaderModule shaderModule;
-	public:
-		VkGpuShader(const vk::Device& device,
+	 public:
+		VkGpuShader(
+			const vk::Device& device,
 			const std::vector<uint32_t>& code);
-		VkGpuShader(const vk::Device& device,
+		VkGpuShader(
+			const vk::Device& device,
 			const std::vector<char>& code);
 		virtual ~VkGpuShader();
 

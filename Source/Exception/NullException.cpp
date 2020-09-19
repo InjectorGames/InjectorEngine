@@ -2,13 +2,15 @@
 
 namespace Injector
 {
-    NullException::NullException(
-        const std::string& className,
-        const std::string& functionName,
-        const std::string& variableName) :
-        Exception(className, functionName,
-            "Variable \"" + variableName +"\" is null")
-    {}
-    NullException::~NullException()
-    {}
+	NullException::NullException(
+		const std::string& className,
+		const std::string& functionName,
+		const std::string& variableName) :
+		Exception(className, functionName,
+			"Variable \"" + variableName + "\" is null")
+	{
+	}
+	NullException::~NullException()
+	{
+	}
 }

@@ -8,8 +8,9 @@ namespace Injector
 {
 	class VkGpuMesh : public GpuMesh
 	{
-	public:
-		VkGpuMesh(size_t indexCount,
+	 public:
+		VkGpuMesh(
+			size_t indexCount,
 			GpuBufferIndex indexType,
 			const std::shared_ptr<GpuBuffer>& vertexBuffer,
 			const std::shared_ptr<GpuBuffer>& indexBuffer);

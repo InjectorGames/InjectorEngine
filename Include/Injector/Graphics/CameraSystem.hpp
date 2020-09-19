@@ -9,14 +9,14 @@ namespace Injector
 {
 	class CameraSystem : public System
 	{
-	protected:
+	 protected:
 		float lastAspectRatio;
 		std::set<std::shared_ptr<Entity>> cameras;
-	public:
+	 public:
 		CameraSystem();
 		virtual ~CameraSystem();
 
-		void updateAspecRatio(float aspectRatio);
+		void updateAspectRatio(float aspectRatio);
 
 		bool addCamera(const std::shared_ptr<Entity>& entity) noexcept;
 		bool removeCamera(const std::shared_ptr<Entity>& entity) noexcept;

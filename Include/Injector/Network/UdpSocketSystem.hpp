@@ -14,13 +14,13 @@ namespace INJECT_NAMESPACE
 		public entityx::System<UdpSocketSystem>,
 		public entityx::Receiver<UdpSocketSystem>
 	{
-	public:
+	 public:
 		using Buffer = std::string;
 		using ReceiveHandler = std::function<void(
 			const Endpoint&, MemoryStream&, const size_t)>;
 
 		inline static constexpr size_t defaultBufferSize = 0xFFFF;
-	private:
+	 private:
 		Handler receiveHandler;
 		Endpoint receiveEndpoint;
 		Buffer receiveBuffer;
@@ -56,11 +56,11 @@ namespace INJECT_NAMESPACE
 
 			async_receive_from();
 		}
-	public:
-		std::vector<ReceiveHandler> receiveHandlers;
+	 public:
+		std::vector <ReceiveHandler> receiveHandlers;
 
 		UdpSocketSystem(
-			const std::shared_ptr<Context>& context = std::make_shared<Context>(),
+			const std::shared_ptr <Context>& context = std::make_shared<Context>(),
 			const Endpoint& localEndpoint = Endpoint(asio::ip::udp::v6(), defaultPort),
 			const size_t bufferSize = defaultBufferSize) :
 			UdpSocket(context, localEndpoint),
@@ -71,9 +71,10 @@ namespace INJECT_NAMESPACE
 			receiveStream(),
 			sendStream(),
 			receiveHandlers()
-		{}
+		{
+		}
 		UdpSocketSystem(
-			const std::shared_ptr<Context>& context = std::make_shared<Context>(),
+			const std::shared_ptr <Context>& context = std::make_shared<Context>(),
 			const uint16_t localPort = defaultPort,
 			const size_t bufferSize = defaultBufferSize) :
 			UdpSocket(context, localPort),
@@ -84,7 +85,8 @@ namespace INJECT_NAMESPACE
 			receiveStream(),
 			sendStream(),
 			receiveHandlers()
-		{}
+		{
+		}
 
 		void configure(entityx::EntityManager& entities,
 			entityx::EventManager& events) override
@@ -95,7 +97,8 @@ namespace INJECT_NAMESPACE
 		void update(entityx::EntityManager& entities,
 			entityx::EventManager& events,
 			entityx::TimeDelta deltaTime) override
-		{}
+		{
+		}
 
 		inline void send(const Datagram& datagram)
 		{

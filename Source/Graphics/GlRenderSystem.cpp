@@ -8,9 +8,11 @@ namespace Injector
 {
 	GlRenderSystem::GlRenderSystem(GlWindow& _window) :
 		window(_window)
-	{}
+	{
+	}
 	GlRenderSystem::~GlRenderSystem()
-	{}
+	{
+	}
 
 	void GlRenderSystem::update()
 	{

@@ -5,12 +5,13 @@ namespace Injector
 {
 	class MemoryStream : public std::stringstream
 	{
-	public:
-		MemoryStream(const std::ios::openmode mode =
-			ios_base::in | ios_base::out);
+	 public:
+		MemoryStream(
+			const std::ios::openmode mode =
+				ios_base::in | ios_base::out);
 		MemoryStream(const std::string& string,
 			const std::ios::openmode mode =
-			ios_base::in | ios_base::out);
+				ios_base::in | ios_base::out);
 		virtual ~MemoryStream();
 
 		std::istream& read(char& value);

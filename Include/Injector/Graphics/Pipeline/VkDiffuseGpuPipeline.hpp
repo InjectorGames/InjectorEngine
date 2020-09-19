@@ -9,9 +9,11 @@
 
 namespace Injector
 {
-	class VkDiffuseGpuPipeline : public VkGpuPipeline, public DiffuseGpuPipeline
+	class VkDiffuseGpuPipeline :
+		public VkGpuPipeline,
+		public DiffuseGpuPipeline
 	{
-	public:
+	 public:
 		struct UniformBufferObject
 		{
 			Vector4 objectColor;
@@ -28,9 +30,10 @@ namespace Injector
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
 				lightDirection(_lightDirection)
-			{}
+			{
+			}
 		};
-	protected:
+	 protected:
 		vk::DescriptorSetLayout descriptorSetLayout;
 		vk::PipelineLayout pipelineLayout;
 		vk::Pipeline pipeline;
@@ -62,7 +65,7 @@ namespace Injector
 			vk::DescriptorSetLayout descriptorSetLayout,
 			size_t imageCount,
 			const std::vector<std::shared_ptr<VkGpuBuffer>>& uniformBuffers);
-	public:
+	 public:
 		VkDiffuseGpuPipeline(
 			vk::Device device,
 			VmaAllocator allocator,

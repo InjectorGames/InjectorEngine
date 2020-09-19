@@ -3,14 +3,14 @@
 
 namespace Injector
 {
-    class GpuShader
-    {
-    protected:
-        GpuShaderStage stage;
-    public:
-        GpuShader(GpuShaderStage stage);
-        virtual ~GpuShader();
+	class GpuShader
+	{
+	 protected:
+		GpuShaderStage stage;
+	 public:
+		GpuShader(GpuShaderStage stage);
+		virtual ~GpuShader();
 
-        GpuShaderStage getStage() const noexcept;
-    };
+		GpuShaderStage getStage() const noexcept;
+	};
 }

@@ -5,7 +5,7 @@ namespace Injector
 {
 	class GlColColorGpuPipeline : public GlColorGpuPipeline
 	{
-	public:
+	 public:
 		GlColColorGpuPipeline(
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,

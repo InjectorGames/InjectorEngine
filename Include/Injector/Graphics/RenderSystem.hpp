@@ -11,9 +11,9 @@ namespace Injector
 {
 	class RenderSystem : public System
 	{
-	protected:
+	 protected:
 		std::set<std::shared_ptr<Entity>> cameras;
-	public:
+	 public:
 		RenderSystem();
 		virtual ~RenderSystem();
 

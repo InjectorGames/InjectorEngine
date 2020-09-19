@@ -5,7 +5,9 @@ namespace Injector
 	RotateComponent::RotateComponent(
 		const Quaternion& _rotation) :
 		rotation(_rotation)
-	{}
+	{
+	}
 	RotateComponent::~RotateComponent()
-	{}
+	{
+	}
 }

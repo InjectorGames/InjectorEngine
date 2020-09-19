@@ -2,17 +2,19 @@
 
 namespace Injector
 {
-    Exception::Exception(
-        const std::string& className,
-        const std::string& functionName,
-        const std::string& _message) :
-        message(_message + " at " + className + "::" + functionName + "()")
-    {}
-    Exception::~Exception()
-    {}
+	Exception::Exception(
+		const std::string& className,
+		const std::string& functionName,
+		const std::string& _message) :
+		message(_message + " at " + className + "::" + functionName + "()")
+	{
+	}
+	Exception::~Exception()
+	{
+	}
 
-    const char* Exception::what() const noexcept
-    {
-        return message.c_str();
-    }
+	const char* Exception::what() const noexcept
+	{
+		return message.c_str();
+	}
 }

@@ -4,7 +4,8 @@
 namespace Injector
 {
 	ColorGpuPipeline::~ColorGpuPipeline()
-	{}
+	{
+	}
 
 	const Vector4& ColorGpuPipeline::getColor() const
 	{

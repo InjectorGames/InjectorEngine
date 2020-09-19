@@ -4,15 +4,15 @@
 
 namespace Injector
 {
-    GlSkyGpuPipeline::GlSkyGpuPipeline(
-        const std::shared_ptr<GlGpuShader>& vertexShader,
+	GlSkyGpuPipeline::GlSkyGpuPipeline(
+		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
-        float height) :
-        GlGpuPipeline(GL_TRIANGLES),
+		float height) :
+		GlGpuPipeline(GL_TRIANGLES),
 		ubo(height)
-    {
+	{
 		if (!vertexShader || !fragmentShader)
-			throw NullException("GlSkyGpuPipeline", "GlSkyGpuPipeline", "shader");	
+			throw NullException("GlSkyGpuPipeline", "GlSkyGpuPipeline", "shader");
 
 		glAttachShader(program, vertexShader->getShader());
 		glAttachShader(program, fragmentShader->getShader());
@@ -34,33 +34,34 @@ namespace Injector
 
 		uniformBuffer = std::make_shared<GlGpuBuffer>(GpuBufferType::Uniform,
 			sizeof(UniformBufferObject), GL_DYNAMIC_DRAW, nullptr);
-    }
-    GlSkyGpuPipeline::~GlSkyGpuPipeline()
-    {}
+	}
+	GlSkyGpuPipeline::~GlSkyGpuPipeline()
+	{
+	}
 
-    float GlSkyGpuPipeline::getHeight() const
-    {
-        return ubo.height;
-    }
+	float GlSkyGpuPipeline::getHeight() const
+	{
+		return ubo.height;
+	}
 	void GlSkyGpuPipeline::setHeight(float height)
-    {
-        ubo.height = height;
-    }
+	{
+		ubo.height = height;
+	}
 
-	void GlSkyGpuPipeline::bind()	
+	void GlSkyGpuPipeline::bind()
 	{
 		GlGpuPipeline::bind();
 		glEnable(GL_CULL_FACE);
-        glDisable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
-		glCullFace(GL_BACK); 
+		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);
 
-        glBindBufferBase(GL_UNIFORM_BUFFER, 0,
-            uniformBuffer->getBuffer());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0,
+			uniformBuffer->getBuffer());
 	}
-    void GlSkyGpuPipeline::flush()
+	void GlSkyGpuPipeline::flush()
 	{
 		uniformBuffer->setData(&ubo, sizeof(UniformBufferObject));
 	}
@@ -76,5 +77,6 @@ namespace Injector
 		const Matrix4& proj,
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
-	{}
+	{
+	}
 }

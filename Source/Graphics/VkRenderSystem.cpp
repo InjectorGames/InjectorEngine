@@ -2,7 +2,6 @@
 #include "Injector/Graphics/VkGpuMesh.hpp"
 #include "Injector/Graphics/Pipeline/VkGpuPipeline.hpp"
 
-
 #include <map>
 
 namespace Injector
@@ -13,7 +12,8 @@ namespace Injector
 	{
 	}
 	VkRenderSystem::~VkRenderSystem()
-	{}
+	{
+	}
 
 	void VkRenderSystem::update()
 	{

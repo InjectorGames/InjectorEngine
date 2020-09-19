@@ -8,11 +8,11 @@ namespace Injector
 {
 	class VkGpuPipeline : public GpuPipeline
 	{
-	protected:
+	 protected:
 		vk::Device device;
 		vk::PipelineCache pipelineCache;
 		vk::CommandBuffer bindedCommandBuffer;
-	public:
+	 public:
 		VkGpuPipeline(vk::Device device);
 		virtual ~VkGpuPipeline();
 

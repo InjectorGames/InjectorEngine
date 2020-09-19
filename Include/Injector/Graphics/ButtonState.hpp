@@ -8,6 +8,6 @@ namespace Injector
 	{
 		Press = GLFW_PRESS,
 		Release = GLFW_RELEASE,
-        Repeat = GLFW_REPEAT,
+		Repeat = GLFW_REPEAT,
 	};
 }

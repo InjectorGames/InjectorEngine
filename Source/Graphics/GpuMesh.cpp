@@ -12,7 +12,9 @@ namespace Injector
 		indexType(_indexType),
 		vertexBuffer(_vertexBuffer),
 		indexBuffer(_indexBuffer)
-	{}
+	{
+	}
 	GpuMesh::~GpuMesh()
-	{}
+	{
+	}
 }

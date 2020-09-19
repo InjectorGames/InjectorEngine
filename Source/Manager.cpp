@@ -5,11 +5,13 @@ namespace Injector
 {
 	Manager::Manager(bool _active) :
 		active(_active),
-		entities(), 
+		entities(),
 		systems()
-	{}
+	{
+	}
 	Manager::~Manager()
-	{}
+	{
+	}
 
 	void Manager::update()
 	{

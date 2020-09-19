@@ -5,9 +5,11 @@
 
 namespace Injector
 {
-	class VkColorGpuPipeline : public VkGpuPipeline, public ColorGpuPipeline
+	class VkColorGpuPipeline :
+		public VkGpuPipeline,
+		public ColorGpuPipeline
 	{
-	protected:
+	 protected:
 		vk::PipelineLayout pipelineLayout;
 		vk::Pipeline pipeline;
 		std::shared_ptr<VkGpuShader> vertexShader;
@@ -23,8 +25,9 @@ namespace Injector
 			const vk::Extent2D& surfaceExtent,
 			const std::shared_ptr<VkGpuShader>& vertexShader,
 			const std::shared_ptr<VkGpuShader>& fragmentShader);
-	public:
-		VkColorGpuPipeline(vk::Device device,
+	 public:
+		VkColorGpuPipeline(
+			vk::Device device,
 			vk::RenderPass renderPass,
 			const vk::Extent2D& surfaceExtent,
 			const std::shared_ptr<VkGpuShader>& vertexShader,

@@ -5,23 +5,27 @@ namespace Injector
 	Matrix2::Matrix2() :
 		m00(0.0f), m01(0.0f),
 		m10(0.0f), m11(0.0f)
-	{}
+	{
+	}
 	Matrix2::Matrix2(float value) :
 		m00(value), m01(value),
 		m10(value), m11(value)
-	{}
+	{
+	}
 	Matrix2::Matrix2(
 		float _m00, float _m01,
 		float _m10, float _m11) :
 		m00(_m00), m01(_m01),
 		m10(_m10), m11(_m11)
-	{}
+	{
+	}
 	Matrix2::Matrix2(
 		const Vector2& column0,
 		const Vector2& column1) :
 		m00(column0.x), m01(column0.y),
 		m10(column1.x), m11(column1.y)
-	{}
+	{
+	}
 
 	float Matrix2::getDeterminant() const noexcept
 	{
@@ -84,7 +88,7 @@ namespace Injector
 
 	bool Matrix2::operator==(const Matrix2& matrix) const noexcept
 	{
-		return 
+		return
 			getColumn0() == matrix.getColumn0() &&
 			getColumn1() == matrix.getColumn1();
 	}
@@ -160,7 +164,7 @@ namespace Injector
 	}
 	Vector2 Matrix2::operator*(const Vector2& vector) const noexcept
 	{
-		return 
+		return
 			getColumn0() * Vector2(vector.x) +
 			getColumn1() * Vector2(vector.y);
 	}

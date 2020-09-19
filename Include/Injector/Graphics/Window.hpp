@@ -24,16 +24,19 @@ namespace Injector
 {
 	class Window : public Manager
 	{
-	protected:
+	 protected:
 		GLFWwindow* window;
 		GLFWcursor* cursor;
 		Vector2 deltaScroll;
 		bool isResized;
 
-		static void scrollCallback(GLFWwindow* window, double x, double y);
-		static void cursorPositionCallback(GLFWwindow* window, double x, double y);
-		static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-	public:
+		static void scrollCallback(
+			GLFWwindow* window, double x, double y);
+		static void cursorPositionCallback(
+			GLFWwindow* window, double x, double y);
+		static void framebufferSizeCallback(
+			GLFWwindow* window, int width, int height);
+	 public:
 		static const std::string defaultTitle;
 		static const IntVector2 defaultSize;
 
@@ -54,7 +57,7 @@ namespace Injector
 
 		void setSize(const IntVector2& size);
 		void setSizeLimits(const IntVector2& min, const IntVector2& max);
-		void setPosition(const IntVector2& position);	
+		void setPosition(const IntVector2& position);
 		void setTitle(const std::string& title);
 		void setIcons(const std::vector<std::shared_ptr<ImageData>>& icons);
 		void setMouseMode(MouseMode mode);
@@ -96,14 +99,14 @@ namespace Injector
 			const std::shared_ptr<ShaderData>& data);
 		virtual std::shared_ptr<GpuImage> createImage(
 			GpuImageType type,
-        	const IntVector3& size,
-        	GpuImageFormat format,
-        	GpuImageFilter minFilter,
-    		GpuImageFilter magFilter,
-    		GpuImageWrap wrapU,
-        	GpuImageWrap wrapV,
-        	GpuImageWrap wrapW,
-        	bool useMipmap,
+			const IntVector3& size,
+			GpuImageFormat format,
+			GpuImageFilter minFilter,
+			GpuImageFilter magFilter,
+			GpuImageWrap wrapU,
+			GpuImageWrap wrapV,
+			GpuImageWrap wrapW,
+			bool useMipmap,
 			const std::shared_ptr<ImageData>& data);
 
 		virtual std::shared_ptr<ColorGpuPipeline> createColorPipeline(
@@ -133,31 +136,31 @@ namespace Injector
 		std::shared_ptr<GpuMesh> createCubeMeshVNT(bool mappable);
 
 		std::shared_ptr<GpuImage> createImage(
-        	int size,
-        	GpuImageFormat format,
-        	GpuImageFilter minFilter,
-    		GpuImageFilter magFilter,
-    		GpuImageWrap wrapU,
-        	bool useMipmap,
+			int size,
+			GpuImageFormat format,
+			GpuImageFilter minFilter,
+			GpuImageFilter magFilter,
+			GpuImageWrap wrapU,
+			bool useMipmap,
 			const std::shared_ptr<ImageData>& data);
 		std::shared_ptr<GpuImage> createImage(
-        	const IntVector2& size,
-        	GpuImageFormat format,
-        	GpuImageFilter minFilter,
-    		GpuImageFilter magFilter,
-    		GpuImageWrap wrapU,
-        	GpuImageWrap wrapV,
-        	bool useMipmap,
+			const IntVector2& size,
+			GpuImageFormat format,
+			GpuImageFilter minFilter,
+			GpuImageFilter magFilter,
+			GpuImageWrap wrapU,
+			GpuImageWrap wrapV,
+			bool useMipmap,
 			const std::shared_ptr<ImageData>& data);
 		std::shared_ptr<GpuImage> createImage(
-        	const IntVector3& size,
-        	GpuImageFormat format,
-        	GpuImageFilter minFilter,
-    		GpuImageFilter magFilter,
-    		GpuImageWrap wrapU,
-        	GpuImageWrap wrapV,
-        	GpuImageWrap wrapW,
-        	bool useMipmap,
+			const IntVector3& size,
+			GpuImageFormat format,
+			GpuImageFilter minFilter,
+			GpuImageFilter magFilter,
+			GpuImageWrap wrapU,
+			GpuImageWrap wrapV,
+			GpuImageWrap wrapW,
+			bool useMipmap,
 			const std::shared_ptr<ImageData>& data);
 
 		static std::shared_ptr<Window> create(

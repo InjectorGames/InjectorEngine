@@ -25,7 +25,9 @@ namespace Injector
 		changed(_changed),
 		render(_render),
 		renders(_renders)
-	{}
+	{
+	}
 	CameraComponent::~CameraComponent()
-	{}
+	{
+	}
 }

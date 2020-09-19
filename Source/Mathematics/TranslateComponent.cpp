@@ -5,7 +5,9 @@ namespace Injector
 	TranslateComponent::TranslateComponent(
 		const Vector3& _translation) :
 		translation(_translation)
-	{}
+	{
+	}
 	TranslateComponent::~TranslateComponent()
-	{}
+	{
+	}
 }

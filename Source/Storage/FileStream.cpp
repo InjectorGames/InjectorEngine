@@ -7,7 +7,7 @@ namespace Injector
 	FileStream::FileStream(const char* filePath, std::ios::openmode mode) :
 		std::fstream(filePath, mode | std::ios::ate)
 	{
-		if(!is_open())
+		if (!is_open())
 		{
 			throw Exception("FileStream", "FileStream",
 				"Failed to open file '" + std::string(filePath) + "'");
@@ -19,7 +19,7 @@ namespace Injector
 	FileStream::FileStream(const std::string& filePath, std::ios::openmode mode) :
 		std::fstream(filePath, mode | std::ios::ate)
 	{
-		if(!is_open())
+		if (!is_open())
 		{
 			throw Exception("FileStream", "FileStream",
 				"Failed to open file '" + filePath + "'");
@@ -31,7 +31,7 @@ namespace Injector
 	FileStream::FileStream(const std::filesystem::path& filePath, std::ios::openmode mode) :
 		std::fstream(filePath, mode | std::ios::ate)
 	{
-		if(!is_open())
+		if (!is_open())
 		{
 			throw Exception("FileStream", "FileStream",
 				"Failed to open file '" + filePath.string() + "'");
@@ -41,7 +41,8 @@ namespace Injector
 		seekg(0, beg);
 	}
 	FileStream::~FileStream()
-	{}
+	{
+	}
 
 	size_t FileStream::getSize() const noexcept
 	{

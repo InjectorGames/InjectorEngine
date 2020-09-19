@@ -59,7 +59,8 @@ namespace Injector
 		glfwSwapInterval(0);
 	}
 	GlWindow::~GlWindow()
-	{}
+	{
+	}
 
 	bool GlWindow::isGLES() const noexcept
 	{
@@ -130,14 +131,14 @@ namespace Injector
 	}
 	std::shared_ptr<GpuImage> GlWindow::createImage(
 		GpuImageType type,
-        const IntVector3& size,
-        GpuImageFormat format,
-        GpuImageFilter minFilter,
-    	GpuImageFilter magFilter,
-    	GpuImageWrap wrapU,
-        GpuImageWrap wrapV,
-        GpuImageWrap wrapW,
-        bool useMipmap,
+		const IntVector3& size,
+		GpuImageFormat format,
+		GpuImageFilter minFilter,
+		GpuImageFilter magFilter,
+		GpuImageWrap wrapU,
+		GpuImageWrap wrapV,
+		GpuImageWrap wrapW,
+		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
 		return std::make_shared<GlGpuImage>(type, size, format,
@@ -182,7 +183,7 @@ namespace Injector
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 		auto glTexture = std::dynamic_pointer_cast<GlGpuImage>(texture);
-			
+
 		return std::make_shared<GlTexDiffuseGpuPipeline>(
 			glVertexShader, glFragmentShader, glTexture);
 	}
@@ -192,7 +193,7 @@ namespace Injector
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
-			
+
 		return std::make_shared<GlSkyGpuPipeline>(
 			glVertexShader, glFragmentShader);
 	}

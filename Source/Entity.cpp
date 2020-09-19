@@ -4,7 +4,8 @@ namespace Injector
 {
 	Entity::Entity() :
 		components()
-	{}
+	{
+	}
 	Entity::~Entity()
 	{
 		destroyComponents();

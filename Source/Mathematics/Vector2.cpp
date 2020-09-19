@@ -5,17 +5,21 @@ namespace Injector
 {
 	Vector2::Vector2() :
 		x(0.0f), y(0.0f)
-	{}
+	{
+	}
 	Vector2::Vector2(float xy) :
 		x(xy), y(xy)
-	{}
+	{
+	}
 	Vector2::Vector2(float _x, float _y) :
 		x(_x), y(_y)
-	{}
+	{
+	}
 	Vector2::Vector2(const IntVector2& vector) :
 		x(static_cast<float>(vector.x)),
 		y(static_cast<float>(vector.y))
-	{}
+	{
+	}
 
 	float Vector2::getDotProduct(const Vector2& vector) const noexcept
 	{
@@ -33,7 +37,7 @@ namespace Injector
 	}
 	float Vector2::getDistance(const Vector2& vector) const noexcept
 	{
-		return sqrt(getDotProduct(*this -vector));
+		return sqrt(getDotProduct(*this - vector));
 	}
 	float Vector2::getDistance(const IntVector2& vector) const noexcept
 	{
@@ -45,12 +49,12 @@ namespace Injector
 	}
 	Vector2 Vector2::getReflected(const Vector2& normal) const noexcept
 	{
-		return  *this - normal * getDotProduct(normal) * 2.0f;
+		return *this - normal * getDotProduct(normal) * 2.0f;
 	}
 	Vector2 Vector2::getRefracted(const Vector2& normal, float eta) const noexcept
 	{
 		auto dot = getDotProduct(normal);
-		auto  k = (1.0f - eta * eta * (1.0f - dot * dot));
+		auto k = (1.0f - eta * eta * (1.0f - dot * dot));
 		return Vector2(k >= 0.0f ? (*this * eta - normal * (eta * dot + sqrt(k))) : Vector2(0.0f));
 	}
 	Vector2 Vector2::getSine() const noexcept
@@ -81,24 +85,28 @@ namespace Injector
 
 	Vector2& Vector2::operator--() noexcept
 	{
-		--x; --y;
+		--x;
+		--y;
 		return *this;
 	}
 	Vector2& Vector2::operator++() noexcept
 	{
-		++x; ++y;
+		++x;
+		++y;
 		return *this;
 	}
 	Vector2 Vector2::operator--(int) noexcept
 	{
 		auto result = Vector2(*this);
-		--x; --y;
+		--x;
+		--y;
 		return result;
 	}
 	Vector2 Vector2::operator++(int) noexcept
 	{
 		auto result = Vector2(*this);
-		++x; ++y;
+		++x;
+		++y;
 		return result;
 	}
 	Vector2 Vector2::operator-() const noexcept

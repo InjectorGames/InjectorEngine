@@ -5,14 +5,16 @@ namespace Injector
 {
 	GlCameraSystem::GlCameraSystem(GlWindow& _window) :
 		window(_window)
-	{}
+	{
+	}
 	GlCameraSystem::~GlCameraSystem()
-	{}
+	{
+	}
 
 	void GlCameraSystem::update()
 	{
 		auto windowSize = window.getSize();
-		updateAspecRatio(windowSize.x / float(windowSize.y));
+		updateAspectRatio(windowSize.x / float(windowSize.y));
 
 		for (auto& camera : cameras)
 		{

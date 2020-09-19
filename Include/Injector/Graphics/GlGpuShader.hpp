@@ -9,15 +9,16 @@ namespace Injector
 {
 	class GlGpuShader : public GpuShader
 	{
-	protected:
+	 protected:
 		bool gles;
 		GLuint shader;
 		GLenum glStage;
-	public:
+	 public:
 		static const std::string glHeader;
 		static const std::string glesHeader;
 
-		GlGpuShader(bool gles,
+		GlGpuShader(
+			bool gles,
 			GpuShaderStage stage,
 			const std::shared_ptr<ShaderData>& data);
 		virtual ~GlGpuShader();

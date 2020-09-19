@@ -4,12 +4,12 @@
 
 namespace Injector
 {
-    struct ShaderData
-    {
-        std::vector<uint8_t> code;
+	struct ShaderData
+	{
+		std::vector<uint8_t> code;
 
-        ShaderData();
-        ShaderData(const std::vector<uint8_t>& code);
-        virtual ~ShaderData();
-    };
+		ShaderData();
+		ShaderData(const std::vector<uint8_t>& code);
+		virtual ~ShaderData();
+	};
 }

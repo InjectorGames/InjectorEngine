@@ -8,11 +8,11 @@ namespace Injector
 {
 	class VkGpuBuffer : public GpuBuffer
 	{
-	protected:
+	 protected:
 		VmaAllocator allocator;
 		vk::Buffer buffer;
 		VmaAllocation allocation;
-	public:
+	 public:
 		VkGpuBuffer(
 			GpuBufferType type,
 			size_t size,

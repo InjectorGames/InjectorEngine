@@ -6,9 +6,9 @@ namespace Injector
 {
 	class VkCameraSystem : public CameraSystem
 	{
-	protected:
+	 protected:
 		VkWindow& window;
-	public:
+	 public:
 		VkCameraSystem(VkWindow& window);
 		virtual ~VkCameraSystem();
 

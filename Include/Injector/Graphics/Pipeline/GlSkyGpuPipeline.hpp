@@ -6,34 +6,37 @@
 
 namespace Injector
 {
-    class GlSkyGpuPipeline : public GlGpuPipeline, public SkyGpuPipeline
-    {
-    public:
-        struct UniformBufferObject
+	class GlSkyGpuPipeline :
+		public GlGpuPipeline,
+		public SkyGpuPipeline
+	{
+	 public:
+		struct UniformBufferObject
 		{
 			float height;
 
 			UniformBufferObject(
 				float _height) :
 				height(_height)
-			{}
+			{
+			}
 		};
-    protected:
-        std::shared_ptr<GlGpuBuffer> uniformBuffer;
-        UniformBufferObject ubo;
-    public:
-        GlSkyGpuPipeline(
+	 protected:
+		std::shared_ptr<GlGpuBuffer> uniformBuffer;
+		UniformBufferObject ubo;
+	 public:
+		GlSkyGpuPipeline(
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
-            float height = 1.0f);
-        virtual ~GlSkyGpuPipeline();
+			float height = 1.0f);
+		virtual ~GlSkyGpuPipeline();
 
-        float getHeight() const override;
+		float getHeight() const override;
 		void setHeight(float height) override;
 
 		void bind() override;
-        void flush() override;
-        void setAttributes() override;
+		void flush() override;
+		void setAttributes() override;
 
 		void setUniforms(
 			const Matrix4& model,
@@ -41,5 +44,5 @@ namespace Injector
 			const Matrix4& proj,
 			const Matrix4& viewProj,
 			const Matrix4& mvp) override;
-    };
+	};
 }

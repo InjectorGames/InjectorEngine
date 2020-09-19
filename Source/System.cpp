@@ -3,7 +3,9 @@
 namespace Injector
 {
 	System::~System()
-	{}
+	{
+	}
 	void System::update()
-	{}
+	{
+	}
 }

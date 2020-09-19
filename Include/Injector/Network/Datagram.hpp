@@ -5,7 +5,7 @@ namespace Injector
 {
 	class Datagram
 	{
-	public:
+	 public:
 		virtual ~Datagram();
 		virtual size_t getSize() const;
 		virtual void toBytes(MemoryStream& stream) const;

@@ -2,7 +2,6 @@
 #include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/NullException.hpp"
 
-
 namespace Injector
 {
 	vk::Pipeline VkDiffuseGpuPipeline::createPipeline(
@@ -14,8 +13,7 @@ namespace Injector
 		const std::shared_ptr<VkGpuShader>& vertexShader,
 		const std::shared_ptr<VkGpuShader>& fragmentShader)
 	{
-		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>
-		{
+		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>{
 			vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eVertex,
 				vertexShader->getShaderModule(), "main", nullptr),
 			vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eFragment,
@@ -25,8 +23,7 @@ namespace Injector
 		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
 			0, sizeof(Vector3) * 2, vk::VertexInputRate::eVertex);
 
-		auto vertexInputAttributeDescriptions = std::vector<vk::VertexInputAttributeDescription>
-		{
+		auto vertexInputAttributeDescriptions = std::vector<vk::VertexInputAttributeDescription>{
 			vk::VertexInputAttributeDescription(
 				0, 0, vk::Format::eR32G32B32Sfloat, 0),
 			vk::VertexInputAttributeDescription(
@@ -56,7 +53,7 @@ namespace Injector
 		auto pipelineMultisampleStateCreateInfo = vk::PipelineMultisampleStateCreateInfo(
 			{}, vk::SampleCountFlagBits::e1, false, {}, {}, false, false);
 
-		auto pielineColorBlendAttacmentStateCreateInfo = vk::PipelineColorBlendAttachmentState(
+		auto pipelineColorBlendAttachmentStateCreateInfo = vk::PipelineColorBlendAttachmentState(
 			false, {}, {}, {}, {}, {}, {},
 			vk::ColorComponentFlagBits::eR |
 			vk::ColorComponentFlagBits::eG |
@@ -65,7 +62,7 @@ namespace Injector
 
 		auto pipelineColorBlendStateCreateInfo =
 			vk::PipelineColorBlendStateCreateInfo({}, false, {},
-				1, &pielineColorBlendAttacmentStateCreateInfo);
+				1, &pipelineColorBlendAttachmentStateCreateInfo);
 
 		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo({},
 			static_cast<uint32_t>(pipelineShaderStageCreateInfos.size()),
@@ -276,7 +273,7 @@ namespace Injector
 	{
 		VkGpuPipeline::bind(commandBuffer, imageIndex);
 		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
-		commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, 
+		commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
 			pipelineLayout, 0, 1, &descriptorSets[imageIndex], 0, nullptr);
 	}
 

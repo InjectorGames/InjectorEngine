@@ -15,7 +15,9 @@ namespace Injector
 		origin(_origin),
 		matrix(_matrix),
 		parent(_parent)
-	{}
+	{
+	}
 	TransformComponent::~TransformComponent()
-	{}
+	{
+	}
 }

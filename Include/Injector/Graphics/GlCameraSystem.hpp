@@ -6,9 +6,9 @@ namespace Injector
 {
 	class GlCameraSystem : public CameraSystem
 	{
-	protected:
+	 protected:
 		GlWindow& window;
-	public:
+	 public:
 		GlCameraSystem(GlWindow& window);
 		virtual ~GlCameraSystem();
 

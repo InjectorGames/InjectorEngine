@@ -5,14 +5,16 @@
 
 namespace Injector
 {
-	class GlColorGpuPipeline : public GlGpuPipeline, public ColorGpuPipeline
+	class GlColorGpuPipeline :
+		public GlGpuPipeline,
+		public ColorGpuPipeline
 	{
-	protected:
+	 protected:
 		GLint mvpLocation;
 		GLint colorLocation;
 
 		Vector4 color;
-	public:
+	 public:
 		GlColorGpuPipeline(
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,

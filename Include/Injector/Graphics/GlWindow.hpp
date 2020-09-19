@@ -8,15 +8,16 @@ namespace Injector
 {
 	class GlWindow : public Window
 	{
-	protected:
+	 protected:
 		bool gles;
-		
+
 		static GLFWwindow* createWindow(
 			bool gles,
 			const std::string& title,
 			const IntVector2& size);
-	public:	
-		GlWindow(bool gles = false,
+	 public:
+		GlWindow(
+			bool gles = false,
 			const std::string& title = defaultTitle,
 			const IntVector2& size = defaultSize);
 		virtual ~GlWindow();
@@ -48,14 +49,14 @@ namespace Injector
 			const std::shared_ptr<ShaderData>& data) override;
 		std::shared_ptr<GpuImage> createImage(
 			GpuImageType type,
-        	const IntVector3& size,
-       		GpuImageFormat format,
-        	GpuImageFilter minFilter,
-    		GpuImageFilter magFilter,
-    		GpuImageWrap wrapU,
-        	GpuImageWrap wrapV,
-        	GpuImageWrap wrapW,
-        	bool useMipmap,
+			const IntVector3& size,
+			GpuImageFormat format,
+			GpuImageFilter minFilter,
+			GpuImageFilter magFilter,
+			GpuImageWrap wrapU,
+			GpuImageWrap wrapV,
+			GpuImageWrap wrapW,
+			bool useMipmap,
 			const std::shared_ptr<ImageData>& data) override;
 
 		std::shared_ptr<ColorGpuPipeline> createColorPipeline(

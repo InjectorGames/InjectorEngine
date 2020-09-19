@@ -4,14 +4,14 @@
 namespace Injector
 {
 	VkGpuShader::VkGpuShader(
-		const vk::Device& _device, 
+		const vk::Device& _device,
 		const std::vector<uint32_t>& code) :
 		device(_device)
 	{
 		auto shaderModuleCreateInfo = vk::ShaderModuleCreateInfo(
 			{}, code.size(), code.data());
-		 auto result = device.createShaderModule(
-			 &shaderModuleCreateInfo, nullptr, &shaderModule);
+		auto result = device.createShaderModule(
+			&shaderModuleCreateInfo, nullptr, &shaderModule);
 
 		if (result != vk::Result::eSuccess)
 			throw Exception("VkGpuShader", "VkGpuShader", "Failed to create shader module");

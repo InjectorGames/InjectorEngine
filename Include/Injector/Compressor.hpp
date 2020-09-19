@@ -6,7 +6,7 @@ namespace Injector
 {
 	class Compressor
 	{
-	public:
+	 public:
 		static int getCompressSize(int sourceSize);
 
 		static int compress(const void* source, int sourceSize,

@@ -2,28 +2,28 @@
 #include "Injector/Defines.hpp"
 
 #if INJECTOR_SYSTEM_LINUX
-	#include <byteswap.h>
-	#define BYTE_SWAP_16(x) bswap_16(x)
-	#define BYTE_SWAP_32(x) bswap_32(x)
-	#define BYTE_SWAP_64(x) bswap_64(x)
+#include <byteswap.h>
+#define BYTE_SWAP_16(x) bswap_16(x)
+#define BYTE_SWAP_32(x) bswap_32(x)
+#define BYTE_SWAP_64(x) bswap_64(x)
 #elif INJECTOR_SYSTEM_WINOWS
-	#define BYTE_SWAP_16(x) _byteswap_ushort(x)
-	#define BYTE_SWAP_32(x) _byteswap_ulong(x)
-	#define BYTE_SWAP_64(x) _byteswap_uint64(x)
+#define BYTE_SWAP_16(x) _byteswap_ushort(x)
+#define BYTE_SWAP_32(x) _byteswap_ulong(x)
+#define BYTE_SWAP_64(x) _byteswap_uint64(x)
 #elif INJECTOR_SYSTEM_MACOS
-	#define BYTE_SWAP_16(x) __builtin_bswap16(x)
-	#define BYTE_SWAP_32(x) __builtin_bswap32(x)
-	#define BYTE_SWAP_64(x) __builtin_bswap64(x)
+#define BYTE_SWAP_16(x) __builtin_bswap16(x)
+#define BYTE_SWAP_32(x) __builtin_bswap32(x)
+#define BYTE_SWAP_64(x) __builtin_bswap64(x)
 #else
-	#error Failed to detect OS
+#error Failed to detect OS
 #endif
 
 #if INJECTOR_SYSTEM_32
-	#define BYTE_SWAP_SIZE(x) BYTE_SWAP_32(x)
+#define BYTE_SWAP_SIZE(x) BYTE_SWAP_32(x)
 #elif INJECTOR_SYSTEM_64
-	#define BYTE_SWAP_SIZE(x) BYTE_SWAP_64(x)
+#define BYTE_SWAP_SIZE(x) BYTE_SWAP_64(x)
 #else
-	#error Failed to detect architecture
+#error Failed to detect architecture
 #endif
 
 namespace Injector

@@ -32,8 +32,8 @@ namespace Injector
 		sources.push_back(reinterpret_cast<const char*>(
 			data->code.data()));
 
-		glShaderSource(shader, 
-			static_cast<GLsizei>(sources.size()), 
+		glShaderSource(shader,
+			static_cast<GLsizei>(sources.size()),
 			static_cast<const GLchar* const*>(sources.data()),
 			nullptr);
 
@@ -44,7 +44,7 @@ namespace Injector
 			auto log = getInfoLog(shader);
 			glDeleteShader(shader);
 
-			throw Exception("GlGpuShader", "GlGpuShader", 
+			throw Exception("GlGpuShader", "GlGpuShader",
 				"Failed to compile shader: " + log);
 		}
 	}

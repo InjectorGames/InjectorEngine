@@ -79,7 +79,7 @@ namespace Injector
 			}
 		}
 #endif
-		
+
 		uint32_t extensionCount;
 		auto glfwInstanceExtensions = glfwGetRequiredInstanceExtensions(&extensionCount);
 
@@ -90,7 +90,6 @@ namespace Injector
 
 		for (size_t i = 0; i < extensionCount; i++)
 			instanceExtensions.push_back(glfwInstanceExtensions[i]);
-		
 
 #if !defined(NDEBUG)
 		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -125,7 +124,7 @@ namespace Injector
 			appName.c_str(), appVersion,
 			"Injector Engine",
 			VK_MAKE_VERSION(
-				INJECTOR_VERSION_MAJOR, 
+				INJECTOR_VERSION_MAJOR,
 				INJECTOR_VERSION_MINOR,
 				INJECTOR_VERSION_PATCH),
 			VK_API_VERSION_1_0);
@@ -274,9 +273,9 @@ namespace Injector
 
 		// TODO: create extension request mechanism
 		auto deviceExtensions = std::vector<const char*>() =
-		{
-			VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-		};
+			{
+				VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+			};
 
 		for (auto extension : deviceExtensions)
 		{
@@ -303,9 +302,9 @@ namespace Injector
 			{}, graphicsQueueFamilyIndex, 1, &priority);
 
 		auto deviceQueueCreateInfos = std::vector<vk::DeviceQueueCreateInfo>() =
-		{
-			deviceQueueCreateInfo,
-		};
+			{
+				deviceQueueCreateInfo,
+			};
 
 		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 		{
@@ -317,7 +316,7 @@ namespace Injector
 
 		auto deviceCreateInfo = vk::DeviceCreateInfo({},
 			static_cast<uint32_t>(deviceQueueCreateInfos.size()),
-			deviceQueueCreateInfos.data(), 
+			deviceQueueCreateInfos.data(),
 			0, nullptr,
 			static_cast<uint32_t>(deviceExtensions.size()),
 			deviceExtensions.data(),
@@ -468,7 +467,7 @@ namespace Injector
 	vk::SurfaceTransformFlagBitsKHR VkWindow::getBestSurfaceTransform(
 		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities)
 	{
-		if (surfaceCapabilities.supportedTransforms & 
+		if (surfaceCapabilities.supportedTransforms &
 			vk::SurfaceTransformFlagBitsKHR::eIdentity)
 		{
 			return vk::SurfaceTransformFlagBitsKHR::eIdentity;
@@ -485,13 +484,13 @@ namespace Injector
 			vk::CompositeAlphaFlagBitsKHR::eOpaque)
 			return vk::CompositeAlphaFlagBitsKHR::eOpaque;
 		else if (surfaceCapabilities.supportedCompositeAlpha &
-			vk::CompositeAlphaFlagBitsKHR::ePreMultiplied)
+				 vk::CompositeAlphaFlagBitsKHR::ePreMultiplied)
 			return vk::CompositeAlphaFlagBitsKHR::ePreMultiplied;
 		else if (surfaceCapabilities.supportedCompositeAlpha &
-			vk::CompositeAlphaFlagBitsKHR::ePostMultiplied)
+				 vk::CompositeAlphaFlagBitsKHR::ePostMultiplied)
 			return vk::CompositeAlphaFlagBitsKHR::ePostMultiplied;
 		else if (surfaceCapabilities.supportedCompositeAlpha &
-			vk::CompositeAlphaFlagBitsKHR::eInherit)
+				 vk::CompositeAlphaFlagBitsKHR::eInherit)
 			return vk::CompositeAlphaFlagBitsKHR::eInherit;
 		else
 			throw Exception("VkWindow", "getBestSurfaceCompositeAlpha", "Failed to get surface composite alpha");
@@ -503,10 +502,10 @@ namespace Injector
 		if (surfaceCapabilities.currentExtent.width == UINT32_MAX)
 		{
 			return vk::Extent2D(
-				std::clamp(static_cast<uint32_t>(surfaceSize.x), 
-				surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width),
-				std::clamp(static_cast<uint32_t>(surfaceSize.x), 
-				surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width));
+				std::clamp(static_cast<uint32_t>(surfaceSize.x),
+					surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width),
+				std::clamp(static_cast<uint32_t>(surfaceSize.x),
+					surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width));
 		}
 		else
 		{
@@ -566,14 +565,13 @@ namespace Injector
 		auto colorAttachmentReference = vk::AttachmentReference(
 			0, vk::ImageLayout::eColorAttachmentOptimal);
 
-
 		auto subpassDescription = vk::SubpassDescription({},
 			vk::PipelineBindPoint::eGraphics,
 			0, nullptr,
 			1, &colorAttachmentReference);
 
 		// TODO: make good loking
-		vk::SubpassDependency dependency {};
+		vk::SubpassDependency dependency{};
 		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
 		dependency.dstSubpass = 0;
 		dependency.srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
@@ -583,7 +581,7 @@ namespace Injector
 
 		auto renderPassCreateInfo = vk::RenderPassCreateInfo({},
 			1, &colorAttachmentDescription,
-			1, &subpassDescription, 
+			1, &subpassDescription,
 			1, &dependency);
 
 		auto result = device.createRenderPass(&renderPassCreateInfo, nullptr, &renderPass);
@@ -657,18 +655,18 @@ namespace Injector
 
 			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 			{
-				graphicsCommandPool = createCommandPool(device, 
+				graphicsCommandPool = createCommandPool(device,
 					vk::CommandPoolCreateFlagBits::eTransient |
 					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
 					graphicsQueueFamilyIndex);
 				presentCommandPool = createCommandPool(device,
 					vk::CommandPoolCreateFlagBits::eTransient |
-					vk::CommandPoolCreateFlagBits::eResetCommandBuffer, 
+					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
 					presentQueueFamilyIndex);
 			}
 			else
 			{
-				graphicsCommandPool = presentCommandPool = createCommandPool(device, 
+				graphicsCommandPool = presentCommandPool = createCommandPool(device,
 					vk::CommandPoolCreateFlagBits::eTransient |
 					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
 					graphicsQueueFamilyIndex);
@@ -829,7 +827,7 @@ namespace Injector
 
 		while (true)
 		{
-			repeat:
+		repeat:
 
 			for (auto i = pipelines.begin(); i != pipelines.end(); i++)
 			{
@@ -879,8 +877,7 @@ namespace Injector
 			{
 				throw Exception("VkWindow", "beginImage", "Failed to acquire next image");
 			}
-		}
-		while (result != vk::Result::eSuccess);
+		} while (result != vk::Result::eSuccess);
 
 		vmaSetCurrentFrameIndex(memoryAllocator, imageIndex);
 		return imageIndex;
@@ -957,7 +954,7 @@ namespace Injector
 			throw Exception("VkWindow", "beginRecord", "Failed to begin command buffer");
 
 		auto clearValues = vk::ClearValue(vk::ClearColorValue(
-			std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f}));
+			std::array<float, 4>{ 0.0f, 0.0f, 0.0f, 0.0f }));
 		auto renderPassBeginInfo = vk::RenderPassBeginInfo(
 			renderPass, swapchainData->framebuffer,
 			vk::Rect2D({ 0, 0 }, surfaceExtent),
@@ -1029,7 +1026,7 @@ namespace Injector
 	{
 		std::shared_ptr<VkGpuBuffer> buffer;
 
-		if(mappable)
+		if (mappable)
 		{
 			buffer = std::make_shared<VkGpuBuffer>(
 				type, size, memoryAllocator,

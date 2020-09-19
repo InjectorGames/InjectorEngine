@@ -7,18 +7,20 @@
 
 namespace Injector
 {
-    ModelData::ModelData()
-    {}
-    ModelData::~ModelData()
-    {}
+	ModelData::ModelData()
+	{
+	}
+	ModelData::~ModelData()
+	{
+	}
 
-    std::shared_ptr<ModelData> ModelData::readFromFile(
+	std::shared_ptr<ModelData> ModelData::readFromFile(
 		const std::string& filePath)
-    {
-        auto importer = Assimp::Importer();
-        auto scene = importer.ReadFile(filePath, {});
+	{
+		auto importer = Assimp::Importer();
+		auto scene = importer.ReadFile(filePath, {});
 
-        if(!scene)
-            throw Exception("ModelData", "readFromFile", "Failed to read file");
-    }
+		if (!scene)
+			throw Exception("ModelData", "readFromFile", "Failed to read file");
+	}
 }

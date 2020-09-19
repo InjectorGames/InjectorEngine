@@ -79,8 +79,8 @@ namespace Injector
 				static_cast<GLintptr>(mapSize),
 				static_cast<GLsizeiptr>(mapOffset));
 		}
-		
-		if(glUnmapBuffer(glType) == GL_FALSE)
+
+		if (glUnmapBuffer(glType) == GL_FALSE)
 			throw Exception("GlGpuBuffer", "unmap", "Failed to unmap buffer");
 
 		glBindBuffer(glType, GL_ZERO);
@@ -135,7 +135,7 @@ namespace Injector
 		return
 			usage == GL_DYNAMIC_DRAW ||
 			usage == GL_DYNAMIC_READ ||
-			usage == GL_STREAM_DRAW || 
+			usage == GL_STREAM_DRAW ||
 			usage == GL_STREAM_READ;
 	}
 	GLbitfield GlGpuBuffer::toGlAccess(GpuBufferAccess access)
@@ -144,12 +144,12 @@ namespace Injector
 			return GL_MAP_READ_BIT;
 		else if (access == GpuBufferAccess::WriteOnly)
 			return GL_MAP_WRITE_BIT |
-			GL_MAP_FLUSH_EXPLICIT_BIT |
-			GL_MAP_INVALIDATE_RANGE_BIT; //TODO: Check if this correct
+				   GL_MAP_FLUSH_EXPLICIT_BIT |
+				   GL_MAP_INVALIDATE_RANGE_BIT; //TODO: Check if this correct
 		else if (access == GpuBufferAccess::ReadWrite)
 			return GL_MAP_READ_BIT |
-			GL_MAP_WRITE_BIT |
-			GL_MAP_FLUSH_EXPLICIT_BIT;
+				   GL_MAP_WRITE_BIT |
+				   GL_MAP_FLUSH_EXPLICIT_BIT;
 		else
 			throw Exception("GlGpuBuffer", "toGlAccess", "Unsupported access");
 	}

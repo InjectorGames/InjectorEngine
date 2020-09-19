@@ -12,7 +12,7 @@ namespace Injector
 {
 	class VkWindow : public Window
 	{
-	protected:
+	 protected:
 		vk::Instance instance;
 		vk::DispatchLoaderDynamic dispatchDynamic;
 		vk::DebugUtilsMessengerEXT debugMessenger;
@@ -112,7 +112,7 @@ namespace Injector
 			vk::Device device,
 			vk::CommandPoolCreateFlags flags,
 			uint32_t queueFamilyIndex);
-	public:
+	 public:
 		VkWindow(const std::string& title = defaultTitle,
 			const IntVector2& size = defaultSize,
 			bool stereo = false);

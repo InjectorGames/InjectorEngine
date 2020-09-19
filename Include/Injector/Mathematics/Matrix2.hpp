@@ -59,7 +59,7 @@ namespace Injector
 		Matrix2& operator+=(float value) noexcept;
 		Matrix2& operator/=(float value) noexcept;
 		Matrix2& operator*=(float value) noexcept;
-		
+
 		static const Matrix2 zero;
 		static const Matrix2 minusOne;
 		static const Matrix2 one;

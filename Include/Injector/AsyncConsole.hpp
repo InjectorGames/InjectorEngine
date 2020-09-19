@@ -13,7 +13,7 @@ namespace INJECT_NAMESPACE
 {
 	class AsyncConsole
 	{
-	protected:
+	 protected:
 		bool isRunning;
 		std::mutex mutex;
 		std::thread thread;
@@ -31,7 +31,7 @@ namespace INJECT_NAMESPACE
 				mutex.unlock();
 			}
 		}
-	public:
+	 public:
 		AsyncConsole() :
 			isRunning(true),
 			mutex(),
@@ -51,7 +51,7 @@ namespace INJECT_NAMESPACE
 			std::string& command) noexcept
 		{
 			mutex.lock();
-			
+
 			if (commands.size() < 1)
 			{
 				mutex.unlock();

@@ -8,15 +8,18 @@ namespace Injector
 {
 	class FileStream : public std::fstream
 	{
-	protected:
+	 protected:
 		size_t size;
-	public:
+	 public:
 		FileStream(const char* filePath,
-			std::ios::openmode mode = std::ios::in | std::ios::out);
+			std::ios::openmode mode =
+				std::ios::in | std::ios::out);
 		FileStream(const std::string& filePath,
-			std::ios::openmode mode = std::ios::in | std::ios::out);
+			std::ios::openmode mode =
+				std::ios::in | std::ios::out);
 		FileStream(const std::filesystem::path& filePath,
-			std::ios::openmode mode = std::ios::in | std::ios::out);
+			std::ios::openmode mode =
+				std::ios::in | std::ios::out);
 		virtual ~FileStream();
 
 		size_t getSize() const noexcept;

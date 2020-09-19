@@ -10,8 +10,7 @@ void init()
 {
 	auto window = Window::create();
 
-	window->setIcons(std::vector<std::shared_ptr<ImageData>>
-	{
+	window->setIcons(std::vector<std::shared_ptr<ImageData>>{
 		ImageData::readFromFile("Resources/Images/Logo16.png", 4, false),
 		ImageData::readFromFile("Resources/Images/Logo32.png", 4, false),
 		ImageData::readFromFile("Resources/Images/Logo48.png", 4, false),
@@ -23,14 +22,14 @@ void init()
 	auto renderSystem = window->createRenderSystem();
 
 	auto fpvCamera = window->createEntity();
-	fpvCamera->createComponent<TransformComponent>(Vector3(0.0f, -2.5f, 5.0f), 
+	fpvCamera->createComponent<TransformComponent>(Vector3(0.0f, -2.5f, 5.0f),
 		Quaternion(Vector3::zero), Vector3::one, RotationOrigin::Orbit);
 	auto fpvCameraComponent = fpvCamera->createComponent<CameraComponent>();
 	transformSystem->addTransform(fpvCamera);
 	cameraSystem->addCamera(fpvCamera);
 	renderSystem->addCamera(fpvCamera);
 	flyTransformSystem->transform = fpvCamera;
-	
+
 	auto texDiffuseVertexShader = window->createShader(GpuShaderStage::Vertex,
 		window->readShaderData("Resources/Shaders/TexDiffuse.vert"));
 	auto texDiffuseFragmentShader = window->createShader(GpuShaderStage::Fragment,
@@ -56,7 +55,7 @@ void init()
 	sky->createComponent<RenderComponent>(texDiffusePipeline, skyMesh);
 	transformSystem->addTransform(sky);
 	fpvCameraComponent->renders.emplace(sky);
-	
+
 	//auto teapotModelData = 
 
 	auto floor = window->createEntity();

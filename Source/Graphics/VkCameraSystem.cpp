@@ -4,14 +4,16 @@ namespace Injector
 {
 	VkCameraSystem::VkCameraSystem(VkWindow& _window) :
 		window(_window)
-	{}
+	{
+	}
 	VkCameraSystem::~VkCameraSystem()
-	{}
+	{
+	}
 
 	void VkCameraSystem::update()
 	{
 		auto windowSize = window.getSize();
-		updateAspecRatio(windowSize.x / float(windowSize.y));
+		updateAspectRatio(windowSize.x / float(windowSize.y));
 
 		for (auto& camera : cameras)
 		{

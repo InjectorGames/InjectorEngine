@@ -8,9 +8,9 @@ namespace Injector
 {
 	class Engine final
 	{
-	public:
+	 public:
 		using tick_t = std::chrono::steady_clock::time_point;
-	private:
+	 private:
 		static bool engineInitialized;
 		static bool videoInitialized;
 
@@ -24,7 +24,7 @@ namespace Injector
 		static double updateDeltaTime;
 
 		static std::vector<std::shared_ptr<Manager>> managers;
-	public:
+	 public:
 		static bool getCapUpdateRate() noexcept;
 		static void setCapUpdateRate(bool cap = true) noexcept;
 
