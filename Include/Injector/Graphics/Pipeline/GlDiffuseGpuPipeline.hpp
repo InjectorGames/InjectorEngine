@@ -1,6 +1,6 @@
 #pragma once
-#include "Injector/Graphics/GlGpuPipeline.hpp"
-#include "Injector/Graphics/DiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/DiffuseGpuPipeline.hpp"
 #include "Injector/Graphics/GlGpuBuffer.hpp"
 #include "Injector/Graphics/GlGpuShader.hpp"
 
@@ -14,7 +14,8 @@ namespace Injector
 			Vector4 objectColor;
 			Vector4 ambientColor;
 			Vector4 lightColor;
-			alignas(16) Vector3 lightDirection;
+			Vector3 lightDirection;
+			float aligment;
 
 			UniformBufferObject(
 				const Vector4& _objectColor,
@@ -24,7 +25,8 @@ namespace Injector
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
-				lightDirection(_lightDirection)
+				lightDirection(_lightDirection),
+				aligment()
 			{}
 		};
     protected:

@@ -5,6 +5,11 @@
 
 namespace Injector
 {
+	TransformSystem::TransformSystem() :
+		transforms(),
+		translates(),
+		rotates()
+	{}
 	TransformSystem::~TransformSystem()
 	{}
 
@@ -23,7 +28,6 @@ namespace Injector
 
 			transformComponent->position +=
 				translateComponent->translation * deltaTime;
-			transformComponent->changed = true;
 		}
 
 		for (auto& rotate : rotates)
@@ -37,64 +41,60 @@ namespace Injector
 
 			transformComponent->rotation *=
 				rotateComponent->rotation * deltaTime;
-			transformComponent->changed = true;
 		}
 
 		for (auto& transform : transforms)
 		{
 			TransformComponent* transformComponent;
 
-			if (!transform->getComponent(transformComponent) ||
-				!transformComponent->changed)
+			if (!transform->getComponent(transformComponent))
 				continue;
 
-			transformComponent->rotation = transformComponent->rotation.getNormalized();
+			auto rotation = transformComponent->rotation.getNormalized();
+			transformComponent->rotation = rotation;
 
 			Matrix4 matrix;
 
 			if (transformComponent->origin == RotationOrigin::Spin)
 			{
 				matrix = Matrix4::identity.getTranslated(transformComponent->position);
-				matrix *= transformComponent->rotation.getMatrix4();
+				matrix *= rotation.getMatrix4();
 				matrix *= Matrix4::identity.getScaled(transformComponent->scale);
 			}
 			else
 			{
-				matrix = transformComponent->rotation.getMatrix4();
+				matrix = rotation.getMatrix4();
 				matrix *= Matrix4::identity.getTranslated(transformComponent->position);
 				matrix *= Matrix4::identity.getScaled(transformComponent->scale);
 			}
 
 			transformComponent->matrix = matrix;
-			transformComponent->changed = false;
 		}
 
-		for (auto& attach : attaches)
+		for (auto& transform : transforms)
 		{
 			TransformComponent* transformComponent;
-			AttachComponent* attachComponent;
 
-			if (!attach->getComponent(transformComponent) ||
-				!attach->getComponent(attachComponent))
+			if (!transform->getComponent(transformComponent))
 				continue;
 
-			auto matrix = transformComponent->matrix;
-			auto target = attachComponent->target;
-
-			while (target)
+			if(transformComponent->parent)
 			{
-				TransformComponent* targetTransformComponent;
-				AttachComponent* targetAttachComponent;
+				auto parent = transformComponent->parent;
+				auto matrix = transformComponent->matrix;
+				TransformComponent* parentTransformComponent;
 
-				if (!target->getComponent(targetTransformComponent) ||
-					!target->getComponent(targetAttachComponent))
-					break;
+				while (parent)
+				{
+					if (!parent->getComponent(parentTransformComponent))
+						break;
 
-				matrix *= targetTransformComponent->matrix;
-				target = targetAttachComponent->target;
+					parent = parentTransformComponent->parent;
+					matrix *= parentTransformComponent->matrix;
+				}
+
+				transformComponent->matrix = matrix;
 			}
-
-			transformComponent->matrix = matrix;
 		}
 	}
 
@@ -167,27 +167,5 @@ namespace Injector
 	void TransformSystem::removeRotates() noexcept
 	{
 		rotates.clear();
-	}
-
-	bool TransformSystem::addAttach(const std::shared_ptr<Entity>& entity) noexcept
-	{
-		return attaches.emplace(entity).second;
-	}
-	bool TransformSystem::removeAttach(const std::shared_ptr<Entity>& entity) noexcept
-	{
-		if (entity == nullptr)
-			return false;
-
-		auto iterator = attaches.find(entity);
-
-		if (iterator == attaches.end())
-			return false;
-
-		attaches.erase(iterator);
-		return true;
-	}
-	void TransformSystem::removeAttaches() noexcept
-	{
-		attaches.clear();
 	}
 }

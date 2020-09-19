@@ -1,6 +1,6 @@
 #pragma once
-#include "Injector/Graphics/VkGpuPipeline.hpp"
-#include "Injector/Graphics/DiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/VkGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/DiffuseGpuPipeline.hpp"
 #include "Injector/Graphics/VkGpuShader.hpp"
 #include "Injector/Graphics/VkGpuBuffer.hpp"
 

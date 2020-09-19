@@ -5,8 +5,9 @@
 #include "Injector/Exception/CastException.hpp"
 #include "Injector/Graphics/GlCameraSystem.hpp"
 #include "Injector/Graphics/GlRenderSystem.hpp"
-#include "Injector/Graphics/GlColColorGpuPipeline.hpp"
-#include "Injector/Graphics/GlTexDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlSkyGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlColColorGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlTexDiffuseGpuPipeline.hpp"
 
 namespace Injector
 {
@@ -128,31 +129,7 @@ namespace Injector
 		return std::make_shared<GlGpuShader>(gles, stage, data);
 	}
 	std::shared_ptr<GpuImage> GlWindow::createImage(
-        int size,
-        GpuImageFormat format,
-        GpuImageFilter minFilter,
-    	GpuImageFilter magFilter,
-    	GpuImageWrap wrapU,
-        bool useMipmap,
-		const std::shared_ptr<ImageData>& data)
-	{
-		return std::make_shared<GlGpuImage>(GpuImageType::Image1D, IntVector3(size, 0, 0), format,
-			minFilter, magFilter, wrapU, GpuImageWrap::Repeat, GpuImageWrap::Repeat, useMipmap, data);
-	}
-	std::shared_ptr<GpuImage> GlWindow::createImage(
-        const IntVector2& size,
-        GpuImageFormat format,
-        GpuImageFilter minFilter,
-    	GpuImageFilter magFilter,
-    	GpuImageWrap wrapU,
-        GpuImageWrap wrapV,
-        bool useMipmap,
-		const std::shared_ptr<ImageData>& data)
-	{
-		return std::make_shared<GlGpuImage>(GpuImageType::Image2D, IntVector3(size, 0), format,
-			minFilter, magFilter, wrapU, wrapV, GpuImageWrap::Repeat, useMipmap, data);
-	}
-	std::shared_ptr<GpuImage> GlWindow::createImage(
+		GpuImageType type,
         const IntVector3& size,
         GpuImageFormat format,
         GpuImageFilter minFilter,
@@ -163,7 +140,7 @@ namespace Injector
         bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
-		return std::make_shared<GlGpuImage>(GpuImageType::Image3D, size, format,
+		return std::make_shared<GlGpuImage>(type, size, format,
 			minFilter, magFilter, wrapU, wrapV, wrapW, useMipmap, data);
 	}
 
@@ -173,9 +150,6 @@ namespace Injector
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
-
-		if(!glVertexShader || !glFragmentShader)
-			throw CastException("GlWindow", "createColorPipeline", "shader"); 
 
 		return std::make_shared<GlColorGpuPipeline>(
 			glVertexShader, glFragmentShader);
@@ -187,9 +161,6 @@ namespace Injector
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
-		if(!glVertexShader || !glFragmentShader)
-			throw CastException("GlWindow", "createColColorPipeline", "shader"); 
-
 		return std::make_shared<GlColColorGpuPipeline>(
 			glVertexShader, glFragmentShader);
 	}
@@ -199,9 +170,6 @@ namespace Injector
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
-
-		if(!glVertexShader || !glFragmentShader)
-			throw CastException("GlWindow", "createDiffusePipeline", "shader"); 
 
 		return std::make_shared<GlDiffuseGpuPipeline>(
 			glVertexShader, glFragmentShader);
@@ -214,11 +182,18 @@ namespace Injector
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 		auto glTexture = std::dynamic_pointer_cast<GlGpuImage>(texture);
-
-		if(!glVertexShader || !glFragmentShader || !glTexture)
-			throw CastException("GlWindow", "createTexDiffusePipeline", "shader/texture"); 
 			
 		return std::make_shared<GlTexDiffuseGpuPipeline>(
 			glVertexShader, glFragmentShader, glTexture);
+	}
+	std::shared_ptr<SkyGpuPipeline> GlWindow::createSkyPipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
+	{
+		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
+		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
+			
+		return std::make_shared<GlSkyGpuPipeline>(
+			glVertexShader, glFragmentShader);
 	}
 }

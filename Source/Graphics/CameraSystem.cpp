@@ -3,6 +3,7 @@
 namespace Injector
 {
 	CameraSystem::CameraSystem() :
+		cameras(),
 		lastAspectRatio()
 	{}
 	CameraSystem::~CameraSystem()

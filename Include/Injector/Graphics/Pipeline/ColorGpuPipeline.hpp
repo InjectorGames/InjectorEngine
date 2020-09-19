@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/Graphics/GpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GpuPipeline.hpp"
 
 namespace Injector
 {

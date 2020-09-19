@@ -47,23 +47,7 @@ namespace Injector
 			GpuShaderStage stage,
 			const std::shared_ptr<ShaderData>& data) override;
 		std::shared_ptr<GpuImage> createImage(
-        	int size,
-       		GpuImageFormat format,
-        	GpuImageFilter minFilter,
-    		GpuImageFilter magFilter,
-    		GpuImageWrap wrapU,
-        	bool useMipmap,
-			const std::shared_ptr<ImageData>& data) override;
-		std::shared_ptr<GpuImage> createImage(
-        	const IntVector2& size,
-       		GpuImageFormat format,
-        	GpuImageFilter minFilter,
-    		GpuImageFilter magFilter,
-    		GpuImageWrap wrapU,
-        	GpuImageWrap wrapV,
-        	bool useMipmap,
-			const std::shared_ptr<ImageData>& data) override;
-		std::shared_ptr<GpuImage> createImage(
+			GpuImageType type,
         	const IntVector3& size,
        		GpuImageFormat format,
         	GpuImageFilter minFilter,
@@ -87,5 +71,8 @@ namespace Injector
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
 			const std::shared_ptr<GpuImage>& texture) override;
+		std::shared_ptr<SkyGpuPipeline> createSkyPipeline(
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader) override;
 	};
 }

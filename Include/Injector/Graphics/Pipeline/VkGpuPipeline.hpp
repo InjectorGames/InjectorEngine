@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/Graphics/GpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GpuPipeline.hpp"
 #include "Injector/Graphics/VmaDefines.hpp"
 
 #include "vulkan/vulkan.hpp"

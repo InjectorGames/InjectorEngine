@@ -1,12 +1,19 @@
 #pragma once
 #include <string>
+#include <vector>
+#include <cstdint>
 
 namespace Injector
 {
-    class Model
+    class ModelData
     {
     public:
-        Model(const std::string& filePath);
-        virtual ~Model();
+        ModelData();
+        virtual ~ModelData();
+
+        static std::shared_ptr<ModelData> readFromFile(
+			const std::string& filePath);
+
+        static const ModelData square;
     };
 }

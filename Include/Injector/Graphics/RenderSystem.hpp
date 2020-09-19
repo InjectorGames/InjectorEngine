@@ -14,6 +14,7 @@ namespace Injector
 	protected:
 		std::set<std::shared_ptr<Entity>> cameras;
 	public:
+		RenderSystem();
 		virtual ~RenderSystem();
 
 		size_t getCameraCount() const noexcept;

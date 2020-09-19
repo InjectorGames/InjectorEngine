@@ -1,4 +1,4 @@
-#include "Injector/Graphics/GlDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlDiffuseGpuPipeline.hpp"
 #include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/NullException.hpp"
 
@@ -41,7 +41,6 @@ namespace Injector
 
 		uniformBuffer = std::make_shared<GlGpuBuffer>(GpuBufferType::Uniform,
 			sizeof(UniformBufferObject), GL_DYNAMIC_DRAW, nullptr);
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniformBuffer->getBuffer());
     }
     GlDiffuseGpuPipeline::~GlDiffuseGpuPipeline()
     {}
@@ -50,36 +49,36 @@ namespace Injector
     {
         return ubo.objectColor;
     }
-	void GlDiffuseGpuPipeline::setObjectColor(const Vector4& _objectColor)
+	void GlDiffuseGpuPipeline::setObjectColor(const Vector4& color)
     {
-        ubo.objectColor = Vector4(_objectColor);
+        ubo.objectColor = Vector4(color);
     }
 
     const Vector4& GlDiffuseGpuPipeline::getAmbientColor() const
     {
         return ubo.ambientColor;
     }
-	void GlDiffuseGpuPipeline::setAmbientColor(const Vector4& _ambientColor)
+	void GlDiffuseGpuPipeline::setAmbientColor(const Vector4& color)
     {
-        ubo.ambientColor = Vector4(_ambientColor);
+        ubo.ambientColor = Vector4(color);
     }
 
 	const Vector4& GlDiffuseGpuPipeline::getLightColor() const
     {
         return ubo.lightColor;
     }
-	void GlDiffuseGpuPipeline::setLightColor(const Vector4& _lightColor)
+	void GlDiffuseGpuPipeline::setLightColor(const Vector4& color)
     {
-        ubo.lightColor = Vector4(_lightColor);
+        ubo.lightColor = Vector4(color);
     }
 
 	const Vector3& GlDiffuseGpuPipeline::getLightDirection() const
     {
         return ubo.lightDirection;
     }
-	void GlDiffuseGpuPipeline::setLightDirection(const Vector3& _lightDirection)
+	void GlDiffuseGpuPipeline::setLightDirection(const Vector3& direction)
     {
-        ubo.lightDirection = _lightDirection.getNormalized();
+        ubo.lightDirection = direction.getNormalized();
     }
 
 	void GlDiffuseGpuPipeline::bind()	
@@ -91,6 +90,9 @@ namespace Injector
 		glDisable(GL_BLEND);
 		glCullFace(GL_BACK); 
 		glFrontFace(GL_CW);
+
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0,
+			uniformBuffer->getBuffer());
 	}
     void GlDiffuseGpuPipeline::flush()
 	{

@@ -22,41 +22,57 @@ void init()
 	auto cameraSystem = window->createCameraSystem();
 	auto renderSystem = window->createRenderSystem();
 
-	auto camera = window->createEntity();
-	camera->createComponent<TransformComponent>(Vector3(0.0f, -2.5f, 5.0f), 
-		Quaternion::zero, Vector3::one, RotationOrigin::Orbit);
-	auto cameraComponent = camera->createComponent<CameraComponent>();
-	flyTransformSystem->transform = camera;
-	transformSystem->addTransform(camera);
-	cameraSystem->addCamera(camera);
-	renderSystem->addCamera(camera);
+	auto fpvCamera = window->createEntity();
+	fpvCamera->createComponent<TransformComponent>(Vector3(0.0f, -2.5f, 5.0f), 
+		Quaternion(Vector3::zero), Vector3::one, RotationOrigin::Orbit);
+	auto fpvCameraComponent = fpvCamera->createComponent<CameraComponent>();
+	transformSystem->addTransform(fpvCamera);
+	cameraSystem->addCamera(fpvCamera);
+	renderSystem->addCamera(fpvCamera);
+	flyTransformSystem->transform = fpvCamera;
 	
-	auto vertexShader = window->createShader(GpuShaderStage::Vertex,
+	auto texDiffuseVertexShader = window->createShader(GpuShaderStage::Vertex,
 		window->readShaderData("Resources/Shaders/TexDiffuse.vert"));
-	auto fragmentShader = window->createShader(GpuShaderStage::Fragment,
+	auto texDiffuseFragmentShader = window->createShader(GpuShaderStage::Fragment,
 		window->readShaderData("Resources/Shaders/TexDiffuse.frag"));
 	auto boxImageData = ImageData::readFromFile(
 		"Resources/Images/GrayBox.png", 3, false);
 	auto boxImage = window->createImage(boxImageData->size,
 		GpuImageFormat::RGB8, GpuImageFilter::Nearest, GpuImageFilter::Nearest,
 		GpuImageWrap::Repeat, GpuImageWrap::Repeat, true, boxImageData);
-	auto pipeline = window->createTexDiffusePipeline(
-		vertexShader, fragmentShader, boxImage);
-	auto squareMesh = window->createSquareMeshVNT(false);
-	auto cubeMesh = window->createCubeMeshVNT(false);
+	auto texDiffusePipeline = window->createTexDiffusePipeline(
+		texDiffuseVertexShader, texDiffuseFragmentShader, boxImage);
+
+	auto skyVertexShader = window->createShader(GpuShaderStage::Vertex,
+		window->readShaderData("Resources/Shaders/Sky.vert"));
+	auto skyFragmentShader = window->createShader(GpuShaderStage::Fragment,
+		window->readShaderData("Resources/Shaders/Sky.frag"));
+	auto skyPipeline = window->createSkyPipeline(
+		skyVertexShader, skyFragmentShader);
+
+	auto sky = window->createEntity();
+	auto skyMesh = window->createCubeMeshVNT(false);
+	sky->createComponent<TransformComponent>(Vector3(0.0f, 0.0f, 10.0f));
+	sky->createComponent<RenderComponent>(texDiffusePipeline, skyMesh);
+	transformSystem->addTransform(sky);
+	fpvCameraComponent->renders.emplace(sky);
+	
+	//auto teapotModelData = 
 
 	auto floor = window->createEntity();
+	auto squareMesh = window->createSquareMeshVNT(false);
 	floor->createComponent<TransformComponent>(Vector3::zero,
 		Quaternion(Vector3(Converter::toRadians(-90.0f), 0.0f, 0.0f)), Vector3::one * 10);
-	floor->createComponent<RenderComponent>(pipeline, squareMesh);
+	floor->createComponent<RenderComponent>(texDiffusePipeline, squareMesh);
 	transformSystem->addTransform(floor);
-	cameraComponent->renders.emplace(floor);
+	fpvCameraComponent->renders.emplace(floor);
 
-	auto cube1 = window->createEntity();
-	cube1->createComponent<TransformComponent>(Vector3(-4.5f, 0.5f, -4.5f));
-	cube1->createComponent<RenderComponent>(pipeline, cubeMesh);
-	transformSystem->addTransform(cube1);
-	cameraComponent->renders.emplace(cube1);
+	auto cube = window->createEntity();
+	auto cubeMesh = window->createCubeMeshVNT(false);
+	cube->createComponent<TransformComponent>(Vector3(-4.5f, 0.5f, -4.5f));
+	cube->createComponent<RenderComponent>(texDiffusePipeline, cubeMesh);
+	transformSystem->addTransform(cube);
+	fpvCameraComponent->renders.emplace(cube);
 }
 
 int main(int argc, char* args[])

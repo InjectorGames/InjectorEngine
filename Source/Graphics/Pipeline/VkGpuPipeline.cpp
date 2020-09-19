@@ -1,4 +1,4 @@
-#include "Injector/Graphics/VkGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/VkGpuPipeline.hpp"
 #include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector

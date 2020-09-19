@@ -5,6 +5,9 @@
 
 namespace Injector
 {
+	RenderSystem::RenderSystem() :
+		cameras()
+	{}
 	RenderSystem::~RenderSystem()
 	{}
 

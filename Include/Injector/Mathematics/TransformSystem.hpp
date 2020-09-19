@@ -1,7 +1,6 @@
 #pragma once
 #include "Injector/System.hpp"
 #include "Injector/Mathematics/RotateComponent.hpp"
-#include "Injector/Mathematics/AttachComponent.hpp"
 #include "Injector/Mathematics/TransformComponent.hpp"
 #include "Injector/Mathematics/TranslateComponent.hpp"
 
@@ -15,8 +14,8 @@ namespace Injector
 		std::set<std::shared_ptr<Entity>> transforms;
 		std::set<std::shared_ptr<Entity>> translates;
 		std::set<std::shared_ptr<Entity>> rotates;
-		std::set<std::shared_ptr<Entity>> attaches;
 	public:
+		TransformSystem();
 		virtual ~TransformSystem();
 
 		void update() override;
@@ -34,9 +33,5 @@ namespace Injector
 		bool addRotate(const std::shared_ptr<Entity>& entity) noexcept;
 		bool removeRotate(const std::shared_ptr<Entity>& entity) noexcept;
 		void removeRotates() noexcept;
-
-		bool addAttach(const std::shared_ptr<Entity>& entity) noexcept;
-		bool removeAttach(const std::shared_ptr<Entity>& entity) noexcept;
-		void removeAttaches() noexcept;
 	};
 }

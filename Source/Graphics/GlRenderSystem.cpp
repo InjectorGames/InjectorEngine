@@ -1,6 +1,6 @@
 #include "Injector/Graphics/GlRenderSystem.hpp"
 #include "Injector/Graphics/GlGpuMesh.hpp"
-#include "Injector/Graphics/GlGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlGpuPipeline.hpp"
 
 #include <map>
 

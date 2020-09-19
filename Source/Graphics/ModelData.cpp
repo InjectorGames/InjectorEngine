@@ -7,16 +7,18 @@
 
 namespace Injector
 {
-    Model::Model(const std::string& filePath)
+    ModelData::ModelData()
+    {}
+    ModelData::~ModelData()
+    {}
+
+    std::shared_ptr<ModelData> ModelData::readFromFile(
+		const std::string& filePath)
     {
         auto importer = Assimp::Importer();
-        auto scene = importer.ReadFile(filePath, aiProcess_ConvertToLeftHanded);
+        auto scene = importer.ReadFile(filePath, {});
 
         if(!scene)
-            throw Exception("Model", "Model", "Failed to load model");
-    }
-    Model::~Model()
-    {
-        
+            throw Exception("ModelData", "readFromFile", "Failed to read file");
     }
 }

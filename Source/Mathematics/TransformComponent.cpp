@@ -8,13 +8,13 @@ namespace Injector
 		const Vector3& _scale,
 		RotationOrigin _origin,
 		const Matrix4& _matrix,
-		const bool _changed) :
+		const std::shared_ptr<Entity>& _parent) :
 		position(_position),
 		rotation(_rotation),
 		scale(_scale),
 		origin(_origin),
 		matrix(_matrix),
-		changed(_changed)
+		parent(_parent)
 	{}
 	TransformComponent::~TransformComponent()
 	{}

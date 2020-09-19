@@ -1,6 +1,6 @@
 #pragma once
-#include "Injector/Graphics/GlDiffuseGpuPipeline.hpp"
-#include "Injector/Graphics/TexDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/TexDiffuseGpuPipeline.hpp"
 #include "Injector/Graphics/GlGpuImage.hpp"
 #include "Injector/Graphics/GlGpuShader.hpp"
 
@@ -30,7 +30,7 @@ namespace Injector
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
 				lightDirection(_lightDirection),
-                aligment(0.0f),
+                aligment(),
                 textureScale(_textureScale),
                 textureOffset(_textureOffset)
 			{}

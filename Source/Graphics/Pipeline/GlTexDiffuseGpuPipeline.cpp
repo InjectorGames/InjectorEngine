@@ -1,4 +1,4 @@
-#include "Injector/Graphics/GlTexDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlTexDiffuseGpuPipeline.hpp"
 #include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/NullException.hpp"
 
@@ -46,7 +46,6 @@ namespace Injector
 
 		uniformBuffer = std::make_shared<GlGpuBuffer>(GpuBufferType::Uniform,
 			sizeof(UniformBufferObject), GL_DYNAMIC_DRAW, nullptr);
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniformBuffer->getBuffer());
 
         auto textureLocation = getUniformLocation(program, "u_Texture");
 
@@ -127,6 +126,9 @@ namespace Injector
 
         glActiveTexture(GL_TEXTURE0);
         texture->bind();
+
+        glBindBufferBase(GL_UNIFORM_BUFFER, 0,
+            uniformBuffer->getBuffer());
     }
     void GlTexDiffuseGpuPipeline::flush()
     {

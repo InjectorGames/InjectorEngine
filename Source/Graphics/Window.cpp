@@ -269,29 +269,7 @@ namespace Injector
 		throw NotImplementedException("Window", "createShader");
 	}
 	std::shared_ptr<GpuImage> Window::createImage(
-        int size,
-        GpuImageFormat format,
-        GpuImageFilter minFilter,
-    	GpuImageFilter magFilter,
-    	GpuImageWrap wrapU,
-        bool useMipmap,
-		const std::shared_ptr<ImageData>& data)
-	{
-		throw NotImplementedException("Window", "createImage");
-	}
-	std::shared_ptr<GpuImage> Window::createImage(
-        const IntVector2& size,
-        GpuImageFormat format,
-        GpuImageFilter minFilter,
-    	GpuImageFilter magFilter,
-    	GpuImageWrap wrapU,
-		GpuImageWrap wrapV,
-        bool useMipmap,
-		const std::shared_ptr<ImageData>& data)
-	{
-		throw NotImplementedException("Window", "createImage");
-	}
-	std::shared_ptr<GpuImage> Window::createImage(
+		GpuImageType type,
         const IntVector3& size,
         GpuImageFormat format,
         GpuImageFilter minFilter,
@@ -329,6 +307,12 @@ namespace Injector
 		const std::shared_ptr<GpuImage>& texture)
 	{
 		throw NotImplementedException("Window", "createTexDiffusePipeline");
+	}
+	std::shared_ptr<SkyGpuPipeline> Window::createSkyPipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
+	{
+		throw NotImplementedException("Window", "createSkyPipeline");
 	}
 
 	std::shared_ptr<GpuMesh> Window::createSquareMeshV(bool mappable)
@@ -508,6 +492,46 @@ namespace Injector
 			BasicModel::cubeIndices.size(),
 			GpuBufferIndex::UnsignedShort,
 			vertexBuffer, indexBuffer);
+	}
+
+	std::shared_ptr<GpuImage> Window::createImage(
+        int size,
+        GpuImageFormat format,
+        GpuImageFilter minFilter,
+    	GpuImageFilter magFilter,
+    	GpuImageWrap wrapU,
+        bool useMipmap,
+		const std::shared_ptr<ImageData>& data)
+	{
+		return createImage(GpuImageType::Image1D, IntVector3(size, 0, 0), format,
+			minFilter, magFilter, wrapU, GpuImageWrap::Repeat, GpuImageWrap::Repeat, useMipmap, data);
+	}
+	std::shared_ptr<GpuImage> Window::createImage(
+        const IntVector2& size,
+        GpuImageFormat format,
+        GpuImageFilter minFilter,
+    	GpuImageFilter magFilter,
+    	GpuImageWrap wrapU,
+        GpuImageWrap wrapV,
+        bool useMipmap,
+		const std::shared_ptr<ImageData>& data)
+	{
+		return createImage(GpuImageType::Image2D, IntVector3(size, 0), format,
+			minFilter, magFilter, wrapU, wrapV, GpuImageWrap::Repeat, useMipmap, data);
+	}
+	std::shared_ptr<GpuImage> Window::createImage(
+        const IntVector3& size,
+        GpuImageFormat format,
+        GpuImageFilter minFilter,
+    	GpuImageFilter magFilter,
+    	GpuImageWrap wrapU,
+        GpuImageWrap wrapV,
+        GpuImageWrap wrapW,
+        bool useMipmap,
+		const std::shared_ptr<ImageData>& data)
+	{
+		return createImage(GpuImageType::Image3D, size, format,
+			minFilter, magFilter, wrapU, wrapV, wrapW, useMipmap, data);
 	}
 
 	std::shared_ptr<Window> Window::create(

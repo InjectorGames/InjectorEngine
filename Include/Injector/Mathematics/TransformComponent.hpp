@@ -1,5 +1,6 @@
 #pragma once
 #include "Injector/Component.hpp"
+#include "Injector/Entity.hpp"
 #include "Injector/Mathematics/Quaternion.hpp"
 #include "Injector/Mathematics/RotationOrigin.hpp"
 
@@ -12,15 +13,15 @@ namespace Injector
 		Vector3 scale;
 		RotationOrigin origin;
 		Matrix4 matrix;
-		bool changed;
+		std::shared_ptr<Entity> parent;
 
 		TransformComponent(
 			const Vector3& position = Vector3::zero,
-			const Quaternion& rotation = Quaternion::zero,
+			const Quaternion& rotation = Quaternion(Vector3::zero),
 			const Vector3& scale = Vector3::one,
 			RotationOrigin origin = RotationOrigin::Spin,
 			const Matrix4& matrix = Matrix4::identity,
-			const bool changed = true);
+			const std::shared_ptr<Entity>& parent = nullptr);
 		virtual ~TransformComponent();
 	};
 }

@@ -83,50 +83,52 @@ add_library(InjectorEngine STATIC
 	Source/Exception/NullException.cpp
 	Source/Exception/OutOfRangeException.cpp
 
+	Source/Graphics/Pipeline/ColorGpuPipeline.cpp
+	Source/Graphics/Pipeline/DiffuseGpuPipeline.cpp
+	Source/Graphics/Pipeline/GlColColorGpuPipeline.cpp
+	Source/Graphics/Pipeline/GlColorGpuPipeline.cpp
+	Source/Graphics/Pipeline/GlDiffuseGpuPipeline.cpp
+	Source/Graphics/Pipeline/GlGpuPipeline.cpp
+	Source/Graphics/Pipeline/GlSkyGpuPipeline.cpp
+	Source/Graphics/Pipeline/GlTexDiffuseGpuPipeline.cpp
+	Source/Graphics/Pipeline/GpuPipeline.cpp
+	Source/Graphics/Pipeline/SkyGpuPipeline.cpp
+	Source/Graphics/Pipeline/TexDiffuseGpuPipeline.cpp
+	Source/Graphics/Pipeline/VkColorGpuPipeline.cpp
+	Source/Graphics/Pipeline/VkDiffuseGpuPipeline.cpp
+	Source/Graphics/Pipeline/VkGpuPipeline.cpp
+
 	Source/Graphics/BasicModel.cpp
 	Source/Graphics/CameraComponent.cpp
 	Source/Graphics/CameraSystem.cpp
-	Source/Graphics/ColorGpuPipeline.cpp
-	Source/Graphics/DiffuseGpuPipeline.cpp
 	Source/Graphics/FlyTransformSystem.cpp
 	Source/Graphics/GlCameraSystem.cpp
-	Source/Graphics/GlColColorGpuPipeline.cpp
-	Source/Graphics/GlColorGpuPipeline.cpp
-	Source/Graphics/GlDiffuseGpuPipeline.cpp
 	Source/Graphics/GlGpuBuffer.cpp
 	Source/Graphics/GlGpuShader.cpp
 	Source/Graphics/GlGpuImage.cpp
 	Source/Graphics/GlGpuMesh.cpp
-	Source/Graphics/GlGpuPipeline.cpp
 	Source/Graphics/GlGpuShader.cpp
 	Source/Graphics/GlRenderSystem.cpp
-	Source/Graphics/GlTexDiffuseGpuPipeline.cpp
 	Source/Graphics/GlWindow.cpp
 	Source/Graphics/GpuBuffer.cpp
 	Source/Graphics/GpuImage.cpp
 	Source/Graphics/GpuMesh.cpp
-	Source/Graphics/GpuPipeline.cpp
 	Source/Graphics/GpuShader.cpp
 	Source/Graphics/ImageData.cpp
 	Source/Graphics/ModelData.cpp
 	Source/Graphics/RenderComponent.cpp
 	Source/Graphics/RenderSystem.cpp
 	Source/Graphics/ShaderData.cpp
-	Source/Graphics/TexDiffuseGpuPipeline.cpp
 	Source/Graphics/VkCameraSystem.cpp
-	Source/Graphics/VkColorGpuPipeline.cpp
-	Source/Graphics/VkDiffuseGpuPipeline.cpp
 	Source/Graphics/VkGpuBuffer.cpp
 	Source/Graphics/VkGpuImage.cpp
 	Source/Graphics/VkGpuMesh.cpp
-	Source/Graphics/VkGpuPipeline.cpp
 	Source/Graphics/VkGpuShader.cpp
 	Source/Graphics/VkRenderSystem.cpp
 	Source/Graphics/VkSwapchainData.cpp
 	Source/Graphics/VkWindow.cpp
 	Source/Graphics/Window.cpp
 
-	Source/Mathematics/AttachComponent.cpp
 	Source/Mathematics/Converter.cpp
 	Source/Mathematics/IntVector2.cpp
 	Source/Mathematics/IntVector3.cpp
@@ -200,15 +202,18 @@ set(INJECTOR_RESOURCES
 	Images/Logo32.png
 	Images/Logo48.png
 
-	Shaders/Color.frag
-	Shaders/Color.vert
+	Models/UtahTeapot.fbx
+
 	Shaders/ColColor.frag
 	Shaders/ColColor.vert
+	Shaders/Color.frag
+	Shaders/Color.vert
+	Shaders/Sky.vert
+	Shaders/Sky.frag
 	Shaders/Diffuse.frag
 	Shaders/Diffuse.vert
 	Shaders/TexDiffuse.frag
 	Shaders/TexDiffuse.vert
-
 	Shaders/Color.frag.spv
 	Shaders/Color.vert.spv
 	Shaders/Diffuse.frag.spv

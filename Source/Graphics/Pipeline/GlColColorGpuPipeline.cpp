@@ -1,4 +1,4 @@
-#include "Injector/Graphics/GlColColorGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlColColorGpuPipeline.hpp"
 
 namespace Injector
 {

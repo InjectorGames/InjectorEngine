@@ -3,8 +3,8 @@
 
 #include "Injector/Graphics/Window.hpp"
 #include "Injector/Graphics/VkGpuBuffer.hpp"
-#include "Injector/Graphics/VkGpuPipeline.hpp"
 #include "Injector/Graphics/VkSwapchainData.hpp"
+#include "Injector/Graphics/Pipeline/VkGpuPipeline.hpp"
 
 #include <set>
 

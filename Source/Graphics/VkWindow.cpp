@@ -5,8 +5,8 @@
 #include "Injector/Exception/Exception.hpp"
 #include "Injector/Graphics/VkCameraSystem.hpp"
 #include "Injector/Graphics/VkRenderSystem.hpp"
-#include "Injector/Graphics/VkColorGpuPipeline.hpp"
-#include "Injector/Graphics/VkDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/VkColorGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/VkDiffuseGpuPipeline.hpp"
 
 #include <map>
 #include <vector>

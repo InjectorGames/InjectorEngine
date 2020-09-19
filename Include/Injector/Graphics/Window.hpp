@@ -7,14 +7,15 @@
 #include "Injector/Graphics/MouseIcon.hpp"
 #include "Injector/Graphics/MouseMode.hpp"
 #include "Injector/Graphics/ShaderData.hpp"
-#include "Injector/Graphics/GpuPipeline.hpp"
 #include "Injector/Graphics/MouseButton.hpp"
 #include "Injector/Graphics/ButtonState.hpp"
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/KeyboardButton.hpp"
-#include "Injector/Graphics/ColorGpuPipeline.hpp"
-#include "Injector/Graphics/TexDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/SkyGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/ColorGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/TexDiffuseGpuPipeline.hpp"
 
 #include <string>
 #include <cstdint>
@@ -94,23 +95,7 @@ namespace Injector
 			GpuShaderStage stage,
 			const std::shared_ptr<ShaderData>& data);
 		virtual std::shared_ptr<GpuImage> createImage(
-        	int size,
-        	GpuImageFormat format,
-        	GpuImageFilter minFilter,
-    		GpuImageFilter magFilter,
-    		GpuImageWrap wrapU,
-        	bool useMipmap,
-			const std::shared_ptr<ImageData>& data);
-		virtual std::shared_ptr<GpuImage> createImage(
-        	const IntVector2& size,
-        	GpuImageFormat format,
-        	GpuImageFilter minFilter,
-    		GpuImageFilter magFilter,
-    		GpuImageWrap wrapU,
-        	GpuImageWrap wrapV,
-        	bool useMipmap,
-			const std::shared_ptr<ImageData>& data);
-		virtual std::shared_ptr<GpuImage> createImage(
+			GpuImageType type,
         	const IntVector3& size,
         	GpuImageFormat format,
         	GpuImageFilter minFilter,
@@ -134,6 +119,9 @@ namespace Injector
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
 			const std::shared_ptr<GpuImage>& texture);
+		virtual std::shared_ptr<SkyGpuPipeline> createSkyPipeline(
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader);
 
 		std::shared_ptr<GpuMesh> createSquareMeshV(bool mappable);
 		std::shared_ptr<GpuMesh> createSquareMeshVN(bool mappable);
@@ -143,6 +131,34 @@ namespace Injector
 		std::shared_ptr<GpuMesh> createCubeMeshVN(bool mappable);
 		std::shared_ptr<GpuMesh> createCubeMeshVT(bool mappable);
 		std::shared_ptr<GpuMesh> createCubeMeshVNT(bool mappable);
+
+		std::shared_ptr<GpuImage> createImage(
+        	int size,
+        	GpuImageFormat format,
+        	GpuImageFilter minFilter,
+    		GpuImageFilter magFilter,
+    		GpuImageWrap wrapU,
+        	bool useMipmap,
+			const std::shared_ptr<ImageData>& data);
+		std::shared_ptr<GpuImage> createImage(
+        	const IntVector2& size,
+        	GpuImageFormat format,
+        	GpuImageFilter minFilter,
+    		GpuImageFilter magFilter,
+    		GpuImageWrap wrapU,
+        	GpuImageWrap wrapV,
+        	bool useMipmap,
+			const std::shared_ptr<ImageData>& data);
+		std::shared_ptr<GpuImage> createImage(
+        	const IntVector3& size,
+        	GpuImageFormat format,
+        	GpuImageFilter minFilter,
+    		GpuImageFilter magFilter,
+    		GpuImageWrap wrapU,
+        	GpuImageWrap wrapV,
+        	GpuImageWrap wrapW,
+        	bool useMipmap,
+			const std::shared_ptr<ImageData>& data);
 
 		static std::shared_ptr<Window> create(
 			const std::string& title = defaultTitle,

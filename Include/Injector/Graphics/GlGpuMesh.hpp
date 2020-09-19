@@ -1,7 +1,7 @@
 #pragma once
 #include "Injector/Graphics/GpuMesh.hpp"
 #include "Injector/Graphics/GlGpuBuffer.hpp"
-#include "Injector/Graphics/GlGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlGpuPipeline.hpp"
 
 #include <vector>
 #include <memory>
@@ -21,6 +21,6 @@ namespace Injector
 
 		GLuint getVertexArray() const noexcept;
 
-		void draw(const std::shared_ptr<GlGpuPipeline>& pipeline) noexcept;
+		void draw(const std::shared_ptr<GlGpuPipeline>& pipeline);
 	};
 }

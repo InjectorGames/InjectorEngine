@@ -431,6 +431,4 @@ namespace Injector
 		w *= value;
 		return *this;
 	}
-
-	const Quaternion Quaternion::zero = Quaternion(Vector3::zero);
 }

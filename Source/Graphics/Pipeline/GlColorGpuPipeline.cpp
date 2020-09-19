@@ -1,4 +1,4 @@
-#include "Injector/Graphics/GlColorGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlColorGpuPipeline.hpp"
 #include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/NullException.hpp"
 

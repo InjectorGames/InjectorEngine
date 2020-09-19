@@ -64,8 +64,6 @@ namespace Injector
 
 			auto deltaTime = static_cast<float>(Engine::getUpdateDeltaTime());
 			transformComponent->position += transformComponent->rotation * translation * -speed * deltaTime;
-			
-			transformComponent->changed = true;
 		}
 		else
 		{

@@ -1,4 +1,4 @@
-#include "Injector/Graphics/VkDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/VkDiffuseGpuPipeline.hpp"
 #include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/NullException.hpp"
 

@@ -134,6 +134,32 @@ namespace Injector
 		20, 21, 22, 20, 22, 23,
 	};
 
+	const std::vector<Vector3> BasicModel::frameVertices
+	{
+		Vector3(-1.0f, -1.0f, 0.0f),
+		Vector3(-1.0f, 1.0f, 0.0f), 
+		Vector3(1.0f, 1.0f, 0.0f),
+		Vector3(1.0f, -1.0f, 0.0f),
+	};
+	const std::vector<Vector3> BasicModel::frameNormals
+	{
+		Vector3(0.0f, 0.0f, -1.0f),
+		Vector3(0.0f, 0.0f, -1.0f),
+		Vector3(0.0f, 0.0f, -1.0f),
+		Vector3(0.0f, 0.0f, -1.0f),
+	};
+	const std::vector<Vector2> BasicModel::frameTexCoords
+	{
+		Vector2(0.0f, 0.0f),
+		Vector2(0.0f, 1.0f),
+		Vector2(1.0f, 1.0f),
+		Vector2(1.0f, 0.0f),
+	};
+	const std::vector<Vector3> BasicModel::frameIndices
+	{
+		0, 1, 2, 0, 2, 3,
+	};
+
 	const std::vector<Vector3> BasicModel::axisVertices =
 	{
 		Vector3(0.0f, 0.0f, 0.0f),

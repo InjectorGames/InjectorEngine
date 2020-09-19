@@ -22,7 +22,7 @@ namespace Injector
 		return vertexArray;
 	}
 
-	void GlGpuMesh::draw(const std::shared_ptr<GlGpuPipeline>& pipeline) noexcept
+	void GlGpuMesh::draw(const std::shared_ptr<GlGpuPipeline>& pipeline)
 	{
 		auto glVertexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(vertexBuffer);
 		auto glIndexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(indexBuffer);

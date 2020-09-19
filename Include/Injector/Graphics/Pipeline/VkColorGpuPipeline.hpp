@@ -1,6 +1,6 @@
 #pragma once
-#include "Injector/Graphics/VkGpuPipeline.hpp"
-#include "Injector/Graphics/ColorGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/VkGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/ColorGpuPipeline.hpp"
 #include "Injector/Graphics/VkGpuShader.hpp"
 
 namespace Injector
