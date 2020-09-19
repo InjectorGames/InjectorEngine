@@ -37,11 +37,17 @@ namespace Injector
 		auto entity = std::make_shared<Entity>();
 
 		if (!entities.emplace(entity).second)
-			throw Exception("Manager", "createEntity", "Failed to create entity");
+		{
+			throw Exception(
+				"Manager",
+				"createEntity",
+				"Failed to create entity");
+		}
 
 		return entity;
 	}
-	bool Manager::addEntity(const std::shared_ptr<Entity>& entity) noexcept
+	bool Manager::addEntity(
+		const std::shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;
@@ -49,7 +55,8 @@ namespace Injector
 		return entities.emplace(entity).second;
 	}
 
-	bool Manager::removeEntity(const std::shared_ptr<Entity>& entity) noexcept
+	bool Manager::removeEntity(
+		const std::shared_ptr<Entity>& entity) noexcept
 	{
 		if (entity == nullptr)
 			return false;
@@ -79,14 +86,16 @@ namespace Injector
 		return false;
 	}
 
-	bool Manager::containsEntity(const std::shared_ptr<Entity>& entity) const noexcept
+	bool Manager::containsEntity(
+		const std::shared_ptr<Entity>& entity) const noexcept
 	{
 		if (entity == nullptr)
 			return false;
 
 		return entities.find(entity) != entities.end();
 	}
-	bool Manager::containsSystem(const std::shared_ptr<System>& system) noexcept
+	bool Manager::containsSystem(
+		const std::shared_ptr<System>& system) noexcept
 	{
 		if (system == nullptr)
 			return false;

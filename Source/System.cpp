@@ -1,4 +1,5 @@
 #include "Injector/System.hpp"
+#include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
@@ -7,5 +8,8 @@ namespace Injector
 	}
 	void System::update()
 	{
+		throw NotImplementedException(
+			"System",
+			"update");
 	}
 }

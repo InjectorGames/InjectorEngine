@@ -1,46 +1,62 @@
 #include "Injector/Graphics/Window.hpp"
 #include "Injector/Engine.hpp"
 #include "Injector/Defines.hpp"
-#include "Injector/Graphics/BasicModel.hpp"
 #include "Injector/Graphics/VkWindow.hpp"
 #include "Injector/Graphics/GlWindow.hpp"
-#include "Injector/Graphics/BasicModel.hpp"
 #include "Injector/Exception/NullException.hpp"
 #include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
-	const std::string Window::defaultTitle = "Injector Engine";
-	const IntVector2 Window::defaultSize = IntVector2(800, 600);
+	const std::string Window::defaultTitle =
+		"Injector Engine";
+	const IntVector2 Window::defaultSize =
+		IntVector2(800, 600);
 
-	void Window::scrollCallback(GLFWwindow* window, double x, double y)
+	void Window::scrollCallback(
+		GLFWwindow* window, double x, double y)
 	{
-		auto instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
-		instance->deltaScroll += Vector2(static_cast<float>(x), static_cast<float>(y));
+		auto instance = static_cast<Window*>(
+			glfwGetWindowUserPointer(window));
+		instance->deltaScroll +=
+			Vector2(static_cast<float>(x), static_cast<float>(y));
 	}
-	void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
+	void Window::framebufferSizeCallback(
+		GLFWwindow* window, int width, int height)
 	{
-		auto instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
+		auto instance = static_cast<Window*>(
+			glfwGetWindowUserPointer(window));
 		instance->isResized = true;
 	}
 
-	Window::Window(GLFWwindow* _window) :
+	Window::Window(
+		GLFWwindow* _window) :
 		window(_window),
 		deltaScroll(),
 		isResized()
 	{
 		if (!window)
-			throw NullException("Window", "Window", "window");
+		{
+			throw NullException(
+				"Window",
+				"Window",
+				"window");
+		}
 
-		glfwSetWindowUserPointer(window, this);
-		glfwSetWindowSizeLimits(window, 1, 1, GLFW_DONT_CARE, GLFW_DONT_CARE);
-		glfwSetScrollCallback(window, scrollCallback);
-		glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+		glfwSetWindowUserPointer(
+			window, this);
+		glfwSetWindowSizeLimits(
+			window, 1, 1, GLFW_DONT_CARE, GLFW_DONT_CARE);
+		glfwSetScrollCallback(
+			window, scrollCallback);
+		glfwSetFramebufferSizeCallback(
+			window, framebufferSizeCallback);
 
 		if (glfwRawMouseMotionSupported() == GLFW_TRUE)
 			glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
-		cursor = glfwCreateStandardCursor(static_cast<int>(MouseIcon::Arrow));
+		cursor = glfwCreateStandardCursor(
+			static_cast<int>(MouseIcon::Arrow));
 		glfwSetCursor(window, cursor);
 	}
 	Window::~Window()
@@ -78,7 +94,9 @@ namespace Injector
 	}
 	void Window::onFramebufferResize(const IntVector2& size)
 	{
-		throw NotImplementedException("Window", "onResize");
+		throw NotImplementedException(
+			"Window",
+			"onResize");
 	}
 
 	IntVector2 Window::getSize() const noexcept
@@ -123,7 +141,12 @@ namespace Injector
 	void Window::setSizeLimits(const IntVector2& min, const IntVector2& max)
 	{
 		if (min.x < 1 || min.y < 1 || max.x < 1 || max.y < 1)
-			throw Exception("Window", "setSizeLimits", "Size can not be less than one");
+		{
+			throw Exception(
+				"Window",
+				"setSizeLimits",
+				"Size can not be less than one");
+		}
 
 		glfwSetWindowSizeLimits(window, min.x, min.y, max.x, max.y);
 	}
@@ -161,7 +184,8 @@ namespace Injector
 		glfwSetCursor(window, nullptr);
 		glfwDestroyCursor(cursor);
 
-		cursor = glfwCreateStandardCursor(static_cast<int>(MouseIcon::Arrow));
+		cursor = glfwCreateStandardCursor(
+			static_cast<int>(MouseIcon::Arrow));
 		glfwSetCursor(window, cursor);
 	}
 	void Window::setMouseIcon(const std::shared_ptr<ImageData>& icon, const IntVector2& hotspot)
@@ -179,11 +203,13 @@ namespace Injector
 	}
 	void Window::setResizable(bool resizable)
 	{
-		glfwSetWindowAttrib(window, GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
+		glfwSetWindowAttrib(window, GLFW_RESIZABLE,
+			resizable ? GLFW_TRUE : GLFW_FALSE);
 	}
 	void Window::setDecorated(bool decorated)
 	{
-		glfwSetWindowAttrib(window, GLFW_DECORATED, decorated ? GLFW_TRUE : GLFW_FALSE);
+		glfwSetWindowAttrib(window, GLFW_DECORATED,
+			decorated ? GLFW_TRUE : GLFW_FALSE);
 	}
 
 	bool Window::isFocused() const noexcept
@@ -234,11 +260,15 @@ namespace Injector
 
 	std::shared_ptr<CameraSystem> Window::createCameraSystem()
 	{
-		throw NotImplementedException("Window", "createCameraSystem");
+		throw NotImplementedException(
+			"Window",
+			"createCameraSystem");
 	}
 	std::shared_ptr<RenderSystem> Window::createRenderSystem()
 	{
-		throw NotImplementedException("Window", "createRenderSystem");
+		throw NotImplementedException(
+			"Window",
+			"createRenderSystem");
 	}
 
 	std::shared_ptr<GpuBuffer> Window::createBuffer(
@@ -247,7 +277,9 @@ namespace Injector
 		bool mappable,
 		const void* data)
 	{
-		throw NotImplementedException("Window", "createBuffer");
+		throw NotImplementedException(
+			"Window",
+			"createBuffer");
 	}
 	std::shared_ptr<GpuMesh> Window::createMesh(
 		size_t indexCount,
@@ -255,18 +287,24 @@ namespace Injector
 		const std::shared_ptr<GpuBuffer>& vertexBuffer,
 		const std::shared_ptr<GpuBuffer>& indexBuffer)
 	{
-		throw NotImplementedException("Window", "createMesh");
+		throw NotImplementedException(
+			"Window",
+			"createMesh");
 	}
 	std::shared_ptr<ShaderData> Window::readShaderData(
 		const std::string& filePath)
 	{
-		throw NotImplementedException("Window", "readShaderData");
+		throw NotImplementedException(
+			"Window",
+			"readShaderData");
 	}
 	std::shared_ptr<GpuShader> Window::createShader(
 		GpuShaderStage stage,
 		const std::shared_ptr<ShaderData>& data)
 	{
-		throw NotImplementedException("Window", "createShader");
+		throw NotImplementedException(
+			"Window",
+			"createShader");
 	}
 	std::shared_ptr<GpuImage> Window::createImage(
 		GpuImageType type,
@@ -280,218 +318,98 @@ namespace Injector
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
-		throw NotImplementedException("Window", "createImage");
+		throw NotImplementedException(
+			"Window",
+			"createImage");
 	}
 
 	std::shared_ptr<ColorGpuPipeline> Window::createColorPipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
-		throw NotImplementedException("Window", "createColorPipeline");
+		throw NotImplementedException(
+			"Window",
+			"createColorPipeline");
 	}
 	std::shared_ptr<ColorGpuPipeline> Window::createColColorPipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
-		throw NotImplementedException("Window", "createColColorPipeline");
+		throw NotImplementedException(
+			"Window",
+			"createColColorPipeline");
 	}
 	std::shared_ptr<DiffuseGpuPipeline> Window::createDiffusePipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
-		throw NotImplementedException("Window", "createDiffusePipeline");
+		throw NotImplementedException(
+			"Window",
+			"createDiffusePipeline");
 	}
 	std::shared_ptr<TexDiffuseGpuPipeline> Window::createTexDiffusePipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
 		const std::shared_ptr<GpuImage>& texture)
 	{
-		throw NotImplementedException("Window", "createTexDiffusePipeline");
+		throw NotImplementedException(
+			"Window",
+			"createTexDiffusePipeline");
 	}
 	std::shared_ptr<SkyGpuPipeline> Window::createSkyPipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
-		throw NotImplementedException("Window", "createSkyPipeline");
+		throw NotImplementedException(
+			"Window",
+			"createSkyPipeline");
 	}
 
-	std::shared_ptr<GpuMesh> Window::createSquareMeshV(bool mappable)
+	std::shared_ptr<GpuMesh> Window::createMesh(
+		const std::vector<float>& vertices,
+		bool mappableVertices,
+		const std::vector<uint16_t>& indices,
+		bool mappableIndices)
 	{
-		auto vertexBuffer = createBuffer(
-			BasicModel::squareVertices.size() * sizeof(Vector3),
-			GpuBufferType::Vertex, mappable,
-			BasicModel::squareVertices.data());
-		auto indexBuffer = createBuffer(
-			BasicModel::squareIndices.size() * sizeof(uint16_t),
-			GpuBufferType::Index, mappable,
-			BasicModel::squareIndices.data());
-
-		return createMesh(
-			BasicModel::squareIndices.size(),
-			GpuBufferIndex::UnsignedShort,
-			vertexBuffer, indexBuffer);
-	}
-	std::shared_ptr<GpuMesh> Window::createSquareMeshVN(bool mappable)
-	{
-		auto vertices = std::vector<float>(BasicModel::squareVertices.size() * 6);
-
-		for (size_t i = 0, j = 0; i < BasicModel::squareVertices.size(); i++, j += 6)
-		{
-			memcpy(&vertices[j], &BasicModel::squareVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &BasicModel::squareNormals[i], sizeof(Vector3));
-		}
-
 		auto vertexBuffer = createBuffer(
 			vertices.size() * sizeof(float),
-			GpuBufferType::Vertex, mappable,
+			GpuBufferType::Vertex,
+			mappableVertices,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			BasicModel::squareIndices.size() * sizeof(uint16_t),
-			GpuBufferType::Index, mappable,
-			BasicModel::squareIndices.data());
+			indices.size() * sizeof(uint16_t),
+			GpuBufferType::Index,
+			mappableIndices,
+			indices.data());
 
 		return createMesh(
-			BasicModel::squareIndices.size(),
+			indices.size(),
 			GpuBufferIndex::UnsignedShort,
-			vertexBuffer, indexBuffer);
+			vertexBuffer,
+			indexBuffer);
 	}
-	std::shared_ptr<GpuMesh> Window::createSquareMeshVT(bool mappable)
+	std::shared_ptr<GpuMesh> Window::createMesh(
+		const std::vector<float>& vertices,
+		bool mappableVertices,
+		const std::vector<uint32_t>& indices,
+		bool mappableIndices)
 	{
-		auto vertices = std::vector<float>(BasicModel::squareVertices.size() * 5);
-
-		for (size_t i = 0, j = 0; i < BasicModel::squareVertices.size(); i++, j += 5)
-		{
-			memcpy(&vertices[j], &BasicModel::squareVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &BasicModel::squareTexCoords[i], sizeof(Vector2));
-		}
-
 		auto vertexBuffer = createBuffer(
 			vertices.size() * sizeof(float),
-			GpuBufferType::Vertex, mappable,
+			GpuBufferType::Vertex,
+			mappableVertices,
 			vertices.data());
 		auto indexBuffer = createBuffer(
-			BasicModel::squareIndices.size() * sizeof(uint16_t),
-			GpuBufferType::Index, mappable,
-			BasicModel::squareIndices.data());
+			indices.size() * sizeof(uint32_t),
+			GpuBufferType::Index,
+			mappableIndices,
+			indices.data());
 
 		return createMesh(
-			BasicModel::squareIndices.size(),
-			GpuBufferIndex::UnsignedShort,
-			vertexBuffer, indexBuffer);
-	}
-	std::shared_ptr<GpuMesh> Window::createSquareMeshVNT(bool mappable)
-	{
-		auto vertices = std::vector<float>(BasicModel::squareVertices.size() * 8);
-
-		for (size_t i = 0, j = 0; i < BasicModel::squareVertices.size(); i++, j += 8)
-		{
-			memcpy(&vertices[j], &BasicModel::squareVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &BasicModel::squareNormals[i], sizeof(Vector3));
-			memcpy(&vertices[j + 6], &BasicModel::squareTexCoords[i], sizeof(Vector2));
-		}
-
-		auto vertexBuffer = createBuffer(
-			vertices.size() * sizeof(float),
-			GpuBufferType::Vertex, mappable,
-			vertices.data());
-		auto indexBuffer = createBuffer(
-			BasicModel::squareIndices.size() * sizeof(uint16_t),
-			GpuBufferType::Index, mappable,
-			BasicModel::squareIndices.data());
-
-		return createMesh(
-			BasicModel::squareIndices.size(),
-			GpuBufferIndex::UnsignedShort,
-			vertexBuffer, indexBuffer);
-	}
-	std::shared_ptr<GpuMesh> Window::createCubeMeshV(bool mappable)
-	{
-		auto vertexBuffer = createBuffer(
-			BasicModel::cubeVertices.size() * sizeof(Vector3),
-			GpuBufferType::Vertex, mappable,
-			BasicModel::cubeVertices.data());
-		auto indexBuffer = createBuffer(
-			BasicModel::cubeIndices.size() * sizeof(uint16_t),
-			GpuBufferType::Index, mappable,
-			BasicModel::cubeIndices.data());
-
-		return createMesh(
-			BasicModel::cubeIndices.size(),
-			GpuBufferIndex::UnsignedShort,
-			vertexBuffer, indexBuffer);
-	}
-	std::shared_ptr<GpuMesh> Window::createCubeMeshVN(bool mappable)
-	{
-		auto vertices = std::vector<float>(BasicModel::cubeVertices.size() * 6);
-
-		for (size_t i = 0, j = 0; i < BasicModel::cubeVertices.size(); i++, j += 6)
-		{
-			memcpy(&vertices[j], &BasicModel::cubeVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &BasicModel::cubeNormals[i], sizeof(Vector3));
-		}
-
-		auto vertexBuffer = createBuffer(
-			vertices.size() * sizeof(float),
-			GpuBufferType::Vertex, mappable,
-			vertices.data());
-		auto indexBuffer = createBuffer(
-			BasicModel::cubeIndices.size() * sizeof(uint16_t),
-			GpuBufferType::Index, mappable,
-			BasicModel::cubeIndices.data());
-
-		return createMesh(
-			BasicModel::cubeIndices.size(),
-			GpuBufferIndex::UnsignedShort,
-			vertexBuffer, indexBuffer);
-	}
-	std::shared_ptr<GpuMesh> Window::createCubeMeshVT(bool mappable)
-	{
-		auto vertices = std::vector<float>(BasicModel::cubeVertices.size() * 5);
-
-		for (size_t i = 0, j = 0; i < BasicModel::cubeVertices.size(); i++, j += 5)
-		{
-			memcpy(&vertices[j], &BasicModel::cubeVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &BasicModel::cubeTexCoords[i], sizeof(Vector2));
-		}
-
-		auto vertexBuffer = createBuffer(
-			vertices.size() * sizeof(float),
-			GpuBufferType::Vertex, mappable,
-			vertices.data());
-		auto indexBuffer = createBuffer(
-			BasicModel::cubeIndices.size() * sizeof(uint16_t),
-			GpuBufferType::Index, mappable,
-			BasicModel::cubeIndices.data());
-
-		return createMesh(
-			BasicModel::cubeIndices.size(),
-			GpuBufferIndex::UnsignedShort,
-			vertexBuffer, indexBuffer);
-	}
-	std::shared_ptr<GpuMesh> Window::createCubeMeshVNT(bool mappable)
-	{
-		auto vertices = std::vector<float>(BasicModel::cubeVertices.size() * 8);
-
-		for (size_t i = 0, j = 0; i < BasicModel::cubeVertices.size(); i++, j += 8)
-		{
-			memcpy(&vertices[j], &BasicModel::cubeVertices[i], sizeof(Vector3));
-			memcpy(&vertices[j + 3], &BasicModel::cubeNormals[i], sizeof(Vector3));
-			memcpy(&vertices[j + 6], &BasicModel::cubeTexCoords[i], sizeof(Vector2));
-		}
-
-		auto vertexBuffer = createBuffer(
-			vertices.size() * sizeof(float),
-			GpuBufferType::Vertex, mappable,
-			vertices.data());
-		auto indexBuffer = createBuffer(
-			BasicModel::cubeIndices.size() * sizeof(uint16_t),
-			GpuBufferType::Index, mappable,
-			BasicModel::cubeIndices.data());
-
-		return createMesh(
-			BasicModel::cubeIndices.size(),
-			GpuBufferIndex::UnsignedShort,
-			vertexBuffer, indexBuffer);
+			indices.size(),
+			GpuBufferIndex::UnsignedInt,
+			vertexBuffer,
+			indexBuffer);
 	}
 
 	std::shared_ptr<GpuImage> Window::createImage(
@@ -503,8 +421,17 @@ namespace Injector
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
-		return createImage(GpuImageType::Image1D, IntVector3(size, 0, 0), format,
-			minFilter, magFilter, wrapU, GpuImageWrap::Repeat, GpuImageWrap::Repeat, useMipmap, data);
+		return createImage(
+			GpuImageType::Image1D,
+			IntVector3(size, 0, 0),
+			format,
+			minFilter,
+			magFilter,
+			wrapU,
+			GpuImageWrap::Repeat,
+			GpuImageWrap::Repeat,
+			useMipmap,
+			data);
 	}
 	std::shared_ptr<GpuImage> Window::createImage(
 		const IntVector2& size,
@@ -516,8 +443,17 @@ namespace Injector
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
-		return createImage(GpuImageType::Image2D, IntVector3(size, 0), format,
-			minFilter, magFilter, wrapU, wrapV, GpuImageWrap::Repeat, useMipmap, data);
+		return createImage(
+			GpuImageType::Image2D,
+			IntVector3(size, 0),
+			format,
+			minFilter,
+			magFilter,
+			wrapU,
+			wrapV,
+			GpuImageWrap::Repeat,
+			useMipmap,
+			data);
 	}
 	std::shared_ptr<GpuImage> Window::createImage(
 		const IntVector3& size,
@@ -530,8 +466,17 @@ namespace Injector
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
-		return createImage(GpuImageType::Image3D, size, format,
-			minFilter, magFilter, wrapU, wrapV, wrapW, useMipmap, data);
+		return createImage(
+			GpuImageType::Image3D,
+			size,
+			format,
+			minFilter,
+			magFilter,
+			wrapU,
+			wrapV,
+			wrapW,
+			useMipmap,
+			data);
 	}
 
 	std::shared_ptr<Window> Window::create(
@@ -541,12 +486,26 @@ namespace Injector
 		auto graphicsApi = Engine::getGraphicsApi();
 
 		if (graphicsApi == GraphicsApi::OpenGL)
-			return Engine::createManager<GlWindow>(false, title, size);
+		{
+			return Engine::createManager<GlWindow>(
+				false, title, size);
+		}
 		else if (graphicsApi == GraphicsApi::OpenGLES)
-			return Engine::createManager<GlWindow>(true, title, size);
+		{
+			return Engine::createManager<GlWindow>(
+				true, title, size);
+		}
 		else if (graphicsApi == GraphicsApi::Vulkan)
-			return Engine::createManager<VkWindow>(title, size);
+		{
+			return Engine::createManager<VkWindow>(
+				title, size);
+		}
 		else
-			throw Exception("Window", "createWindow", "Unknown graphics API");
+		{
+			throw Exception(
+				"Window",
+				"createWindow",
+				"Unknown graphics API");
+		}
 	}
 }

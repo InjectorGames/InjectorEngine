@@ -63,7 +63,9 @@ namespace Injector
 	void GlColorGpuPipeline::setAttributes()
 	{
 		glEnableVertexAttribArray(0);
-		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3));
+
+		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE,
+			sizeof(Vector3), 0);
 	}
 
 	void GlColorGpuPipeline::setUniforms(

@@ -7,9 +7,7 @@ namespace Injector
 	{
 	 public:
 		MemoryStream(
-			const std::ios::openmode mode =
-				ios_base::in | ios_base::out);
-		MemoryStream(const std::string& string,
+			const std::string& string,
 			const std::ios::openmode mode =
 				ios_base::in | ios_base::out);
 		virtual ~MemoryStream();

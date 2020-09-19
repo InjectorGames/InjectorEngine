@@ -104,8 +104,10 @@ namespace Injector
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 
-		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3) * 2);
-		setVertexAttributePointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3) * 2, sizeof(Vector3));
+		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE,
+			sizeof(Vector3) * 2, 0);
+		setVertexAttributePointer(1, 3, GL_FLOAT, GL_FALSE,
+			sizeof(Vector3) * 2, sizeof(Vector3));
 	}
 
 	void GlDiffuseGpuPipeline::setUniforms(

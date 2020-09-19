@@ -11,13 +11,16 @@ namespace Injector
 	 protected:
 		size_t size;
 	 public:
-		FileStream(const char* filePath,
+		FileStream(
+			const char* filePath,
 			std::ios::openmode mode =
 				std::ios::in | std::ios::out);
-		FileStream(const std::string& filePath,
+		FileStream(
+			const std::string& filePath,
 			std::ios::openmode mode =
 				std::ios::in | std::ios::out);
-		FileStream(const std::filesystem::path& filePath,
+		FileStream(
+			const std::filesystem::path& filePath,
 			std::ios::openmode mode =
 				std::ios::in | std::ios::out);
 		virtual ~FileStream();

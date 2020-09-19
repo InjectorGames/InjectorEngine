@@ -53,7 +53,12 @@ namespace Injector
 	void Engine::initializeEngine()
 	{
 		if (engineInitialized)
-			throw Exception("Engine", "initializeEngine", "Already initialized");
+		{
+			throw Exception(
+				"Engine",
+				"initializeEngine",
+				"Already initialized");
+		}
 
 		engineInitialized = true;
 
@@ -65,7 +70,12 @@ namespace Injector
 	void Engine::terminateEngine()
 	{
 		if (!engineInitialized)
-			throw Exception("Engine", "terminateEngine", "Already terminated");
+		{
+			throw Exception(
+				"Engine",
+				"terminateEngine",
+				"Already terminated");
+		}
 
 		managers.clear();
 
@@ -81,24 +91,50 @@ namespace Injector
 		return engineInitialized;
 	}
 
-	void Engine::videoErrorCallback(int error, const char* description)
+	void Engine::videoErrorCallback(
+		int error, const char* description)
 	{
-		throw Exception("Engine", "videoErrorCallback", std::string(description));
+		throw Exception(
+			"Engine",
+			"videoErrorCallback",
+			std::string(description));
 	}
-	void Engine::initializeVideo(GraphicsApi _graphicsApi)
+	void Engine::initializeVideo(
+		GraphicsApi _graphicsApi)
 	{
 		if (engineInitialized)
-			throw Exception("Engine", "initializeVideo", "Engine is already initialized");
+		{
+			throw Exception(
+				"Engine",
+				"initializeVideo",
+				"Engine is already initialized");
+
+		}
 		if (videoInitialized)
-			throw Exception("Engine", "initializeVideo", "Video subsystem is already initialized");
+		{
+			throw Exception(
+				"Engine",
+				"initializeVideo",
+				"Video subsystem is already initialized");
+		}
 
 		glfwSetErrorCallback(videoErrorCallback);
 
 		if (!glfwInit())
-			throw Exception("Engine", "initializeVideo", "Failed to initialize GLFW");
+		{
+			throw Exception(
+				"Engine",
+				"initializeVideo",
+				"Failed to initialize GLFW");
+		}
 
 		if (_graphicsApi == GraphicsApi::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
-			throw Exception("Engine", "initializeVideo", "Vulkan is not supported");
+		{
+			throw Exception(
+				"Engine",
+				"initializeVideo",
+				"Vulkan is not supported");
+		}
 
 		graphicsApi = _graphicsApi;
 		videoInitialized = true;
@@ -108,9 +144,19 @@ namespace Injector
 	void Engine::terminateVideo()
 	{
 		if (!engineInitialized)
-			throw Exception("Engine", "terminateVideo", "Engine is already terminated");
+		{
+			throw Exception(
+				"Engine",
+				"terminateVideo",
+				"Engine is already terminated");
+		}
 		if (!videoInitialized)
-			throw Exception("Engine", "terminateVideo", "Video subsystem is already terminated");
+		{
+			throw Exception(
+				"Engine",
+				"terminateVideo",
+				"Video subsystem is already terminated");
+		}
 
 		glfwTerminate();
 
@@ -131,7 +177,12 @@ namespace Injector
 	void Engine::startUpdateLoop()
 	{
 		if (updateRunning)
-			throw Exception("Engine", "startUpdateLoop", "Already started");
+		{
+			throw Exception(
+				"Engine",
+				"startUpdateLoop",
+				"Already started");
+		}
 
 		updateRunning = true;
 
@@ -167,7 +218,10 @@ namespace Injector
 				auto delayTime = (1.0 / targetUpdateRate - updateDeltaTime) * 1000 - 1.0;
 
 				if (delayTime > 0)
-					std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<uint64_t>(delayTime)));
+				{
+					std::this_thread::sleep_for(
+						std::chrono::milliseconds(static_cast<uint64_t>(delayTime)));
+				}
 			}
 
 			if (videoInitialized)
@@ -177,7 +231,12 @@ namespace Injector
 	void Engine::stopUpdateLoop()
 	{
 		if (!updateRunning)
-			throw Exception("Engine", "stopUpdateLoop", "Already stopped");
+		{
+			throw Exception(
+				"Engine",
+				"stopUpdateLoop",
+				"Already stopped");
+		}
 
 		updateRunning = false;
 	}
@@ -196,7 +255,8 @@ namespace Injector
 			std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 	}
 
-	bool Engine::addManager(const std::shared_ptr<Manager>& manager) noexcept
+	bool Engine::addManager(
+		const std::shared_ptr<Manager>& manager) noexcept
 	{
 		if (manager == nullptr)
 			return false;
@@ -204,7 +264,8 @@ namespace Injector
 		managers.push_back(manager);
 		return true;
 	}
-	bool Engine::removeManager(const std::shared_ptr<Manager>& manager) noexcept
+	bool Engine::removeManager(
+		const std::shared_ptr<Manager>& manager) noexcept
 	{
 		if (manager == nullptr)
 			return false;
@@ -220,7 +281,8 @@ namespace Injector
 
 		return false;
 	}
-	bool Engine::containsManager(const std::shared_ptr<Manager>& manager) noexcept
+	bool Engine::containsManager(
+		const std::shared_ptr<Manager>& manager) noexcept
 	{
 		if (manager == nullptr)
 			return false;

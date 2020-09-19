@@ -9,10 +9,16 @@ namespace Injector
 	 public:
 		static int getCompressSize(int sourceSize);
 
-		static int compress(const void* source, int sourceSize,
-			void* destination, int destinationSize);
-		static int decompress(const void* source, int sourceSize,
-			void* destination, int destinationSize);
+		static int compress(
+			const void* source,
+			int sourceSize,
+			void* destination,
+			int destinationSize);
+		static int decompress(
+			const void* source,
+			int sourceSize,
+			void* destination,
+			int destinationSize);
 
 		template<class T = uint8_t>
 		static std::vector<T> compress(const void* source, int size)

@@ -26,7 +26,11 @@ namespace Injector
 			if (!components.emplace(typeid(T), component).second)
 			{
 				delete component;
-				throw Exception("Entity", "createComponent", "Failed to add component");
+
+				throw Exception(
+					"Entity",
+					"createComponent",
+					"Failed to add component");
 			}
 
 			return component;

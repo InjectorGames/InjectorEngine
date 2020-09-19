@@ -68,7 +68,9 @@ namespace Injector
 	void GlSkyGpuPipeline::setAttributes()
 	{
 		glEnableVertexAttribArray(0);
-		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3));
+
+		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE,
+			sizeof(Vector3), 0);
 	}
 
 	void GlSkyGpuPipeline::setUniforms(

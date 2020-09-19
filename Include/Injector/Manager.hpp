@@ -35,11 +35,15 @@ namespace Injector
 			return system;
 		}
 
-		bool removeEntity(const std::shared_ptr<Entity>& entity) noexcept;
-		bool destroySystem(const std::shared_ptr<System>& system) noexcept;
+		bool removeEntity(
+			const std::shared_ptr<Entity>& entity) noexcept;
+		bool destroySystem(
+			const std::shared_ptr<System>& system) noexcept;
 
-		bool containsEntity(const std::shared_ptr<Entity>& entity) const noexcept;
-		bool containsSystem(const std::shared_ptr<System>& system) noexcept;
+		bool containsEntity(
+			const std::shared_ptr<Entity>& entity) const noexcept;
+		bool containsSystem(
+			const std::shared_ptr<System>& system) noexcept;
 
 		void removeEntities() noexcept;
 		void destroySystems() noexcept;

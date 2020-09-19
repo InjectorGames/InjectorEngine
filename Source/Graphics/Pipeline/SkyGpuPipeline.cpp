@@ -9,10 +9,12 @@ namespace Injector
 
 	float SkyGpuPipeline::getHeight() const
 	{
-		throw NotImplementedException("SkyGpuPipeline", "getheight");
+		throw NotImplementedException(
+			"SkyGpuPipeline", "getheight");
 	}
 	void SkyGpuPipeline::setHeight(float height)
 	{
-		throw NotImplementedException("SkyGpuPipeline", "setheight");
+		throw NotImplementedException(
+			"SkyGpuPipeline", "setheight");
 	}
 }

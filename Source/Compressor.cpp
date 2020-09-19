@@ -10,29 +10,56 @@ namespace Injector
 		auto count = LZ4_compressBound(sourceSize);
 
 		if (count == 0)
-			throw Exception("Comoressor", "getDestinationSize", "Incorrect input");
+		{
+			throw Exception(
+				"Compressor",
+				"getDestinationSize",
+				"Incorrect input");
+		}
 
 		return count;
 	}
-	int Compressor::compress(const void* source, int sourceSize,
-		void* destination, int destinationSize)
+	int Compressor::compress(
+		const void* source,
+		int sourceSize,
+		void* destination,
+		int destinationSize)
 	{
-		auto count = LZ4_compress_default(reinterpret_cast<const char*>(source),
-			reinterpret_cast<char*>(destination), sourceSize, destinationSize);
+		auto count = LZ4_compress_default(
+			reinterpret_cast<const char*>(source),
+			reinterpret_cast<char*>(destination),
+			sourceSize,
+			destinationSize);
 
 		if (count == 0)
-			throw Exception("Comoressor", "compress", "Failed to compress");
+		{
+			throw Exception(
+				"Compressor",
+				"compress",
+				"Failed to compress");
+		}
 
 		return count;
 	}
-	int Compressor::decompress(const void* source, int sourceSize,
-		void* destination, int destinationSize)
+	int Compressor::decompress(
+		const void* source,
+		int sourceSize,
+		void* destination,
+		int destinationSize)
 	{
-		auto count = LZ4_decompress_safe(reinterpret_cast<const char*>(source),
-			reinterpret_cast<char*>(destination), sourceSize, destinationSize);
+		auto count = LZ4_decompress_safe(
+			reinterpret_cast<const char*>(source),
+			reinterpret_cast<char*>(destination),
+			sourceSize,
+			destinationSize);
 
 		if (count < 1)
-			throw Exception("Comoressor", "compress", "Failed to decompress");
+		{
+			throw Exception(
+				"Compressor",
+				"compress",
+				"Failed to decompress");
+		}
 
 		return count;
 	}

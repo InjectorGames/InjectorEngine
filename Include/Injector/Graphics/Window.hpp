@@ -4,6 +4,7 @@
 #include "Injector/Graphics/GpuImage.hpp"
 #include "Injector/Graphics/GpuShader.hpp"
 #include "Injector/Graphics/ImageData.hpp"
+#include "Injector/Graphics/ModelData.hpp"
 #include "Injector/Graphics/MouseIcon.hpp"
 #include "Injector/Graphics/MouseMode.hpp"
 #include "Injector/Graphics/ShaderData.hpp"
@@ -126,14 +127,16 @@ namespace Injector
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader);
 
-		std::shared_ptr<GpuMesh> createSquareMeshV(bool mappable);
-		std::shared_ptr<GpuMesh> createSquareMeshVN(bool mappable);
-		std::shared_ptr<GpuMesh> createSquareMeshVT(bool mappable);
-		std::shared_ptr<GpuMesh> createSquareMeshVNT(bool mappable);
-		std::shared_ptr<GpuMesh> createCubeMeshV(bool mappable);
-		std::shared_ptr<GpuMesh> createCubeMeshVN(bool mappable);
-		std::shared_ptr<GpuMesh> createCubeMeshVT(bool mappable);
-		std::shared_ptr<GpuMesh> createCubeMeshVNT(bool mappable);
+		std::shared_ptr<GpuMesh> createMesh(
+			const std::vector<float>& vertices,
+			bool mappableVertices,
+			const std::vector<uint16_t>& indices,
+			bool mappableIndices);
+		std::shared_ptr<GpuMesh> createMesh(
+			const std::vector<float>& vertices,
+			bool mappableVertices,
+			const std::vector<uint32_t>& indices,
+			bool mappableIndices);
 
 		std::shared_ptr<GpuImage> createImage(
 			int size,

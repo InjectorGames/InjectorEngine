@@ -38,8 +38,10 @@ namespace Injector
 		static void terminateEngine();
 		static bool getEngineInitialized() noexcept;
 
-		static void videoErrorCallback(int error, const char* description);
-		static void initializeVideo(GraphicsApi graphicsApi = GraphicsApi::OpenGL);
+		static void videoErrorCallback(
+			int error, const char* description);
+		static void initializeVideo(
+			GraphicsApi graphicsApi = GraphicsApi::OpenGL);
 		static void terminateVideo();
 		static bool getVideoInitialized() noexcept;
 		static GraphicsApi getGraphicsApi() noexcept;
@@ -51,9 +53,12 @@ namespace Injector
 		static tick_t getTickNow() noexcept;
 		static double getTimeNow() noexcept;
 
-		static bool addManager(const std::shared_ptr<Manager>& manager) noexcept;
-		static bool removeManager(const std::shared_ptr<Manager>& manager) noexcept;
-		static bool containsManager(const std::shared_ptr<Manager>& manager) noexcept;
+		static bool addManager(
+			const std::shared_ptr<Manager>& manager) noexcept;
+		static bool removeManager(
+			const std::shared_ptr<Manager>& manager) noexcept;
+		static bool containsManager(
+			const std::shared_ptr<Manager>& manager) noexcept;
 		static void removeManagers() noexcept;
 		static size_t getManagerCount() noexcept;
 
