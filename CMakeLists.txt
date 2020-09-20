@@ -88,10 +88,10 @@ add_library(InjectorEngine STATIC
         Source/Graphics/Pipeline/GlColorGpuPipeline.cpp
         Source/Graphics/Pipeline/GlDiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/GlGpuPipeline.cpp
-        Source/Graphics/Pipeline/GlSkyGpuPipeline.cpp
+        Source/Graphics/Pipeline/GlSimSkyGpuPipeline.cpp
         Source/Graphics/Pipeline/GlTexDiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/GpuPipeline.cpp
-        Source/Graphics/Pipeline/SkyGpuPipeline.cpp
+        Source/Graphics/Pipeline/SimSkyGpuPipeline.cpp
         Source/Graphics/Pipeline/TexDiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/VkColorGpuPipeline.cpp
         Source/Graphics/Pipeline/VkDiffuseGpuPipeline.cpp

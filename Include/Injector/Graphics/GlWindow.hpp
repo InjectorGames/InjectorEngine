@@ -72,7 +72,7 @@ namespace Injector
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
 			const std::shared_ptr<GpuImage>& texture) override;
-		std::shared_ptr<SkyGpuPipeline> createSkyPipeline(
+		std::shared_ptr<SimSkyGpuPipeline> createSkyPipeline(
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader) override;
 	};

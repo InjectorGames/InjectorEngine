@@ -1,10 +1,9 @@
-#include "Injector/Graphics/Pipeline/GlSkyGpuPipeline.hpp"
-#include "Injector/Storage/FileStream.hpp"
+#include "Injector/Graphics/Pipeline/GlSimSkyGpuPipeline.hpp"
 #include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
-	GlSkyGpuPipeline::GlSkyGpuPipeline(
+	GlSimSkyGpuPipeline::GlSimSkyGpuPipeline(
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		float height) :
@@ -12,7 +11,12 @@ namespace Injector
 		ubo(height)
 	{
 		if (!vertexShader || !fragmentShader)
-			throw NullException("GlSkyGpuPipeline", "GlSkyGpuPipeline", "shader");
+		{
+			throw NullException(
+				"GlSimSkyGpuPipeline",
+				"GlSimSkyGpuPipeline",
+				"shader");
+		}
 
 		glAttachShader(program, vertexShader->getShader());
 		glAttachShader(program, fragmentShader->getShader());
@@ -25,34 +29,40 @@ namespace Injector
 			auto log = getInfoLog(program);
 			glDeleteProgram(program);
 
-			throw Exception("GlSkyGpuPipeline", "GlSkyGpuPipeline",
+			throw Exception(
+				"GlSimSkyGpuPipeline",
+				"GlSimSkyGpuPipeline",
 				"Failed to link program, " + log);
 		}
 
-		auto uniformBlockIndex = getUniformBlockIndex(program, "FragmentBufferObject");
+		auto uniformBlockIndex = getUniformBlockIndex(
+			program, "FragmentBufferObject");
 		glUniformBlockBinding(program, uniformBlockIndex, 0);
 
-		uniformBuffer = std::make_shared<GlGpuBuffer>(GpuBufferType::Uniform,
-			sizeof(UniformBufferObject), GL_DYNAMIC_DRAW, nullptr);
+		uniformBuffer = std::make_shared<GlGpuBuffer>(
+			GpuBufferType::Uniform,
+			sizeof(UniformBufferObject),
+			GL_DYNAMIC_DRAW,
+			nullptr);
 	}
-	GlSkyGpuPipeline::~GlSkyGpuPipeline()
+	GlSimSkyGpuPipeline::~GlSimSkyGpuPipeline()
 	{
 	}
 
-	float GlSkyGpuPipeline::getHeight() const
+	float GlSimSkyGpuPipeline::getHeight() const
 	{
 		return ubo.height;
 	}
-	void GlSkyGpuPipeline::setHeight(float height)
+	void GlSimSkyGpuPipeline::setHeight(float height)
 	{
 		ubo.height = height;
 	}
 
-	void GlSkyGpuPipeline::bind()
+	void GlSimSkyGpuPipeline::bind()
 	{
 		GlGpuPipeline::bind();
 		glEnable(GL_CULL_FACE);
-		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
 		glCullFace(GL_BACK);
@@ -61,11 +71,11 @@ namespace Injector
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0,
 			uniformBuffer->getBuffer());
 	}
-	void GlSkyGpuPipeline::flush()
+	void GlSimSkyGpuPipeline::flush()
 	{
 		uniformBuffer->setData(&ubo, sizeof(UniformBufferObject));
 	}
-	void GlSkyGpuPipeline::setAttributes()
+	void GlSimSkyGpuPipeline::setAttributes()
 	{
 		glEnableVertexAttribArray(0);
 
@@ -73,7 +83,7 @@ namespace Injector
 			sizeof(Vector3), 0);
 	}
 
-	void GlSkyGpuPipeline::setUniforms(
+	void GlSimSkyGpuPipeline::setUniforms(
 		const Matrix4& model,
 		const Matrix4& view,
 		const Matrix4& proj,

@@ -29,11 +29,15 @@ namespace Injector
 	}
 	void GlGpuPipeline::flush()
 	{
-		throw NotImplementedException("GlGpuPipeline", "flush");
+		throw NotImplementedException(
+			"GlGpuPipeline",
+			"flush");
 	}
 	void GlGpuPipeline::setAttributes()
 	{
-		throw NotImplementedException("GlGpuPipeline", "setAttributes");
+		throw NotImplementedException(
+			"GlGpuPipeline",
+			"setAttributes");
 	}
 
 	bool GlGpuPipeline::getLinkStatus(GLuint program) noexcept
@@ -56,7 +60,12 @@ namespace Injector
 		auto location = glGetUniformLocation(program, name.c_str());
 
 		if (location == -1)
-			throw Exception("GlGpuPipeline", "getUniformLocation", "Incorrect name");
+		{
+			throw Exception(
+				"GlGpuPipeline",
+				"getUniformLocation",
+				"Incorrect name");
+		}
 
 		return location;
 	}
@@ -65,7 +74,12 @@ namespace Injector
 		auto index = glGetUniformBlockIndex(program, name.c_str());
 
 		if (index == GL_INVALID_INDEX)
-			throw Exception("GlGpuPipeline", "getUniformBlockIndex", "Incorrect name");
+		{
+			throw Exception(
+				"GlGpuPipeline",
+				"getUniformBlockIndex",
+				"Incorrect name");
+		}
 
 		return index;
 	}
@@ -105,32 +119,38 @@ namespace Injector
 	void GlGpuPipeline::setUniform(
 		GLint location, const IntVector2& value) noexcept
 	{
-		glUniform2iv(location, 1, reinterpret_cast<const GLint*>(&value));
+		glUniform2iv(location, 1,
+			reinterpret_cast<const GLint*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
 		GLint location, const IntVector3& value) noexcept
 	{
-		glUniform3iv(location, 1, reinterpret_cast<const GLint*>(&value));
+		glUniform3iv(location, 1,
+			reinterpret_cast<const GLint*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
 		GLint location, const IntVector4& value) noexcept
 	{
-		glUniform4iv(location, 1, reinterpret_cast<const GLint*>(&value));
+		glUniform4iv(location, 1,
+			reinterpret_cast<const GLint*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
 		GLint location, const Vector2& value) noexcept
 	{
-		glUniform2fv(location, 1, reinterpret_cast<const GLfloat*>(&value));
+		glUniform2fv(location, 1,
+			reinterpret_cast<const GLfloat*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
 		GLint location, const Vector3& value) noexcept
 	{
-		glUniform3fv(location, 1, reinterpret_cast<const GLfloat*>(&value));
+		glUniform3fv(location, 1,
+			reinterpret_cast<const GLfloat*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
 		GLint location, const Vector4& value) noexcept
 	{
-		glUniform4fv(location, 1, reinterpret_cast<const GLfloat*>(&value));
+		glUniform4fv(location, 1,
+			reinterpret_cast<const GLfloat*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
 		GLint location,

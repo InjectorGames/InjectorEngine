@@ -1,5 +1,4 @@
 #include "Injector/Graphics/Pipeline/VkColorGpuPipeline.hpp"
-#include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/NullException.hpp"
 
 namespace Injector
@@ -14,49 +13,92 @@ namespace Injector
 		const std::shared_ptr<VkGpuShader>& fragmentShader)
 	{
 		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>{
-			vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eVertex,
-				vertexShader->getShaderModule(), "main", nullptr),
-			vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eFragment,
-				fragmentShader->getShaderModule(), "main", nullptr),
+			vk::PipelineShaderStageCreateInfo({},
+				vk::ShaderStageFlagBits::eVertex,
+				vertexShader->getShaderModule(),
+				"main",
+				nullptr),
+			vk::PipelineShaderStageCreateInfo({},
+				vk::ShaderStageFlagBits::eFragment,
+				fragmentShader->getShaderModule(),
+				"main",
+				nullptr),
 		};
 
 		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
-			0, sizeof(float) * 3, vk::VertexInputRate::eVertex);
+			0,
+			sizeof(float) * 3,
+			vk::VertexInputRate::eVertex);
 		auto vertexInputAttributeDescription = vk::VertexInputAttributeDescription(
-			0, 0, vk::Format::eR32G32B32Sfloat, 0);
+			0,
+			0,
+			vk::Format::eR32G32B32Sfloat,
+			0);
 
 		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo({},
-			1, &vertexInputBindingDescription,
-			1, &vertexInputAttributeDescription);
+			1,
+			&vertexInputBindingDescription,
+			1,
+			&vertexInputAttributeDescription);
 
-		auto pipelineInputAssemblyStateCreateInfo =
-			vk::PipelineInputAssemblyStateCreateInfo({}, vk::PrimitiveTopology::eTriangleList, false);
+		auto pipelineInputAssemblyStateCreateInfo = vk::PipelineInputAssemblyStateCreateInfo({},
+			vk::PrimitiveTopology::eTriangleList,
+			false);
 
 		auto viewport = vk::Viewport(
-			0.0f, 0.0f, surfaceExtent.width, surfaceExtent.height, 0.0f, 1.0f);
+			0.0f,
+			0.0f,
+			surfaceExtent.width,
+			surfaceExtent.height,
+			0.0f,
+			1.0f);
 		auto scissor = vk::Rect2D(
-			vk::Offset2D(0, 0), surfaceExtent);
-		auto pipelineViewportStateCreateInfo = vk::PipelineViewportStateCreateInfo(
-			{}, 1, &viewport, 1, &scissor);
+			vk::Offset2D(0, 0),
+			surfaceExtent);
+		auto pipelineViewportStateCreateInfo = vk::PipelineViewportStateCreateInfo({},
+			1,
+			&viewport,
+			1,
+			&scissor);
 
-		auto pipelineRasterizationStateCreateInfo = vk::PipelineRasterizationStateCreateInfo(
-			{}, false, false,
-			vk::PolygonMode::eFill, vk::CullModeFlagBits::eBack, vk::FrontFace::eClockwise,
-			false, 0.0f, 0.0f, 0.0f, 1.0f);
+		auto pipelineRasterizationStateCreateInfo = vk::PipelineRasterizationStateCreateInfo({},
+			false,
+			false,
+			vk::PolygonMode::eFill,
+			vk::CullModeFlagBits::eBack,
+			vk::FrontFace::eClockwise,
+			false,
+			0.0f,
+			0.0f,
+			0.0f,
+			1.0f);
 
-		auto pipelineMultisampleStateCreateInfo = vk::PipelineMultisampleStateCreateInfo(
-			{}, vk::SampleCountFlagBits::e1, false, {}, {}, false, false);
+		auto pipelineMultisampleStateCreateInfo = vk::PipelineMultisampleStateCreateInfo({},
+			vk::SampleCountFlagBits::e1,
+			false,
+			{},
+			{},
+			false,
+			false);
 
 		auto pipelineColorBlendAttachmentStateCreateInfo = vk::PipelineColorBlendAttachmentState(
-			false, {}, {}, {}, {}, {}, {},
+			false,
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
 			vk::ColorComponentFlagBits::eR |
 			vk::ColorComponentFlagBits::eG |
 			vk::ColorComponentFlagBits::eB |
 			vk::ColorComponentFlagBits::eA);
 
-		auto pipelineColorBlendStateCreateInfo =
-			vk::PipelineColorBlendStateCreateInfo({}, false, {},
-				1, &pipelineColorBlendAttachmentStateCreateInfo);
+		auto pipelineColorBlendStateCreateInfo = vk::PipelineColorBlendStateCreateInfo({},
+			false,
+			{},
+			1,
+			&pipelineColorBlendAttachmentStateCreateInfo);
 
 		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo({},
 			static_cast<uint32_t>(pipelineShaderStageCreateInfos.size()),
@@ -71,13 +113,21 @@ namespace Injector
 			&pipelineColorBlendStateCreateInfo,
 			nullptr,
 			pipelineLayout,
-			renderPass, 0,
-			nullptr, -1);
+			renderPass,
+			0,
+			nullptr,
+			-1);
 
-		auto resultValue = device.createGraphicsPipeline(pipelineCache, graphicsPipelineCreateInfo);
+		auto resultValue = device.createGraphicsPipeline(
+			pipelineCache, graphicsPipelineCreateInfo);
 
 		if (resultValue.result != vk::Result::eSuccess)
-			throw Exception("VkColorGpuPipeline", "createPipeline", "Failed to create pipeline");
+		{
+			throw Exception(
+				"VkColorGpuPipeline",
+				"createPipeline",
+				"Failed to create pipeline");
+		}
 
 		return resultValue.value;
 	}
@@ -95,26 +145,43 @@ namespace Injector
 		color(_color)
 	{
 		if (!_vertexShader || !_fragmentShader)
-			throw NullException("VkColorGpuPipeline", "VkColorGpuPipeline", "shader");
+		{
+			throw NullException(
+				"VkColorGpuPipeline",
+				"VkColorGpuPipeline",
+				"shader");
+		}
 
 		auto pushConstantRanges = std::vector<vk::PushConstantRange>
 			{
-				vk::PushConstantRange(vk::ShaderStageFlagBits::eVertex,
-					0, sizeof(Matrix4)),
-				vk::PushConstantRange(vk::ShaderStageFlagBits::eFragment,
-					sizeof(Matrix4), sizeof(Vector4)),
+				vk::PushConstantRange(
+					vk::ShaderStageFlagBits::eVertex,
+					0,
+					sizeof(Matrix4)),
+				vk::PushConstantRange(
+					vk::ShaderStageFlagBits::eFragment,
+					sizeof(Matrix4),
+					sizeof(Vector4)),
 			};
 
 		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo({},
-			0, nullptr,
+			0,
+			nullptr,
 			static_cast<uint32_t>(pushConstantRanges.size()),
 			pushConstantRanges.data());
 
 		auto result = device.createPipelineLayout(
-			&pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+			&pipelineLayoutCreateInfo,
+			nullptr,
+			&pipelineLayout);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkColorGpuPipeline", "VkColorGpuPipeline", "Failed to create pipeline layout");
+		{
+			throw Exception(
+				"VkColorGpuPipeline",
+				"VkColorGpuPipeline",
+				"Failed to create pipeline layout");
+		}
 
 		pipeline = createPipeline(
 			device,
@@ -165,8 +232,12 @@ namespace Injector
 		vk::CommandBuffer commandBuffer,
 		size_t imageIndex)
 	{
-		VkGpuPipeline::bind(commandBuffer, imageIndex);
-		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
+		VkGpuPipeline::bind(
+			commandBuffer,
+			imageIndex);
+		commandBuffer.bindPipeline(
+			vk::PipelineBindPoint::eGraphics,
+			pipeline);
 	}
 	void VkColorGpuPipeline::setUniforms(
 		const Matrix4& model,
@@ -175,9 +246,17 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-		bindedCommandBuffer.pushConstants(pipelineLayout,
-			vk::ShaderStageFlagBits::eVertex, 0, sizeof(Matrix4), &mvp);
-		bindedCommandBuffer.pushConstants(pipelineLayout,
-			vk::ShaderStageFlagBits::eFragment, sizeof(Matrix4), sizeof(Vector4), &color);
+		bindedCommandBuffer.pushConstants(
+			pipelineLayout,
+			vk::ShaderStageFlagBits::eVertex,
+			0,
+			sizeof(Matrix4),
+			&mvp);
+		bindedCommandBuffer.pushConstants(
+			pipelineLayout,
+			vk::ShaderStageFlagBits::eFragment,
+			sizeof(Matrix4),
+			sizeof(Vector4),
+			&color);
 	}
 }

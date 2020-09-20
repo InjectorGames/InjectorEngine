@@ -53,9 +53,19 @@ namespace Injector
 	void* GpuBuffer::map(GpuBufferAccess access)
 	{
 		if (!mappable)
-			throw Exception("GpuBuffer", "map", "Not mappable");
+		{
+			throw Exception(
+				"GpuBuffer",
+				"map",
+				"Not mappable");
+		}
 		if (mapped)
-			throw Exception("GpuBuffer", "map", "Already mapped");
+		{
+			throw Exception(
+				"GpuBuffer",
+				"map",
+				"Already mapped");
+		}
 
 		mapped = true;
 		mapAccess = access;
@@ -66,11 +76,27 @@ namespace Injector
 	void* GpuBuffer::map(GpuBufferAccess access, size_t _size, size_t offset)
 	{
 		if (!mappable)
-			throw Exception("GpuBuffer", "map", "Not mappable");
+		{
+			throw Exception(
+				"GpuBuffer",
+				"map",
+				"Not mappable");
+		}
 		if (mapped)
-			throw Exception("GpuBuffer", "map", "Already mapped");
+		{
+			throw Exception(
+				"GpuBuffer",
+				"map",
+				"Already mapped");
+		}
 		if (_size + offset > size)
-			throw OutOfRangeException("GpuBuffer", "map", _size + offset, size);
+		{
+			throw OutOfRangeException(
+				"GpuBuffer",
+				"map",
+				_size + offset,
+				size);
+		}
 
 		mapped = true;
 		mapAccess = access;
@@ -81,17 +107,26 @@ namespace Injector
 	void GpuBuffer::unmap()
 	{
 		if (!mapped)
-			throw Exception("GpuBuffer", "map", "Not mapped");
+		{
+			throw Exception(
+				"GpuBuffer",
+				"map",
+				"Not mapped");
+		}
 
 		mapped = false;
 	}
 
 	void GpuBuffer::setData(const void* data, size_t size)
 	{
-		throw NotImplementedException("GpuBuffer", "setData");
+		throw NotImplementedException(
+			"GpuBuffer",
+			"setData");
 	}
 	void GpuBuffer::setData(const void* data, size_t size, size_t offset)
 	{
-		throw NotImplementedException("GpuBuffer", "setData");
+		throw NotImplementedException(
+			"GpuBuffer",
+			"setData");
 	}
 }

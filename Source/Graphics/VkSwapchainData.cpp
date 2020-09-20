@@ -17,7 +17,9 @@ namespace Injector
 		presentCommandPool(_presentCommandPool)
 	{
 		auto imageViewCreateInfo = vk::ImageViewCreateInfo({},
-			_image, vk::ImageViewType::e2D, surfaceFormat,
+			_image,
+			vk::ImageViewType::e2D,
+			surfaceFormat,
 			vk::ComponentMapping(
 				vk::ComponentSwizzle::eIdentity,
 				vk::ComponentSwizzle::eIdentity,
@@ -25,39 +27,75 @@ namespace Injector
 				vk::ComponentSwizzle::eIdentity),
 			vk::ImageSubresourceRange(
 				vk::ImageAspectFlagBits::eColor,
-				0, 1, 0, 1));
-		auto result = _device.createImageView(&imageViewCreateInfo, nullptr, &imageView);
+				0,
+				1,
+				0,
+				1));
+
+		auto result = _device.createImageView(
+			&imageViewCreateInfo,
+			nullptr,
+			&imageView);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkSwapchainData", "VkSwapchainData", "Failed to create image view");
+		{
+			throw Exception(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"Failed to create image view");
+		}
 
 		auto framebufferCreateInfo = vk::FramebufferCreateInfo({},
 			renderPass,
-			1, &imageView,
+			1,
+			&imageView,
 			surfaceExtent.width,
 			surfaceExtent.height,
 			1);
-		result = _device.createFramebuffer(&framebufferCreateInfo, nullptr, &framebuffer);
+		result = _device.createFramebuffer(
+			&framebufferCreateInfo,
+			nullptr,
+			&framebuffer);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkSwapchainData", "VkSwapchainData", "Failed to create framebuffer");
+		{
+			throw Exception(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"Failed to create framebuffer");
+		}
 
 		auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo(
-			_graphicsCommandPool, vk::CommandBufferLevel::ePrimary, 1);
+			_graphicsCommandPool,
+			vk::CommandBufferLevel::ePrimary,
+			1);
 		result = _device.allocateCommandBuffers(
-			&commandBufferAllocateInfo, &graphicsCommandBuffer);
+			&commandBufferAllocateInfo,
+			&graphicsCommandBuffer);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkSwapchainData", "VkSwapchainData", "Failed to allocate command buffers");
+		{
+			throw Exception(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"Failed to allocate command buffers");
+		}
 
 		if (_graphicsCommandPool != _presentCommandPool)
 		{
 			commandBufferAllocateInfo.commandPool = _presentCommandPool;
+
 			result = _device.allocateCommandBuffers(
-				&commandBufferAllocateInfo, &presentCommandBuffer);
+				&commandBufferAllocateInfo,
+				&presentCommandBuffer);
 
 			if (result != vk::Result::eSuccess)
-				throw Exception("VkSwapchainData", "VkSwapchainData", "Failed to allocate command buffers");
+			{
+				throw Exception(
+					"VkSwapchainData",
+					"VkSwapchainData",
+					"Failed to allocate command buffers");
+			}
 		}
 		else
 		{
@@ -68,12 +106,18 @@ namespace Injector
 	{
 		if (graphicsCommandPool != presentCommandPool)
 		{
-			device.freeCommandBuffers(graphicsCommandPool, graphicsCommandBuffer);
-			device.freeCommandBuffers(presentCommandPool, presentCommandBuffer);
+			device.freeCommandBuffers(
+				graphicsCommandPool,
+				graphicsCommandBuffer);
+			device.freeCommandBuffers(
+				presentCommandPool,
+				presentCommandBuffer);
 		}
 		else
 		{
-			device.freeCommandBuffers(graphicsCommandPool, graphicsCommandBuffer);
+			device.freeCommandBuffers(
+				graphicsCommandPool,
+				graphicsCommandBuffer);
 		}
 
 		device.destroyFramebuffer(framebuffer);

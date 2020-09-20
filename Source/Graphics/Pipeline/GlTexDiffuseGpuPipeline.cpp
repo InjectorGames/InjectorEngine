@@ -1,5 +1,4 @@
 #include "Injector/Graphics/Pipeline/GlTexDiffuseGpuPipeline.hpp"
-#include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/NullException.hpp"
 
 namespace Injector
@@ -21,7 +20,12 @@ namespace Injector
 		texture(_texture)
 	{
 		if (!vertexShader || !fragmentShader || !_texture)
-			throw NullException("GlTexDiffuseGpuPipeline", "GlTexDiffuseGpuPipeline", "shader/texture");
+		{
+			throw NullException(
+				"GlTexDiffuseGpuPipeline",
+				"GlTexDiffuseGpuPipeline",
+				"shader/texture");
+		}
 
 		glAttachShader(program, vertexShader->getShader());
 		glAttachShader(program, fragmentShader->getShader());
@@ -34,20 +38,29 @@ namespace Injector
 			auto log = getInfoLog(program);
 			glDeleteProgram(program);
 
-			throw Exception("GlTexDiffuseGpuPipeline", "GlTexDiffuseGpuPipeline",
+			throw Exception(
+				"GlTexDiffuseGpuPipeline",
+				"GlTexDiffuseGpuPipeline",
 				"Failed to link program, " + log);
 		}
 
-		mvpLocation = getUniformLocation(program, "u_MVP");
-		normalLocation = getUniformLocation(program, "u_Normal");
+		mvpLocation = getUniformLocation(
+			program, "u_MVP");
+		normalLocation = getUniformLocation(
+			program, "u_Normal");
 
-		auto uniformBlockIndex = getUniformBlockIndex(program, "FragmentBufferObject");
+		auto uniformBlockIndex = getUniformBlockIndex(
+			program, "FragmentBufferObject");
 		glUniformBlockBinding(program, uniformBlockIndex, 0);
 
-		uniformBuffer = std::make_shared<GlGpuBuffer>(GpuBufferType::Uniform,
-			sizeof(UniformBufferObject), GL_DYNAMIC_DRAW, nullptr);
+		uniformBuffer = std::make_shared<GlGpuBuffer>(
+			GpuBufferType::Uniform,
+			sizeof(UniformBufferObject),
+			GL_DYNAMIC_DRAW,
+			nullptr);
 
-		auto textureLocation = getUniformLocation(program, "u_Texture");
+		auto textureLocation = getUniformLocation(
+			program, "u_Texture");
 
 		GlGpuPipeline::bind();
 		glUniform1i(textureLocation, 0);
@@ -141,12 +154,26 @@ namespace Injector
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
-		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE,
-			sizeof(Vector3) * 2 + sizeof(Vector2), 0);
-		setVertexAttributePointer(1, 3, GL_FLOAT, GL_FALSE,
-			sizeof(Vector3) * 2 + sizeof(Vector2), sizeof(Vector3));
-		setVertexAttributePointer(2, 2, GL_FLOAT, GL_FALSE,
-			sizeof(Vector3) * 2 + sizeof(Vector2), sizeof(Vector3) * 2);
+		setVertexAttributePointer(
+			0,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vector3) * 2 + sizeof(Vector2),
+			0);
+		setVertexAttributePointer(
+			1,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vector3) * 2 + sizeof(Vector2),
+			sizeof(Vector3));
+		setVertexAttributePointer(
+			2, 2,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vector3) * 2 + sizeof(Vector2),
+			sizeof(Vector3) * 2);
 	}
 
 	void GlTexDiffuseGpuPipeline::setUniforms(
@@ -157,6 +184,7 @@ namespace Injector
 		const Matrix4& mvp)
 	{
 		setUniform(mvpLocation, mvp);
-		setUniform(normalLocation, model.getInversed().getMatrix3(), GL_TRUE);
+		setUniform(normalLocation,
+			model.getInversed().getMatrix3(), GL_TRUE);
 	}
 }

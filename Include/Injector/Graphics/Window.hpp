@@ -14,7 +14,7 @@
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/KeyboardButton.hpp"
 #include "Injector/Graphics/Pipeline/GpuPipeline.hpp"
-#include "Injector/Graphics/Pipeline/SkyGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/SimSkyGpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/ColorGpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/TexDiffuseGpuPipeline.hpp"
 
@@ -123,7 +123,7 @@ namespace Injector
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
 			const std::shared_ptr<GpuImage>& texture);
-		virtual std::shared_ptr<SkyGpuPipeline> createSkyPipeline(
+		virtual std::shared_ptr<SimSkyGpuPipeline> createSkyPipeline(
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader);
 

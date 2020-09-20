@@ -44,7 +44,11 @@ namespace Injector
 		}
 
 		window.makeCurrent();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+		glClear(
+			GL_COLOR_BUFFER_BIT |
+			GL_DEPTH_BUFFER_BIT |
+			GL_STENCIL_BUFFER_BIT);
 
 		for (auto& cameraPair : cameraPairs)
 		{
@@ -97,7 +101,12 @@ namespace Injector
 				}
 
 				renderData.pipeline->setUniforms(
-					modelMatrix, viewMatrix, projMatrix, viewProjMatrix, mvpMatrix);
+					modelMatrix,
+					viewMatrix,
+					projMatrix,
+					viewProjMatrix,
+					mvpMatrix);
+
 				renderData.mesh->draw(renderData.pipeline);
 			}
 		}

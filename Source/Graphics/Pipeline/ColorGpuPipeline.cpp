@@ -9,10 +9,14 @@ namespace Injector
 
 	const Vector4& ColorGpuPipeline::getColor() const
 	{
-		throw NotImplementedException("ColorGpuPipeline", "getColor");
+		throw NotImplementedException(
+			"ColorGpuPipeline",
+			"getColor");
 	}
 	void ColorGpuPipeline::setColor(const Vector4& _color)
 	{
-		throw NotImplementedException("ColorGpuPipeline", "setColor");
+		throw NotImplementedException(
+			"ColorGpuPipeline",
+			"setColor");
 	}
 }

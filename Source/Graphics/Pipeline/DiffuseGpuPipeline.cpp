@@ -9,37 +9,53 @@ namespace Injector
 
 	const Vector4& DiffuseGpuPipeline::getObjectColor() const
 	{
-		throw NotImplementedException("DiffuseGpuPipeline", "getObjectColor");
+		throw NotImplementedException(
+			"DiffuseGpuPipeline",
+			"getObjectColor");
 	}
 	void DiffuseGpuPipeline::setObjectColor(const Vector4& color)
 	{
-		throw NotImplementedException("DiffuseGpuPipeline", "setObjectColor");
+		throw NotImplementedException(
+			"DiffuseGpuPipeline",
+			"setObjectColor");
 	}
 
 	const Vector4& DiffuseGpuPipeline::getAmbientColor() const
 	{
-		throw NotImplementedException("DiffuseGpuPipeline", "getAmbientColor");
+		throw NotImplementedException(
+			"DiffuseGpuPipeline",
+			"getAmbientColor");
 	}
 	void DiffuseGpuPipeline::setAmbientColor(const Vector4& color)
 	{
-		throw NotImplementedException("DiffuseGpuPipeline", "setAmbientColor");
+		throw NotImplementedException(
+			"DiffuseGpuPipeline",
+			"setAmbientColor");
 	}
 
 	const Vector4& DiffuseGpuPipeline::getLightColor() const
 	{
-		throw NotImplementedException("DiffuseGpuPipeline", "getLightColor");
+		throw NotImplementedException(
+			"DiffuseGpuPipeline",
+			"getLightColor");
 	}
 	void DiffuseGpuPipeline::setLightColor(const Vector4& color)
 	{
-		throw NotImplementedException("DiffuseGpuPipeline", "setLightColor");
+		throw NotImplementedException(
+			"DiffuseGpuPipeline",
+			"setLightColor");
 	}
 
 	const Vector3& DiffuseGpuPipeline::getLightDirection() const
 	{
-		throw NotImplementedException("DiffuseGpuPipeline", "getLightDirection");
+		throw NotImplementedException(
+			"DiffuseGpuPipeline",
+			"getLightDirection");
 	}
 	void DiffuseGpuPipeline::setLightDirection(const Vector3& direction)
 	{
-		throw NotImplementedException("DiffuseGpuPipeline", "setLightDirection");
+		throw NotImplementedException(
+			"DiffuseGpuPipeline",
+			"setLightDirection");
 	}
 }

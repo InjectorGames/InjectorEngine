@@ -8,7 +8,11 @@ namespace Injector
 		GpuBufferIndex indexType,
 		const std::shared_ptr<GpuBuffer>& vertexBuffer,
 		const std::shared_ptr<GpuBuffer>& indexBuffer) :
-		GpuMesh(indexCount, indexType, vertexBuffer, indexBuffer)
+		GpuMesh(
+			indexCount,
+			indexType,
+			vertexBuffer,
+			indexBuffer)
 	{
 		glGenVertexArrays(GL_ONE, &vertexArray);
 	}
@@ -28,7 +32,12 @@ namespace Injector
 		auto glIndexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(indexBuffer);
 
 		if (!glVertexBuffer || !glIndexBuffer)
-			throw CastException("GlGpuMesh", "GlGpuMesh", "buffer");
+		{
+			throw CastException(
+				"GlGpuMesh",
+				"GlGpuMesh",
+				"buffer");
+		}
 
 		glBindVertexArray(vertexArray);
 		glVertexBuffer->bind();
@@ -38,8 +47,11 @@ namespace Injector
 		auto index = (indexType == GpuBufferIndex::UnsignedShort) ?
 			GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
 
-		glDrawElements(pipeline->getDrawMode(),
-			static_cast<GLsizei>(indexCount), index, nullptr);
+		glDrawElements(
+			pipeline->getDrawMode(),
+			static_cast<GLsizei>(indexCount),
+			index,
+			nullptr);
 
 		glBindVertexArray(GL_ZERO);
 		glVertexBuffer->unbind();

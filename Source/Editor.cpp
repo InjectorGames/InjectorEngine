@@ -66,19 +66,19 @@ void init()
 		simSkyVertexShader,
 		simSkyFragmentShader);
 
-	auto sky = window->createEntity();
-	auto skyMesh = window->createMesh(
+	auto simSky = window->createEntity();
+	auto simSkyMesh = window->createMesh(
 		ModelData::frame.getV(),
 		false,
 		ModelData::frame.indices16,
 		false);
-	sky->createComponent<TransformComponent>(
+	simSky->createComponent<TransformComponent>(
 		Vector3(0.0f, 0.0f, 10.0f));
-	sky->createComponent<RenderComponent>(
-		texDiffusePipeline,
-		skyMesh);
-	transformSystem->addTransform(sky);
-	fpvCameraComponent->renders.emplace(sky);
+	simSky->createComponent<RenderComponent>(
+		simSkyPipeline,
+		simSkyMesh);
+	transformSystem->addTransform(simSky);
+	fpvCameraComponent->renders.emplace(simSky);
 
 	//auto teapotModelData = 
 

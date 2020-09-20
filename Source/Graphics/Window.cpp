@@ -44,16 +44,28 @@ namespace Injector
 		}
 
 		glfwSetWindowUserPointer(
-			window, this);
+			window,
+			this);
 		glfwSetWindowSizeLimits(
-			window, 1, 1, GLFW_DONT_CARE, GLFW_DONT_CARE);
+			window,
+			1,
+			1,
+			GLFW_DONT_CARE,
+			GLFW_DONT_CARE);
 		glfwSetScrollCallback(
-			window, scrollCallback);
+			window,
+			scrollCallback);
 		glfwSetFramebufferSizeCallback(
-			window, framebufferSizeCallback);
+			window,
+			framebufferSizeCallback);
 
 		if (glfwRawMouseMotionSupported() == GLFW_TRUE)
-			glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+		{
+			glfwSetInputMode(
+				window,
+				GLFW_RAW_MOUSE_MOTION,
+				GLFW_TRUE);
+		}
 
 		cursor = glfwCreateStandardCursor(
 			static_cast<int>(MouseIcon::Arrow));
@@ -203,12 +215,16 @@ namespace Injector
 	}
 	void Window::setResizable(bool resizable)
 	{
-		glfwSetWindowAttrib(window, GLFW_RESIZABLE,
+		glfwSetWindowAttrib(
+			window,
+			GLFW_RESIZABLE,
 			resizable ? GLFW_TRUE : GLFW_FALSE);
 	}
 	void Window::setDecorated(bool decorated)
 	{
-		glfwSetWindowAttrib(window, GLFW_DECORATED,
+		glfwSetWindowAttrib(
+			window,
+			GLFW_DECORATED,
 			decorated ? GLFW_TRUE : GLFW_FALSE);
 	}
 
@@ -356,7 +372,7 @@ namespace Injector
 			"Window",
 			"createTexDiffusePipeline");
 	}
-	std::shared_ptr<SkyGpuPipeline> Window::createSkyPipeline(
+	std::shared_ptr<SimSkyGpuPipeline> Window::createSkyPipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
@@ -488,17 +504,22 @@ namespace Injector
 		if (graphicsApi == GraphicsApi::OpenGL)
 		{
 			return Engine::createManager<GlWindow>(
-				false, title, size);
+				false,
+				title,
+				size);
 		}
 		else if (graphicsApi == GraphicsApi::OpenGLES)
 		{
 			return Engine::createManager<GlWindow>(
-				true, title, size);
+				true,
+				title,
+				size);
 		}
 		else if (graphicsApi == GraphicsApi::Vulkan)
 		{
 			return Engine::createManager<VkWindow>(
-				title, size);
+				title,
+				size);
 		}
 		else
 		{

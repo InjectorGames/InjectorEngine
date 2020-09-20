@@ -99,7 +99,12 @@ namespace Injector
 				}
 
 				renderData.pipeline->setUniforms(
-					modelMatrix, viewMatrix, projMatrix, viewProjMatrix, mvpMatrix);
+					modelMatrix,
+					viewMatrix,
+					projMatrix,
+					viewProjMatrix,
+					mvpMatrix);
+
 				renderData.mesh->draw(commandBuffer);
 			}
 		}

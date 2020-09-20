@@ -3,10 +3,10 @@
 
 namespace Injector
 {
-	class SkyGpuPipeline : public GpuPipeline
+	class SimSkyGpuPipeline : public GpuPipeline
 	{
 	 public:
-		virtual ~SkyGpuPipeline();
+		virtual ~SimSkyGpuPipeline();
 
 		virtual float getHeight() const;
 		virtual void setHeight(float color);

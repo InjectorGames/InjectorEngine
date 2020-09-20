@@ -19,25 +19,50 @@ namespace Injector
 		glType(toGlType(type))
 	{
 		if (!data)
-			throw NullException("GlGpuImage", "GlGpuImage", "data");
+		{
+			throw NullException(
+				"GlGpuImage",
+				"GlGpuImage",
+				"data");
+		}
 
 		glGenTextures(GL_ONE, &texture);
 		glBindTexture(glType, texture);
-		glTexParameteri(glType, GL_TEXTURE_MIN_FILTER, toGlFilter(minFilter, useMipmap));
-		glTexParameteri(glType, GL_TEXTURE_MAG_FILTER, toGlFilter(magFilter, false));
+
+		glTexParameteri(
+			glType,
+			GL_TEXTURE_MIN_FILTER,
+			toGlFilter(minFilter, useMipmap));
+		glTexParameteri(
+			glType,
+			GL_TEXTURE_MAG_FILTER,
+			toGlFilter(magFilter, false));
 
 		GLenum dataFormat;
 
 		if (data->componentCount == 1)
+		{
 			dataFormat = GL_RED;
+		}
 		else if (data->componentCount == 2)
+		{
 			dataFormat = GL_RG;
+		}
 		else if (data->componentCount == 3)
+		{
 			dataFormat = GL_RGB;
+		}
 		else if (data->componentCount == 4)
+		{
 			dataFormat = GL_RGBA;
+		}
 		else
-			throw Exception("GlGpuImage", "GlGpuImage", "Unsupported image format");
+		{
+			throw Exception(
+				"GlGpuImage",
+				"GlGpuImage",
+				"Unsupported image format");
+		}
 
 		GLenum dataType;
 
@@ -48,27 +73,69 @@ namespace Injector
 
 		if (type == GpuImageType::Image1D)
 		{
-			glTexParameteri(glType, GL_TEXTURE_WRAP_S, toGlWrap(wrapU));
+			glTexParameteri(
+				glType,
+				GL_TEXTURE_WRAP_S,
+				toGlWrap(wrapU));
 
-			glTexImage1D(glType, 0, toGlFormat(format), size.x, 0,
-				dataFormat, dataType, data->pixels.data());
+			glTexImage1D(
+				glType,
+				0,
+				toGlFormat(format),
+				size.x,
+				0,
+				dataFormat,
+				dataType,
+				data->pixels.data());
 		}
 		else if (type == GpuImageType::Image2D)
 		{
-			glTexParameteri(glType, GL_TEXTURE_WRAP_S, toGlWrap(wrapU));
-			glTexParameteri(glType, GL_TEXTURE_WRAP_T, toGlWrap(wrapV));
+			glTexParameteri(
+				glType,
+				GL_TEXTURE_WRAP_S,
+				toGlWrap(wrapU));
+			glTexParameteri(
+				glType,
+				GL_TEXTURE_WRAP_T,
+				toGlWrap(wrapV));
 
-			glTexImage2D(glType, 0, toGlFormat(format), size.x, size.y, 0,
-				dataFormat, dataType, data->pixels.data());
+			glTexImage2D(
+				glType,
+				0,
+				toGlFormat(format),
+				size.x,
+				size.y,
+				0,
+				dataFormat,
+				dataType,
+				data->pixels.data());
 		}
 		else if (type == GpuImageType::Image3D)
 		{
-			glTexParameteri(glType, GL_TEXTURE_WRAP_S, toGlWrap(wrapU));
-			glTexParameteri(glType, GL_TEXTURE_WRAP_T, toGlWrap(wrapV));
-			glTexParameteri(glType, GL_TEXTURE_WRAP_R, toGlWrap(wrapW));
+			glTexParameteri(
+				glType,
+				GL_TEXTURE_WRAP_S,
+				toGlWrap(wrapU));
+			glTexParameteri(
+				glType,
+				GL_TEXTURE_WRAP_T,
+				toGlWrap(wrapV));
+			glTexParameteri(
+				glType,
+				GL_TEXTURE_WRAP_R,
+				toGlWrap(wrapW));
 
-			glTexImage3D(glType, 0, toGlFormat(format), size.x, size.y, size.z, 0,
-				dataFormat, dataType, data->pixels.data());
+			glTexImage3D(
+				glType,
+				0,
+				toGlFormat(format),
+				size.x,
+				size.y,
+				size.z,
+				0,
+				dataFormat,
+				dataType,
+				data->pixels.data());
 		}
 
 		if (useMipmap)
@@ -100,13 +167,24 @@ namespace Injector
 	GLenum GlGpuImage::toGlType(GpuImageType type)
 	{
 		if (type == GpuImageType::Image1D)
+		{
 			return GL_TEXTURE_1D;
+		}
 		else if (type == GpuImageType::Image2D)
+		{
 			return GL_TEXTURE_2D;
+		}
 		else if (type == GpuImageType::Image3D)
+		{
 			return GL_TEXTURE_3D;
+		}
 		else
-			throw Exception("GlGpuImage", "toGlType", "Unsupported type");
+		{
+			throw Exception(
+				"GlGpuImage",
+				"toGlType",
+				"Unsupported type");
+		}
 	}
 	GLenum GlGpuImage::toGlFormat(GpuImageFormat format)
 	{
@@ -185,7 +263,10 @@ namespace Injector
 		case GpuImageFormat::RGBA32I:
 			return GL_RGBA32I;
 		default:
-			throw Exception("GlGpuImage", "toGlFormat", "Unsupported format");
+			throw Exception(
+				"GlGpuImage",
+				"toGlFormat",
+				"Unsupported format");
 		}
 	}
 	GLint GlGpuImage::toGlFilter(GpuImageFilter filter, bool useMipmap)
@@ -206,7 +287,10 @@ namespace Injector
 		}
 		else
 		{
-			throw Exception("GlGpuImage", "toGlFilter", "Unsupported filter");
+			throw Exception(
+				"GlGpuImage",
+				"toGlFilter",
+				"Unsupported filter");
 		}
 	}
 	GLint GlGpuImage::toGlWrap(GpuImageWrap wrap)
@@ -224,7 +308,10 @@ namespace Injector
 		case GpuImageWrap::MirrorClampToEdge:
 			return GL_MIRROR_CLAMP_TO_EDGE;
 		default:
-			throw Exception("GlGpuImage", "toGlWrap", "Unsupported wrap");
+			throw Exception(
+				"GlGpuImage",
+				"toGlWrap",
+				"Unsupported wrap");
 		}
 	}
 }

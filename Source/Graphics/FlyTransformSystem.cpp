@@ -17,7 +17,12 @@ namespace Injector
 		sensitivity(0.0025f)
 	{
 		if (!_window)
-			throw NullException("FlyTransformSystem", "FlyTransformSystem", "window");
+		{
+			throw NullException(
+				"FlyTransformSystem",
+				"FlyTransformSystem",
+				"window");
+		}
 	}
 	FlyTransformSystem::~FlyTransformSystem()
 	{

@@ -14,6 +14,8 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-		throw NotImplementedException("GpuPipeline", "setUniforms");
+		throw NotImplementedException(
+			"GpuPipeline",
+			"setUniforms");
 	}
 }

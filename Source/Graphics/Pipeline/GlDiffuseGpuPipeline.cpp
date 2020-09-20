@@ -1,5 +1,4 @@
 #include "Injector/Graphics/Pipeline/GlDiffuseGpuPipeline.hpp"
-#include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/NullException.hpp"
 
 namespace Injector
@@ -16,7 +15,12 @@ namespace Injector
 			lightDirection.getNormalized())
 	{
 		if (!vertexShader || !fragmentShader)
-			throw NullException("GlDiffuseGpuPipeline", "GlDiffuseGpuPipeline", "shader");
+		{
+			throw NullException(
+				"GlDiffuseGpuPipeline",
+				"GlDiffuseGpuPipeline",
+				"shader");
+		}
 
 		glAttachShader(program, vertexShader->getShader());
 		glAttachShader(program, fragmentShader->getShader());
@@ -29,18 +33,24 @@ namespace Injector
 			auto log = getInfoLog(program);
 			glDeleteProgram(program);
 
-			throw Exception("GlDiffuseGpuPipeline", "GlDiffuseGpuPipeline",
+			throw Exception(
+				"GlDiffuseGpuPipeline",
+				"GlDiffuseGpuPipeline",
 				"Failed to link program, " + log);
 		}
 
 		mvpLocation = getUniformLocation(program, "u_MVP");
 		normalLocation = getUniformLocation(program, "u_Normal");
 
-		auto uniformBlockIndex = getUniformBlockIndex(program, "FragmentBufferObject");
+		auto uniformBlockIndex = getUniformBlockIndex(
+			program, "FragmentBufferObject");
 		glUniformBlockBinding(program, uniformBlockIndex, 0);
 
-		uniformBuffer = std::make_shared<GlGpuBuffer>(GpuBufferType::Uniform,
-			sizeof(UniformBufferObject), GL_DYNAMIC_DRAW, nullptr);
+		uniformBuffer = std::make_shared<GlGpuBuffer>(
+			GpuBufferType::Uniform,
+			sizeof(UniformBufferObject),
+			GL_DYNAMIC_DRAW,
+			nullptr);
 	}
 	GlDiffuseGpuPipeline::~GlDiffuseGpuPipeline()
 	{
@@ -104,10 +114,20 @@ namespace Injector
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 
-		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE,
-			sizeof(Vector3) * 2, 0);
-		setVertexAttributePointer(1, 3, GL_FLOAT, GL_FALSE,
-			sizeof(Vector3) * 2, sizeof(Vector3));
+		setVertexAttributePointer(
+			0,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vector3) * 2,
+			0);
+		setVertexAttributePointer(
+			1,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vector3) * 2,
+			sizeof(Vector3));
 	}
 
 	void GlDiffuseGpuPipeline::setUniforms(
@@ -118,6 +138,6 @@ namespace Injector
 		const Matrix4& mvp)
 	{
 		setUniform(mvpLocation, mvp);
-		setUniform(normalLocation, model.getInversed().getMatrix3(), GL_TRUE);
+		setUniform(normalLocation,model.getInversed().getMatrix3(), GL_TRUE);
 	}
 }

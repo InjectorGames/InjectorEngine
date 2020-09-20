@@ -54,10 +54,16 @@ namespace Injector
 #if !defined(NDEBUG)
 		instanceLayers.push_back("VK_LAYER_KHRONOS_validation");
 
-		auto instanceLayerProperties = vk::enumerateInstanceLayerProperties();
+		auto instanceLayerProperties =
+			vk::enumerateInstanceLayerProperties();
 
 		if (instanceLayerProperties.size() == 0)
-			throw Exception("VkWindow", "createInstance", "Failed to get instance layer properties");
+		{
+			throw Exception(
+				"VkWindow",
+				"createInstance",
+				"Failed to get instance layer properties");
+		}
 
 		for (auto layer : instanceLayers)
 		{
@@ -74,31 +80,51 @@ namespace Injector
 
 			if (!found)
 			{
-				throw Exception("VkWindow", "createInstance",
-					"Failed to get instance layer \"" + std::string(layer) + "\"");
+				throw Exception(
+					"VkWindow",
+					"createInstance",
+					"Failed to get instance layer \"" +
+					std::string(layer) + "\"");
 			}
 		}
 #endif
 
 		uint32_t extensionCount;
-		auto glfwInstanceExtensions = glfwGetRequiredInstanceExtensions(&extensionCount);
+
+		auto glfwInstanceExtensions =
+			glfwGetRequiredInstanceExtensions(&extensionCount);
 
 		if (extensionCount == 0)
-			throw Exception("VkWindow", "createInstance", "Failed to get instance extensions");
+		{
+			throw Exception(
+				"VkWindow",
+				"createInstance",
+				"Failed to get instance extensions");
+		}
 
 		auto instanceExtensions = std::vector<const char*>();
 
 		for (size_t i = 0; i < extensionCount; i++)
-			instanceExtensions.push_back(glfwInstanceExtensions[i]);
+		{
+			instanceExtensions.push_back(
+				glfwInstanceExtensions[i]);
+		}
 
 #if !defined(NDEBUG)
-		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		instanceExtensions.push_back(
+			VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif
 
-		auto instanceExtensionProperties = vk::enumerateInstanceExtensionProperties();
+		auto instanceExtensionProperties =
+			vk::enumerateInstanceExtensionProperties();
 
 		if (instanceExtensionProperties.size() == 0)
-			throw Exception("VkWindow", "createInstance", "Failed to get instance extension properties");
+		{
+			throw Exception(
+				"VkWindow",
+				"createInstance",
+				"Failed to get instance extension properties");
+		}
 
 		for (auto extension : instanceExtensions)
 		{
@@ -115,13 +141,17 @@ namespace Injector
 
 			if (!found)
 			{
-				throw Exception("VkWindow", "createInstance",
-					"Failed to get instance extension \"" + std::string(extension) + "\"");
+				throw Exception(
+					"VkWindow",
+					"createInstance",
+					"Failed to get instance extension \"" +
+					std::string(extension) + "\"");
 			}
 		}
 
 		auto applicationInfo = vk::ApplicationInfo(
-			appName.c_str(), appVersion,
+			appName.c_str(),
+			appVersion,
 			"Injector Engine",
 			VK_MAKE_VERSION(
 				INJECTOR_VERSION_MAJOR,
@@ -129,9 +159,12 @@ namespace Injector
 				INJECTOR_VERSION_PATCH),
 			VK_API_VERSION_1_0);
 
-		auto instanceCreateInfo = vk::InstanceCreateInfo({}, &applicationInfo,
-			static_cast<uint32_t>(instanceLayers.size()), instanceLayers.data(),
-			static_cast<uint32_t>(instanceExtensions.size()), instanceExtensions.data());
+		auto instanceCreateInfo = vk::InstanceCreateInfo({},
+			&applicationInfo,
+			static_cast<uint32_t>(instanceLayers.size()),
+			instanceLayers.data(),
+			static_cast<uint32_t>(instanceExtensions.size()),
+			instanceExtensions.data());
 
 #if !defined(NDEBUG)
 		auto debugUtilsMessengerCreateInfo = vk::DebugUtilsMessengerCreateInfoEXT({},
@@ -144,10 +177,18 @@ namespace Injector
 
 		instanceCreateInfo.pNext = &debugUtilsMessengerCreateInfo;
 #endif
-		auto reslut = vk::createInstance(&instanceCreateInfo, nullptr, &instance);
+		auto result = vk::createInstance(
+			&instanceCreateInfo,
+			nullptr,
+			&instance);
 
-		if (reslut != vk::Result::eSuccess)
-			throw Exception("VkWindow", "createInstance", "Failed to create instance");
+		if (result != vk::Result::eSuccess)
+		{
+			throw Exception(
+				"VkWindow",
+				"createInstance",
+				"Failed to create instance");
+		}
 
 		return instance;
 	}
@@ -167,10 +208,18 @@ namespace Injector
 			static_cast<PFN_vkDebugUtilsMessengerCallbackEXT>(debugMessengerCallback));
 
 		auto result = instance.createDebugUtilsMessengerEXT(
-			&debugUtilsMessengerCreateInfo, nullptr, &debugMessenger, dispatchDynamic);
+			&debugUtilsMessengerCreateInfo,
+			nullptr,
+			&debugMessenger,
+			dispatchDynamic);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkWindow", "createDebugMessenger", "Failed to create debug messenger");
+		{
+			throw Exception(
+				"VkWindow",
+				"createDebugMessenger",
+				"Failed to create debug messenger");
+		}
 
 		return debugMessenger;
 #else
@@ -183,7 +232,12 @@ namespace Injector
 		auto physicalDevices = instance.enumeratePhysicalDevices();
 
 		if (physicalDevices.size() == 0)
-			throw Exception("VkWindow", "getBestPhysicalDevice", "Failed to get physical devices");
+		{
+			throw Exception(
+				"VkWindow",
+				"getBestPhysicalDevice",
+				"Failed to get physical devices");
+		}
 
 		auto targetPhysicalDevices = std::multimap<int, vk::PhysicalDevice>();
 
@@ -212,10 +266,20 @@ namespace Injector
 		GLFWwindow* window)
 	{
 		VkSurfaceKHR surfaceHandle;
-		auto result = glfwCreateWindowSurface(instance, window, NULL, &surfaceHandle);
+
+		auto result = glfwCreateWindowSurface(
+			instance,
+			window,
+			nullptr,
+			&surfaceHandle);
 
 		if (result != VK_SUCCESS)
-			throw Exception("VkWindow", "createSurface", "Failed to create surface");
+		{
+			throw Exception(
+				"VkWindow",
+				"createSurface",
+				"Failed to create surface");
+		}
 
 		return vk::SurfaceKHR(surfaceHandle);
 	}
@@ -225,10 +289,16 @@ namespace Injector
 		uint32_t& graphicsQueueFamilyIndex,
 		uint32_t& presentQueueFamilyIndex)
 	{
-		auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+		auto queueFamilyProperties =
+			physicalDevice.getQueueFamilyProperties();
 
 		if (queueFamilyProperties.size() == 0)
-			throw Exception("VkWindow", "getQueueFamilyIndices", "Failed to get queue family properties");
+		{
+			throw Exception(
+				"VkWindow",
+				"getQueueFamilyIndices",
+				"Failed to get queue family properties");
+		}
 
 		graphicsQueueFamilyIndex = UINT32_MAX;
 		presentQueueFamilyIndex = UINT32_MAX;
@@ -255,9 +325,19 @@ namespace Injector
 		}
 
 		if (graphicsQueueFamilyIndex == UINT32_MAX)
-			throw Exception("VkWindow", "getQueueFamilyIndices", "Failed to find graphics queue family");
+		{
+			throw Exception(
+				"VkWindow",
+				"getQueueFamilyIndices",
+				"Failed to find graphics queue family");
+		}
 		if (presentQueueFamilyIndex == UINT32_MAX)
-			throw Exception("VkWindow", "getQueueFamilyIndices", "Failed to find present queue family");
+		{
+			throw Exception(
+				"VkWindow",
+				"getQueueFamilyIndices",
+				"Failed to find present queue family");
+		}
 	}
 	vk::Device VkWindow::createDevice(
 		vk::PhysicalDevice physicalDevice,
@@ -266,16 +346,21 @@ namespace Injector
 	{
 		vk::Device device;
 
-		auto deviceExtensionProperties = physicalDevice.enumerateDeviceExtensionProperties();
+		auto deviceExtensionProperties =
+			physicalDevice.enumerateDeviceExtensionProperties();
 
 		if (deviceExtensionProperties.size() == 0)
-			throw Exception("VkWindow", "createDevice", "Failed to get device extension properties");
+		{
+			throw Exception(
+				"VkWindow",
+				"createDevice",
+				"Failed to get device extension properties");
+		}
 
 		// TODO: create extension request mechanism
-		auto deviceExtensions = std::vector<const char*>() =
-			{
-				VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-			};
+		auto deviceExtensions = std::vector<const char*>() = {
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+		};
 
 		for (auto extension : deviceExtensions)
 		{
@@ -292,19 +377,24 @@ namespace Injector
 
 			if (!found)
 			{
-				throw Exception("VkWindow", "createDevice",
-					"Failed to find device extension \"" + std::string(extension) + "\"");
+				throw Exception(
+					"VkWindow",
+					"createDevice",
+					"Failed to find device extension \"" +
+					std::string(extension) + "\"");
 			}
 		}
 
 		auto priority = 1.0f;
-		auto deviceQueueCreateInfo = vk::DeviceQueueCreateInfo(
-			{}, graphicsQueueFamilyIndex, 1, &priority);
 
-		auto deviceQueueCreateInfos = std::vector<vk::DeviceQueueCreateInfo>() =
-			{
-				deviceQueueCreateInfo,
-			};
+		auto deviceQueueCreateInfo = vk::DeviceQueueCreateInfo({},
+			graphicsQueueFamilyIndex,
+			1,
+			&priority);
+
+		auto deviceQueueCreateInfos = std::vector<vk::DeviceQueueCreateInfo>() = {
+			deviceQueueCreateInfo,
+		};
 
 		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 		{
@@ -317,15 +407,24 @@ namespace Injector
 		auto deviceCreateInfo = vk::DeviceCreateInfo({},
 			static_cast<uint32_t>(deviceQueueCreateInfos.size()),
 			deviceQueueCreateInfos.data(),
-			0, nullptr,
+			0,
+			nullptr,
 			static_cast<uint32_t>(deviceExtensions.size()),
 			deviceExtensions.data(),
 			nullptr);
 
-		auto result = physicalDevice.createDevice(&deviceCreateInfo, nullptr, &device);
+		auto result = physicalDevice.createDevice(
+			&deviceCreateInfo,
+			nullptr,
+			&device);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkWindow", "createDevice", "Failed to create device");
+		{
+			throw Exception(
+				"VkWindow",
+				"createDevice",
+				"Failed to create device");
+		}
 
 		return device;
 	}
@@ -344,7 +443,12 @@ namespace Injector
 		auto result = vmaCreateAllocator(&allocatorInfo, &allocator);
 
 		if (result != VK_SUCCESS)
-			throw Exception("VkWindow", "createMemoryAllocator", "Failed to create memory allocator");
+		{
+			throw Exception(
+				"VkWindow",
+				"createMemoryAllocator",
+				"Failed to create memory allocator");
+		}
 
 		return allocator;
 	}
@@ -355,10 +459,19 @@ namespace Injector
 		vk::Fence fence;
 
 		auto fenceCreateInfo = vk::FenceCreateInfo(flags);
-		auto result = device.createFence(&fenceCreateInfo, nullptr, &fence);
+
+		auto result = device.createFence(
+			&fenceCreateInfo,
+			nullptr,
+			&fence);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkWindow", "createFence", "Failed to create fence");
+		{
+			throw Exception(
+				"VkWindow",
+				"createFence",
+				"Failed to create fence");
+		}
 
 		return fence;
 	}
@@ -369,10 +482,19 @@ namespace Injector
 		vk::Semaphore semaphore;
 
 		auto fenceCreateInfo = vk::SemaphoreCreateInfo(flags);
-		auto result = device.createSemaphore(&fenceCreateInfo, nullptr, &semaphore);
+
+		auto result = device.createSemaphore(
+			&fenceCreateInfo,
+			nullptr,
+			&semaphore);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkWindow", "createSemaphore", "Failed to create semaphore");
+		{
+			throw Exception(
+				"VkWindow",
+				"createSemaphore",
+				"Failed to create semaphore");
+		}
 
 		return semaphore;
 	}
@@ -384,7 +506,12 @@ namespace Injector
 		auto queue = device.getQueue(queueFamilyIndex, queueIndex);
 
 		if (!queue)
-			throw Exception("VkWindow", "getQueue", "Failed to get queue");
+		{
+			throw Exception(
+				"VkWindow",
+				"getQueue",
+				"Failed to get queue");
+		}
 
 		return queue;
 	}
@@ -406,7 +533,12 @@ namespace Injector
 		auto surfaceFormats = physicalDevice.getSurfaceFormatsKHR(surface);
 
 		if (surfaceFormats.size() == 0)
-			throw Exception("VkWindow", "getBestSurfaceFormat", "Failed to get surface formats");
+		{
+			throw Exception(
+				"VkWindow",
+				"getBestSurfaceFormat",
+				"Failed to get surface formats");
+		}
 
 		auto surfaceFormat = surfaceFormats[0];
 
@@ -429,10 +561,16 @@ namespace Injector
 		vk::PhysicalDevice physicalDevice,
 		vk::SurfaceKHR surface)
 	{
-		auto surfacePresentModes = physicalDevice.getSurfacePresentModesKHR(surface);
+		auto surfacePresentModes =
+			physicalDevice.getSurfacePresentModesKHR(surface);
 
 		if (surfacePresentModes.size() == 0)
-			throw Exception("VkWindow", "getBestSurfacePresentMode", "Failed to get surface present modes");
+		{
+			throw Exception(
+				"VkWindow",
+				"getBestSurfacePresentMode",
+				"Failed to get surface present modes");
+		}
 
 		auto presentMode = vk::PresentModeKHR::eFifo;
 
@@ -482,18 +620,31 @@ namespace Injector
 	{
 		if (surfaceCapabilities.supportedCompositeAlpha &
 			vk::CompositeAlphaFlagBitsKHR::eOpaque)
+		{
 			return vk::CompositeAlphaFlagBitsKHR::eOpaque;
+		}
 		else if (surfaceCapabilities.supportedCompositeAlpha &
 				 vk::CompositeAlphaFlagBitsKHR::ePreMultiplied)
+		{
 			return vk::CompositeAlphaFlagBitsKHR::ePreMultiplied;
+		}
 		else if (surfaceCapabilities.supportedCompositeAlpha &
 				 vk::CompositeAlphaFlagBitsKHR::ePostMultiplied)
+		{
 			return vk::CompositeAlphaFlagBitsKHR::ePostMultiplied;
+		}
 		else if (surfaceCapabilities.supportedCompositeAlpha &
 				 vk::CompositeAlphaFlagBitsKHR::eInherit)
+		{
 			return vk::CompositeAlphaFlagBitsKHR::eInherit;
+		}
 		else
-			throw Exception("VkWindow", "getBestSurfaceCompositeAlpha", "Failed to get surface composite alpha");
+		{
+			throw Exception(
+				"VkWindow",
+				"getBestSurfaceCompositeAlpha",
+				"Failed to get surface composite alpha");
+		}
 	}
 	vk::Extent2D VkWindow::getBestSurfaceExtent(
 		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
@@ -503,9 +654,11 @@ namespace Injector
 		{
 			return vk::Extent2D(
 				std::clamp(static_cast<uint32_t>(surfaceSize.x),
-					surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width),
+					surfaceCapabilities.minImageExtent.width,
+					surfaceCapabilities.maxImageExtent.width),
 				std::clamp(static_cast<uint32_t>(surfaceSize.x),
-					surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width));
+					surfaceCapabilities.minImageExtent.width,
+					surfaceCapabilities.maxImageExtent.width));
 		}
 		else
 		{
@@ -530,19 +683,29 @@ namespace Injector
 			surfaceFormat.format,
 			surfaceFormat.colorSpace,
 			surfaceExtent,
-			1, vk::ImageUsageFlagBits::eColorAttachment,
+			1,
+			vk::ImageUsageFlagBits::eColorAttachment,
 			vk::SharingMode::eExclusive,
-			0, nullptr,
+			0,
+			nullptr,
 			surfaceTransform,
 			surfaceCompositeAlpha,
 			surfacePresentMode,
 			true,
 			nullptr);
 
-		auto result = device.createSwapchainKHR(&swapchainCreateInfo, nullptr, &swapchain);
+		auto result = device.createSwapchainKHR(
+			&swapchainCreateInfo,
+			nullptr,
+			&swapchain);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkWindow", "createSwapchain", "Failed to create swapchain");
+		{
+			throw Exception(
+				"VkWindow",
+				"createSwapchain",
+				"Failed to create swapchain");
+		}
 
 		return swapchain;
 	}
@@ -563,14 +726,17 @@ namespace Injector
 			vk::ImageLayout::ePresentSrcKHR);
 
 		auto colorAttachmentReference = vk::AttachmentReference(
-			0, vk::ImageLayout::eColorAttachmentOptimal);
+			0,
+			vk::ImageLayout::eColorAttachmentOptimal);
 
 		auto subpassDescription = vk::SubpassDescription({},
 			vk::PipelineBindPoint::eGraphics,
-			0, nullptr,
-			1, &colorAttachmentReference);
+			0,
+			nullptr,
+			1,
+			&colorAttachmentReference);
 
-		// TODO: make good loking
+		// TODO: make good looking
 		vk::SubpassDependency dependency{};
 		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
 		dependency.dstSubpass = 0;
@@ -580,14 +746,25 @@ namespace Injector
 		dependency.dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
 
 		auto renderPassCreateInfo = vk::RenderPassCreateInfo({},
-			1, &colorAttachmentDescription,
-			1, &subpassDescription,
-			1, &dependency);
+			1,
+			&colorAttachmentDescription,
+			1,
+			&subpassDescription,
+			1,
+			&dependency);
 
-		auto result = device.createRenderPass(&renderPassCreateInfo, nullptr, &renderPass);
+		auto result = device.createRenderPass(
+			&renderPassCreateInfo,
+			nullptr,
+			&renderPass);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkWindow", "createRenderPass", "Failed to create render pass");
+		{
+			throw Exception(
+				"VkWindow",
+				"createRenderPass",
+				"Failed to create render pass");
+		}
 
 		return renderPass;
 	}
@@ -599,12 +776,20 @@ namespace Injector
 		vk::CommandPool commandPool;
 
 		auto commandPoolCreateInfo = vk::CommandPoolCreateInfo(
-			flags, queueFamilyIndex);
+			flags,
+			queueFamilyIndex);
 		auto result = device.createCommandPool(
-			&commandPoolCreateInfo, nullptr, &commandPool);
+			&commandPoolCreateInfo,
+			nullptr,
+			&commandPool);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkWindow", "createCommandPool", "Failed to create command pool");
+		{
+			throw Exception(
+				"VkWindow",
+				"createCommandPool",
+				"Failed to create command pool");
+		}
 
 		return commandPool;
 	}
@@ -622,20 +807,29 @@ namespace Injector
 		try
 		{
 			dispatchDynamic = vk::DispatchLoaderDynamic(
-				static_cast<VkInstance>(instance), vkGetInstanceProcAddr);
+				static_cast<VkInstance>(instance),
+				vkGetInstanceProcAddr);
 			debugMessenger = createDebugMessenger(
-				instance, dispatchDynamic);
+				instance,
+				dispatchDynamic);
 
 			physicalDevice = getBestPhysicalDevice(instance);
 			surface = createSurface(instance, window);
 
-			getQueueFamilyIndices(physicalDevice, surface,
-				graphicsQueueFamilyIndex, presentQueueFamilyIndex);
+			getQueueFamilyIndices(
+				physicalDevice,
+				surface,
+				graphicsQueueFamilyIndex,
+				presentQueueFamilyIndex);
 
-			device = createDevice(physicalDevice,
-				graphicsQueueFamilyIndex, presentQueueFamilyIndex);
+			device = createDevice(
+				physicalDevice,
+				graphicsQueueFamilyIndex,
+				presentQueueFamilyIndex);
 			memoryAllocator = createMemoryAllocator(
-				instance, physicalDevice, device);
+				instance,
+				physicalDevice,
+				device);
 
 			fences = std::vector<vk::Fence>(VK_FRAME_LAG);
 			imageAcquiredSemaphores = std::vector<vk::Semaphore>(VK_FRAME_LAG);
@@ -644,35 +838,50 @@ namespace Injector
 
 			for (size_t i = 0; i < VK_FRAME_LAG; i++)
 			{
-				fences[i] = createFence(device, vk::FenceCreateFlagBits::eSignaled);
-				imageAcquiredSemaphores[i] = createSemaphore(device, {});
-				drawCompleteSemaphores[i] = createSemaphore(device, {});
-				imageOwnershipSemaphores[i] = createSemaphore(device, {});
+				fences[i] = createFence(
+					device,
+					vk::FenceCreateFlagBits::eSignaled);
+				imageAcquiredSemaphores[i] =
+					createSemaphore(device, {});
+				drawCompleteSemaphores[i] =
+					createSemaphore(device, {});
+				imageOwnershipSemaphores[i] =
+					createSemaphore(device, {});
 			}
 
-			graphicsQueue = getQueue(device, graphicsQueueFamilyIndex, 0);
-			presentQueue = getQueue(device, presentQueueFamilyIndex, 0);
+			graphicsQueue = getQueue(
+				device,
+				graphicsQueueFamilyIndex,
+				0);
+			presentQueue = getQueue(
+				device,
+				presentQueueFamilyIndex,
+				0);
 
 			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 			{
-				graphicsCommandPool = createCommandPool(device,
+				graphicsCommandPool = createCommandPool(
+					device,
 					vk::CommandPoolCreateFlagBits::eTransient |
 					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
 					graphicsQueueFamilyIndex);
-				presentCommandPool = createCommandPool(device,
+				presentCommandPool = createCommandPool(
+					device,
 					vk::CommandPoolCreateFlagBits::eTransient |
 					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
 					presentQueueFamilyIndex);
 			}
 			else
 			{
-				graphicsCommandPool = presentCommandPool = createCommandPool(device,
+				graphicsCommandPool = presentCommandPool = createCommandPool(
+					device,
 					vk::CommandPoolCreateFlagBits::eTransient |
 					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
 					graphicsQueueFamilyIndex);
 			}
 
-			transferCommandPool = createCommandPool(device,
+			transferCommandPool = createCommandPool(
+				device,
 				vk::CommandPoolCreateFlagBits::eTransient,
 				graphicsQueueFamilyIndex);
 
@@ -684,7 +893,8 @@ namespace Injector
 			auto surfacePresentMode = getBestSurfacePresentMode(physicalDevice, surface);
 
 			surfaceExtent = getBestSurfaceExtent(
-				surfaceCapabilities, size);
+				surfaceCapabilities,
+				size);
 			swapchain = createSwapchain(
 				device,
 				surface,
@@ -695,7 +905,8 @@ namespace Injector
 				surfaceCompositeAlpha,
 				surfacePresentMode);
 			renderPass = createRenderPass(
-				device, surfaceFormat.format);
+				device,
+				surfaceFormat.format);
 
 			frameIndex = 0;
 
@@ -750,7 +961,11 @@ namespace Injector
 
 		for (uint32_t i = 0; i < VK_FRAME_LAG; i++)
 		{
-			device.waitForFences(1, &fences[i], VK_TRUE, UINT64_MAX);
+			device.waitForFences(1,
+				&fences[i],
+				VK_TRUE,
+				UINT64_MAX);
+
 			device.destroyFence(fences[i]);
 			device.destroySemaphore(imageAcquiredSemaphores[i]);
 			device.destroySemaphore(drawCompleteSemaphores[i]);
@@ -795,7 +1010,8 @@ namespace Injector
 		auto surfacePresentMode = getBestSurfacePresentMode(physicalDevice, surface);
 
 		surfaceExtent = getBestSurfaceExtent(
-			surfaceCapabilities, size);
+			surfaceCapabilities,
+			size);
 		swapchain = createSwapchain(
 			device,
 			surface,
@@ -806,7 +1022,8 @@ namespace Injector
 			surfaceCompositeAlpha,
 			surfacePresentMode);
 		renderPass = createRenderPass(
-			device, surfaceFormat.format);
+			device,
+			surfaceFormat.format);
 
 		frameIndex = 0;
 
@@ -844,21 +1061,36 @@ namespace Injector
 		}
 
 		for (auto& pipeline : pipelines)
-			pipeline->recreate(memoryAllocator, renderPass, images.size(), surfaceExtent);
+		{
+			pipeline->recreate(
+				memoryAllocator,
+				renderPass,
+				images.size(),
+				surfaceExtent);
+		}
 	}
 
 	uint32_t VkWindow::beginImage()
 	{
-		device.waitForFences(1, &fences[frameIndex], true, UINT64_MAX);
-		device.resetFences({ fences[frameIndex] });
+		device.waitForFences(
+			1,
+			&fences[frameIndex],
+			true,
+			UINT64_MAX);
+		device.resetFences(
+			{ fences[frameIndex] });
 
 		vk::Result result;
 		uint32_t imageIndex;
 
 		do
 		{
-			result = device.acquireNextImageKHR(swapchain, UINT64_MAX,
-				imageAcquiredSemaphores[frameIndex], vk::Fence(), &imageIndex);
+			result = device.acquireNextImageKHR(
+				swapchain,
+				UINT64_MAX,
+				imageAcquiredSemaphores[frameIndex],
+				vk::Fence(),
+				&imageIndex);
 
 			if (result == vk::Result::eErrorOutOfDateKHR)
 			{
@@ -873,9 +1105,13 @@ namespace Injector
 				auto size = getFramebufferSize();
 				onFramebufferResize(size);
 			}
-			else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
+			else if (result != vk::Result::eSuccess &&
+				result != vk::Result::eSuboptimalKHR)
 			{
-				throw Exception("VkWindow", "beginImage", "Failed to acquire next image");
+				throw Exception(
+					"VkWindow",
+					"beginImage",
+					"Failed to acquire next image");
 			}
 		} while (result != vk::Result::eSuccess);
 
@@ -888,33 +1124,58 @@ namespace Injector
 			vk::PipelineStageFlagBits::eColorAttachmentOutput;
 
 		auto submitInfo = vk::SubmitInfo(
-			1, &imageAcquiredSemaphores[frameIndex],
+			1,
+			&imageAcquiredSemaphores[frameIndex],
 			&waitDestinationStageMask,
-			1, &swapchainDatas[imageIndex]->graphicsCommandBuffer,
-			1, &drawCompleteSemaphores[frameIndex]);
+			1,
+			&swapchainDatas[imageIndex]->graphicsCommandBuffer,
+			1,
+			&drawCompleteSemaphores[frameIndex]);
 
-		auto result = graphicsQueue.submit(1, &submitInfo, fences[frameIndex]);
+		auto result = graphicsQueue.submit(
+			1,
+			&submitInfo,
+			fences[frameIndex]);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkWindow", "endImage", "Failed to submit graphics queue");
+		{
+			throw Exception(
+				"VkWindow",
+				"endImage",
+				"Failed to submit graphics queue");
+		}
 
 		auto presentInfo = vk::PresentInfoKHR(
-			1, &drawCompleteSemaphores[frameIndex],
-			1, &swapchain,
+			1,
+			&drawCompleteSemaphores[frameIndex],
+			1,
+			&swapchain,
 			&imageIndex);
 
 		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 		{
-			submitInfo.pWaitSemaphores = &drawCompleteSemaphores[frameIndex];
-			submitInfo.pCommandBuffers = &swapchainDatas[imageIndex]->presentCommandBuffer;
-			submitInfo.pSignalSemaphores = &imageOwnershipSemaphores[frameIndex];
+			submitInfo.pWaitSemaphores =
+				&drawCompleteSemaphores[frameIndex];
+			submitInfo.pCommandBuffers =
+				&swapchainDatas[imageIndex]->presentCommandBuffer;
+			submitInfo.pSignalSemaphores =
+				&imageOwnershipSemaphores[frameIndex];
 
-			result = presentQueue.submit(1, &submitInfo, vk::Fence());
+			result = presentQueue.submit(
+				1,
+				&submitInfo,
+				vk::Fence());
 
 			if (result != vk::Result::eSuccess)
-				throw Exception("VkWindow", "endImage", "Failed to submit present queue");
+			{
+				throw Exception(
+					"VkWindow",
+					"endImage",
+					"Failed to submit present queue");
+			}
 
-			presentInfo.pWaitSemaphores = &imageOwnershipSemaphores[frameIndex];
+			presentInfo.pWaitSemaphores =
+				&imageOwnershipSemaphores[frameIndex];
 		}
 
 		frameIndex += 1;
@@ -935,9 +1196,13 @@ namespace Injector
 			auto size = getFramebufferSize();
 			onFramebufferResize(size);
 		}
-		else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
+		else if (result != vk::Result::eSuccess &&
+			result != vk::Result::eSuboptimalKHR)
 		{
-			throw Exception("VkWindow", "endImage", "Failed to present next image");
+			throw Exception(
+				"VkWindow",
+				"endImage",
+				"Failed to present next image");
 		}
 	}
 
@@ -947,20 +1212,34 @@ namespace Injector
 		auto graphicsCommandBuffer = swapchainData->graphicsCommandBuffer;
 
 		auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
-			vk::CommandBufferUsageFlagBits::eOneTimeSubmit, nullptr);
+			vk::CommandBufferUsageFlagBits::eOneTimeSubmit,
+			nullptr);
 		auto result = graphicsCommandBuffer.begin(&commandBufferBeginInfo);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkWindow", "beginRecord", "Failed to begin command buffer");
+		{
+			throw Exception(
+				"VkWindow",
+				"beginRecord",
+				"Failed to begin command buffer");
+		}
 
 		auto clearValues = vk::ClearValue(vk::ClearColorValue(
-			std::array<float, 4>{ 0.0f, 0.0f, 0.0f, 0.0f }));
+			std::array<float, 4>{
+				0.0f,
+				0.0f,
+				0.0f,
+				0.0f }));
 		auto renderPassBeginInfo = vk::RenderPassBeginInfo(
-			renderPass, swapchainData->framebuffer,
-			vk::Rect2D({ 0, 0 }, surfaceExtent),
-			1, &clearValues);
+			renderPass,
+			swapchainData->framebuffer,
+			vk::Rect2D({ 0, 0 },
+				surfaceExtent),
+			1,
+			&clearValues);
 		graphicsCommandBuffer.beginRenderPass(
-			&renderPassBeginInfo, vk::SubpassContents::eInline);
+			&renderPassBeginInfo,
+			vk::SubpassContents::eInline);
 	}
 	void VkWindow::endRecord(uint32_t imageIndex)
 	{
@@ -971,13 +1250,27 @@ namespace Injector
 		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 		{
 			auto imageMemoryBarrier = vk::ImageMemoryBarrier({}, {},
-				vk::ImageLayout::ePresentSrcKHR, vk::ImageLayout::ePresentSrcKHR,
-				graphicsQueueFamilyIndex, presentQueueFamilyIndex, swapchainData->image,
-				vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
+				vk::ImageLayout::ePresentSrcKHR,
+				vk::ImageLayout::ePresentSrcKHR,
+				graphicsQueueFamilyIndex,
+				presentQueueFamilyIndex,
+				swapchainData->image,
+				vk::ImageSubresourceRange(
+					vk::ImageAspectFlagBits::eColor,
+					0,
+					1,
+					0,
+					1));
 			graphicsCommandBuffer.pipelineBarrier(
 				vk::PipelineStageFlagBits::eBottomOfPipe,
 				vk::PipelineStageFlagBits::eBottomOfPipe,
-				{}, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
+				{},
+				0,
+				nullptr,
+				0,
+				nullptr,
+				1,
+				&imageMemoryBarrier);
 		}
 
 		graphicsCommandBuffer.end();
@@ -986,20 +1279,41 @@ namespace Injector
 		{
 			auto presentCommandBuffer = swapchainData->presentCommandBuffer;
 			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
-				vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
+				vk::CommandBufferUsageFlagBits::eSimultaneousUse,
+				nullptr);
 			auto result = presentCommandBuffer.begin(&commandBufferBeginInfo);
 
 			if (result != vk::Result::eSuccess)
-				throw Exception("VkWindow", "endRecord", "Failed to begin command buffer");
+			{
+				throw Exception(
+					"VkWindow",
+					"endRecord",
+					"Failed to begin command buffer");
+			}
 
-			auto imageMemoryBarrier = vk::ImageMemoryBarrier({}, {},
-				vk::ImageLayout::ePresentSrcKHR, vk::ImageLayout::ePresentSrcKHR,
-				graphicsQueueFamilyIndex, presentQueueFamilyIndex, swapchainData->image,
-				vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
+			auto imageMemoryBarrier = vk::ImageMemoryBarrier({},
+				{},
+				vk::ImageLayout::ePresentSrcKHR,
+				vk::ImageLayout::ePresentSrcKHR,
+				graphicsQueueFamilyIndex,
+				presentQueueFamilyIndex,
+				swapchainData->image,
+				vk::ImageSubresourceRange(
+					vk::ImageAspectFlagBits::eColor,
+					0,
+					1,
+					0,
+					1));
 			presentCommandBuffer.pipelineBarrier(
 				vk::PipelineStageFlagBits::eBottomOfPipe,
 				vk::PipelineStageFlagBits::eBottomOfPipe,
-				{}, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
+				{},
+				0,
+				nullptr,
+				0,
+				nullptr,
+				1,
+				&imageMemoryBarrier);
 
 			presentCommandBuffer.end();
 		}
@@ -1029,7 +1343,9 @@ namespace Injector
 		if (mappable)
 		{
 			buffer = std::make_shared<VkGpuBuffer>(
-				type, size, memoryAllocator,
+				type,
+				size,
+				memoryAllocator,
 				static_cast<vk::BufferUsageFlags>(0),
 				VMA_MEMORY_USAGE_CPU_TO_GPU);
 			buffer->setData(data, size);
@@ -1037,12 +1353,16 @@ namespace Injector
 		else
 		{
 			buffer = std::make_shared<VkGpuBuffer>(
-				type, size, memoryAllocator,
+				type,
+				size,
+				memoryAllocator,
 				vk::BufferUsageFlagBits::eTransferDst,
 				VMA_MEMORY_USAGE_GPU_ONLY);
 
 			auto stagingBuffer = VkGpuBuffer(
-				type, size, memoryAllocator,
+				type,
+				size,
+				memoryAllocator,
 				vk::BufferUsageFlagBits::eTransferSrc,
 				VMA_MEMORY_USAGE_CPU_ONLY);
 			stagingBuffer.setData(data, size);
@@ -1050,28 +1370,54 @@ namespace Injector
 			vk::CommandBuffer commandBuffer;
 
 			auto commandBufferAlocateInfo = vk::CommandBufferAllocateInfo(
-				transferCommandPool, vk::CommandBufferLevel::ePrimary, 1);
+				transferCommandPool,
+				vk::CommandBufferLevel::ePrimary,
+				1);
 			auto result = device.allocateCommandBuffers(
-				&commandBufferAlocateInfo, &commandBuffer);
+				&commandBufferAlocateInfo,
+				&commandBuffer);
 
 			if (result != vk::Result::eSuccess)
-				throw Exception("VkWindow", "createBuffer", "Failed to allocate command buffer");
+			{
+				throw Exception(
+					"VkWindow",
+					"createBuffer",
+					"Failed to allocate command buffer");
+			}
 
 			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
 				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 			commandBuffer.begin(commandBufferBeginInfo);
 
-			auto bufferCopy = vk::BufferCopy(0, 0, size);
+			auto bufferCopy = vk::BufferCopy(
+				0,
+				0,
+				size);
 			commandBuffer.copyBuffer(
-				stagingBuffer.getBuffer(), buffer->getBuffer(), 1, &bufferCopy);
+				stagingBuffer.getBuffer(),
+				buffer->getBuffer(),
+				1,
+				&bufferCopy);
 
 			commandBuffer.end();
 
-			auto submitInfo = vk::SubmitInfo(0, nullptr, nullptr, 1, &commandBuffer);
-			graphicsQueue.submit(1, &submitInfo, nullptr);
+			auto submitInfo = vk::SubmitInfo(
+				0,
+				nullptr,
+				nullptr,
+				1,
+				&commandBuffer);
+			graphicsQueue.submit(
+				1,
+				&submitInfo,
+				nullptr);
 
 			graphicsQueue.waitIdle();
-			device.freeCommandBuffers(transferCommandPool, 1, &commandBuffer);
+
+			device.freeCommandBuffers(
+				transferCommandPool,
+				1,
+				&commandBuffer);
 		}
 
 		return buffer;
@@ -1083,7 +1429,10 @@ namespace Injector
 		const std::shared_ptr<GpuBuffer>& indexBuffer)
 	{
 		return std::make_shared<VkGpuMesh>(
-			indexCount, indexType, vertexBuffer, indexBuffer);
+			indexCount,
+			indexType,
+			vertexBuffer,
+			indexBuffer);
 	}
 	std::shared_ptr<ShaderData> VkWindow::readShaderData(
 		const std::string& filePath)
@@ -1107,17 +1456,31 @@ namespace Injector
 			device, renderPass, surfaceExtent);
 
 		if(!pipelines.emplace(pipeline).second)
-			throw Exception("VkWindow", "createColorPipeline", "Failed to add pipeline");
+		{
+			throw Exception(
+				"VkWindow",
+				"createColorPipeline",
+				"Failed to add pipeline");
+		}
 
 		return pipeline;
 	}
 	std::shared_ptr<DiffusePipeline> VkWindow::createDiffusePipeline()
 	{
 		auto pipeline = std::make_shared<VkDiffusePipeline>(
-			device, memoryAllocator, renderPass, swapchainDatas.size(), surfaceExtent);
+			device,
+			memoryAllocator,
+			renderPass,
+			swapchainDatas.size(),
+			surfaceExtent);
 
 		if (!pipelines.emplace(pipeline).second)
-			throw Exception("VkWindow", "createDiffusePipeline", "Failed to add pipeline");
+		{
+			throw Exception(
+				"VkWindow",
+				"createDiffusePipeline",
+				"Failed to add pipeline");
+		}
 
 		return pipeline;
 	}*/

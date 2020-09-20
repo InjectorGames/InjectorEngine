@@ -1,5 +1,4 @@
 #include "Injector/Graphics/Pipeline/GlColorGpuPipeline.hpp"
-#include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/NullException.hpp"
 
 namespace Injector
@@ -12,7 +11,12 @@ namespace Injector
 		color(_color)
 	{
 		if (!vertexShader || !fragmentShader)
-			throw NullException("GlColorGpuPipeline", "GlColorGpuPipeline", "shader");
+		{
+			throw NullException(
+				"GlColorGpuPipeline",
+				"GlColorGpuPipeline",
+				"shader");
+		}
 
 		glAttachShader(program, vertexShader->getShader());
 		glAttachShader(program, fragmentShader->getShader());
@@ -25,7 +29,9 @@ namespace Injector
 			auto log = getInfoLog(program);
 			glDeleteProgram(program);
 
-			throw Exception("GlColorGpuPipeline", "GlColorGpuPipeline",
+			throw Exception(
+				"GlColorGpuPipeline",
+				"GlColorGpuPipeline",
 				"Failed to link program, " + log);
 		}
 
@@ -64,8 +70,13 @@ namespace Injector
 	{
 		glEnableVertexAttribArray(0);
 
-		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE,
-			sizeof(Vector3), 0);
+		setVertexAttributePointer(
+			0,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vector3),
+			0);
 	}
 
 	void GlColorGpuPipeline::setUniforms(

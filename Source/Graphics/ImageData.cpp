@@ -38,23 +38,36 @@ namespace Injector
 
 		if (component16)
 		{
-			data = stbi_load_16(filePath.c_str(), &size.x, &size.y,
-				&componentCount, componentCount);
+			data = stbi_load_16(
+				filePath.c_str(),
+				&size.x,
+				&size.y,
+				&componentCount,
+				componentCount);
 		}
 		else
 		{
-			data = stbi_load(filePath.c_str(), &size.x, &size.y,
-				&componentCount, componentCount);
+			data = stbi_load(
+				filePath.c_str(),
+				&size.x, &size.y,
+				&componentCount,
+				componentCount);
 		}
 
 		if (!data)
 		{
-			throw Exception("ImageData", "readFromFile",
-				"Failed to load image, " + std::string(stbi_failure_reason()));
+			throw Exception(
+				"ImageData",
+				"readFromFile",
+				"Failed to load image, " +
+				std::string(stbi_failure_reason()));
 		}
 
 		auto imageData = std::make_shared<ImageData>(
-			size, componentCount, component16, std::vector<uint8_t>());
+			size,
+			componentCount,
+			component16,
+			std::vector<uint8_t>());
 
 		auto binarySize = component16 ?
 			size.x * size.y * componentCount * 2 :

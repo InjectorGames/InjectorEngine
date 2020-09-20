@@ -17,7 +17,12 @@ namespace Injector
 		gles(_gles)
 	{
 		if (!data)
-			throw NullException("GlGpuShader", "GlGpuShader", "data");
+		{
+			throw NullException(
+				"GlGpuShader",
+				"GlGpuShader",
+				"data");
+		}
 
 		glStage = toGlStage(stage);
 		shader = glCreateShader(glStage);
@@ -32,7 +37,8 @@ namespace Injector
 		sources.push_back(reinterpret_cast<const char*>(
 			data->code.data()));
 
-		glShaderSource(shader,
+		glShaderSource(
+			shader,
 			static_cast<GLsizei>(sources.size()),
 			static_cast<const GLchar* const*>(sources.data()),
 			nullptr);
@@ -44,7 +50,9 @@ namespace Injector
 			auto log = getInfoLog(shader);
 			glDeleteShader(shader);
 
-			throw Exception("GlGpuShader", "GlGpuShader",
+			throw Exception(
+				"GlGpuShader",
+				"GlGpuShader",
 				"Failed to compile shader: " + log);
 		}
 	}
@@ -79,7 +87,10 @@ namespace Injector
 		case GpuShaderStage::Compute:
 			return GL_COMPUTE_SHADER;
 		default:
-			throw Exception("GlGpuShader", "toGlStage", "Usupported stage");
+			throw Exception(
+				"GlGpuShader",
+				"toGlStage",
+				"Unsupported stage");
 		}
 	}
 	bool GlGpuShader::getCompileStatus(GLuint shader)

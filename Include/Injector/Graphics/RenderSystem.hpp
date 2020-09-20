@@ -18,8 +18,12 @@ namespace Injector
 		virtual ~RenderSystem();
 
 		size_t getCameraCount() const noexcept;
-		bool addCamera(const std::shared_ptr<Entity>& entity) noexcept;
-		bool removeCamera(const std::shared_ptr<Entity>& entity) noexcept;
+
+		bool addCamera(
+			const std::shared_ptr<Entity>& entity) noexcept;
+		bool removeCamera(
+			const std::shared_ptr<Entity>& entity) noexcept;
+
 		void removeCameras() noexcept;
 	};
 }

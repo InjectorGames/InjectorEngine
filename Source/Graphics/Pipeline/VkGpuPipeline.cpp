@@ -9,11 +9,19 @@ namespace Injector
 		bindedCommandBuffer()
 	{
 		auto pipelineCacheCreateInfo = vk::PipelineCacheCreateInfo();
+
 		auto result = _device.createPipelineCache(
-			&pipelineCacheCreateInfo, nullptr, &pipelineCache);
+			&pipelineCacheCreateInfo,
+			nullptr,
+			&pipelineCache);
 
 		if (result != vk::Result::eSuccess)
-			throw Exception("VkGpuPipeline", "VkGpuPipeline", "Failed to create pipeline cache");
+		{
+			throw Exception(
+				"VkGpuPipeline",
+				"VkGpuPipeline",
+				"Failed to create pipeline cache");
+		}
 	}
 	VkGpuPipeline::~VkGpuPipeline()
 	{
@@ -35,12 +43,16 @@ namespace Injector
 		uint32_t imageCount,
 		const vk::Extent2D& surfaceExtent)
 	{
-		throw NotImplementedException("VkGpuPipeline", "recreate");
+		throw NotImplementedException(
+			"VkGpuPipeline",
+			"recreate");
 	}
 	void VkGpuPipeline::flush(
 		size_t imageIndex)
 	{
-		throw NotImplementedException("VkGpuPipeline", "flush");
+		throw NotImplementedException(
+			"VkGpuPipeline",
+			"flush");
 	}
 	void VkGpuPipeline::bind(
 		vk::CommandBuffer commandBuffer,

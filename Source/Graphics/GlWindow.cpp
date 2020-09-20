@@ -5,7 +5,7 @@
 #include "Injector/Exception/CastException.hpp"
 #include "Injector/Graphics/GlCameraSystem.hpp"
 #include "Injector/Graphics/GlRenderSystem.hpp"
-#include "Injector/Graphics/Pipeline/GlSkyGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlSimSkyGpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/GlColColorGpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/GlTexDiffuseGpuPipeline.hpp"
 
@@ -187,14 +187,14 @@ namespace Injector
 		return std::make_shared<GlTexDiffuseGpuPipeline>(
 			glVertexShader, glFragmentShader, glTexture);
 	}
-	std::shared_ptr<SkyGpuPipeline> GlWindow::createSkyPipeline(
+	std::shared_ptr<SimSkyGpuPipeline> GlWindow::createSkyPipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
-		return std::make_shared<GlSkyGpuPipeline>(
+		return std::make_shared<GlSimSkyGpuPipeline>(
 			glVertexShader, glFragmentShader);
 	}
 }

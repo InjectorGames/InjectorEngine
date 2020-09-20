@@ -23,15 +23,34 @@ namespace Injector
 		auto vkIndexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(vertexBuffer);
 
 		if (!vkVertexBuffer || !vkIndexBuffer)
-			throw CastException("VkGpuMesh", "VkGpuMesh", "buffer");
+		{
+			throw CastException(
+				"VkGpuMesh",
+				"VkGpuMesh",
+				"buffer");
+		}
 
 		auto buffer = vkVertexBuffer->getBuffer();
-		commandBuffer.bindVertexBuffers(0, 1, &buffer, &offset);
+
+		commandBuffer.bindVertexBuffers(
+			0,
+			1,
+			&buffer,
+			&offset);
 
 		auto index = (indexType == GpuBufferIndex::UnsignedShort) ?
 			vk::IndexType::eUint16 : vk::IndexType::eUint32;
 
-		commandBuffer.bindIndexBuffer(vkIndexBuffer->getBuffer(), 0, index);
-		commandBuffer.drawIndexed(static_cast<uint32_t>(indexCount), 1, 0, 0, 0);
+		commandBuffer.bindIndexBuffer(
+			vkIndexBuffer->getBuffer(),
+			0,
+			index);
+
+		commandBuffer.drawIndexed(
+			static_cast<uint32_t>(indexCount),
+			1,
+			0,
+			0,
+			0);
 	}
 }

@@ -35,13 +35,21 @@ namespace Injector
 			nullptr);
 
 		if (result != VK_SUCCESS)
-			throw Exception("VkGpuBuffer", "VkGpuBuffer", "Failed to create buffer");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"VkGpuBuffer",
+				"Failed to create buffer");
+		}
 
 		buffer = vk::Buffer(bufferHandle);
 	}
 	VkGpuBuffer::~VkGpuBuffer()
 	{
-		vmaDestroyBuffer(allocator, static_cast<VkBuffer_T*>(buffer), allocation);
+		vmaDestroyBuffer(
+			allocator,
+			static_cast<VkBuffer_T*>(buffer),
+			allocation);
 	}
 
 	VmaAllocator VkGpuBuffer::getAllocator() const noexcept
@@ -59,15 +67,35 @@ namespace Injector
 
 	void VkGpuBuffer::invalidate(size_t _size, size_t offset)
 	{
-		auto result = vmaInvalidateAllocation(allocator, allocation, offset, _size);
+		auto result = vmaInvalidateAllocation(
+			allocator,
+			allocation,
+			offset,
+			_size);
+
 		if (result != VK_SUCCESS)
-			throw Exception("VkGpuBuffer", "invalidate", "Failed to invalidate");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"invalidate",
+				"Failed to invalidate");
+		}
 	}
 	void VkGpuBuffer::flush(size_t _size, size_t offset)
 	{
-		auto result = vmaFlushAllocation(allocator, allocation, offset, _size);
+		auto result = vmaFlushAllocation(
+			allocator,
+			allocation,
+			offset,
+			_size);
+
 		if (result != VK_SUCCESS)
-			throw Exception("VkGpuBuffer", "flush", "Failed to flush");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"flush",
+				"Failed to flush");
+		}
 	}
 
 	void* VkGpuBuffer::map(GpuBufferAccess access)
@@ -75,9 +103,18 @@ namespace Injector
 		GpuBuffer::map(access);
 		void* mappedData;
 
-		auto result = vmaMapMemory(allocator, allocation, &mappedData);
+		auto result = vmaMapMemory(
+			allocator,
+			allocation,
+			&mappedData);
+
 		if (result != VK_SUCCESS)
-			throw Exception("VkGpuBuffer", "map", "Failed to map");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"map",
+				"Failed to map");
+		}
 
 		if (access == GpuBufferAccess::ReadOnly ||
 			access == GpuBufferAccess::ReadWrite)
@@ -92,9 +129,18 @@ namespace Injector
 		GpuBuffer::map(access);
 		void* mappedData;
 
-		auto result = vmaMapMemory(allocator, allocation, &mappedData);
+		auto result = vmaMapMemory(
+			allocator,
+			allocation,
+			&mappedData);
+
 		if (result != VK_SUCCESS)
-			throw Exception("VkGpuBuffer", "map", "Failed to map");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"map",
+				"Failed to map");
+		}
 
 		if (access == GpuBufferAccess::ReadOnly ||
 			access == GpuBufferAccess::ReadWrite)
@@ -121,17 +167,42 @@ namespace Injector
 	void VkGpuBuffer::setData(const void* data, size_t _size)
 	{
 		if (!mappable)
-			throw Exception("VkGpuBuffer", "setData", "Not mappable");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"setData",
+				"Not mappable");
+		}
 		if (mapped)
-			throw Exception("VkGpuBuffer", "setData", "Already mapped");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"setData",
+				"Already mapped");
+		}
 		if (_size > size)
-			throw OutOfRangeException("VkGpuBuffer", "setData", _size, size);
+		{
+			throw OutOfRangeException(
+				"VkGpuBuffer",
+				"setData",
+				_size,
+				size);
+		}
 
 		void* mappedData;
 
-		auto result = vmaMapMemory(allocator, allocation, &mappedData);
+		auto result = vmaMapMemory(
+			allocator,
+			allocation,
+			&mappedData);
+
 		if (result != VK_SUCCESS)
-			throw Exception("VkGpuBuffer", "setData", "Failed to map");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"setData",
+				"Failed to map");
+		}
 
 		memcpy(mappedData, data, _size);
 
@@ -141,17 +212,42 @@ namespace Injector
 	void VkGpuBuffer::setData(const void* data, size_t _size, size_t offset)
 	{
 		if (!mappable)
-			throw Exception("VkGpuBuffer", "setData", "Not mappable");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"setData",
+				"Not mappable");
+		}
 		if (mapped)
-			throw Exception("VkGpuBuffer", "setData", "Already mapped");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"setData",
+				"Already mapped");
+		}
 		if (_size + offset > size)
-			throw OutOfRangeException("VkGpuBuffer", "setData", _size + offset, size);
+		{
+			throw OutOfRangeException(
+				"VkGpuBuffer",
+				"setData",
+				_size + offset,
+				size);
+		}
 
 		void* mappedData;
 
-		auto result = vmaMapMemory(allocator, allocation, &mappedData);
+		auto result = vmaMapMemory(
+			allocator,
+			allocation,
+			&mappedData);
+
 		if (result != VK_SUCCESS)
-			throw Exception("VkGpuBuffer", "setData", "Failed to map");
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"setData",
+				"Failed to map");
+		}
 
 		auto castedData = static_cast<char*>(mappedData);
 		memcpy(castedData + offset, data, _size);
@@ -183,7 +279,10 @@ namespace Injector
 		case GpuBufferType::TransformFeedbackCounter:
 			return vk::BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT;
 		default:
-			throw Exception("VkGpuBuffer", "toVkType", "Unsupported type");
+			throw Exception(
+				"VkGpuBuffer",
+				"toVkType",
+				"Unsupported type");
 		}
 	}
 	bool VkGpuBuffer::isVkMappable(VmaMemoryUsage usage)

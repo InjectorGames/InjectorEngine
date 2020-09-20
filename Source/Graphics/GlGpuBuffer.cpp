@@ -44,11 +44,19 @@ namespace Injector
 		GpuBuffer::map(access);
 		glBindBuffer(glType, buffer);
 
-		auto mappedData = glMapBufferRange(glType, 0,
-			static_cast<GLsizeiptr>(size), toGlAccess(access));
+		auto mappedData = glMapBufferRange(
+			glType,
+			0,
+			static_cast<GLsizeiptr>(size),
+			toGlAccess(access));
 
 		if (!mappedData)
-			throw Exception("GlGpuBuffer", "map", "Failed to map buffer");
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"map",
+				"Failed to map buffer");
+		}
 
 		glBindBuffer(glType, GL_ZERO);
 		return mappedData;
@@ -58,11 +66,19 @@ namespace Injector
 		GpuBuffer::map(access, size, offset);
 		glBindBuffer(glType, buffer);
 
-		auto mappedData = glMapBufferRange(glType, static_cast<GLintptr>(offset),
-			static_cast<GLsizeiptr>(size), toGlAccess(access));
+		auto mappedData = glMapBufferRange(
+			glType,
+			static_cast<GLintptr>(offset),
+			static_cast<GLsizeiptr>(size),
+			toGlAccess(access));
 
 		if (!mappedData)
-			throw Exception("GlGpuBuffer", "map", "Failed to map buffer");
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"map",
+				"Failed to map buffer");
+		}
 
 		glBindBuffer(glType, GL_ZERO);
 		return mappedData;
@@ -75,13 +91,19 @@ namespace Injector
 		if (mapAccess == GpuBufferAccess::WriteOnly ||
 			mapAccess == GpuBufferAccess::ReadWrite)
 		{
-			glFlushMappedBufferRange(glType,
+			glFlushMappedBufferRange(
+				glType,
 				static_cast<GLintptr>(mapSize),
 				static_cast<GLsizeiptr>(mapOffset));
 		}
 
 		if (glUnmapBuffer(glType) == GL_FALSE)
-			throw Exception("GlGpuBuffer", "unmap", "Failed to unmap buffer");
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"unmap",
+				"Failed to unmap buffer");
+		}
 
 		glBindBuffer(glType, GL_ZERO);
 	}
@@ -89,28 +111,71 @@ namespace Injector
 	void GlGpuBuffer::setData(const void* data, size_t _size)
 	{
 		if (!mappable)
-			throw Exception("GlGpuBuffer", "setData", "Not mappable");
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"setData",
+				"Not mappable");
+		}
 		if (mapped)
-			throw Exception("GlGpuBuffer", "setData", "Already mapped");
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"setData",
+				"Already mapped");
+		}
 		if (_size > size)
-			throw OutOfRangeException("GlGpuBuffer", "setData", _size, size);
+		{
+			throw OutOfRangeException(
+				"GlGpuBuffer",
+				"setData",
+				_size,
+				size);
+		}
 
 		glBindBuffer(glType, buffer);
-		glBufferSubData(glType, 0, static_cast<GLsizeiptr>(_size), data);
+
+		glBufferSubData(
+			glType,
+			0,
+			static_cast<GLsizeiptr>(_size),
+			data);
+
 		glBindBuffer(glType, GL_ZERO);
 	}
 	void GlGpuBuffer::setData(const void* data, size_t _size, size_t offset)
 	{
 		if (!mappable)
-			throw Exception("GlGpuBuffer", "setData", "Not mappable");
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"setData",
+				"Not mappable");
+		}
 		if (mapped)
-			throw Exception("GlGpuBuffer", "setData", "Already mapped");
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"setData",
+				"Already mapped");
+		}
 		if (_size + offset > size)
-			throw OutOfRangeException("GlGpuBuffer", "setData", _size + offset, size);
+		{
+			throw OutOfRangeException(
+				"GlGpuBuffer",
+				"setData",
+				_size + offset,
+				size);
+		}
 
 		glBindBuffer(glType, buffer);
-		glBufferSubData(glType, static_cast<GLintptr>(offset),
-			static_cast<GLsizeiptr>(_size), data);
+
+		glBufferSubData(
+			glType,
+			static_cast<GLintptr>(offset),
+			static_cast<GLsizeiptr>(_size),
+			data);
+
 		glBindBuffer(glType, GL_ZERO);
 	}
 
@@ -127,7 +192,10 @@ namespace Injector
 		case GpuBufferType::TransformFeedback:
 			return GL_TRANSFORM_FEEDBACK_BUFFER;
 		default:
-			throw Exception("GlGpuBuffer", "toGlType", "Unsupported type");
+			throw Exception(
+				"GlGpuBuffer",
+				"toGlType",
+				"Unsupported type");
 		}
 	}
 	bool GlGpuBuffer::isGlMappable(GLenum usage)
@@ -151,6 +219,9 @@ namespace Injector
 				   GL_MAP_WRITE_BIT |
 				   GL_MAP_FLUSH_EXPLICIT_BIT;
 		else
-			throw Exception("GlGpuBuffer", "toGlAccess", "Unsupported access");
+			throw Exception(
+				"GlGpuBuffer",
+				"toGlAccess",
+				"Unsupported access");
 	}
 }
