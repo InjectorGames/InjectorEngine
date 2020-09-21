@@ -63,7 +63,7 @@ namespace Injector
 			else if (window->getKeyboardButton(KeyboardButton::D) == ButtonState::Press)
 				translation.x = 1.0f;
 
-			if (window->getKeyboardButton(KeyboardButton::LeftControl) == ButtonState::Press)
+			if (window->getKeyboardButton(KeyboardButton::LeftShift) == ButtonState::Press)
 				translation.y = -1.0f;
 			else if (window->getKeyboardButton(KeyboardButton::Space) == ButtonState::Press)
 				translation.y = 1.0f;

@@ -26,11 +26,11 @@ namespace Injector
 			const std::vector<Vector3>& normals);
 		virtual ~ModelData();
 
-		std::vector<float> getV() const noexcept;
-		std::vector<float> getVC() const noexcept;
-		std::vector<float> getVT() const noexcept;
-		std::vector<float> getVN() const noexcept;
-		std::vector<float> getVNT() const noexcept;
+		std::vector<float> getV() const;
+		std::vector<float> getVC() const;
+		std::vector<float> getVT() const;
+		std::vector<float> getVN() const;
+		std::vector<float> getVNT() const;
 
 		static ModelData readFromFile(const std::string& filePath);
 

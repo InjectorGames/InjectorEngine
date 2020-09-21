@@ -4,18 +4,25 @@
 namespace Injector
 {
 	Vector2::Vector2() :
-		x(0.0f), y(0.0f)
+		x(0.0f),
+		y(0.0f)
 	{
 	}
-	Vector2::Vector2(float xy) :
-		x(xy), y(xy)
+	Vector2::Vector2(
+		float xy) :
+		x(xy),
+		y(xy)
 	{
 	}
-	Vector2::Vector2(float _x, float _y) :
-		x(_x), y(_y)
+	Vector2::Vector2(
+		float _x,
+		float _y) :
+		x(_x),
+		y(_y)
 	{
 	}
-	Vector2::Vector2(const IntVector2& vector) :
+	Vector2::Vector2(
+		const IntVector2& vector) :
 		x(static_cast<float>(vector.x)),
 		y(static_cast<float>(vector.y))
 	{
@@ -55,28 +62,41 @@ namespace Injector
 	{
 		auto dot = getDotProduct(normal);
 		auto k = (1.0f - eta * eta * (1.0f - dot * dot));
-		return Vector2(k >= 0.0f ? (*this * eta - normal * (eta * dot + sqrt(k))) : Vector2(0.0f));
+
+		return Vector2(k >= 0.0f ?
+			(*this * eta - normal * (eta * dot + sqrt(k))) :
+			Vector2(0.0f));
 	}
 	Vector2 Vector2::getSine() const noexcept
 	{
-		return Vector2(sin(x), sin(y));
+		return Vector2(
+			sin(x),
+			sin(y));
 	}
 	Vector2 Vector2::getCosine() const noexcept
 	{
-		return Vector2(cos(x), cos(y));
+		return Vector2(
+			cos(x),
+			cos(y));
 	}
 	Vector2 Vector2::getTangent() const noexcept
 	{
-		return Vector2(tan(x), tan(y));
+		return Vector2(
+			tan(x),
+			tan(y));
 	}
 	Vector2 Vector2::getCotangent() const noexcept
 	{
-		return Vector2(1.0f / tan(x), 1.0f / tan(y));
+		return Vector2(
+			1.0f / tan(x),
+			1.0f / tan(y));
 	}
 
 	bool Vector2::operator==(const Vector2& vector) const noexcept
 	{
-		return x == vector.x && y == vector.y;
+		return
+			x == vector.x &&
+			y == vector.y;
 	}
 	bool Vector2::operator!=(const Vector2& vector) const noexcept
 	{
@@ -116,19 +136,27 @@ namespace Injector
 
 	Vector2 Vector2::operator-(const Vector2& vector) const noexcept
 	{
-		return Vector2(x - vector.x, y - vector.y);
+		return Vector2(
+			x - vector.x,
+			y - vector.y);
 	}
 	Vector2 Vector2::operator+(const Vector2& vector) const noexcept
 	{
-		return Vector2(x + vector.x, y + vector.y);
+		return Vector2(
+			x + vector.x,
+			y + vector.y);
 	}
 	Vector2 Vector2::operator/(const Vector2& vector) const noexcept
 	{
-		return Vector2(x / vector.x, y / vector.y);
+		return Vector2(
+			x / vector.x,
+			y / vector.y);
 	}
 	Vector2 Vector2::operator*(const Vector2& vector) const noexcept
 	{
-		return Vector2(x * vector.x, y * vector.y);
+		return Vector2(
+			x * vector.x,
+			y * vector.y);
 	}
 	Vector2& Vector2::operator-=(const Vector2& vector) noexcept
 	{
@@ -157,19 +185,27 @@ namespace Injector
 
 	Vector2 Vector2::operator-(const IntVector2& vector) const noexcept
 	{
-		return Vector2(x - vector.x, y - vector.y);
+		return Vector2(
+			x - vector.x,
+			y - vector.y);
 	}
 	Vector2 Vector2::operator+(const IntVector2& vector) const noexcept
 	{
-		return Vector2(x + vector.x, y + vector.y);
+		return Vector2(
+			x + vector.x,
+			y + vector.y);
 	}
 	Vector2 Vector2::operator/(const IntVector2& vector) const noexcept
 	{
-		return Vector2(x / vector.x, y / vector.y);
+		return Vector2(
+			x / vector.x,
+			y / vector.y);
 	}
 	Vector2 Vector2::operator*(const IntVector2& vector) const noexcept
 	{
-		return Vector2(x * vector.x, y * vector.y);
+		return Vector2(
+			x * vector.x,
+			y * vector.y);
 	}
 	Vector2& Vector2::operator-=(const IntVector2& vector) noexcept
 	{
@@ -198,19 +234,27 @@ namespace Injector
 
 	Vector2 Vector2::operator-(float value) const noexcept
 	{
-		return Vector2(x - value, y - value);
+		return Vector2(
+			x - value,
+			y - value);
 	}
 	Vector2 Vector2::operator+(float value) const noexcept
 	{
-		return Vector2(x + value, y + value);
+		return Vector2(
+			x + value,
+			y + value);
 	}
 	Vector2 Vector2::operator/(float value) const noexcept
 	{
-		return Vector2(x / value, y / value);
+		return Vector2(
+			x / value,
+			y / value);
 	}
 	Vector2 Vector2::operator*(float value) const noexcept
 	{
-		return Vector2(x * value, y * value);
+		return Vector2(
+			x * value,
+			y * value);
 	}
 	Vector2& Vector2::operator-=(float value) noexcept
 	{
