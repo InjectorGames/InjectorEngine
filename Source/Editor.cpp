@@ -128,9 +128,9 @@ void init()
 		teapotModelData->indices32,
 		false);
 	teapot->createComponent<TransformComponent>(
-		Vector3(0.0f, 0.75f, 0.0f),
+		Vector3(0.0f, 0.5f, 0.0f),
 		Quaternion(Vector3::zero),
-		Vector3::one,
+		Vector3::one / 8.0f,
 		RotationOrigin::Spin,
 		Matrix4::identity,
 		cube);

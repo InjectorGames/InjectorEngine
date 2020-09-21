@@ -1,4 +1,5 @@
 #include "Injector/Mathematics/TransformSystem.hpp"
+#include "Injector/Exception/OutOfRangeException.hpp"
 #include "Injector/Engine.hpp"
 
 #include <iostream>
@@ -86,13 +87,24 @@ namespace Injector
 				auto matrix = transformComponent->matrix;
 				TransformComponent* parentTransformComponent;
 
+				auto cycleCount = 0;
+
 				while (parent)
 				{
 					if (!parent->getComponent(parentTransformComponent))
 						break;
 
 					parent = parentTransformComponent->parent;
-					matrix *= parentTransformComponent->matrix;
+					matrix = parentTransformComponent->matrix * matrix;
+
+					if(cycleCount >= 0xFFFF)
+					{
+						throw OutOfRangeException(
+							"TransformSystem",
+							"update",
+							cycleCount,
+							0xFFFF);
+					}
 				}
 
 				transformComponent->matrix = matrix;
