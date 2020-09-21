@@ -47,11 +47,19 @@ namespace Injector
 
 	bool SizeVector4::operator==(const SizeVector4& vector) const noexcept
 	{
-		return x == vector.x && y == vector.y && z == vector.z && w == vector.w;
+		return
+			x == vector.x &&
+			y == vector.y &&
+			z == vector.z &&
+			w == vector.w;
 	}
 	bool SizeVector4::operator!=(const SizeVector4& vector) const noexcept
 	{
-		return !(*this == vector);
+		return
+			x != vector.x ||
+			y != vector.y ||
+			z != vector.z ||
+			w != vector.w;
 	}
 
 	const SizeVector4 SizeVector4::zero = SizeVector4(0);

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include <cstdint>
 
 namespace Injector
@@ -15,6 +16,8 @@ namespace Injector
 		std::vector<Vector4> colors;
 		std::vector<Vector2> texCoords;
 		std::vector<Vector3> normals;
+		std::vector<Vector3> tangents;
+		std::vector<Vector3> bitangents;
 
 		ModelData();
 		ModelData(
@@ -23,16 +26,19 @@ namespace Injector
 			const std::vector<Vector3>& vertices,
 			const std::vector<Vector4>& colors,
 			const std::vector<Vector2>& texCoords,
-			const std::vector<Vector3>& normals);
+			const std::vector<Vector3>& normals,
+			const std::vector<Vector3>& tangents,
+			const std::vector<Vector3>& bitagents);
 		virtual ~ModelData();
 
-		std::vector<float> getV() const;
-		std::vector<float> getVC() const;
-		std::vector<float> getVT() const;
-		std::vector<float> getVN() const;
-		std::vector<float> getVNT() const;
+		std::vector<float> getVertex() const;
+		std::vector<float> getVertexColor() const;
+		std::vector<float> getVertexTexCoord() const;
+		std::vector<float> getVertexNormal() const;
+		std::vector<float> getVertexNormalTexCoord() const;
 
-		static ModelData readFromFile(const std::string& filePath);
+		static std::shared_ptr<ModelData> readFromFile(
+			const std::string& filePath);
 
 		static const std::vector<uint16_t> squareIndices16;
 		static const std::vector<uint32_t> squareIndices32;

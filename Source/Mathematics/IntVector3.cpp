@@ -6,23 +6,41 @@
 namespace Injector
 {
 	IntVector3::IntVector3() :
-		x(0), y(0), z(0)
+		x(0),
+		y(0),
+		z(0)
 	{
 	}
-	IntVector3::IntVector3(int xyz) :
-		x(xyz), y(xyz), z(xyz)
+	IntVector3::IntVector3(
+		int xyz) :
+		x(xyz),
+		y(xyz),
+		z(xyz)
 	{
 	}
-	IntVector3::IntVector3(int _x, int _y, int _z) :
-		x(_x), y(_y), z(_z)
+	IntVector3::IntVector3(
+		int _x,
+		int _y,
+		int _z) :
+		x(_x),
+		y(_y),
+		z(_z)
 	{
 	}
-	IntVector3::IntVector3(const IntVector2& vector, int _z) :
-		x(vector.x), y(vector.y), z(_z)
+	IntVector3::IntVector3(
+		const IntVector2& vector,
+		int _z) :
+		x(vector.x),
+		y(vector.y),
+		z(_z)
 	{
 	}
-	IntVector3::IntVector3(int _x, const IntVector2& vector) :
-		x(_x), y(vector.x), z(vector.y)
+	IntVector3::IntVector3(
+		int _x,
+		const IntVector2& vector) :
+		x(_x),
+		y(vector.x),
+		z(vector.y)
 	{
 	}
 
@@ -40,11 +58,13 @@ namespace Injector
 	}
 	float IntVector3::getLength() const noexcept
 	{
-		return sqrtf(static_cast<float>(getDotProduct(*this)));
+		return sqrtf(static_cast<float>(
+			getDotProduct(*this)));
 	}
 	float IntVector3::getDistance(const IntVector3& vector) const noexcept
 	{
-		return sqrtf(static_cast<float>(getDotProduct(*this - vector)));
+		return sqrtf(static_cast<float>(
+			getDotProduct(*this - vector)));
 	}
 	IntVector3 IntVector3::getReflected(const IntVector3& normal) const noexcept
 	{
@@ -58,11 +78,17 @@ namespace Injector
 
 	bool IntVector3::operator==(const IntVector3& vector) const noexcept
 	{
-		return x == vector.x && y == vector.y && z == vector.z;
+		return
+			x == vector.x &&
+			y == vector.y &&
+			z == vector.z;
 	}
 	bool IntVector3::operator!=(const IntVector3& vector) const noexcept
 	{
-		return !(*this == vector);
+		return
+			x != vector.x ||
+			y != vector.y ||
+			z != vector.z;
 	}
 
 	IntVector3& IntVector3::operator--() noexcept
@@ -97,48 +123,81 @@ namespace Injector
 	}
 	IntVector3 IntVector3::operator-() const noexcept
 	{
-		return IntVector3(-x, -y, -z);
+		return IntVector3(
+			-x,
+			-y,
+			-z);
 	}
 
 	IntVector3 IntVector3::operator-(const IntVector3& vector) const noexcept
 	{
-		return IntVector3(x - vector.x, y - vector.y, z - vector.z);
+		return IntVector3(
+			x - vector.x,
+			y - vector.y,
+			z - vector.z);
 	}
 	IntVector3 IntVector3::operator+(const IntVector3& vector) const noexcept
 	{
-		return IntVector3(x + vector.x, y + vector.y, z + vector.z);
+		return IntVector3(
+			x + vector.x,
+			y + vector.y,
+			z + vector.z);
 	}
 	IntVector3 IntVector3::operator/(const IntVector3& vector) const noexcept
 	{
-		return IntVector3(x / vector.x, y / vector.y, z / vector.z);
+		return IntVector3(
+			x / vector.x,
+			y / vector.y,
+			z / vector.z);
 	}
 	IntVector3 IntVector3::operator*(const IntVector3& vector) const noexcept
 	{
-		return IntVector3(x * vector.x, y * vector.y, z * vector.z);
+		return IntVector3(
+			x * vector.x,
+			y * vector.y,
+			z * vector.z);
 	}
 	IntVector3 IntVector3::operator%(const IntVector3& vector) const noexcept
 	{
-		return IntVector3(x % vector.x, y % vector.y, z % vector.z);
+		return IntVector3(
+			x % vector.x,
+			y % vector.y,
+			z % vector.z);
 	}
 	IntVector3 IntVector3::operator|(const IntVector3& vector) const noexcept
 	{
-		return IntVector3(x | vector.x, y | vector.y, z | vector.z);
+		return IntVector3(
+			x | vector.x,
+			y | vector.y,
+			z | vector.z);
 	}
 	IntVector3 IntVector3::operator&(const IntVector3& vector) const noexcept
 	{
-		return IntVector3(x & vector.x, y & vector.y, z & vector.z);
+		return IntVector3(
+			x & vector.x,
+			y & vector.y,
+			z & vector.z);
 	}
 	IntVector3 IntVector3::operator^(const IntVector3& vector) const noexcept
 	{
-		return IntVector3(x ^ vector.x, y ^ vector.y, z ^ vector.z);
+		return IntVector3(
+			x ^ vector.x,
+			y ^ vector.y,
+			z ^ vector.z);
 	}
 	IntVector3 IntVector3::operator<<(const IntVector3& vector) const noexcept
 	{
-		return IntVector3(x << vector.x, y << vector.y, z << vector.z);
+		return IntVector3(
+			x << vector.x,
+			y << vector.y,
+			z << vector.z);
 	}
 	IntVector3 IntVector3::operator>>(const IntVector3& vector) const noexcept
 	{
-		return IntVector3(x >> vector.x, y >> vector.y, z >> vector.z);
+		return IntVector3(
+			x >> vector.x,
+			y >> vector.y,
+			z >> vector.z);
 	}
 	IntVector3& IntVector3::operator-=(const IntVector3& vector) noexcept
 	{
@@ -213,43 +272,73 @@ namespace Injector
 
 	IntVector3 IntVector3::operator-(int value) const noexcept
 	{
-		return IntVector3(x - value, y - value, z - value);
+		return IntVector3(
+			x - value,
+			y - value,
+			z - value);
 	}
 	IntVector3 IntVector3::operator+(int value) const noexcept
 	{
-		return IntVector3(x + value, y + value, z + value);
+		return IntVector3(
+			x + value,
+			y + value,
+			z + value);
 	}
 	IntVector3 IntVector3::operator/(int value) const noexcept
 	{
-		return IntVector3(x / value, y / value, z / value);
+		return IntVector3(
+			x / value,
+			y / value,
+			z / value);
 	}
 	IntVector3 IntVector3::operator*(int value) const noexcept
 	{
-		return IntVector3(x * value, y * value, z * value);
+		return IntVector3(
+			x * value,
+			y * value,
+			z * value);
 	}
 	IntVector3 IntVector3::operator%(int value) const noexcept
 	{
-		return IntVector3(x % value, y % value, z % value);
+		return IntVector3(
+			x % value,
+			y % value,
+			z % value);
 	}
 	IntVector3 IntVector3::operator|(int value) const noexcept
 	{
-		return IntVector3(x | value, y | value, z | value);
+		return IntVector3(
+			x | value,
+			y | value,
+			z | value);
 	}
 	IntVector3 IntVector3::operator&(int value) const noexcept
 	{
-		return IntVector3(x & value, y & value, z & value);
+		return IntVector3(
+			x & value,
+			y & value,
+			z & value);
 	}
 	IntVector3 IntVector3::operator^(int value) const noexcept
 	{
-		return IntVector3(x ^ value, y ^ value, z ^ value);
+		return IntVector3(
+			x ^ value,
+			y ^ value,
+			z ^ value);
 	}
 	IntVector3 IntVector3::operator<<(int value) const noexcept
 	{
-		return IntVector3(x << value, y << value, z << value);
+		return IntVector3(
+			x << value,
+			y << value,
+			z << value);
 	}
 	IntVector3 IntVector3::operator>>(int value) const noexcept
 	{
-		return IntVector3(x >> value, y >> value, z >> value);
+		return IntVector3(
+			x >> value,
+			y >> value,
+			z >> value);
 	}
 	IntVector3& IntVector3::operator-=(int value) noexcept
 	{

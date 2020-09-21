@@ -30,11 +30,17 @@ namespace Injector
 
 	bool SizeVector3::operator==(const SizeVector3& vector) const noexcept
 	{
-		return x == vector.x && y == vector.y && z == vector.z;
+		return
+			x == vector.x &&
+			y == vector.y &&
+			z == vector.z;
 	}
 	bool SizeVector3::operator!=(const SizeVector3& vector) const noexcept
 	{
-		return !(*this == vector);
+		return
+			x != vector.x ||
+			y != vector.y ||
+			z != vector.z;
 	}
 
 	const SizeVector3 SizeVector3::zero = SizeVector3(0);

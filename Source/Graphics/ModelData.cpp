@@ -1,6 +1,10 @@
 #include "Injector/Graphics/ModelData.hpp"
 #include "Injector/Exception/Exception.hpp"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 namespace Injector
 {
 	ModelData::ModelData() :
@@ -9,7 +13,9 @@ namespace Injector
 		vertices(),
 		colors(),
 		texCoords(),
-		normals()
+		normals(),
+		tangents(),
+		bitangents()
 	{
 	}
 	ModelData::ModelData(
@@ -18,20 +24,24 @@ namespace Injector
 		const std::vector<Vector3>& _vertices,
 		const std::vector<Vector4>& _colors,
 		const std::vector<Vector2>& _texCoords,
-		const std::vector<Vector3>& _normals) :
+		const std::vector<Vector3>& _normals,
+		const std::vector<Vector3>& _tangents,
+		const std::vector<Vector3>& _bitagents) :
 		indices16(_indices16),
 		indices32(_indices32),
 		vertices(_vertices),
 		colors(_colors),
 		texCoords(_texCoords),
-		normals(_normals)
+		normals(_normals),
+		tangents(_tangents),
+		bitangents(_bitagents)
 	{
 	}
 	ModelData::~ModelData()
 	{
 	}
 
-	std::vector<float> ModelData::getV() const
+	std::vector<float> ModelData::getVertex() const
 	{
 		auto vertexData = std::vector<float>(
 			vertices.size() * 3);
@@ -43,13 +53,13 @@ namespace Injector
 
 		return vertexData;
 	}
-	std::vector<float> ModelData::getVC() const
+	std::vector<float> ModelData::getVertexColor() const
 	{
 		if (vertices.size() != colors.size())
 		{
 			throw Exception(
 				"ModelData",
-				"getVC",
+				"getVertexColor",
 				"Different array sizes");
 		}
 
@@ -70,13 +80,13 @@ namespace Injector
 
 		return vertexData;
 	}
-	std::vector<float> ModelData::getVT() const
+	std::vector<float> ModelData::getVertexTexCoord() const
 	{
 		if (vertices.size() != texCoords.size())
 		{
 			throw Exception(
 				"ModelData",
-				"getVT",
+				"getVertexTexCoord",
 				"Different array sizes");
 		}
 
@@ -97,13 +107,13 @@ namespace Injector
 
 		return vertexData;
 	}
-	std::vector<float> ModelData::getVN() const
+	std::vector<float> ModelData::getVertexNormal() const
 	{
 		if (vertices.size() != normals.size())
 		{
 			throw Exception(
 				"ModelData",
-				"getVN",
+				"getVertexNormal",
 				"Different array sizes");
 		}
 
@@ -124,14 +134,14 @@ namespace Injector
 
 		return vertexData;
 	}
-	std::vector<float> ModelData::getVNT() const
+	std::vector<float> ModelData::getVertexNormalTexCoord() const
 	{
 		if (vertices.size() != normals.size() ||
 			vertices.size() != texCoords.size())
 		{
 			throw Exception(
 				"ModelData",
-				"getVNT",
+				"getVertexNormalTexCoord",
 				"Different array sizes");
 		}
 
@@ -155,6 +165,115 @@ namespace Injector
 		}
 
 		return vertexData;
+	}
+
+	std::shared_ptr<ModelData> ModelData::readFromFile(
+		const std::string& filePath)
+	{
+		auto importer = Assimp::Importer();
+
+		auto scene = importer.ReadFile(filePath,
+			aiProcessPreset_TargetRealtime_Fast |
+			aiProcess_MakeLeftHanded |
+			aiProcess_FlipWindingOrder);
+
+		if (!scene)
+		{
+			throw Exception(
+				"ModelData",
+				"readFromFile",
+				"Failed to load scene");
+		}
+		if (!scene->HasMeshes())
+		{
+			throw Exception(
+				"ModelData",
+				"readFromFile",
+				"Scene has no meshes");
+		}
+		if (scene->mNumMeshes > 1)
+		{
+			throw Exception(
+				"ModelData",
+				"readFromFile",
+				"Scene has more than one mesh");
+		}
+
+		auto modelData = std::make_shared<ModelData>();
+		auto mesh = scene->mMeshes[0];
+
+		auto vertexCount = mesh->mNumVertices;
+		modelData->vertices.resize(vertexCount);
+
+		memcpy(
+			modelData->vertices.data(),
+			mesh->mVertices,
+			vertexCount * sizeof(Vector3));
+
+		if (mesh->HasFaces())
+		{
+			auto& indices = modelData->indices32;
+
+			for (int i = 0; i < mesh->mNumFaces; i++)
+			{
+				auto face = mesh->mFaces[i];
+
+				for (int j = 0; j < face.mNumIndices; j++)
+					indices.push_back(face.mIndices[j]);
+			}
+		}
+
+		if(mesh->HasVertexColors(0))
+		{
+			modelData->colors.resize(vertexCount);
+
+			memcpy(
+				modelData->colors.data(),
+				mesh->mColors[0],
+				vertexCount * sizeof(Vector4));
+		}
+
+		if (mesh->HasTextureCoords(0))
+		{
+			auto& texCoords = modelData->texCoords;
+			auto textureCoords = mesh->mTextureCoords[0];
+			texCoords.resize(vertexCount);
+
+			for (int i = 0; i < vertexCount; i++)
+			{
+				memcpy(
+					&texCoords[i],
+					&textureCoords[i],
+					sizeof(Vector2));
+			}
+		}
+
+		if (mesh->HasNormals())
+		{
+			modelData->normals.resize(vertexCount);
+
+			memcpy(
+				modelData->normals.data(),
+				mesh->mNormals,
+				vertexCount * sizeof(Vector3));
+		}
+
+		if(mesh->HasTangentsAndBitangents())
+		{
+			modelData->tangents.resize(vertexCount);
+			modelData->bitangents.resize(vertexCount);
+
+			memcpy(
+				modelData->tangents.data(),
+				mesh->mTangents,
+				vertexCount * sizeof(Vector3));
+			memcpy(
+				modelData->bitangents.data(),
+				mesh->mBitangents,
+				vertexCount * sizeof(Vector3));
+		}
+
+		return modelData;
 	}
 
 	const std::vector<uint16_t> ModelData::squareIndices16 = {
@@ -383,32 +502,42 @@ namespace Injector
 		Vector4(0.0f, 0.0f, 1.0f, 1.0f),
 	};
 
+	// TODO: Compute tangents and bitangets
+
 	const ModelData ModelData::square = ModelData(
 		squareIndices16,
 		squareIndices32,
 		squareVertices,
 		squareColors,
 		squareTexCoords,
-		squareNormals);
+		squareNormals,
+		{},
+		{});
 	const ModelData ModelData::cube = ModelData(
 		cubeIndices16,
 		cubeIndices32,
 		cubeVertices,
 		cubeColors,
 		cubeTexCoords,
-		cubeNormals);
+		cubeNormals,
+		{},
+		{});
 	const ModelData ModelData::frame = ModelData(
 		frameIndices16,
 		frameIndices32,
 		frameVertices,
 		frameColors,
 		frameTexCoords,
-		frameNormals);
+		frameNormals,
+		{},
+		{});
 	const ModelData ModelData::axis = ModelData(
 		axisIndices16,
 		axisIndices32,
 		axisVertices,
 		axisColors,
+		{},
+		{},
 		{},
 		{});
 }

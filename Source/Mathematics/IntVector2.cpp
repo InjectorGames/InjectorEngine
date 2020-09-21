@@ -6,15 +6,21 @@
 namespace Injector
 {
 	IntVector2::IntVector2() :
-		x(0), y(0)
+		x(0),
+		y(0)
 	{
 	}
-	IntVector2::IntVector2(int xy) :
-		x(xy), y(xy)
+	IntVector2::IntVector2(
+		int xy) :
+		x(xy),
+		y(xy)
 	{
 	}
-	IntVector2::IntVector2(int _x, int _y) :
-		x(_x), y(_y)
+	IntVector2::IntVector2(
+		int _x,
+		int _y) :
+		x(_x),
+		y(_y)
 	{
 	}
 
@@ -25,11 +31,13 @@ namespace Injector
 	}
 	float IntVector2::getLength() const noexcept
 	{
-		return sqrtf(static_cast<float>(getDotProduct(*this)));
+		return sqrtf(static_cast<float>(
+			getDotProduct(*this)));
 	}
 	float IntVector2::getDistance(const IntVector2& vector) const noexcept
 	{
-		return sqrtf(static_cast<float>(getDotProduct(*this - vector)));
+		return sqrtf(static_cast<float>(
+			getDotProduct(*this - vector)));
 	}
 	IntVector2 IntVector2::getReflected(const IntVector2& normal) const noexcept
 	{
@@ -38,11 +46,15 @@ namespace Injector
 
 	bool IntVector2::operator==(const IntVector2& vector) const noexcept
 	{
-		return x == vector.x && y == vector.y;
+		return
+			x == vector.x &&
+			y == vector.y;
 	}
 	bool IntVector2::operator!=(const IntVector2& vector) const noexcept
 	{
-		return !(*this == vector);
+		return
+			x != vector.x ||
+			y != vector.y;
 	}
 
 	IntVector2& IntVector2::operator--() noexcept
@@ -73,48 +85,70 @@ namespace Injector
 	}
 	IntVector2 IntVector2::operator-() const noexcept
 	{
-		return IntVector2(-x, -y);
+		return IntVector2(
+			-x,
+			-y);
 	}
 
 	IntVector2 IntVector2::operator-(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x - vector.x, y - vector.y);
+		return IntVector2(
+			x - vector.x,
+			y - vector.y);
 	}
 	IntVector2 IntVector2::operator+(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x + vector.x, y + vector.y);
+		return IntVector2(
+			x + vector.x,
+			y + vector.y);
 	}
 	IntVector2 IntVector2::operator/(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x / vector.x, y / vector.y);
+		return IntVector2(
+			x / vector.x,
+			y / vector.y);
 	}
 	IntVector2 IntVector2::operator*(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x * vector.x, y * vector.y);
+		return IntVector2(
+			x * vector.x,
+			y * vector.y);
 	}
 	IntVector2 IntVector2::operator%(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x % vector.x, y % vector.y);
+		return IntVector2(
+			x % vector.x,
+			y % vector.y);
 	}
 	IntVector2 IntVector2::operator|(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x | vector.x, y | vector.y);
+		return IntVector2(
+			x | vector.x,
+			y | vector.y);
 	}
 	IntVector2 IntVector2::operator&(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x & vector.x, y & vector.y);
+		return IntVector2(
+			x & vector.x,
+			y & vector.y);
 	}
 	IntVector2 IntVector2::operator^(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x ^ vector.x, y ^ vector.y);
+		return IntVector2(
+			x ^ vector.x,
+			y ^ vector.y);
 	}
 	IntVector2 IntVector2::operator<<(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x << vector.x, y << vector.y);
+		return IntVector2(
+			x << vector.x,
+			y << vector.y);
 	}
 	IntVector2 IntVector2::operator>>(const IntVector2& vector) const noexcept
 	{
-		return IntVector2(x >> vector.x, y >> vector.y);
+		return IntVector2(
+			x >> vector.x,
+			y >> vector.y);
 	}
 	IntVector2& IntVector2::operator-=(const IntVector2& vector) noexcept
 	{
@@ -179,43 +213,63 @@ namespace Injector
 
 	IntVector2 IntVector2::operator-(int value) const noexcept
 	{
-		return IntVector2(x - value, y - value);
+		return IntVector2(
+			x - value,
+			y - value);
 	}
 	IntVector2 IntVector2::operator+(int value) const noexcept
 	{
-		return IntVector2(x + value, y + value);
+		return IntVector2(
+			x + value,
+			y + value);
 	}
 	IntVector2 IntVector2::operator/(int value) const noexcept
 	{
-		return IntVector2(x / value, y / value);
+		return IntVector2(
+			x / value,
+			y / value);
 	}
 	IntVector2 IntVector2::operator*(int value) const noexcept
 	{
-		return IntVector2(x * value, y * value);
+		return IntVector2(
+			x * value,
+			y * value);
 	}
 	IntVector2 IntVector2::operator%(int value) const noexcept
 	{
-		return IntVector2(x % value, y % value);
+		return IntVector2(
+			x % value,
+			y % value);
 	}
 	IntVector2 IntVector2::operator|(int value) const noexcept
 	{
-		return IntVector2(x | value, y | value);
+		return IntVector2(
+			x | value,
+			y | value);
 	}
 	IntVector2 IntVector2::operator&(int value) const noexcept
 	{
-		return IntVector2(x & value, y & value);
+		return IntVector2(
+			x & value,
+			y & value);
 	}
 	IntVector2 IntVector2::operator^(int value) const noexcept
 	{
-		return IntVector2(x ^ value, y ^ value);
+		return IntVector2(
+			x ^ value,
+			y ^ value);
 	}
 	IntVector2 IntVector2::operator<<(int value) const noexcept
 	{
-		return IntVector2(x << value, y << value);
+		return IntVector2(
+			x << value,
+			y << value);
 	}
 	IntVector2 IntVector2::operator>>(int value) const noexcept
 	{
-		return IntVector2(x >> value, y >> value);
+		return IntVector2(
+			x >> value,
+			y >> value);
 	}
 	IntVector2& IntVector2::operator-=(int value) noexcept
 	{

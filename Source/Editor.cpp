@@ -68,7 +68,7 @@ void init()
 
 	auto simSky = window->createEntity();
 	auto simSkyMesh = window->createMesh(
-		ModelData::frame.getV(),
+		ModelData::frame.getVertex(),
 		false,
 		ModelData::frame.indices16,
 		false);
@@ -80,37 +80,65 @@ void init()
 	transformSystem->addTransform(simSky);
 	fpvCameraComponent->renders.emplace(simSky);
 
-	//auto teapotModelData = 
-
 	auto floor = window->createEntity();
-	auto squareMesh = window->createMesh(
-		ModelData::square.getVNT(),
+	auto floorMesh = window->createMesh(
+		ModelData::square.getVertexNormalTexCoord(),
 		false,
 		ModelData::square.indices16,
 		false);
 	floor->createComponent<TransformComponent>(
 		Vector3::zero,
-		Quaternion(Vector3(Converter::toRadians(-90.0f), 0.0f, 0.0f)),
+		Quaternion(
+			Vector3(
+				Converter::toRadians(-90.0f),
+				0.0f,
+				0.0f)),
 		Vector3::one * 10);
 	floor->createComponent<RenderComponent>(
 		texDiffusePipeline,
-		squareMesh);
+		floorMesh);
 	transformSystem->addTransform(floor);
 	fpvCameraComponent->renders.emplace(floor);
 
 	auto cube = window->createEntity();
 	auto cubeMesh = window->createMesh(
-		ModelData::cube.getVNT(),
+		ModelData::cube.getVertexNormalTexCoord(),
 		false,
 		ModelData::cube.indices16,
 		false);
 	cube->createComponent<TransformComponent>(
-		Vector3(-4.5f, 0.5f, -4.5f));
+		Vector3(-4.5f, 0.5f, -4.5f),
+		Quaternion(Vector3::zero),
+		Vector3::one,
+		RotationOrigin::Spin,
+		Matrix4::identity,
+		nullptr);
 	cube->createComponent<RenderComponent>(
 		texDiffusePipeline,
 		cubeMesh);
 	transformSystem->addTransform(cube);
 	fpvCameraComponent->renders.emplace(cube);
+
+	auto teapotModelData = ModelData::readFromFile(
+		"Resources/Models/UtahTeapot.fbx");
+	auto teapot = window->createEntity();
+	auto teapotMesh = window->createMesh(
+		teapotModelData->getVertexNormalTexCoord(),
+		false,
+		teapotModelData->indices32,
+		false);
+	teapot->createComponent<TransformComponent>(
+		Vector3(0.0f, 0.75f, 0.0f),
+		Quaternion(Vector3::zero),
+		Vector3::one,
+		RotationOrigin::Spin,
+		Matrix4::identity,
+		cube);
+	teapot->createComponent<RenderComponent>(
+		texDiffusePipeline,
+		teapotMesh);
+	transformSystem->addTransform(teapot);
+	fpvCameraComponent->renders.emplace(teapot);
 }
 
 int main()

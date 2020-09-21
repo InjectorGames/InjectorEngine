@@ -17,11 +17,15 @@ namespace Injector
 
 	bool SizeVector2::operator==(const SizeVector2& vector) const noexcept
 	{
-		return x == vector.x && y == vector.y;
+		return
+			x == vector.x &&
+			y == vector.y;
 	}
 	bool SizeVector2::operator!=(const SizeVector2& vector) const noexcept
 	{
-		return !(*this == vector);
+		return
+			x != vector.x ||
+			y != vector.y;
 	}
 
 	const SizeVector2 SizeVector2::zero = SizeVector2(0);

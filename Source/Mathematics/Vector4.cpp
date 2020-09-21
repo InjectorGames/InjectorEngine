@@ -224,7 +224,11 @@ namespace Injector
 	}
 	bool Vector4::operator!=(const Vector4& vector) const noexcept
 	{
-		return !(*this == vector);
+		return
+			x != vector.x ||
+			y != vector.y ||
+			z != vector.z ||
+			w != vector.w;
 	}
 
 	Vector4& Vector4::operator--() noexcept
