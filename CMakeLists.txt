@@ -10,11 +10,10 @@ project(InjectorEngine
 
 option(INJECTOR_BUILD_EDITOR "Build editor executable" ON)
 
+include(GNUInstallDirs)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set(BUILD_UTILS OFF CACHE BOOL "")
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
-set(BUILD_STATIC_LIBS ON CACHE BOOL "")
 
 include(TestBigEndian)
 TEST_BIG_ENDIAN(INJECTOR_BIG_ENDIAN)
@@ -58,6 +57,10 @@ include(FindVulkan)
 include(CMake/asio.cmake)
 include(CMake/stb.cmake)
 include(CMake/VulkanMemoryAllocator.cmake)
+
+set(BUILD_UTILS OFF CACHE BOOL "")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
+set(BUILD_STATIC_LIBS ON CACHE BOOL "")
 
 add_subdirectory(Libraries/glew/build/cmake)
 
@@ -156,7 +159,6 @@ add_library(InjectorEngine STATIC
         Source/Compressor.cpp
         Source/Engine.cpp
         Source/Entity.cpp
-        Source/CpuInfo.cpp
         Source/Manager.cpp
         Source/System.cpp)
 target_link_libraries(InjectorEngine PUBLIC

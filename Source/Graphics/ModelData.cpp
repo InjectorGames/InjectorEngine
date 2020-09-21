@@ -31,7 +31,7 @@ namespace Injector
 	{
 	}
 
-	std::vector<float> ModelData::getV() const
+	std::vector<float> ModelData::getV() const noexcept
 	{
 		auto vertexData = std::vector<float>(
 			vertices.size() * 3);
@@ -43,7 +43,7 @@ namespace Injector
 
 		return vertexData;
 	}
-	std::vector<float> ModelData::getVC() const
+	std::vector<float> ModelData::getVC() const noexcept
 	{
 		if (vertices.size() != colors.size())
 		{
@@ -70,7 +70,7 @@ namespace Injector
 
 		return vertexData;
 	}
-	std::vector<float> ModelData::getVT() const
+	std::vector<float> ModelData::getVT() const noexcept
 	{
 		if (vertices.size() != texCoords.size())
 		{
@@ -97,7 +97,7 @@ namespace Injector
 
 		return vertexData;
 	}
-	std::vector<float> ModelData::getVN() const
+	std::vector<float> ModelData::getVN() const noexcept
 	{
 		if (vertices.size() != normals.size())
 		{
@@ -124,7 +124,7 @@ namespace Injector
 
 		return vertexData;
 	}
-	std::vector<float> ModelData::getVNT() const
+	std::vector<float> ModelData::getVNT() const noexcept
 	{
 		if (vertices.size() != normals.size() ||
 			vertices.size() != texCoords.size())

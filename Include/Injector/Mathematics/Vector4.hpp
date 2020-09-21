@@ -6,51 +6,6 @@ namespace Injector
 {
 	struct Vector4
 	{
-	 protected:
-		static bool (* cmpeq)(const Vector4&, const Vector4&);
-		static bool (* cmpneq)(const Vector4&, const Vector4&);
-		static bool (* cmple)(const Vector4&, const Vector4&);
-		static bool (* cmpge)(const Vector4&, const Vector4&);
-		static bool (* cmplt)(const Vector4&, const Vector4&);
-		static bool (* cmpgt)(const Vector4&, const Vector4&);
-		static Vector4 (* sub)(const Vector4&, const Vector4&);
-		static Vector4 (* add)(const Vector4&, const Vector4&);
-		static Vector4 (* div)(const Vector4&, const Vector4&);
-		static Vector4 (* mul)(const Vector4&, const Vector4&);
-		static Vector4 (* sub1)(const Vector4&, float);
-		static Vector4 (* add1)(const Vector4&, float);
-		static Vector4 (* div1)(const Vector4&, float);
-		static Vector4 (* mul1)(const Vector4&, float);
-
-		static bool cmpeqRAW(const Vector4& a, const Vector4& b);
-		static bool cmpeqSSE(const Vector4& a, const Vector4& b);
-		static bool cmpneqRAW(const Vector4& a, const Vector4& b);
-		static bool cmpneqSSE(const Vector4& a, const Vector4& b);
-		static bool cmpleRAW(const Vector4& a, const Vector4& b);
-		static bool cmpleSSE(const Vector4& a, const Vector4& b);
-		static bool cmpgeRAW(const Vector4& a, const Vector4& b);
-		static bool cmpgeSSE(const Vector4& a, const Vector4& b);
-		static bool cmpltRAW(const Vector4& a, const Vector4& b);
-		static bool cmpltSSE(const Vector4& a, const Vector4& b);
-		static bool cmpgtRAW(const Vector4& a, const Vector4& b);
-		static bool cmpgtSSE(const Vector4& a, const Vector4& b);
-		static Vector4 subRAW(const Vector4& a, const Vector4& b);
-		static Vector4 subSSE(const Vector4& a, const Vector4& b);
-		static Vector4 addRAW(const Vector4& a, const Vector4& b);
-		static Vector4 addSSE(const Vector4& a, const Vector4& b);
-		static Vector4 divRAW(const Vector4& a, const Vector4& b);
-		static Vector4 divSSE(const Vector4& a, const Vector4& b);
-		static Vector4 mulRAW(const Vector4& a, const Vector4& b);
-		static Vector4 mulSSE(const Vector4& a, const Vector4& b);
-		static Vector4 sub1RAW(const Vector4& a, float b);
-		static Vector4 sub1SSE(const Vector4& a, float b);
-		static Vector4 add1RAW(const Vector4& a, float b);
-		static Vector4 add1SSE(const Vector4& a, float b);
-		static Vector4 div1RAW(const Vector4& a, float b);
-		static Vector4 div1SSE(const Vector4& a, float b);
-		static Vector4 mul1RAW(const Vector4& a, float b);
-		static Vector4 mul1SSE(const Vector4& a, float b);
-	 public:
 		float x, y, z, w;
 
 		Vector4();
@@ -86,11 +41,6 @@ namespace Injector
 
 		bool operator==(const Vector4& vector) const noexcept;
 		bool operator!=(const Vector4& vector) const noexcept;
-		bool operator<=(const Vector4& vector) const noexcept;
-		bool operator>=(const Vector4& vector) const noexcept;
-		bool operator<(const Vector4& vector) const noexcept;
-		bool operator>(const Vector4& vector) const noexcept;
-
 
 		Vector4& operator--() noexcept;
 		Vector4& operator++() noexcept;
@@ -124,8 +74,6 @@ namespace Injector
 		Vector4& operator+=(float value) noexcept;
 		Vector4& operator/=(float value) noexcept;
 		Vector4& operator*=(float value) noexcept;
-
-		static void initialize();
 
 		static const Vector4 zero;
 		static const Vector4 minusOne;

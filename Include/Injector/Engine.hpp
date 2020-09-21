@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Manager.hpp"
-#include "Injector/Graphics/GraphicsAPI.hpp"
+#include "Injector/Graphics/GraphicsApi.hpp"
 
 #include <chrono>
 
@@ -14,7 +14,7 @@ namespace Injector
 		static bool engineInitialized;
 		static bool videoInitialized;
 
-		static GraphicsAPI graphicsApi;
+		static GraphicsApi graphicsApi;
 
 		static bool capUpdateRate;
 		static int targetUpdateRate;
@@ -41,10 +41,10 @@ namespace Injector
 		static void videoErrorCallback(
 			int error, const char* description);
 		static void initializeVideo(
-			GraphicsAPI graphicsApi = GraphicsAPI::OpenGL);
+			GraphicsApi graphicsApi = GraphicsApi::OpenGL);
 		static void terminateVideo();
 		static bool getVideoInitialized() noexcept;
-		static GraphicsAPI getGraphicsApi() noexcept;
+		static GraphicsApi getGraphicsApi() noexcept;
 
 		static void startUpdateLoop();
 		static void stopUpdateLoop();

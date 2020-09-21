@@ -5,15 +5,10 @@
 #include "Injector/Mathematics/TransformSystem.hpp"
 #include "Injector/Graphics/FlyTransformSystem.hpp"
 
-#include <iostream>
-
 using namespace Injector;
 
 void init()
 {
-	auto kek = Vector4(1, 2, 3, 4.9) != Vector4(1,2,3,4);
-	std::cout << kek << "\n";
-
 	auto window = Window::create();
 
 	window->setIcons(std::vector<std::shared_ptr<ImageData>>{
@@ -121,7 +116,7 @@ void init()
 int main()
 {
 	//Engine::initializeVideo(GraphicsApi::Vulkan);
-	Engine::initializeVideo(GraphicsAPI::OpenGL);
+	Engine::initializeVideo(GraphicsApi::OpenGL);
 	Engine::initializeEngine();
 
 	init();
