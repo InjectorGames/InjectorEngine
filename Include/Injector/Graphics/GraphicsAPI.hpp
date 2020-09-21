@@ -2,7 +2,7 @@
 
 namespace Injector
 {
-	enum class GraphicsApi
+	enum class GraphicsAPI
 	{
 		Unknown,
 		OpenGL,

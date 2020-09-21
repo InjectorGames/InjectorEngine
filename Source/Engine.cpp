@@ -1,5 +1,6 @@
 #include "Injector/Engine.hpp"
 #include "Injector/Defines.hpp"
+#include "Injector/CpuInfo.hpp"
 #include "Injector/Exception/Exception.hpp"
 #include "Injector/Graphics/GlWindow.hpp"
 #include "Injector/Graphics/VkWindow.hpp"
@@ -12,7 +13,7 @@ namespace Injector
 	bool Engine::engineInitialized = false;
 	bool Engine::videoInitialized = false;
 
-	GraphicsApi Engine::graphicsApi = GraphicsApi::Unknown;
+	GraphicsAPI Engine::graphicsApi = GraphicsAPI::Unknown;
 
 	bool Engine::capUpdateRate = true;
 	int Engine::targetUpdateRate = 60;
@@ -60,6 +61,9 @@ namespace Injector
 				"Already initialized");
 		}
 
+		CpuInfo::initialize();
+		Vector4::initialize();
+
 		engineInitialized = true;
 
 		std::cout << "Initialized Injector Engine (" <<
@@ -100,7 +104,7 @@ namespace Injector
 			std::string(description));
 	}
 	void Engine::initializeVideo(
-		GraphicsApi _graphicsApi)
+		GraphicsAPI _graphicsApi)
 	{
 		if (engineInitialized)
 		{
@@ -128,7 +132,7 @@ namespace Injector
 				"Failed to initialize GLFW");
 		}
 
-		if (_graphicsApi == GraphicsApi::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
+		if (_graphicsApi == GraphicsAPI::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
 		{
 			throw Exception(
 				"Engine",
@@ -160,7 +164,7 @@ namespace Injector
 
 		glfwTerminate();
 
-		graphicsApi = GraphicsApi::Unknown;
+		graphicsApi = GraphicsAPI::Unknown;
 		videoInitialized = false;
 
 		std::cout << "Terminated video subsystem\n";
@@ -169,7 +173,7 @@ namespace Injector
 	{
 		return videoInitialized;
 	}
-	GraphicsApi Engine::getGraphicsApi() noexcept
+	GraphicsAPI Engine::getGraphicsApi() noexcept
 	{
 		return graphicsApi;
 	}
