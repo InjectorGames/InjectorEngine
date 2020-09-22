@@ -1,19 +1,19 @@
-#include "Injector/Graphics/Pipeline/GlColColorGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlColorColorGpuPipeline.hpp"
 
 namespace Injector
 {
-	GlColColorGpuPipeline::GlColColorGpuPipeline(
+	GlColorColorGpuPipeline::GlColorColorGpuPipeline(
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		const Vector4& color) :
 		GlColorGpuPipeline(vertexShader, fragmentShader, color)
 	{
 	}
-	GlColColorGpuPipeline::~GlColColorGpuPipeline()
+	GlColorColorGpuPipeline::~GlColorColorGpuPipeline()
 	{
 	}
 
-	void GlColColorGpuPipeline::setAttributes()
+	void GlColorColorGpuPipeline::setAttributes()
 	{
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

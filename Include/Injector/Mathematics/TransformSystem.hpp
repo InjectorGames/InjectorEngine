@@ -21,23 +21,25 @@ namespace Injector
 		void update() override;
 
 		size_t getTransformCount() const noexcept;
+		size_t getTranslateCount() const noexcept;
+		size_t getRotateCount() const noexcept;
 
 		bool addTransform(
 			const std::shared_ptr<Entity>& entity) noexcept;
-		bool removeTransform(
-			const std::shared_ptr<Entity>& entity) noexcept;
-		void removeTransforms() noexcept;
-
 		bool addTranslate(
+			const std::shared_ptr<Entity>& entity) noexcept;
+		bool addRotate(
+			const std::shared_ptr<Entity>& entity) noexcept;
+
+		bool removeTransform(
 			const std::shared_ptr<Entity>& entity) noexcept;
 		bool removeTranslate(
 			const std::shared_ptr<Entity>& entity) noexcept;
-		void removeTranslates() noexcept;
-
-		bool addRotate(
-			const std::shared_ptr<Entity>& entity) noexcept;
 		bool removeRotate(
 			const std::shared_ptr<Entity>& entity) noexcept;
+
+		void removeTransforms() noexcept;
+		void removeTranslates() noexcept;
 		void removeRotates() noexcept;
 	};
 }

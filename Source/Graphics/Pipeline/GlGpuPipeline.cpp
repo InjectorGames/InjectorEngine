@@ -3,43 +3,6 @@
 
 namespace Injector
 {
-	GlGpuPipeline::GlGpuPipeline(
-		GLenum _drawMode) :
-		drawMode(_drawMode)
-	{
-		program = glCreateProgram();
-	}
-	GlGpuPipeline::~GlGpuPipeline()
-	{
-		glDeleteProgram(program);
-	}
-
-	GLuint GlGpuPipeline::getProgram() const noexcept
-	{
-		return program;
-	}
-	GLenum GlGpuPipeline::getDrawMode() const noexcept
-	{
-		return drawMode;
-	}
-
-	void GlGpuPipeline::bind()
-	{
-		glUseProgram(program);
-	}
-	void GlGpuPipeline::flush()
-	{
-		throw NotImplementedException(
-			"GlGpuPipeline",
-			"flush");
-	}
-	void GlGpuPipeline::setAttributes()
-	{
-		throw NotImplementedException(
-			"GlGpuPipeline",
-			"setAttributes");
-	}
-
 	bool GlGpuPipeline::getLinkStatus(GLuint program) noexcept
 	{
 		GLint success;
@@ -175,5 +138,42 @@ namespace Injector
 	{
 		glUniformMatrix4fv(location, 1, transpose,
 			reinterpret_cast<const GLfloat*>(&value));
+	}
+
+	GlGpuPipeline::GlGpuPipeline(
+		GLenum _drawMode) :
+		drawMode(_drawMode)
+	{
+		program = glCreateProgram();
+	}
+	GlGpuPipeline::~GlGpuPipeline()
+	{
+		glDeleteProgram(program);
+	}
+
+	GLuint GlGpuPipeline::getProgram() const noexcept
+	{
+		return program;
+	}
+	GLenum GlGpuPipeline::getDrawMode() const noexcept
+	{
+		return drawMode;
+	}
+
+	void GlGpuPipeline::bind()
+	{
+		glUseProgram(program);
+	}
+	void GlGpuPipeline::flush()
+	{
+		throw NotImplementedException(
+			"GlGpuPipeline",
+			"flush");
+	}
+	void GlGpuPipeline::setAttributes()
+	{
+		throw NotImplementedException(
+			"GlGpuPipeline",
+			"setAttributes");
 	}
 }

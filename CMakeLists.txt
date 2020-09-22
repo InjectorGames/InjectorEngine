@@ -84,22 +84,22 @@ add_library(InjectorEngine STATIC
 
         Source/Graphics/Pipeline/ColorGpuPipeline.cpp
         Source/Graphics/Pipeline/DiffuseGpuPipeline.cpp
-        Source/Graphics/Pipeline/GlColColorGpuPipeline.cpp
+        Source/Graphics/Pipeline/GlColorColorGpuPipeline.cpp
         Source/Graphics/Pipeline/GlColorGpuPipeline.cpp
         Source/Graphics/Pipeline/GlDiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/GlGpuPipeline.cpp
-        Source/Graphics/Pipeline/GlSimSkyGpuPipeline.cpp
-        Source/Graphics/Pipeline/GlTexDiffuseGpuPipeline.cpp
+        Source/Graphics/Pipeline/GlSimulatedSkyGpuPipeline.cpp
+        Source/Graphics/Pipeline/GlTextureDiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/GpuPipeline.cpp
-        Source/Graphics/Pipeline/SimSkyGpuPipeline.cpp
-        Source/Graphics/Pipeline/TexDiffuseGpuPipeline.cpp
+        Source/Graphics/Pipeline/SimulatedSkyGpuPipeline.cpp
+        Source/Graphics/Pipeline/TextureDiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/VkColorGpuPipeline.cpp
         Source/Graphics/Pipeline/VkDiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/VkGpuPipeline.cpp
 
         Source/Graphics/CameraComponent.cpp
         Source/Graphics/CameraSystem.cpp
-        Source/Graphics/FlyTransformSystem.cpp
+        Source/Graphics/FreeCameraSystem.cpp
         Source/Graphics/GlCameraSystem.cpp
         Source/Graphics/GlGpuBuffer.cpp
         Source/Graphics/GlGpuShader.cpp
@@ -112,6 +112,8 @@ add_library(InjectorEngine STATIC
         Source/Graphics/GpuImage.cpp
         Source/Graphics/GpuMesh.cpp
         Source/Graphics/GpuShader.cpp
+        Source/Graphics/GuiComponent.cpp
+        Source/Graphics/GuiSystem.cpp
         Source/Graphics/ImageData.cpp
         Source/Graphics/ModelData.cpp
         Source/Graphics/RenderComponent.cpp
@@ -195,16 +197,16 @@ set(INJECTOR_RESOURCES
 
         Models/UtahTeapot.fbx
 
-        Shaders/ColColor.frag
-        Shaders/ColColor.vert
+        Shaders/ColorColor.frag
+        Shaders/ColorColor.vert
         Shaders/Color.frag
         Shaders/Color.vert
-        Shaders/SimSky.vert
-        Shaders/SimSky.frag
+        Shaders/SimulatedSky.vert
+        Shaders/SimulatedSky.frag
         Shaders/Diffuse.frag
         Shaders/Diffuse.vert
-        Shaders/TexDiffuse.frag
-        Shaders/TexDiffuse.vert
+        Shaders/TextureDiffuse.frag
+        Shaders/TextureDiffuse.vert
         Shaders/Color.frag.spv
         Shaders/Color.vert.spv
         Shaders/Diffuse.frag.spv

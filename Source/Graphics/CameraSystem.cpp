@@ -2,15 +2,6 @@
 
 namespace Injector
 {
-	CameraSystem::CameraSystem() :
-		cameras(),
-		lastAspectRatio()
-	{
-	}
-	CameraSystem::~CameraSystem()
-	{
-	}
-
 	void CameraSystem::updateAspectRatio(float aspectRatio)
 	{
 		if (lastAspectRatio != aspectRatio)
@@ -25,17 +16,31 @@ namespace Injector
 					continue;
 
 				if (cameraComponent->updateAspect)
-				{
 					cameraComponent->aspectRatio = aspectRatio;
-					cameraComponent->changed = true;
-				}
 			}
 		}
+	}
+
+	CameraSystem::CameraSystem() :
+		cameras(),
+		lastAspectRatio()
+	{
+	}
+	CameraSystem::~CameraSystem()
+	{
+	}
+
+	size_t CameraSystem::getCameraCount() const noexcept
+	{
+		return cameras.size();
 	}
 
 	bool CameraSystem::addCamera(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
+		if (entity == nullptr)
+			return false;
+
 		return cameras.emplace(entity).second;
 	}
 	bool CameraSystem::removeCamera(
@@ -55,9 +60,5 @@ namespace Injector
 	void CameraSystem::removeCameras() noexcept
 	{
 		cameras.clear();
-	}
-	size_t CameraSystem::getCameraCount() const noexcept
-	{
-		return cameras.size();
 	}
 }

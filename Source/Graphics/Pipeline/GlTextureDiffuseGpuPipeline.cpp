@@ -1,9 +1,9 @@
-#include "Injector/Graphics/Pipeline/GlTexDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlTextureDiffuseGpuPipeline.hpp"
 #include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
-	GlTexDiffuseGpuPipeline::GlTexDiffuseGpuPipeline(
+	GlTextureDiffuseGpuPipeline::GlTextureDiffuseGpuPipeline(
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		const std::shared_ptr<GlGpuImage>& _texture,
@@ -22,8 +22,8 @@ namespace Injector
 		if (!vertexShader || !fragmentShader || !_texture)
 		{
 			throw NullException(
-				"GlTexDiffuseGpuPipeline",
-				"GlTexDiffuseGpuPipeline",
+				"GlTextureDiffuseGpuPipeline",
+				"GlTextureDiffuseGpuPipeline",
 				"shader/texture");
 		}
 
@@ -39,8 +39,8 @@ namespace Injector
 			glDeleteProgram(program);
 
 			throw Exception(
-				"GlTexDiffuseGpuPipeline",
-				"GlTexDiffuseGpuPipeline",
+				"GlTextureDiffuseGpuPipeline",
+				"GlTextureDiffuseGpuPipeline",
 				"Failed to link program, " + log);
 		}
 
@@ -65,70 +65,70 @@ namespace Injector
 		GlGpuPipeline::bind();
 		glUniform1i(textureLocation, 0);
 	}
-	GlTexDiffuseGpuPipeline::~GlTexDiffuseGpuPipeline()
+	GlTextureDiffuseGpuPipeline::~GlTextureDiffuseGpuPipeline()
 	{
 	}
 
-	std::shared_ptr<GpuImage> GlTexDiffuseGpuPipeline::getTexture() const
+	std::shared_ptr<GpuImage> GlTextureDiffuseGpuPipeline::getTexture() const
 	{
 		return texture;
 	}
 
-	const Vector4& GlTexDiffuseGpuPipeline::getObjectColor() const
+	const Vector4& GlTextureDiffuseGpuPipeline::getObjectColor() const
 	{
 		return ubo.objectColor;
 	}
-	void GlTexDiffuseGpuPipeline::setObjectColor(const Vector4& color)
+	void GlTextureDiffuseGpuPipeline::setObjectColor(const Vector4& color)
 	{
 		ubo.objectColor = Vector4(color);
 	}
 
-	const Vector4& GlTexDiffuseGpuPipeline::getAmbientColor() const
+	const Vector4& GlTextureDiffuseGpuPipeline::getAmbientColor() const
 	{
 		return ubo.ambientColor;
 	}
-	void GlTexDiffuseGpuPipeline::setAmbientColor(const Vector4& color)
+	void GlTextureDiffuseGpuPipeline::setAmbientColor(const Vector4& color)
 	{
 		ubo.ambientColor = Vector4(color);
 	}
 
-	const Vector4& GlTexDiffuseGpuPipeline::getLightColor() const
+	const Vector4& GlTextureDiffuseGpuPipeline::getLightColor() const
 	{
 		return ubo.lightColor;
 	}
-	void GlTexDiffuseGpuPipeline::setLightColor(const Vector4& color)
+	void GlTextureDiffuseGpuPipeline::setLightColor(const Vector4& color)
 	{
 		ubo.lightColor = Vector4(color);
 	}
 
-	const Vector3& GlTexDiffuseGpuPipeline::getLightDirection() const
+	const Vector3& GlTextureDiffuseGpuPipeline::getLightDirection() const
 	{
 		return ubo.lightDirection;
 	}
-	void GlTexDiffuseGpuPipeline::setLightDirection(const Vector3& direction)
+	void GlTextureDiffuseGpuPipeline::setLightDirection(const Vector3& direction)
 	{
 		ubo.lightDirection = direction.getNormalized();
 	}
 
-	const Vector2& GlTexDiffuseGpuPipeline::getTextureScale() const
+	const Vector2& GlTextureDiffuseGpuPipeline::getTextureScale() const
 	{
 		return ubo.textureScale;
 	}
-	void GlTexDiffuseGpuPipeline::setTextureScale(const Vector2& scale)
+	void GlTextureDiffuseGpuPipeline::setTextureScale(const Vector2& scale)
 	{
 		ubo.textureScale = Vector2(scale);
 	}
 
-	const Vector2& GlTexDiffuseGpuPipeline::getTextureOffset() const
+	const Vector2& GlTextureDiffuseGpuPipeline::getTextureOffset() const
 	{
 		return ubo.textureOffset;
 	}
-	void GlTexDiffuseGpuPipeline::setTextureOffset(const Vector2& offset)
+	void GlTextureDiffuseGpuPipeline::setTextureOffset(const Vector2& offset)
 	{
 		ubo.textureOffset = Vector2(offset);
 	}
 
-	void GlTexDiffuseGpuPipeline::bind()
+	void GlTextureDiffuseGpuPipeline::bind()
 	{
 		GlGpuPipeline::bind();
 		glEnable(GL_DEPTH_TEST);
@@ -144,11 +144,11 @@ namespace Injector
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0,
 			uniformBuffer->getBuffer());
 	}
-	void GlTexDiffuseGpuPipeline::flush()
+	void GlTextureDiffuseGpuPipeline::flush()
 	{
 		uniformBuffer->setData(&ubo, sizeof(UniformBufferObject));
 	}
-	void GlTexDiffuseGpuPipeline::setAttributes()
+	void GlTextureDiffuseGpuPipeline::setAttributes()
 	{
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
@@ -176,7 +176,7 @@ namespace Injector
 			sizeof(Vector3) * 2);
 	}
 
-	void GlTexDiffuseGpuPipeline::setUniforms(
+	void GlTextureDiffuseGpuPipeline::setUniforms(
 		const Matrix4& model,
 		const Matrix4& view,
 		const Matrix4& proj,

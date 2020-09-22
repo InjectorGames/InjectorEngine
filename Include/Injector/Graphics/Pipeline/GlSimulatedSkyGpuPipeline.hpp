@@ -1,14 +1,14 @@
 #pragma once
 #include "Injector/Graphics/Pipeline/GlGpuPipeline.hpp"
-#include "Injector/Graphics/Pipeline/SimSkyGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/SimulatedSkyGpuPipeline.hpp"
 #include "Injector/Graphics/GlGpuBuffer.hpp"
 #include "Injector/Graphics/GlGpuShader.hpp"
 
 namespace Injector
 {
-	class GlSimSkyGpuPipeline :
+	class GlSimulatedSkyGpuPipeline :
 		public GlGpuPipeline,
-		public SimSkyGpuPipeline
+		public SimulatedSkyGpuPipeline
 	{
 	 public:
 		struct UniformBufferObject
@@ -25,11 +25,11 @@ namespace Injector
 		std::shared_ptr<GlGpuBuffer> uniformBuffer;
 		UniformBufferObject ubo;
 	 public:
-		GlSimSkyGpuPipeline(
+		GlSimulatedSkyGpuPipeline(
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
 			float height = 1.0f);
-		virtual ~GlSimSkyGpuPipeline();
+		virtual ~GlSimulatedSkyGpuPipeline();
 
 		float getHeight() const override;
 		void setHeight(float height) override;

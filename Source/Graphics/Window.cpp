@@ -363,7 +363,7 @@ namespace Injector
 			"Window",
 			"createDiffusePipeline");
 	}
-	std::shared_ptr<TexDiffuseGpuPipeline> Window::createTexDiffusePipeline(
+	std::shared_ptr<TextureDiffuseGpuPipeline> Window::createTexDiffusePipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
 		const std::shared_ptr<GpuImage>& texture)
@@ -372,7 +372,7 @@ namespace Injector
 			"Window",
 			"createTexDiffusePipeline");
 	}
-	std::shared_ptr<SimSkyGpuPipeline> Window::createSkyPipeline(
+	std::shared_ptr<SimulatedSkyGpuPipeline> Window::createSkyPipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
@@ -501,21 +501,21 @@ namespace Injector
 	{
 		auto graphicsApi = Engine::getGraphicsApi();
 
-		if (graphicsApi == GraphicsApi::OpenGL)
+		if (graphicsApi == GraphicsAPIs::OpenGL)
 		{
 			return Engine::createManager<GlWindow>(
 				false,
 				title,
 				size);
 		}
-		else if (graphicsApi == GraphicsApi::OpenGLES)
+		else if (graphicsApi == GraphicsAPIs::OpenGLES)
 		{
 			return Engine::createManager<GlWindow>(
 				true,
 				title,
 				size);
 		}
-		else if (graphicsApi == GraphicsApi::Vulkan)
+		else if (graphicsApi == GraphicsAPIs::Vulkan)
 		{
 			return Engine::createManager<VkWindow>(
 				title,

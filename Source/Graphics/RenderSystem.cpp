@@ -21,6 +21,9 @@ namespace Injector
 	bool RenderSystem::addCamera(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
+		if (entity == nullptr)
+			return false;
+
 		return cameras.emplace(entity).second;
 	}
 	bool RenderSystem::removeCamera(

@@ -2,8 +2,6 @@
 #include "Injector/Exception/OutOfRangeException.hpp"
 #include "Injector/Engine.hpp"
 
-#include <iostream>
-
 namespace Injector
 {
 	TransformSystem::TransformSystem() :
@@ -97,13 +95,17 @@ namespace Injector
 					parent = parentTransformComponent->parent;
 					matrix = parentTransformComponent->matrix * matrix;
 
-					if(cycleCount >= 0xFFFF)
+					if (cycleCount >= 0xFFFF)
 					{
 						throw OutOfRangeException(
 							"TransformSystem",
 							"update",
 							cycleCount,
 							0xFFFF);
+					}
+					else
+					{
+						cycleCount++;
 					}
 				}
 
@@ -116,12 +118,40 @@ namespace Injector
 	{
 		return transforms.size();
 	}
+	size_t TransformSystem::getTranslateCount() const noexcept
+	{
+		return translates.size();
+	}
+	size_t TransformSystem::getRotateCount() const noexcept
+	{
+		return rotates.size();
+	}
 
 	bool TransformSystem::addTransform(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
+		if (entity == nullptr)
+			return false;
+
 		return transforms.emplace(entity).second;
 	}
+	bool TransformSystem::addTranslate(
+		const std::shared_ptr<Entity>& entity) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		return translates.emplace(entity).second;
+	}
+	bool TransformSystem::addRotate(
+		const std::shared_ptr<Entity>& entity) noexcept
+	{
+		if (entity == nullptr)
+			return false;
+
+		return rotates.emplace(entity).second;
+	}
+
 	bool TransformSystem::removeTransform(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
@@ -135,16 +165,6 @@ namespace Injector
 
 		transforms.erase(iterator);
 		return true;
-	}
-	void TransformSystem::removeTransforms() noexcept
-	{
-		transforms.clear();
-	}
-
-	bool TransformSystem::addTranslate(
-		const std::shared_ptr<Entity>& entity) noexcept
-	{
-		return translates.emplace(entity).second;
 	}
 	bool TransformSystem::removeTranslate(
 		const std::shared_ptr<Entity>& entity) noexcept
@@ -160,16 +180,6 @@ namespace Injector
 		translates.erase(iterator);
 		return true;
 	}
-	void TransformSystem::removeTranslates() noexcept
-	{
-		translates.clear();
-	}
-
-	bool TransformSystem::addRotate(
-		const std::shared_ptr<Entity>& entity) noexcept
-	{
-		return rotates.emplace(entity).second;
-	}
 	bool TransformSystem::removeRotate(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
@@ -183,6 +193,15 @@ namespace Injector
 
 		rotates.erase(iterator);
 		return true;
+	}
+
+	void TransformSystem::removeTransforms() noexcept
+	{
+		transforms.clear();
+	}
+	void TransformSystem::removeTranslates() noexcept
+	{
+		translates.clear();
 	}
 	void TransformSystem::removeRotates() noexcept
 	{

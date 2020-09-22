@@ -1,9 +1,10 @@
 #include "Injector/Engine.hpp"
+#include "Injector/Graphics/GuiSystem.hpp"
 #include "Injector/Graphics/SimSkySystem.hpp"
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Mathematics/TransformSystem.hpp"
-#include "Injector/Graphics/FlyTransformSystem.hpp"
+#include "Injector/Graphics/FreeCameraSystem.hpp"
 
 using namespace Injector;
 
@@ -16,33 +17,52 @@ void init()
 		ImageData::readFromFile("Resources/Images/Logo32.png", 4, false),
 		ImageData::readFromFile("Resources/Images/Logo48.png", 4, false), });
 
-	auto flyTransformSystem = window->createSystem<FlyTransformSystem>(window);
+	auto freeCameraSystem = window->createSystem<FreeCameraSystem>(window);
+	auto guiSystem = window->createSystem<GuiSystem>();
 	auto simSkySystem = window->createSystem<SimSkySystem>(window);
 	auto transformSystem = window->createSystem<TransformSystem>();
 	auto cameraSystem = window->createCameraSystem();
 	auto renderSystem = window->createRenderSystem();
 
-	auto fpvCamera = window->createEntity();
-	fpvCamera->createComponent<TransformComponent>(
+	auto freeCamera = window->createEntity();
+	freeCamera->createComponent<TransformComponent>(
 		Vector3(0.0f, -2.5f, 5.0f),
 		Quaternion(Vector3::zero),
 		Vector3::one,
 		RotationOrigin::Orbit);
-	auto fpvCameraComponent = fpvCamera->createComponent<CameraComponent>();
-	transformSystem->addTransform(fpvCamera);
-	cameraSystem->addCamera(fpvCamera);
-	renderSystem->addCamera(fpvCamera);
-	flyTransformSystem->transform = fpvCamera;
+	auto freeCameraComponent = freeCamera->createComponent<CameraComponent>(
+		0,
+		CameraType::Perspective);
+	transformSystem->addTransform(freeCamera);
+	cameraSystem->addCamera(freeCamera);
+	renderSystem->addCamera(freeCamera);
+	freeCameraSystem->camera = freeCamera;
+
+	auto guiCamera = window->createEntity();
+	guiCamera->createComponent<TransformComponent>(
+		Vector3::zero,
+		Quaternion(Vector3::zero),
+		Vector3::one,
+		RotationOrigin::Orbit);
+	auto guiCameraComponent = guiCamera->createComponent<CameraComponent>(
+		1,
+		CameraType::Orthographic);
+	transformSystem->addTransform(guiCamera);
+	cameraSystem->addCamera(guiCamera);
+	renderSystem->addCamera(guiCamera);
 
 	auto texDiffuseVertexShader = window->createShader(
 		GpuShaderStage::Vertex,
-		window->readShaderData("Resources/Shaders/TexDiffuse.vert"));
+		window->readShaderData(
+			"Resources/Shaders/TextureDiffuse.vert"));
 	auto texDiffuseFragmentShader = window->createShader(
 		GpuShaderStage::Fragment,
-		window->readShaderData("Resources/Shaders/TexDiffuse.frag"));
+		window->readShaderData(
+			"Resources/Shaders/TextureDiffuse.frag"));
 	auto boxImageData = ImageData::readFromFile(
 		"Resources/Images/GrayBox.png",
-		3, false);
+		3,
+		false);
 	auto boxImage = window->createImage(boxImageData->size,
 		GpuImageFormat::RGB8,
 		GpuImageFilter::Nearest,
@@ -58,34 +78,50 @@ void init()
 
 	auto simSkyVertexShader = window->createShader(
 		GpuShaderStage::Vertex,
-		window->readShaderData("Resources/Shaders/SimSky.vert"));
+		window->readShaderData(
+			"Resources/Shaders/SimulatedSky.vert"));
 	auto simSkyFragmentShader = window->createShader(
 		GpuShaderStage::Fragment,
-		window->readShaderData("Resources/Shaders/SimSky.frag"));
+		window->readShaderData(
+			"Resources/Shaders/SimulatedSky.frag"));
 	auto simSkyPipeline = window->createSkyPipeline(
 		simSkyVertexShader,
 		simSkyFragmentShader);
 
-	auto simSky = window->createEntity();
+	auto teapotModelData = ModelData::readFromFile(
+		"Resources/Models/UtahTeapot.fbx");
+
 	auto simSkyMesh = window->createMesh(
 		ModelData::frame.getVertex(),
 		false,
 		ModelData::frame.indices16,
 		false);
+	auto floorMesh = window->createMesh(
+		ModelData::square.getVertexNormalTexCoord(),
+		false,
+		ModelData::square.indices16,
+		false);
+	auto cubeMesh = window->createMesh(
+		ModelData::cube.getVertexNormalTexCoord(),
+		false,
+		ModelData::cube.indices16,
+		false);
+	auto teapotMesh = window->createMesh(
+		teapotModelData->getVertexNormalTexCoord(),
+		false,
+		teapotModelData->indices32,
+		false);
+
+	auto simSky = window->createEntity();
 	simSky->createComponent<TransformComponent>(
 		Vector3(0.0f, 0.0f, 10.0f));
 	simSky->createComponent<RenderComponent>(
 		simSkyPipeline,
 		simSkyMesh);
 	transformSystem->addTransform(simSky);
-	fpvCameraComponent->renders.emplace(simSky);
+	freeCameraComponent->renders.emplace(simSky);
 
 	auto floor = window->createEntity();
-	auto floorMesh = window->createMesh(
-		ModelData::square.getVertexNormalTexCoord(),
-		false,
-		ModelData::square.indices16,
-		false);
 	floor->createComponent<TransformComponent>(
 		Vector3::zero,
 		Quaternion(
@@ -98,14 +134,9 @@ void init()
 		texDiffusePipeline,
 		floorMesh);
 	transformSystem->addTransform(floor);
-	fpvCameraComponent->renders.emplace(floor);
+	freeCameraComponent->renders.emplace(floor);
 
 	auto cube = window->createEntity();
-	auto cubeMesh = window->createMesh(
-		ModelData::cube.getVertexNormalTexCoord(),
-		false,
-		ModelData::cube.indices16,
-		false);
 	cube->createComponent<TransformComponent>(
 		Vector3(-4.5f, 0.5f, -4.5f),
 		Quaternion(Vector3::zero),
@@ -117,16 +148,9 @@ void init()
 		texDiffusePipeline,
 		cubeMesh);
 	transformSystem->addTransform(cube);
-	fpvCameraComponent->renders.emplace(cube);
+	freeCameraComponent->renders.emplace(cube);
 
-	auto teapotModelData = ModelData::readFromFile(
-		"Resources/Models/UtahTeapot.fbx");
 	auto teapot = window->createEntity();
-	auto teapotMesh = window->createMesh(
-		teapotModelData->getVertexNormalTexCoord(),
-		false,
-		teapotModelData->indices32,
-		false);
 	teapot->createComponent<TransformComponent>(
 		Vector3(0.0f, 0.5f, 0.0f),
 		Quaternion(Vector3::zero),
@@ -138,13 +162,13 @@ void init()
 		texDiffusePipeline,
 		teapotMesh);
 	transformSystem->addTransform(teapot);
-	fpvCameraComponent->renders.emplace(teapot);
+	freeCameraComponent->renders.emplace(teapot);
 }
 
 int main()
 {
-	//Engine::initializeVideo(GraphicsApi::Vulkan);
-	Engine::initializeVideo(GraphicsApi::OpenGL);
+	//Engine::initializeVideo(GraphicsAPIs::Vulkan);
+	Engine::initializeVideo(GraphicsAPIs::OpenGL);
 	Engine::initializeEngine();
 
 	init();

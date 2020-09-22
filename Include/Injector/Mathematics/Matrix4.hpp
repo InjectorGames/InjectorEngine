@@ -82,10 +82,30 @@ namespace Injector
 		Matrix4& operator/=(float value) noexcept;
 		Matrix4& operator*=(float value) noexcept;
 
-		static Matrix4 createPerspectiveVk(float fieldOfView, float aspectRatio,
-			float nearClipPlane, float farClipPlane);
-		static Matrix4 createPerspectiveGl(float fieldOfView, float aspectRatio,
-			float nearClipPlane, float farClipPlane);
+		static Matrix4 createPerspectiveVk(
+			float fieldOfView,
+			float aspectRatio,
+			float nearClipPlane,
+			float farClipPlane);
+		static Matrix4 createPerspectiveGl(
+			float fieldOfView,
+			float aspectRatio,
+			float nearClipPlane,
+			float farClipPlane);
+		static Matrix4 createOrthographicVk(
+			float left,
+			float right,
+			float bottom,
+			float top,
+			float nearClipPlane,
+			float farClipPlane);
+		static Matrix4 createOrthographicGl(
+			float left,
+			float right,
+			float bottom,
+			float top,
+			float nearClipPlane,
+			float farClipPlane);
 
 		static const Matrix4 zero;
 		static const Matrix4 minusOne;

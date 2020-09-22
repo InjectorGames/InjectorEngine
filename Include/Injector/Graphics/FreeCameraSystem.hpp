@@ -4,7 +4,7 @@
 
 namespace Injector
 {
-	class FlyTransformSystem : public System
+	class FreeCameraSystem : public System
 	{
 	 protected:
 		std::shared_ptr<Window> window;
@@ -12,13 +12,14 @@ namespace Injector
 		Vector3 eulerAngles;
 		Vector2 lastMousePosition;
 	 public:
-		std::shared_ptr<Entity> transform;
+		std::shared_ptr<Entity> camera;
+
 		float speed;
 		float sensitivity;
 
-		FlyTransformSystem(
+		FreeCameraSystem(
 			const std::shared_ptr<Window>& window);
-		virtual ~FlyTransformSystem();
+		virtual ~FreeCameraSystem();
 
 		void update() override;
 	};

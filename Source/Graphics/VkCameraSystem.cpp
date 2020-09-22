@@ -19,29 +19,26 @@ namespace Injector
 		{
 			CameraComponent* cameraComponent;
 
-			if (!camera->getComponent(cameraComponent) ||
-				!cameraComponent->changed)
+			if (!camera->getComponent(cameraComponent))
 				continue;
 
-			if (cameraComponent->type == CameraComponent::Type::Perspective)
+			if (cameraComponent->type == CameraType::Perspective)
 			{
 				cameraComponent->matrix = Matrix4::createPerspectiveVk(
 					cameraComponent->fieldOfView,
 					cameraComponent->aspectRatio,
 					cameraComponent->clipPlane.x,
 					cameraComponent->clipPlane.y);
-				cameraComponent->changed = false;
 			}
-			else
+			else if(cameraComponent->type == CameraType::Orthographic)
 			{
-				/*cameraComponent->matrix = glm::ortho(
-					camera.frustum.x,
-				 	camera.frustum.y,
-					camera.frustum.z,
-				 	camera.frustum.w,
-					camera.clipPlane.x,
-				 	camera.clipPlane.y);*/
-				cameraComponent->changed = false;
+				cameraComponent->matrix = Matrix4::createOrthographicGl(
+					cameraComponent->frustum.x,
+					cameraComponent->frustum.y,
+					cameraComponent->frustum.z,
+					cameraComponent->frustum.w,
+					cameraComponent->clipPlane.x,
+					cameraComponent->clipPlane.y);
 			}
 		}
 	}

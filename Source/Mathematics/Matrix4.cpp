@@ -513,8 +513,11 @@ namespace Injector
 		return *this;
 	}
 
-	Matrix4 Matrix4::createPerspectiveVk(float fieldOfView, float aspectRatio,
-		float nearClipPlane, float farClipPlane)
+	Matrix4 Matrix4::createPerspectiveVk(
+		float fieldOfView,
+		float aspectRatio,
+		float nearClipPlane,
+		float farClipPlane)
 	{
 		auto tanHalfFov = tan(fieldOfView / 2.0f);
 
@@ -525,10 +528,14 @@ namespace Injector
 			0.0f, 0.0f, 0.0f, 0.0f,
 			farClipPlane / (farClipPlane - nearClipPlane),
 			1.0f, 0.0f, 0.0f,
-			-(farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane), 0.0f);
+			-(farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane),
+			0.0f);
 	}
-	Matrix4 Matrix4::createPerspectiveGl(float fieldOfView, float aspectRatio,
-		float nearClipPlane, float farClipPlane)
+	Matrix4 Matrix4::createPerspectiveGl(
+		float fieldOfView,
+		float aspectRatio,
+		float nearClipPlane,
+		float farClipPlane)
 	{
 		auto tanHalfFov = tan(fieldOfView / 2.0f);
 
@@ -539,7 +546,48 @@ namespace Injector
 			0.0f, 0.0f, 0.0f, 0.0f,
 			(farClipPlane + nearClipPlane) / (farClipPlane - nearClipPlane),
 			1.0f, 0.0f, 0.0f,
-			-(2.0f * farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane), 0.0f);
+			-(2.0f * farClipPlane * nearClipPlane) / (farClipPlane - nearClipPlane),
+			0.0f);
+	}
+	Matrix4 Matrix4::createOrthographicVk(
+		float left,
+		float right,
+		float bottom,
+		float top,
+		float nearClipPlane,
+		float farClipPlane)
+	{
+		return Matrix4(
+			2.0f / (right - left),
+			0.0f, 0.0f, 0.0f, 0.0f,
+			2.0f / (top - bottom),
+			0.0f, 0.0f, 0.0f, 0.0f,
+			1.0f / (farClipPlane - nearClipPlane),
+			0.0f,
+			-(right + left) / (right - left),
+			-(top + bottom) / (top - bottom),
+			-nearClipPlane / (farClipPlane - nearClipPlane),
+			1.0f);
+	}
+	Matrix4 Matrix4::createOrthographicGl(
+		float left,
+		float right,
+		float bottom,
+		float top,
+		float nearClipPlane,
+		float farClipPlane)
+	{
+		return Matrix4(
+			2.0f / (right - left),
+			0.0f, 0.0f, 0.0f, 0.0f,
+			2.0f / (top - bottom),
+			0.0f, 0.0f, 0.0f, 0.0f,
+			2.0f / (farClipPlane - nearClipPlane),
+			0.0f,
+			-(right + left) / (right - left),
+			-(top + bottom) / (top - bottom),
+			-(farClipPlane + nearClipPlane) / (farClipPlane - nearClipPlane),
+			1.0f);
 	}
 
 	const Matrix4 Matrix4::zero = Matrix4(0.0f);

@@ -5,9 +5,9 @@
 #include "Injector/Exception/CastException.hpp"
 #include "Injector/Graphics/GlCameraSystem.hpp"
 #include "Injector/Graphics/GlRenderSystem.hpp"
-#include "Injector/Graphics/Pipeline/GlSimSkyGpuPipeline.hpp"
-#include "Injector/Graphics/Pipeline/GlColColorGpuPipeline.hpp"
-#include "Injector/Graphics/Pipeline/GlTexDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlSimulatedSkyGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlColorColorGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlTextureDiffuseGpuPipeline.hpp"
 
 namespace Injector
 {
@@ -162,7 +162,7 @@ namespace Injector
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
-		return std::make_shared<GlColColorGpuPipeline>(
+		return std::make_shared<GlColorColorGpuPipeline>(
 			glVertexShader, glFragmentShader);
 	}
 	std::shared_ptr<DiffuseGpuPipeline> GlWindow::createDiffusePipeline(
@@ -175,7 +175,7 @@ namespace Injector
 		return std::make_shared<GlDiffuseGpuPipeline>(
 			glVertexShader, glFragmentShader);
 	}
-	std::shared_ptr<TexDiffuseGpuPipeline> GlWindow::createTexDiffusePipeline(
+	std::shared_ptr<TextureDiffuseGpuPipeline> GlWindow::createTexDiffusePipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
 		const std::shared_ptr<GpuImage>& texture)
@@ -184,17 +184,17 @@ namespace Injector
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 		auto glTexture = std::dynamic_pointer_cast<GlGpuImage>(texture);
 
-		return std::make_shared<GlTexDiffuseGpuPipeline>(
+		return std::make_shared<GlTextureDiffuseGpuPipeline>(
 			glVertexShader, glFragmentShader, glTexture);
 	}
-	std::shared_ptr<SimSkyGpuPipeline> GlWindow::createSkyPipeline(
+	std::shared_ptr<SimulatedSkyGpuPipeline> GlWindow::createSkyPipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
-		return std::make_shared<GlSimSkyGpuPipeline>(
+		return std::make_shared<GlSimulatedSkyGpuPipeline>(
 			glVertexShader, glFragmentShader);
 	}
 }

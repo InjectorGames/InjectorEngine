@@ -1,4 +1,4 @@
-#include "Injector/Graphics/FlyTransformSystem.hpp"
+#include "Injector/Graphics/FreeCameraSystem.hpp"
 #include "Injector/Engine.hpp"
 #include "Injector/Exception/NullException.hpp"
 
@@ -6,33 +6,33 @@
 
 namespace Injector
 {
-	FlyTransformSystem::FlyTransformSystem(
+	FreeCameraSystem::FreeCameraSystem(
 		const std::shared_ptr<Window>& _window) :
 		window(_window),
 		rotating(false),
 		eulerAngles(),
 		lastMousePosition(),
-		transform(),
+		camera(),
 		speed(2.0f),
 		sensitivity(0.0025f)
 	{
 		if (!_window)
 		{
 			throw NullException(
-				"FlyTransformSystem",
-				"FlyTransformSystem",
+				"FreeCameraSystem",
+				"FreeCameraSystem",
 				"window");
 		}
 	}
-	FlyTransformSystem::~FlyTransformSystem()
+	FreeCameraSystem::~FreeCameraSystem()
 	{
 	}
 
-	void FlyTransformSystem::update()
+	void FreeCameraSystem::update()
 	{
 		TransformComponent* transformComponent;
 
-		if (!transform || !transform->getComponent(transformComponent))
+		if (!camera || !camera->getComponent(transformComponent))
 			return;
 
 		if (window->getMouseButton(MouseButton::Right) == ButtonState::Press)

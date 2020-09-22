@@ -6,10 +6,10 @@
 
 namespace Injector
 {
-	class TexDiffuseGpuPipeline : public DiffuseGpuPipeline
+	class TextureDiffuseGpuPipeline : public DiffuseGpuPipeline
 	{
 	 public:
-		virtual ~TexDiffuseGpuPipeline();
+		virtual ~TextureDiffuseGpuPipeline();
 
 		virtual std::shared_ptr<GpuImage> getTexture() const;
 

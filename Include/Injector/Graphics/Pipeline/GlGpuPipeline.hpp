@@ -14,16 +14,6 @@ namespace Injector
 	 protected:
 		GLuint program;
 		GLenum drawMode;
-	 public:
-		GlGpuPipeline(GLenum drawMode);
-		virtual ~GlGpuPipeline();
-
-		GLuint getProgram() const noexcept;
-		GLenum getDrawMode() const noexcept;
-
-		virtual void bind();
-		virtual void flush();
-		virtual void setAttributes();
 
 		static bool getLinkStatus(GLuint program) noexcept;
 		static std::string getInfoLog(GLuint program) noexcept;
@@ -71,5 +61,15 @@ namespace Injector
 			GLint location,
 			const Matrix4& value,
 			GLboolean transpose = GL_FALSE) noexcept;
+	 public:
+		GlGpuPipeline(GLenum drawMode);
+		virtual ~GlGpuPipeline();
+
+		GLuint getProgram() const noexcept;
+		GLenum getDrawMode() const noexcept;
+
+		virtual void bind();
+		virtual void flush();
+		virtual void setAttributes();
 	};
 }

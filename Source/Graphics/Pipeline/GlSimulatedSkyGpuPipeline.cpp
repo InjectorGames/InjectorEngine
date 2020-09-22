@@ -1,9 +1,9 @@
-#include "Injector/Graphics/Pipeline/GlSimSkyGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/GlSimulatedSkyGpuPipeline.hpp"
 #include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
-	GlSimSkyGpuPipeline::GlSimSkyGpuPipeline(
+	GlSimulatedSkyGpuPipeline::GlSimulatedSkyGpuPipeline(
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		float height) :
@@ -13,8 +13,8 @@ namespace Injector
 		if (!vertexShader || !fragmentShader)
 		{
 			throw NullException(
-				"GlSimSkyGpuPipeline",
-				"GlSimSkyGpuPipeline",
+				"GlSimulatedSkyGpuPipeline",
+				"GlSimulatedSkyGpuPipeline",
 				"shader");
 		}
 
@@ -30,8 +30,8 @@ namespace Injector
 			glDeleteProgram(program);
 
 			throw Exception(
-				"GlSimSkyGpuPipeline",
-				"GlSimSkyGpuPipeline",
+				"GlSimulatedSkyGpuPipeline",
+				"GlSimulatedSkyGpuPipeline",
 				"Failed to link program, " + log);
 		}
 
@@ -45,20 +45,20 @@ namespace Injector
 			GL_DYNAMIC_DRAW,
 			nullptr);
 	}
-	GlSimSkyGpuPipeline::~GlSimSkyGpuPipeline()
+	GlSimulatedSkyGpuPipeline::~GlSimulatedSkyGpuPipeline()
 	{
 	}
 
-	float GlSimSkyGpuPipeline::getHeight() const
+	float GlSimulatedSkyGpuPipeline::getHeight() const
 	{
 		return ubo.height;
 	}
-	void GlSimSkyGpuPipeline::setHeight(float height)
+	void GlSimulatedSkyGpuPipeline::setHeight(float height)
 	{
 		ubo.height = height;
 	}
 
-	void GlSimSkyGpuPipeline::bind()
+	void GlSimulatedSkyGpuPipeline::bind()
 	{
 		GlGpuPipeline::bind();
 		glEnable(GL_CULL_FACE);
@@ -71,11 +71,11 @@ namespace Injector
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0,
 			uniformBuffer->getBuffer());
 	}
-	void GlSimSkyGpuPipeline::flush()
+	void GlSimulatedSkyGpuPipeline::flush()
 	{
 		uniformBuffer->setData(&ubo, sizeof(UniformBufferObject));
 	}
-	void GlSimSkyGpuPipeline::setAttributes()
+	void GlSimulatedSkyGpuPipeline::setAttributes()
 	{
 		glEnableVertexAttribArray(0);
 
@@ -83,7 +83,7 @@ namespace Injector
 			sizeof(Vector3), 0);
 	}
 
-	void GlSimSkyGpuPipeline::setUniforms(
+	void GlSimulatedSkyGpuPipeline::setUniforms(
 		const Matrix4& model,
 		const Matrix4& view,
 		const Matrix4& proj,

@@ -3,14 +3,14 @@
 
 namespace Injector
 {
-	class GlColColorGpuPipeline : public GlColorGpuPipeline
+	class GlColorColorGpuPipeline : public GlColorGpuPipeline
 	{
 	 public:
-		GlColColorGpuPipeline(
+		GlColorColorGpuPipeline(
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
 			const Vector4& color = Vector4::one);
-		virtual ~GlColColorGpuPipeline();
+		virtual ~GlColorColorGpuPipeline();
 
 		void setAttributes() override;
 	};
