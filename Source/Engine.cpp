@@ -12,7 +12,7 @@ namespace Injector
 	bool Engine::engineInitialized = false;
 	bool Engine::videoInitialized = false;
 
-	GraphicsAPIs Engine::graphicsApi = GraphicsAPIs::Unknown;
+	GraphicsAPI Engine::graphicsApi = GraphicsAPI::Unknown;
 
 	bool Engine::capUpdateRate = true;
 	int Engine::targetUpdateRate = 60;
@@ -100,7 +100,7 @@ namespace Injector
 			std::string(description));
 	}
 	void Engine::initializeVideo(
-		GraphicsAPIs _graphicsApi)
+		GraphicsAPI _graphicsApi)
 	{
 		if (engineInitialized)
 		{
@@ -128,7 +128,7 @@ namespace Injector
 				"Failed to initialize GLFW");
 		}
 
-		if (_graphicsApi == GraphicsAPIs::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
+		if (_graphicsApi == GraphicsAPI::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
 		{
 			throw Exception(
 				"Engine",
@@ -160,7 +160,7 @@ namespace Injector
 
 		glfwTerminate();
 
-		graphicsApi = GraphicsAPIs::Unknown;
+		graphicsApi = GraphicsAPI::Unknown;
 		videoInitialized = false;
 
 		std::cout << "Terminated video subsystem\n";
@@ -169,7 +169,7 @@ namespace Injector
 	{
 		return videoInitialized;
 	}
-	GraphicsAPIs Engine::getGraphicsApi() noexcept
+	GraphicsAPI Engine::getGraphicsApi() noexcept
 	{
 		return graphicsApi;
 	}

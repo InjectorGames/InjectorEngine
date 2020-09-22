@@ -501,21 +501,21 @@ namespace Injector
 	{
 		auto graphicsApi = Engine::getGraphicsApi();
 
-		if (graphicsApi == GraphicsAPIs::OpenGL)
+		if (graphicsApi == GraphicsAPI::OpenGL)
 		{
 			return Engine::createManager<GlWindow>(
 				false,
 				title,
 				size);
 		}
-		else if (graphicsApi == GraphicsAPIs::OpenGLES)
+		else if (graphicsApi == GraphicsAPI::OpenGLES)
 		{
 			return Engine::createManager<GlWindow>(
 				true,
 				title,
 				size);
 		}
-		else if (graphicsApi == GraphicsAPIs::Vulkan)
+		else if (graphicsApi == GraphicsAPI::Vulkan)
 		{
 			return Engine::createManager<VkWindow>(
 				title,

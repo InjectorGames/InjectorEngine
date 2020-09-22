@@ -167,8 +167,8 @@ void init()
 
 int main()
 {
-	//Engine::initializeVideo(GraphicsAPIs::Vulkan);
-	Engine::initializeVideo(GraphicsAPIs::OpenGL);
+	//Engine::initializeVideo(GraphicsAPI::Vulkan);
+	Engine::initializeVideo(GraphicsAPI::OpenGL);
 	Engine::initializeEngine();
 
 	init();
