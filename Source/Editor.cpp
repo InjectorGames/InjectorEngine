@@ -8,7 +8,7 @@
 
 using namespace Injector;
 
-void init()
+void initialize()
 {
 	auto window = Window::create();
 
@@ -171,7 +171,7 @@ int main()
 	Engine::initializeVideo(GraphicsAPI::OpenGL);
 	Engine::initializeEngine();
 
-	init();
+	initialize();
 
 	Engine::startUpdateLoop();
 	Engine::terminateEngine();
