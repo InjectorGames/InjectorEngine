@@ -25,3 +25,8 @@
 * [bgfx](https://github.com/bkaradzic/bgfx/)
 * [entityx](https://github.com/alecthomas/entityx/)
 * [glm](https://github.com/g-truc/glm)
+
+## OpenSSL
+Linux: apt-get install openssl
+Windows: choco install openssl
+MacOS: brew install openssl

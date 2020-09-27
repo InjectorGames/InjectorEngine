@@ -3,7 +3,9 @@
 #include "Injector/Graphics/ShaderData.hpp"
 
 #include "GL/glew.h"
+
 #include <string>
+#include <memory>
 
 namespace Injector
 {

@@ -4,6 +4,7 @@
 #include "Injector/Graphics/GuiComponent.hpp"
 
 #include <set>
+#include <memory>
 
 namespace Injector
 {

@@ -3,6 +3,7 @@
 #include "Injector/Graphics/GpuBufferIndex.hpp"
 
 #include <vector>
+#include <memory>
 #include <cstdlib>
 
 namespace Injector

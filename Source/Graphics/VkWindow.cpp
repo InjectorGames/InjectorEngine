@@ -1065,7 +1065,7 @@ namespace Injector
 			pipeline->recreate(
 				memoryAllocator,
 				renderPass,
-				images.size(),
+				static_cast<uint32_t>(images.size()),
 				surfaceExtent);
 		}
 	}

@@ -6,7 +6,7 @@
 #define BYTE_SWAP_16(x) bswap_16(x)
 #define BYTE_SWAP_32(x) bswap_32(x)
 #define BYTE_SWAP_64(x) bswap_64(x)
-#elif INJECTOR_SYSTEM_WINOWS
+#elif INJECTOR_SYSTEM_WINDOWS
 #define BYTE_SWAP_16(x) _byteswap_ushort(x)
 #define BYTE_SWAP_32(x) _byteswap_ulong(x)
 #define BYTE_SWAP_64(x) _byteswap_uint64(x)
@@ -54,11 +54,6 @@ namespace Injector
 	{
 		auto result = BYTE_SWAP_64(*reinterpret_cast<uint64_t*>(&value));
 		return *reinterpret_cast<int64_t*>(&result);
-	}
-	size_t ByteSwap::swapEndian(size_t value) noexcept
-	{
-		auto result = BYTE_SWAP_SIZE(*reinterpret_cast<uint64_t*>(&value));
-		return *reinterpret_cast<size_t*>(&result);
 	}
 	float ByteSwap::swapEndian(float value) noexcept
 	{
@@ -112,14 +107,6 @@ namespace Injector
 #endif
 	}
 	int64_t ByteSwap::swapBigEndian(int64_t value) noexcept
-	{
-#if INJECTOR_BIG_ENDIAN
-		return value;
-#else
-		return swapEndian(value);
-#endif
-	}
-	size_t ByteSwap::swapBigEndian(size_t value) noexcept
 	{
 #if INJECTOR_BIG_ENDIAN
 		return value;
@@ -185,14 +172,6 @@ namespace Injector
 #endif
 	}
 	int64_t ByteSwap::swapLittleEndian(int64_t value) noexcept
-	{
-#if INJECTOR_BIG_ENDIAN
-		return swapEndian(value);
-#else
-		return value;
-#endif
-	}
-	size_t ByteSwap::swapLittleEndian(size_t value) noexcept
 	{
 #if INJECTOR_BIG_ENDIAN
 		return swapEndian(value);

@@ -133,7 +133,7 @@ namespace Injector
 	{
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
-		return Vector2(static_cast<float>(x), static_cast<int>(y));
+		return Vector2(static_cast<float>(x), static_cast<float>(y));
 	}
 	ButtonState Window::getMouseButton(MouseButton button) const noexcept
 	{
@@ -173,18 +173,21 @@ namespace Injector
 	void Window::setIcons(const std::vector<std::shared_ptr<ImageData>>& icons)
 	{
 #if INJECTOR_SYSTEM_WINDOWS
-		GLFWimage images[icons.size()];
+		auto images = std::vector<GLFWimage>(icons.size());
 
 		for (size_t i = 0; i < icons.size(); i++)
 		{
 			auto& icon = icons[i];
 			auto& image = images[i];
-			image.width = icon->psize.x;
-			image.height = icon->psize.y;
+			image.width = icon->size.x;
+			image.height = icon->size.y;
 			image.pixels = icon->pixels.data();
 		}
 		
-		glfwSetWindowIcon(window, icons.size(), images);
+		glfwSetWindowIcon(
+			window,
+			static_cast<int>(images.size()),
+			images.data());
 #endif
 	}
 	void Window::setMouseMode(MouseMode mode)

@@ -48,8 +48,8 @@ namespace Injector
 		auto viewport = vk::Viewport(
 			0.0f,
 			0.0f,
-			surfaceExtent.width,
-			surfaceExtent.height,
+			static_cast<float>(surfaceExtent.width),
+            static_cast<float>(surfaceExtent.height),
 			0.0f,
 			1.0f);
 		auto scissor = vk::Rect2D(

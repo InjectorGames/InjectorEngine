@@ -4,6 +4,8 @@
 #include "Injector/Mathematics/Quaternion.hpp"
 #include "Injector/Mathematics/RotationOrigin.hpp"
 
+#include <memory>
+
 namespace Injector
 {
 	struct TransformComponent : public Component

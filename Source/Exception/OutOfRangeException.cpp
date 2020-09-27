@@ -69,14 +69,6 @@ namespace Injector
 	OutOfRangeException::OutOfRangeException(
 		const std::string& className,
 		const std::string& functionName,
-		size_t value, size_t range) :
-		Exception(className, functionName,
-			"Out of range [" + std::to_string(value) + ", " + std::to_string(range) + "]")
-	{
-	}
-	OutOfRangeException::OutOfRangeException(
-		const std::string& className,
-		const std::string& functionName,
 		int64_t value, int64_t range) :
 		Exception(className, functionName,
 			"Out of range [" + std::to_string(value) + ", " + std::to_string(range) + "]")

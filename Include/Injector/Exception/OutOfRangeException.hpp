@@ -48,10 +48,6 @@ namespace Injector
 		OutOfRangeException(
 			const std::string& className,
 			const std::string& functionName,
-			size_t value, size_t range);
-		OutOfRangeException(
-			const std::string& className,
-			const std::string& functionName,
 			float value, float range);
 		OutOfRangeException(
 			const std::string& className,

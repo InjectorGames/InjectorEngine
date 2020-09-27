@@ -214,11 +214,11 @@ namespace Injector
 		{
 			auto& indices = modelData->indices32;
 
-			for (int i = 0; i < mesh->mNumFaces; i++)
+			for (uint32_t i = 0; i < mesh->mNumFaces; i++)
 			{
 				auto face = mesh->mFaces[i];
 
-				for (int j = 0; j < face.mNumIndices; j++)
+				for (uint32_t j = 0; j < face.mNumIndices; j++)
 					indices.push_back(face.mIndices[j]);
 			}
 		}
@@ -239,7 +239,7 @@ namespace Injector
 			auto textureCoords = mesh->mTextureCoords[0];
 			texCoords.resize(vertexCount);
 
-			for (int i = 0; i < vertexCount; i++)
+			for (uint32_t i = 0; i < vertexCount; i++)
 			{
 				memcpy(
 					&texCoords[i],

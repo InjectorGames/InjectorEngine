@@ -6,6 +6,7 @@
 #include "Injector/Mathematics/Converter.hpp"
 
 #include <set>
+#include <memory>
 
 namespace Injector
 {

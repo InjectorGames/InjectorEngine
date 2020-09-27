@@ -13,7 +13,6 @@ namespace Injector
 		static int32_t swapEndian(int32_t value) noexcept;
 		static uint64_t swapEndian(uint64_t value) noexcept;
 		static int64_t swapEndian(int64_t value) noexcept;
-		static size_t swapEndian(size_t value) noexcept;
 		static float swapEndian(float value) noexcept;
 		static double swapEndian(double value) noexcept;
 
@@ -23,7 +22,6 @@ namespace Injector
 		static int32_t swapBigEndian(int32_t value) noexcept;
 		static uint64_t swapBigEndian(uint64_t value) noexcept;
 		static int64_t swapBigEndian(int64_t value) noexcept;
-		static size_t swapBigEndian(size_t value) noexcept;
 		static float swapBigEndian(float value) noexcept;
 		static double swapBigEndian(double value) noexcept;
 
@@ -33,7 +31,6 @@ namespace Injector
 		static int32_t swapLittleEndian(int32_t value) noexcept;
 		static uint64_t swapLittleEndian(uint64_t value) noexcept;
 		static int64_t swapLittleEndian(int64_t value) noexcept;
-		static size_t swapLittleEndian(size_t value) noexcept;
 		static float swapLittleEndian(float value) noexcept;
 		static double swapLittleEndian(double value) noexcept;
 	};
