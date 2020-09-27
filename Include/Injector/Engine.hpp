@@ -62,7 +62,7 @@ namespace Injector
 		static void removeManagers() noexcept;
 		static size_t getManagerCount() noexcept;
 
-		template<class T, class ...Args>
+		template<class T = Manager, class ...Args>
 		static std::shared_ptr<T> createManager(Args... args) noexcept
 		{
 			auto manager = std::make_shared<T>(args...);

@@ -38,7 +38,7 @@ namespace Injector
 	bool CameraSystem::addCamera(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		return cameras.emplace(entity).second;
@@ -46,7 +46,7 @@ namespace Injector
 	bool CameraSystem::removeCamera(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		auto iterator = cameras.find(entity);

@@ -130,7 +130,7 @@ namespace Injector
 	bool TransformSystem::addTransform(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		return transforms.emplace(entity).second;
@@ -138,7 +138,7 @@ namespace Injector
 	bool TransformSystem::addTranslate(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		return translates.emplace(entity).second;
@@ -146,7 +146,7 @@ namespace Injector
 	bool TransformSystem::addRotate(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		return rotates.emplace(entity).second;
@@ -155,7 +155,7 @@ namespace Injector
 	bool TransformSystem::removeTransform(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		auto iterator = transforms.find(entity);
@@ -169,7 +169,7 @@ namespace Injector
 	bool TransformSystem::removeTranslate(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		auto iterator = translates.find(entity);
@@ -183,7 +183,7 @@ namespace Injector
 	bool TransformSystem::removeRotate(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		auto iterator = rotates.find(entity);

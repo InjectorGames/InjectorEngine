@@ -49,7 +49,7 @@ namespace Injector
 	bool Manager::addEntity(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		return entities.emplace(entity).second;
@@ -58,7 +58,7 @@ namespace Injector
 	bool Manager::removeEntity(
 		const std::shared_ptr<Entity>& entity) noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		auto iterator = entities.find(entity);
@@ -71,7 +71,7 @@ namespace Injector
 	}
 	bool Manager::destroySystem(const std::shared_ptr<System>& system) noexcept
 	{
-		if (system == nullptr)
+		if (!system)
 			return false;
 
 		for (auto i = systems.begin(); i != systems.end(); i++)
@@ -89,7 +89,7 @@ namespace Injector
 	bool Manager::containsEntity(
 		const std::shared_ptr<Entity>& entity) const noexcept
 	{
-		if (entity == nullptr)
+		if (!entity)
 			return false;
 
 		return entities.find(entity) != entities.end();

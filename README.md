@@ -1,13 +1,16 @@
-## Requirements
+## Features
+- [x] Color rendering
+- [x] Texture rendering
+- [x] Model rendering
+- [x] Diffuse rendering
+- [x] Transparency rendering
+
+## Build requirements
 * C++17 comiler
 * [CMake 3.10+](https://cmake.org/)
 * [VulkanSDK](https://vulkan.lunarg.com/)
-
-## Features
-- [x] Color material
-- [x] Diffuse material
-- [x] Transparency rendering
-- [ ] Screen-door material
+* [OpenSSL](https://www.openssl.org)
+* [X11 (Linux only)](https://www.x.org/wiki/)
 
 ## Third-Party
 * [asio](https://github.com/chriskohlhoff/asio) (Boost License)

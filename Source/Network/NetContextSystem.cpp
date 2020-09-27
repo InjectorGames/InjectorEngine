@@ -14,7 +14,8 @@ namespace Injector
 		context->reset();
 	}
 
-	std::shared_ptr<asio::io_context> NetContextSystem::getContext() const noexcept
+	std::shared_ptr<asio::io_context>
+	    NetContextSystem::getContext() const noexcept
 	{
 		return context;
 	}

@@ -32,15 +32,15 @@ else ()
     message(FATAL_ERROR "Failed to detect system architecture")
 endif ()
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(INJECTOR_SYSTEM_LINUX 1)
     set(INJECTOR_SYSTEM_WINDOWS 0)
     set(INJECTOR_SYSTEM_MACOS 0)
-elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
     set(INJECTOR_SYSTEM_LINUX 0)
     set(INJECTOR_SYSTEM_WINDOWS 1)
     set(INJECTOR_SYSTEM_MACOS 0)
-elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
     set(INJECTOR_SYSTEM_LINUX 0)
     set(INJECTOR_SYSTEM_WINDOWS 0)
     set(INJECTOR_SYSTEM_MACOS 1)
@@ -53,7 +53,15 @@ set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "")
 set(ASSIMP_INSTALL OFF CACHE BOOL "")
 add_subdirectory(Libraries/assimp)
 
-include(FindVulkan)
+if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    set(OPENSSL_ROOT_DIR /usr/local/Cellar/openssl@1.1/1.1.1g)
+    set(OPENSSL_SSL_LIBRARY ${OPENSSL_ROOT_DIR}/lib/libssl.dylib CACHE FILEPATH "" FORCE)
+    set(OPENSSL_CRYPTO_LIBRARY ${OPENSSL_ROOT_DIR}/lib/libcrypto.dylib CACHE FILEPATH "" FORCE)
+endif()
+
+find_package(Vulkan REQUIRED)
+find_package(OpenSSL REQUIRED)
+
 include(CMake/asio.cmake)
 include(CMake/stb.cmake)
 include(CMake/VulkanMemoryAllocator.cmake)
@@ -154,6 +162,13 @@ add_library(InjectorEngine STATIC
 
         Source/Network/Datagram.cpp
         Source/Network/NetContextSystem.cpp
+        Source/Network/SslTcpClient.cpp
+        Source/Network/SslTcpServer.cpp
+        Source/Network/SslTcpSession.cpp
+        Source/Network/TcpClient.cpp
+        Source/Network/TcpServer.cpp
+        Source/Network/TcpSocket.cpp
+        Source/Network/UdpSocket.cpp
 
         Source/Storage/FileStream.cpp
 
@@ -169,6 +184,8 @@ target_link_libraries(InjectorEngine PUBLIC
         glew_s
         glfw
         lz4_static
+        OpenSSL::SSL
+        OpenSSL::Crypto
         stb
         VulkanMemoryAllocator
         Vulkan::Vulkan)
@@ -182,9 +199,9 @@ target_include_directories(InjectorEngine PUBLIC
 if (INJECTOR_BUILD_EDITOR)
     add_executable(InjectorEditor
             Source/Editor.cpp)
-    target_link_libraries(InjectorEditor PUBLIC
+    target_link_libraries(InjectorEditor PRIVATE
             InjectorEngine)
-    target_include_directories(InjectorEditor PUBLIC
+    target_include_directories(InjectorEditor PRIVATE
             ${PROJECT_BINARY_DIR}
             ${PROJECT_SOURCE_DIR}/Include)
 endif ()
