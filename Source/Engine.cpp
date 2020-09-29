@@ -1,5 +1,4 @@
 #include "Injector/Engine.hpp"
-#include "Injector/Defines.hpp"
 #include "Injector/Exception/Exception.hpp"
 #include "Injector/Graphics/GlWindow.hpp"
 #include "Injector/Graphics/VkWindow.hpp"
@@ -7,12 +6,43 @@
 #include <thread>
 #include <iostream>
 
+#if INJECTOR_SUPPORT_VR
+#include "openvr.h"
+#endif
+
 namespace Injector
 {
+#if INJECTOR_SUPPORT_VR
+	static vr::TrackedDevicePose_t* renderPoses =
+		new vr::TrackedDevicePose_t[vr::k_unMaxTrackedDeviceCount];
+
+	static Matrix4 toMatrix(const vr::HmdMatrix34_t& matrix) noexcept
+	{
+		auto result = Matrix4(
+			matrix.m[0][0], matrix.m[1][0], -matrix.m[2][0], 0.0f,
+			matrix.m[0][1], matrix.m[1][1], -matrix.m[2][1], 0.0f,
+				matrix.m[0][2], matrix.m[1][2], -matrix.m[2][2], 0.0f,
+			matrix.m[0][3], matrix.m[1][3], -matrix.m[2][3], 1.0f).getInversed();
+
+		result.m02 = -result.m02;
+		result.m12 = -result.m12;
+		result.m22 = -result.m22;
+		result.m32 = -result.m32;
+		return result;
+	}
+	static Matrix4 toMatrix(const vr::HmdMatrix44_t& matrix) noexcept
+	{
+		return Matrix4(
+			matrix.m[0][0], matrix.m[1][0], matrix.m[2][0], matrix.m[3][0],
+			matrix.m[0][1], matrix.m[1][1], matrix.m[2][1], matrix.m[3][1],
+			-matrix.m[0][2], -matrix.m[1][2], -matrix.m[2][2], -matrix.m[3][2],
+			matrix.m[0][3], matrix.m[1][3], matrix.m[2][3], matrix.m[3][3]);
+	}
+#endif
+
 	bool Engine::engineInitialized = false;
 	bool Engine::videoInitialized = false;
-
-	GraphicsAPI Engine::graphicsApi = GraphicsAPI::Unknown;
+	bool Engine::vrInitialized = false;
 
 	bool Engine::capUpdateRate = true;
 	int Engine::targetUpdateRate = 60;
@@ -20,6 +50,13 @@ namespace Injector
 	bool Engine::updateRunning = false;
 	Engine::tick_t Engine::updateStartTick = {};
 	double Engine::updateDeltaTime = 0.0;
+
+	GraphicsAPI Engine::graphicsApi = GraphicsAPI::Unknown;
+	Matrix4 Engine::hmdModelMatrix = Matrix4::identity;
+	Matrix4 Engine::leftEyeModelMatrix = Matrix4::identity;
+	Matrix4 Engine::rightEyeModelMatrix = Matrix4::identity;
+	Matrix4 Engine::leftEyeProjMatrix = Matrix4::identity;
+	Matrix4 Engine::rightEyeProjMatrix = Matrix4::identity;
 
 	std::vector<std::shared_ptr<Manager>> Engine::managers = {};
 
@@ -81,6 +118,8 @@ namespace Injector
 
 		if (videoInitialized)
 			terminateVideo();
+		if (vrInitialized)
+			terminateVr();
 
 		engineInitialized = false;
 
@@ -115,7 +154,7 @@ namespace Injector
 			throw Exception(
 				"Engine",
 				"initializeVideo",
-				"Video subsystem is already initialized");
+				"Video is already initialized");
 		}
 
 		glfwSetErrorCallback(videoErrorCallback);
@@ -139,7 +178,7 @@ namespace Injector
 		graphicsApi = _graphicsApi;
 		videoInitialized = true;
 
-		std::cout << "Initialized video subsytem\n";
+		std::cout << "Initialized engine Video\n";
 	}
 	void Engine::terminateVideo()
 	{
@@ -155,7 +194,7 @@ namespace Injector
 			throw Exception(
 				"Engine",
 				"terminateVideo",
-				"Video subsystem is already terminated");
+				"Video is already terminated");
 		}
 
 		glfwTerminate();
@@ -163,15 +202,86 @@ namespace Injector
 		graphicsApi = GraphicsAPI::Unknown;
 		videoInitialized = false;
 
-		std::cout << "Terminated video subsystem\n";
+		std::cout << "Terminated engine Video\n";
 	}
 	bool Engine::getVideoInitialized() noexcept
 	{
 		return videoInitialized;
 	}
-	GraphicsAPI Engine::getGraphicsApi() noexcept
+
+	void Engine::initializeVr()
 	{
-		return graphicsApi;
+		if (engineInitialized)
+		{
+			throw Exception(
+				"Engine",
+				"initializeVr",
+				"Engine is already initialized");
+
+		}
+		if (vrInitialized)
+		{
+			throw Exception(
+				"Engine",
+				"initializeVr",
+				"VR is already initialized");
+		}
+
+#if INJECTOR_SUPPORT_VR
+		vr::EVRInitError error;
+
+		vr::VR_Init(&error,
+			vr::EVRApplicationType::VRApplication_Scene);
+
+		if(error != vr::EVRInitError::VRInitError_None)
+		{
+			throw Exception(
+				"Engine",
+				"initializeVr",
+				std::string(vr::VR_GetVRInitErrorAsSymbol(error)));
+		}
+
+		vrInitialized = true;
+		std::cout << "Initialized engine VR\n";
+#else
+		throw Exception(
+			"Engine",
+			"initializeVr",
+			"VR is not supported");
+#endif
+	}
+	void Engine::terminateVr()
+	{
+		if (!engineInitialized)
+		{
+			throw Exception(
+				"Engine",
+				"terminateVr",
+				"Engine is already terminated");
+		}
+		if (!vrInitialized)
+		{
+			throw Exception(
+				"Engine",
+				"terminateVr",
+				"VR is already terminated");
+		}
+
+#if INJECTOR_SUPPORT_VR
+		vr::VR_Shutdown();
+		vrInitialized = false;
+
+		std::cout << "Terminated engine VR\n";
+#else
+		throw Exception(
+			"Engine",
+			"initializeVr",
+			"VR is not supported");
+#endif
+	}
+	bool Engine::getVrInitialized() noexcept
+	{
+		return vrInitialized;
 	}
 
 	void Engine::startUpdateLoop()
@@ -226,6 +336,56 @@ namespace Injector
 
 			if (videoInitialized)
 				glfwPollEvents();
+
+#if INJECTOR_SUPPORT_VR
+			if(vrInitialized)
+			{
+				auto vrSystem = vr::VRSystem();
+
+				vr::VRCompositor()->WaitGetPoses(
+					renderPoses,
+					vr::k_unMaxTrackedDeviceCount,
+					nullptr,
+					0);
+
+				auto& hmdPose = renderPoses[vr::k_unTrackedDeviceIndex_Hmd];
+				hmdModelMatrix = toMatrix(hmdPose.mDeviceToAbsoluteTracking);
+
+				leftEyeModelMatrix = toMatrix(vrSystem->GetEyeToHeadTransform(
+					vr::EVREye::Eye_Left));
+				rightEyeModelMatrix = toMatrix(vrSystem->GetEyeToHeadTransform(
+					vr::EVREye::Eye_Right));
+
+				leftEyeProjMatrix = toMatrix(vrSystem->GetProjectionMatrix(
+					vr::EVREye::Eye_Left,
+					0.1f,
+					1000.0f));
+				rightEyeProjMatrix = toMatrix(vrSystem->GetProjectionMatrix(
+					vr::EVREye::Eye_Right,
+					0.1f,
+					1000.0f));
+
+				std::cout << hmdModelMatrix.getString() << "\n";
+
+				/*for (int i = 0; i < vr::k_unMaxTrackedDeviceCount; ++i)
+				{
+					auto& pose = renderPoses[i];
+
+					if(!pose.bDeviceIsConnected || !pose.bPoseIsValid)
+						continue;
+
+					auto deviceType = vrSystem->GetTrackedDeviceClass(i);
+
+					// TODO: add generic trackers support
+					if(deviceType == vr::ETrackedDeviceClass::TrackedDeviceClass_HMD)
+					{
+
+
+						memcpy(&hmdVelocity, &pose.vVelocity.v, sizeof(Vector3));
+					}
+				}*/
+			}
+#endif
 		}
 	}
 	void Engine::stopUpdateLoop()
@@ -253,6 +413,31 @@ namespace Injector
 	{
 		return std::chrono::duration_cast<std::chrono::duration<double>>(
 			std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+	}
+
+	GraphicsAPI Engine::getGraphicsApi() noexcept
+	{
+		return graphicsApi;
+	}
+	const Matrix4& Engine::getHmdModelMatrix() noexcept
+	{
+		return hmdModelMatrix;
+	}
+	const Matrix4& Engine::getLeftEyeModelMatrix() noexcept
+	{
+		return leftEyeModelMatrix;
+	}
+	const Matrix4& Engine::getRightEyeModelMatrix() noexcept
+	{
+		return rightEyeModelMatrix;
+	}
+	const Matrix4& Engine::getLeftEyeProjMatrix() noexcept
+	{
+		return leftEyeProjMatrix;
+	}
+	const Matrix4& Engine::getRightEyeProjMatrix() noexcept
+	{
+		return rightEyeProjMatrix;
 	}
 
 	bool Engine::addManager(
@@ -287,9 +472,9 @@ namespace Injector
 		if (manager == nullptr)
 			return false;
 
-		for (auto i = managers.begin(); i != managers.end(); i++)
+		for (auto& i : managers)
 		{
-			if (manager == *i)
+			if (manager == i)
 				return true;
 		}
 

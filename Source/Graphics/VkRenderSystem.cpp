@@ -17,6 +17,9 @@ namespace Injector
 
 	void VkRenderSystem::update()
 	{
+		if (window.isMinimized())
+			return;
+
 		struct CameraData
 		{
 			CameraComponent* camera;

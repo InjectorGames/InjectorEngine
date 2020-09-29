@@ -9,6 +9,7 @@ project(InjectorEngine
         LANGUAGES CXX)
 
 option(INJECTOR_BUILD_EDITOR "Build editor executable" ON)
+option(INJECTOR_BUILD_VR "Build with virtual reality support" ON)
 
 include(GNUInstallDirs)
 
@@ -50,6 +51,14 @@ else ()
     message(FATAL_ERROR "Failed to detect system name")
 endif ()
 
+if (INJECTOR_BUILD_VR AND (CMAKE_SYSTEM_NAME MATCHES "Linux" OR CMAKE_SYSTEM_NAME MATCHES "Windows"))
+    set(INJECTOR_SUPPORT_VR 1)
+else ()
+    set(INJECTOR_SUPPORT_VR 0)
+endif ()
+
+configure_file(CMake/Defines.hpp.in Injector/Defines.hpp)
+
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
@@ -70,6 +79,7 @@ include(CMake/stb.cmake)
 include(CMake/VulkanMemoryAllocator.cmake)
 
 add_subdirectory(Libraries/glew/build/cmake)
+set(GLEW_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/Libraries/glew/include)
 
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -78,9 +88,37 @@ set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 set(GLFW_VULKAN_STATIC OFF CACHE BOOL "" FORCE)
 add_subdirectory(Libraries/glfw)
 
+set(LZ4_BUILD_LEGACY_LZ4C OFF CACHE BOOL "" FORCE)
 add_subdirectory(Libraries/lz4/build/cmake)
+set(LZ4_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/Libraries/lz4/lib)
 
-configure_file(CMake/Defines.hpp.in Injector/Defines.hpp)
+if (INJECTOR_SUPPORT_VR)
+    add_subdirectory(Libraries/openvr)
+
+    if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+        if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+            set(OPENVR_LIBRARY_DIR ${PROJECT_SOURCE_DIR}/Libraries/openvr/lib/linux32/libopenvr_api.so)
+            configure_file(${PROJECT_SOURCE_DIR}/Libraries/openvr/bin/linux32/libopenvr_api.so libopenvr_api.so COPYONLY)
+        elseif (CMAKE_SIZEOF_VOID_P EQUAL 8)
+            set(OPENVR_LIBRARY_DIR ${PROJECT_SOURCE_DIR}/Libraries/openvr/lib/linux64/libopenvr_api.so)
+            configure_file(${PROJECT_SOURCE_DIR}/Libraries/openvr/bin/linux64/libopenvr_api.so libopenvr_api.so COPYONLY)
+        endif ()
+    elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
+        if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+            set(OPENVR_LIBRARY_DIR ${PROJECT_SOURCE_DIR}/Libraries/openvr/lib/win32/openvr_api.lib)
+            configure_file(${PROJECT_SOURCE_DIR}/Libraries/openvr/bin/win32/openvr_api.dll openvr_api.dll COPYONLY)
+        elseif (CMAKE_SIZEOF_VOID_P EQUAL 8)
+            set(OPENVR_LIBRARY_DIR ${PROJECT_SOURCE_DIR}/Libraries/openvr/lib/win64/openvr_api.lib)
+            configure_file(${PROJECT_SOURCE_DIR}/Libraries/openvr/bin/win64/openvr_api.dll openvr_api.dll COPYONLY)
+        endif ()
+    endif ()
+
+    add_library(openvr STATIC IMPORTED)
+    set_target_properties(openvr PROPERTIES IMPORTED_LOCATION ${OPENVR_LIBRARY_DIR})
+
+    set(OPENVR_LINK_LIB openvr)
+    set(OPENVR_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/Libraries/openvr/headers)
+endif ()
 
 add_library(InjectorEngine STATIC
         Source/Exception/CastException.cpp
@@ -109,6 +147,7 @@ add_library(InjectorEngine STATIC
         Source/Graphics/FreeCameraSystem.cpp
         Source/Graphics/GlCameraSystem.cpp
         Source/Graphics/GlGpuBuffer.cpp
+        Source/Graphics/GlGpuFramebuffer.cpp
         Source/Graphics/GlGpuShader.cpp
         Source/Graphics/GlGpuImage.cpp
         Source/Graphics/GlGpuMesh.cpp
@@ -116,6 +155,7 @@ add_library(InjectorEngine STATIC
         Source/Graphics/GlRenderSystem.cpp
         Source/Graphics/GlWindow.cpp
         Source/Graphics/GpuBuffer.cpp
+        Source/Graphics/GpuFramebuffer.cpp
         Source/Graphics/GpuImage.cpp
         Source/Graphics/GpuMesh.cpp
         Source/Graphics/GpuShader.cpp
@@ -135,6 +175,7 @@ add_library(InjectorEngine STATIC
         Source/Graphics/VkRenderSystem.cpp
         Source/Graphics/VkSwapchainData.cpp
         Source/Graphics/VkWindow.cpp
+        Source/Graphics/VrSystem.cpp
         Source/Graphics/Window.cpp
 
         Source/Mathematics/Converter.cpp
@@ -185,14 +226,16 @@ target_link_libraries(InjectorEngine PUBLIC
         lz4_static
         OpenSSL::SSL
         OpenSSL::Crypto
+        ${OPENVR_LINK_LIB}
         stb
         VulkanMemoryAllocator
         Vulkan::Vulkan)
 target_include_directories(InjectorEngine PUBLIC
         ${PROJECT_BINARY_DIR}
         ${PROJECT_SOURCE_DIR}/Include
-        ${PROJECT_SOURCE_DIR}/Libraries/glew/include
-        ${PROJECT_SOURCE_DIR}/Libraries/lz4/lib
+        ${GLEW_INCLUDE_DIRS}
+        ${LZ4_INCLUDE_DIRS}
+        ${OPENVR_INCLUDE_DIRS}
         ${Vulkan_INCLUDE_DIRS})
 
 if (INJECTOR_BUILD_EDITOR)

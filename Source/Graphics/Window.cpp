@@ -93,8 +93,7 @@ namespace Injector
 				isResized = false;
 			}
 
-			if (!isMinimized())
-				Manager::update();
+			Manager::update();
 
 			deltaScroll = {};
 			active = true;
@@ -340,6 +339,15 @@ namespace Injector
 		throw NotImplementedException(
 			"Window",
 			"createImage");
+	}
+	std::shared_ptr<GpuFramebuffer> Window::createFramebuffer(
+		const std::shared_ptr<GpuImage>& colorImage,
+		const std::shared_ptr<GpuImage>& depthImage,
+		const std::shared_ptr<GpuImage>& stencilImage)
+	{
+		throw NotImplementedException(
+			"Window",
+			"createFramebuffer");
 	}
 
 	std::shared_ptr<ColorGpuPipeline> Window::createColorPipeline(

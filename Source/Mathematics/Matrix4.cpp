@@ -1,5 +1,7 @@
 #include "Injector/Mathematics/Matrix4.hpp"
+
 #include <cmath>
+#include <sstream>
 
 namespace Injector
 {
@@ -40,6 +42,18 @@ namespace Injector
 	{
 	}
 
+	std::string Matrix4::getString() const noexcept
+	{
+		auto stream = std::stringstream();
+
+		stream <<
+			m00 << " " << m01 << " " << m02 << " " << m03 << "; " <<
+			m10 << " " << m11 << " " << m12 << " " << m13 << "; " <<
+			m20 << " " << m21 << " " << m22 << " " << m23 << "; " <<
+			m30 << " " << m31 << " " << m32 << " " << m33;
+
+		return stream.str();
+	}
 	float Matrix4::getDeterminant() const noexcept
 	{
 		auto f0 = m22 * m33 - m32 * m23;
@@ -524,7 +538,7 @@ namespace Injector
 		return Matrix4(
 			1.0f / (aspectRatio * tanHalfFov),
 			0.0f, 0.0f, 0.0f, 0.0f,
-			1.0f / -tanHalfFov,
+			-1.0f / tanHalfFov,
 			0.0f, 0.0f, 0.0f, 0.0f,
 			farClipPlane / (farClipPlane - nearClipPlane),
 			1.0f, 0.0f, 0.0f,

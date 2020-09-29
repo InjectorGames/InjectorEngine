@@ -24,6 +24,7 @@ namespace Injector
 			const Vector4& column2,
 			const Vector4& column3);
 
+		std::string getString() const noexcept;
 		float getDeterminant() const noexcept;
 		Matrix4 getTransposed() const noexcept;
 		Matrix4 getInversed() const noexcept;

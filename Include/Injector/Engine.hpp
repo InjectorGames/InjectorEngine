@@ -1,5 +1,7 @@
 #pragma once
+#include "Injector/Defines.hpp"
 #include "Injector/Manager.hpp"
+#include "Injector/Mathematics/Matrix4.hpp"
 #include "Injector/Graphics/GraphicsAPI.hpp"
 
 #include <chrono>
@@ -13,8 +15,7 @@ namespace Injector
 	 private:
 		static bool engineInitialized;
 		static bool videoInitialized;
-
-		static GraphicsAPI graphicsApi;
+		static bool vrInitialized;
 
 		static bool capUpdateRate;
 		static int targetUpdateRate;
@@ -22,6 +23,13 @@ namespace Injector
 		static bool updateRunning;
 		static tick_t updateStartTick;
 		static double updateDeltaTime;
+
+		static GraphicsAPI graphicsApi;
+		static Matrix4 hmdModelMatrix;
+		static Matrix4 leftEyeModelMatrix;
+		static Matrix4 rightEyeModelMatrix;
+		static Matrix4 leftEyeProjMatrix;
+		static Matrix4 rightEyeProjMatrix;
 
 		static std::vector<std::shared_ptr<Manager>> managers;
 	 public:
@@ -44,7 +52,10 @@ namespace Injector
 			GraphicsAPI graphicsApi = GraphicsAPI::OpenGL);
 		static void terminateVideo();
 		static bool getVideoInitialized() noexcept;
-		static GraphicsAPI getGraphicsApi() noexcept;
+
+		static void initializeVr();
+		static void terminateVr();
+		static bool getVrInitialized() noexcept;
 
 		static void startUpdateLoop();
 		static void stopUpdateLoop();
@@ -52,6 +63,13 @@ namespace Injector
 
 		static tick_t getTickNow() noexcept;
 		static double getTimeNow() noexcept;
+
+		static GraphicsAPI getGraphicsApi() noexcept;
+		static const Matrix4& getHmdModelMatrix() noexcept;
+		static const Matrix4& getLeftEyeModelMatrix() noexcept;
+		static const Matrix4& getRightEyeModelMatrix() noexcept;
+		static const Matrix4& getLeftEyeProjMatrix() noexcept;
+		static const Matrix4& getRightEyeProjMatrix() noexcept;
 
 		static bool addManager(
 			const std::shared_ptr<Manager>& manager) noexcept;

@@ -15,6 +15,9 @@ namespace Injector
 		bool gles;
 		GLuint shader;
 		GLenum glStage;
+
+		static bool getCompileStatus(GLuint shader);
+		static std::string getInfoLog(GLuint shader);
 	 public:
 		static const std::string glHeader;
 		static const std::string glesHeader;
@@ -30,7 +33,5 @@ namespace Injector
 		GLenum getGlStage() const noexcept;
 
 		static GLenum toGlStage(GpuShaderStage stage);
-		static bool getCompileStatus(GLuint shader);
-		static std::string getInfoLog(GLuint shader);
 	};
 }

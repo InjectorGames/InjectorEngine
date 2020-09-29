@@ -1,10 +1,11 @@
 #include "Injector/Engine.hpp"
+#include "Injector/Graphics/VrSystem.hpp"
 #include "Injector/Graphics/GuiSystem.hpp"
 #include "Injector/Graphics/SimSkySystem.hpp"
-#include "Injector/Graphics/CameraSystem.hpp"
-#include "Injector/Graphics/RenderSystem.hpp"
-#include "Injector/Mathematics/TransformSystem.hpp"
 #include "Injector/Graphics/FreeCameraSystem.hpp"
+#include "Injector/Mathematics/TransformSystem.hpp"
+
+#include <iostream>
 
 namespace Injector
 {
@@ -20,13 +21,14 @@ namespace Injector
 		auto freeCameraSystem = window->createSystem<FreeCameraSystem>(window);
 		auto guiSystem = window->createSystem<GuiSystem>();
 		auto simSkySystem = window->createSystem<SimSkySystem>(window);
+		auto vrSystem = window->createSystem<VrSystem>();
 		auto transformSystem = window->createSystem<TransformSystem>();
 		auto cameraSystem = window->createCameraSystem();
 		auto renderSystem = window->createRenderSystem();
 
 		auto freeCamera = window->createEntity();
 		freeCamera->createComponent<TransformComponent>(
-			Vector3(0.0f, -2.5f, 5.0f),
+			Vector3(0.0f, 0, 0),
 			Quaternion(Vector3::zero),
 			Vector3::one,
 			RotationOrigin::Orbit);
@@ -34,7 +36,8 @@ namespace Injector
 			0,
 			CameraType::Perspective);
 		transformSystem->addTransform(freeCamera);
-		cameraSystem->addCamera(freeCamera);
+		vrSystem->hmd = freeCamera;
+		//cameraSystem->addCamera(freeCamera);
 		renderSystem->addCamera(freeCamera);
 		freeCameraSystem->camera = freeCamera;
 
@@ -64,7 +67,7 @@ namespace Injector
 			3,
 			false);
 		auto boxImage = window->createImage(boxImageData->size,
-			GpuImageFormat::RGB8,
+			GpuImageFormat::RGB8F,
 			GpuImageFilter::Nearest,
 			GpuImageFilter::Nearest,
 			GpuImageWrap::Repeat,
@@ -166,19 +169,33 @@ namespace Injector
 	}
 }
 
-
 int main()
 {
-	//Engine::initializeVideo(
-	// Injector::GraphicsAPI::Vulkan);
-	Injector::Engine::initializeVideo(
-		Injector::GraphicsAPI::OpenGL);
-	Injector::Engine::initializeEngine();
+	try
+	{
+		//Engine::initializeVideo(
+		// Injector::GraphicsAPI::Vulkan);
+		Injector::Engine::initializeVideo(
+			Injector::GraphicsAPI::OpenGL);
+		Injector::Engine::initializeVr();
+		Injector::Engine::setTargetUpdateRate(90);
+		Injector::Engine::initializeEngine();
 
-	Injector::initialize();
+		Injector::initialize();
 
-	Injector::Engine::startUpdateLoop();
-	Injector::Engine::terminateEngine();
+		Injector::Engine::startUpdateLoop();
+		Injector::Engine::terminateEngine();
 
-	return 0;
+		return 0;
+	}
+	catch (const std::exception& exception)
+	{
+		std::cout << typeid(exception).name() <<
+			": " << exception.what() << "\n";
+
+		std::cout << "PRESS ANY KEY TO EXIT";
+		std::cin.get();
+
+		return -1;
+	}
 }

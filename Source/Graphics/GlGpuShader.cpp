@@ -5,6 +5,21 @@
 
 namespace Injector
 {
+	bool GlGpuShader::getCompileStatus(GLuint shader)
+	{
+		GLint success;
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		return success == GL_TRUE;
+	}
+	std::string GlGpuShader::getInfoLog(GLuint shader)
+	{
+		GLint length;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
+		std::string infoLog(static_cast<size_t>(length), ' ');
+		glGetShaderInfoLog(shader, length, &length, infoLog.data());
+		return infoLog;
+	}
+
 	const std::string GlGpuShader::glHeader =
 		"#version 330 core\n\n#define highp \n#define mediump \n#define lowp \n";
 	const std::string GlGpuShader::glesHeader =
@@ -92,19 +107,5 @@ namespace Injector
 				"toGlStage",
 				"Unsupported stage");
 		}
-	}
-	bool GlGpuShader::getCompileStatus(GLuint shader)
-	{
-		GLint success;
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-		return success == GL_TRUE;
-	}
-	std::string GlGpuShader::getInfoLog(GLuint shader)
-	{
-		GLint length;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
-		std::string infoLog(static_cast<size_t>(length), ' ');
-		glGetShaderInfoLog(shader, length, &length, infoLog.data());
-		return infoLog;
 	}
 }

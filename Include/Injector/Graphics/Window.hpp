@@ -13,6 +13,7 @@
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/KeyboardButton.hpp"
+#include "Injector/Graphics/GpuFramebuffer.hpp"
 #include "Injector/Graphics/Pipeline/GpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/SimulatedSkyGpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/ColorGpuPipeline.hpp"
@@ -32,8 +33,6 @@ namespace Injector
 		bool isResized;
 
 		static void scrollCallback(
-			GLFWwindow* window, double x, double y);
-		static void cursorPositionCallback(
 			GLFWwindow* window, double x, double y);
 		static void framebufferSizeCallback(
 			GLFWwindow* window, int width, int height);
@@ -109,6 +108,10 @@ namespace Injector
 			GpuImageWrap wrapW,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data);
+		virtual std::shared_ptr<GpuFramebuffer> createFramebuffer(
+				const std::shared_ptr<GpuImage>& colorImage,
+				const std::shared_ptr<GpuImage>& depthImage,
+				const std::shared_ptr<GpuImage>& stencilImage);
 
 		virtual std::shared_ptr<ColorGpuPipeline> createColorPipeline(
 			const std::shared_ptr<GpuShader>& vertexShader,
