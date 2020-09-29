@@ -17,9 +17,8 @@ namespace Injector
 		float speed;
 		float sensitivity;
 
-		FreeCameraSystem(
+		explicit FreeCameraSystem(
 			const std::shared_ptr<Window>& window);
-		virtual ~FreeCameraSystem();
 
 		void update() override;
 	};

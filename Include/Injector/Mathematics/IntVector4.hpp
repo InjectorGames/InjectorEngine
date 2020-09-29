@@ -3,12 +3,12 @@
 
 namespace Injector
 {
-	struct IntVector4
+	struct IntVector4 final
 	{
 		int x, y, z, w;
 
 		IntVector4();
-		IntVector4(int xyzw);
+		explicit IntVector4(int xyzw);
 		IntVector4(int x, int y, int z, int w);
 		IntVector4(const IntVector2& vector, int z, int w);
 		IntVector4(int x, const IntVector2& vector, int w);
@@ -16,6 +16,7 @@ namespace Injector
 		IntVector4(const IntVector3& vector, int w);
 		IntVector4(int x, const IntVector3& vector);
 
+		std::string getString() const noexcept;
 		int getDotProduct(const IntVector4& vector) const noexcept;
 		float getLength() const noexcept;
 		float getDistance(const IntVector4& vector) const noexcept;

@@ -8,9 +8,8 @@ namespace Injector
 	 public:
 		MemoryStream(
 			const std::string& string,
-			const std::ios::openmode mode =
+			std::ios::openmode mode =
 				ios_base::in | ios_base::out);
-		virtual ~MemoryStream();
 
 		std::istream& read(char& value);
 		std::istream& read(char* values, size_t count);

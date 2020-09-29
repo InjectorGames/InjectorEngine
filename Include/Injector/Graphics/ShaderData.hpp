@@ -9,7 +9,7 @@ namespace Injector
 		std::vector<uint8_t> code;
 
 		ShaderData();
-		ShaderData(const std::vector<uint8_t>& code);
-		virtual ~ShaderData();
+		explicit ShaderData(const std::vector<uint8_t>& code);
+		virtual ~ShaderData() = default;
 	};
 }

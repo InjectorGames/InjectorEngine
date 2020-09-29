@@ -26,7 +26,7 @@ namespace Injector
 		const std::vector<Vector2>& _texCoords,
 		const std::vector<Vector3>& _normals,
 		const std::vector<Vector3>& _tangents,
-		const std::vector<Vector3>& _bitagents) :
+		const std::vector<Vector3>& _bitangents) :
 		indices16(_indices16),
 		indices32(_indices32),
 		vertices(_vertices),
@@ -34,10 +34,7 @@ namespace Injector
 		texCoords(_texCoords),
 		normals(_normals),
 		tangents(_tangents),
-		bitangents(_bitagents)
-	{
-	}
-	ModelData::~ModelData()
+		bitangents(_bitangents)
 	{
 	}
 

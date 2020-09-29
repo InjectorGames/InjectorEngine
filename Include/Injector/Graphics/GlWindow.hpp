@@ -16,11 +16,10 @@ namespace Injector
 			const std::string& title,
 			const IntVector2& size);
 	 public:
-		GlWindow(
+		explicit GlWindow(
 			bool gles = false,
 			const std::string& title = defaultTitle,
 			const IntVector2& size = defaultSize);
-		virtual ~GlWindow();
 
 		bool isGLES() const noexcept;
 
@@ -36,12 +35,12 @@ namespace Injector
 			size_t size,
 			GpuBufferType type,
 			bool mappable,
-			const void* data) override;
+			const void* data = nullptr) override;
 		std::shared_ptr<GpuMesh> createMesh(
 			size_t indexCount,
 			GpuBufferIndex indexType,
-			const std::shared_ptr<GpuBuffer>& vertexBuffer,
-			const std::shared_ptr<GpuBuffer>& indexBuffer) override;
+			const std::shared_ptr<GpuBuffer>& vertexBuffer = nullptr,
+			const std::shared_ptr<GpuBuffer>& indexBuffer = nullptr) override;
 		std::shared_ptr<ShaderData> readShaderData(
 			const std::string& filePath) override;
 		std::shared_ptr<GpuShader> createShader(
@@ -57,11 +56,11 @@ namespace Injector
 			GpuImageWrap wrapV,
 			GpuImageWrap wrapW,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data) override;
+			const std::shared_ptr<ImageData>& data = nullptr) override;
 		std::shared_ptr<GpuFramebuffer> createFramebuffer(
 			const std::shared_ptr<GpuImage>& colorImage,
-			const std::shared_ptr<GpuImage>& depthImage,
-			const std::shared_ptr<GpuImage>& stencilImage) override;
+			const std::shared_ptr<GpuImage>& depthImage = nullptr,
+			const std::shared_ptr<GpuImage>& stencilImage = nullptr) override;
 
 		std::shared_ptr<ColorGpuPipeline> createColorPipeline(
 			const std::shared_ptr<GpuShader>& vertexShader,

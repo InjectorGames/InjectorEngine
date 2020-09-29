@@ -72,6 +72,18 @@ namespace Injector
 			// TODO: better look
 			switch (format)
 			{
+			case GpuImageFormat::R8F:
+				dataFormat = GL_RED;
+				dataType = GL_UNSIGNED_BYTE;
+				break;
+			case GpuImageFormat::RG8F:
+				dataFormat = GL_RG;
+				dataType = GL_UNSIGNED_BYTE;
+				break;
+			case GpuImageFormat::RGB8F:
+				dataFormat = GL_RGB;
+				dataType = GL_UNSIGNED_BYTE;
+				break;
 			case GpuImageFormat::RGBA8F:
 				dataFormat = GL_RGBA;
 				dataType = GL_UNSIGNED_BYTE;
@@ -80,6 +92,11 @@ namespace Injector
 				dataFormat = GL_DEPTH_STENCIL;
 				dataType = GL_UNSIGNED_INT_24_8;
 				break;
+			default:
+				throw Exception(
+					"GlGpuImage",
+					"GlGpuImage",
+					"Unsupported null image format");
 			};
 
 			data = nullptr;

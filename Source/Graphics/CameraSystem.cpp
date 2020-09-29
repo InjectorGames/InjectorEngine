@@ -26,9 +26,6 @@ namespace Injector
 		lastAspectRatio()
 	{
 	}
-	CameraSystem::~CameraSystem()
-	{
-	}
 
 	size_t CameraSystem::getCameraCount() const noexcept
 	{

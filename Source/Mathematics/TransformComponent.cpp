@@ -17,7 +17,4 @@ namespace Injector
 		parent(_parent)
 	{
 	}
-	TransformComponent::~TransformComponent()
-	{
-	}
 }

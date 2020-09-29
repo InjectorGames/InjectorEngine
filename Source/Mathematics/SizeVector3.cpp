@@ -1,28 +1,53 @@
 #include "Injector/Mathematics/SizeVector3.hpp"
+#include <sstream>
 
 namespace Injector
 {
 	SizeVector3::SizeVector3() :
-		x(0), y(0), z(0)
+		x(0),
+		y(0),
+		z(0)
 	{
 	}
-	SizeVector3::SizeVector3(size_t xyz) :
-		x(xyz), y(xyz), z(xyz)
+	SizeVector3::SizeVector3(
+		size_t xyz) :
+		x(xyz),
+		y(xyz),
+		z(xyz)
 	{
 	}
-	SizeVector3::SizeVector3(size_t _x, size_t _y, size_t _z) :
-		x(_x), y(_y), z(_z)
+	SizeVector3::SizeVector3(
+		size_t _x,
+		size_t _y,
+		size_t _z) :
+		x(_x),
+		y(_y),
+		z(_z)
 	{
 	}
-	SizeVector3::SizeVector3(const SizeVector2& vector, size_t _z) :
-		x(vector.x), y(vector.y), z(_z)
+	SizeVector3::SizeVector3(
+		const SizeVector2& vector,
+		size_t _z) :
+		x(vector.x),
+		y(vector.y),
+		z(_z)
 	{
 	}
-	SizeVector3::SizeVector3(size_t _x, const SizeVector2& vector) :
-		x(_x), y(vector.x), z(vector.y)
+	SizeVector3::SizeVector3(
+		size_t _x,
+		const SizeVector2& vector) :
+		x(_x),
+		y(vector.x),
+		z(vector.y)
 	{
 	}
 
+	std::string SizeVector3::getString() const noexcept
+	{
+		auto ss = std::stringstream();
+		ss << x << " " << y << " " << z;
+		return ss.str();
+	}
 	SizeVector2 SizeVector3::getSizeVector2() const noexcept
 	{
 		return SizeVector2(x, y);

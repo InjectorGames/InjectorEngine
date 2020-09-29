@@ -9,12 +9,12 @@ namespace Injector
 	 protected:
 		asio::ssl::stream<asio::ip::tcp::socket> stream;
 
-		void endSession();
+		void endSession() noexcept;
 		virtual void onSession();
 	 public:
-		SslTcpSession(
+		explicit SslTcpSession(
 			asio::ssl::stream<asio::ip::tcp::socket> stream);
-		virtual ~SslTcpSession();
+		virtual ~SslTcpSession() = default;
 
 		void onHandshake(const asio::error_code& error);
 	};

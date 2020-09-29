@@ -5,7 +5,4 @@ namespace Injector
 	GuiComponent::GuiComponent()
 	{
 	}
-	GuiComponent::~GuiComponent()
-	{
-	}
 }

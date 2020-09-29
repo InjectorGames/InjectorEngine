@@ -9,8 +9,8 @@ namespace Injector
 	 protected:
 		VkWindow& window;
 	 public:
-		VkRenderSystem(VkWindow& window);
-		virtual ~VkRenderSystem();
+		explicit VkRenderSystem(
+			VkWindow& window);
 
 		void update() override;
 	};

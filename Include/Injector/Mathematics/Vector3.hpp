@@ -4,19 +4,20 @@
 
 namespace Injector
 {
-	struct Vector3
+	struct Vector3 final
 	{
 		float x, y, z;
 
 		Vector3();
-		Vector3(float xyz);
+		explicit Vector3(float xyz);
 		Vector3(float x, float y, float z);
 		Vector3(const Vector2& vector, float z);
 		Vector3(float x, const Vector2& vector);
-		Vector3(const IntVector3& vector);
+		explicit Vector3(const IntVector3& vector);
 		Vector3(const IntVector2& vector, float z);
 		Vector3(float x, const IntVector2& vector);
 
+		std::string getString() const noexcept;
 		float getDotProduct(const Vector3& vector) const noexcept;
 		float getDotProduct(const IntVector3& vector) const noexcept;
 		Vector3 getCrossProduct(const Vector3& vector) const noexcept;

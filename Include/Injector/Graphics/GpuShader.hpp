@@ -8,8 +8,8 @@ namespace Injector
 	 protected:
 		GpuShaderStage stage;
 	 public:
-		GpuShader(GpuShaderStage stage);
-		virtual ~GpuShader();
+		explicit GpuShader(GpuShaderStage stage);
+		virtual ~GpuShader() = default;
 
 		GpuShaderStage getStage() const noexcept;
 	};

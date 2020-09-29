@@ -1,26 +1,48 @@
 #include "Injector/Graphics/Pipeline/GlGpuPipeline.hpp"
-#include "Injector/Exception/NotImplementedException.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
 	bool GlGpuPipeline::getLinkStatus(GLuint program) noexcept
 	{
 		GLint success;
-		glGetProgramiv(program, GL_LINK_STATUS, &success);
+
+		glGetProgramiv(
+			program,
+			GL_LINK_STATUS,
+			&success);
+
 		return success == GL_TRUE;
 	}
 	std::string GlGpuPipeline::getInfoLog(GLuint program) noexcept
 	{
 		GLint length;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
-		std::string infoLog(length, ' ');
-		glGetProgramInfoLog(program, length, &length, infoLog.data());
+
+		glGetProgramiv(
+			program,
+			GL_INFO_LOG_LENGTH,
+			&length);
+
+		auto infoLog = std::string(
+			static_cast<size_t>(length),
+			' ');
+
+		glGetProgramInfoLog(
+			program,
+			length,
+			&length,
+			infoLog.data());
+
 		return infoLog;
 	}
 
-	GLint GlGpuPipeline::getUniformLocation(GLuint program, const std::string& name)
+	GLint GlGpuPipeline::getUniformLocation(
+		GLuint program,
+		const std::string& name)
 	{
-		auto location = glGetUniformLocation(program, name.c_str());
+		auto location = glGetUniformLocation(
+			program,
+			name.c_str());
 
 		if (location == -1)
 		{
@@ -32,9 +54,13 @@ namespace Injector
 
 		return location;
 	}
-	GLuint GlGpuPipeline::getUniformBlockIndex(GLuint program, const std::string& name)
+	GLuint GlGpuPipeline::getUniformBlockIndex(
+		GLuint program,
+		const std::string& name)
 	{
-		auto index = glGetUniformBlockIndex(program, name.c_str());
+		auto index = glGetUniformBlockIndex(
+			program,
+			name.c_str());
 
 		if (index == GL_INVALID_INDEX)
 		{
@@ -164,16 +190,8 @@ namespace Injector
 	{
 		glUseProgram(program);
 	}
-	void GlGpuPipeline::flush()
+	void GlGpuPipeline::unbind()
 	{
-		throw NotImplementedException(
-			"GlGpuPipeline",
-			"flush");
-	}
-	void GlGpuPipeline::setAttributes()
-	{
-		throw NotImplementedException(
-			"GlGpuPipeline",
-			"setAttributes");
+		glUseProgram(GL_ZERO);
 	}
 }

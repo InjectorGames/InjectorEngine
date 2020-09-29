@@ -6,9 +6,7 @@ namespace Injector
 	class SimulatedSkyGpuPipeline : public GpuPipeline
 	{
 	 public:
-		virtual ~SimulatedSkyGpuPipeline();
-
-		virtual float getHeight() const;
-		virtual void setHeight(float color);
+		virtual float getHeight() const = 0;
+		virtual void setHeight(float color) = 0;
 	};
 }

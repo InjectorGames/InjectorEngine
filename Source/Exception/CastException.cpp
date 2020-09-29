@@ -10,7 +10,4 @@ namespace Injector
 			"Failed to cast \"" + variableName + "\"")
 	{
 	}
-	CastException::~CastException()
-	{
-	}
 }

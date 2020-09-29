@@ -16,7 +16,6 @@ namespace Injector
 		std::set<std::shared_ptr<Entity>> rotates;
 	 public:
 		TransformSystem();
-		virtual ~TransformSystem();
 
 		void update() override;
 

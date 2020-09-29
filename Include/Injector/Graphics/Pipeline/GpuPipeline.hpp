@@ -6,13 +6,13 @@ namespace Injector
 	class GpuPipeline
 	{
 	 public:
-		virtual ~GpuPipeline();
+		virtual ~GpuPipeline() = default;
 
 		virtual void setUniforms(
 			const Matrix4& model,
 			const Matrix4& view,
 			const Matrix4& proj,
 			const Matrix4& viewProj,
-			const Matrix4& mvp);
+			const Matrix4& mvp) = 0;
 	};
 }

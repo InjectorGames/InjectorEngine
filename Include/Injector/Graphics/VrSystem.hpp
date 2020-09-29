@@ -11,8 +11,7 @@ namespace Injector
 	{
 	public:
 		std::shared_ptr<Entity> hmd;
-
-		virtual ~VrSystem();
+		
 		void update() override;
 	};
 }

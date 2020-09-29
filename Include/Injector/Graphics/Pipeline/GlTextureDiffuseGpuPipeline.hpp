@@ -56,7 +56,6 @@ namespace Injector
 			const Vector3& lightDirection = Vector3(1.0f, 2.0f, 3.0f),
 			const Vector2& textureScale = Vector2::one,
 			const Vector2& textureOffset = Vector2::zero);
-		virtual ~GlTextureDiffuseGpuPipeline();
 
 		std::shared_ptr<GpuImage> getTexture() const override;
 

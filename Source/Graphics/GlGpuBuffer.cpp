@@ -1,4 +1,5 @@
 #include "Injector/Graphics/GlGpuBuffer.hpp"
+#include "Injector/Exception/NullException.hpp"
 #include "Injector/Exception/OutOfRangeException.hpp"
 
 namespace Injector
@@ -39,9 +40,24 @@ namespace Injector
 		glBindBuffer(glType, GL_ZERO);
 	}
 
-	void* GlGpuBuffer::map(GpuBufferAccess access)
+	void* GlGpuBuffer::map(
+		GpuBufferAccess access)
 	{
-		GpuBuffer::map(access);
+		if (!mappable)
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"map",
+				"Not mappable");
+		}
+		if (mapped)
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"map",
+				"Already mapped");
+		}
+
 		glBindBuffer(glType, buffer);
 
 		auto mappedData = glMapBufferRange(
@@ -59,17 +75,47 @@ namespace Injector
 		}
 
 		glBindBuffer(glType, GL_ZERO);
+
+		mapped = true;
+		mapAccess = access;
+		mapSize = size;
+		mapOffset = 0;
 		return mappedData;
 	}
-	void* GlGpuBuffer::map(GpuBufferAccess access, size_t size, size_t offset)
+	void* GlGpuBuffer::map(
+		GpuBufferAccess access,
+		size_t _size,
+		size_t offset)
 	{
-		GpuBuffer::map(access, size, offset);
+		if (!mappable)
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"map",
+				"Not mappable");
+		}
+		if (mapped)
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"map",
+				"Already mapped");
+		}
+		if (_size + offset > size)
+		{
+			throw OutOfRangeException(
+				"GlGpuBuffer",
+				"map",
+				static_cast<uint64_t>(_size + offset),
+				static_cast<uint64_t>(size));
+		}
+
 		glBindBuffer(glType, buffer);
 
 		auto mappedData = glMapBufferRange(
 			glType,
 			static_cast<GLintptr>(offset),
-			static_cast<GLsizeiptr>(size),
+			static_cast<GLsizeiptr>(_size),
 			toGlAccess(access));
 
 		if (!mappedData)
@@ -81,11 +127,23 @@ namespace Injector
 		}
 
 		glBindBuffer(glType, GL_ZERO);
+
+		mapped = true;
+		mapAccess = access;
+		mapSize = _size;
+		mapOffset = offset;
 		return mappedData;
 	}
 	void GlGpuBuffer::unmap()
 	{
-		GpuBuffer::unmap();
+		if (!mapped)
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"map",
+				"Not mapped");
+		}
+
 		glBindBuffer(glType, buffer);
 
 		if (mapAccess == GpuBufferAccess::WriteOnly ||
@@ -106,9 +164,12 @@ namespace Injector
 		}
 
 		glBindBuffer(glType, GL_ZERO);
+		mapped = false;
 	}
 
-	void GlGpuBuffer::setData(const void* data, size_t _size)
+	void GlGpuBuffer::setData(
+		const void* data,
+		size_t _size)
 	{
 		if (!mappable)
 		{
@@ -124,13 +185,20 @@ namespace Injector
 				"setData",
 				"Already mapped");
 		}
+		if(!data)
+		{
+			throw NullException(
+				"GlGpuBuffer",
+				"setData",
+				"data");
+		}
 		if (_size > size)
 		{
 			throw OutOfRangeException(
 				"GlGpuBuffer",
 				"setData",
-				_size,
-				size);
+				static_cast<uint64_t>(_size),
+				static_cast<uint64_t>(size));
 		}
 
 		glBindBuffer(glType, buffer);
@@ -143,7 +211,10 @@ namespace Injector
 
 		glBindBuffer(glType, GL_ZERO);
 	}
-	void GlGpuBuffer::setData(const void* data, size_t _size, size_t offset)
+	void GlGpuBuffer::setData(
+		const void* data,
+		size_t _size,
+		size_t offset)
 	{
 		if (!mappable)
 		{
@@ -159,13 +230,20 @@ namespace Injector
 				"setData",
 				"Already mapped");
 		}
+		if(!data)
+		{
+			throw NullException(
+				"GlGpuBuffer",
+				"setData",
+				"data");
+		}
 		if (_size + offset > size)
 		{
 			throw OutOfRangeException(
 				"GlGpuBuffer",
 				"setData",
-				_size + offset,
-				size);
+				static_cast<uint64_t>(_size + offset),
+				static_cast<uint64_t>(size));
 		}
 
 		glBindBuffer(glType, buffer);

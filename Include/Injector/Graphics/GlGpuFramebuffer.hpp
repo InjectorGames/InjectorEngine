@@ -11,9 +11,9 @@ namespace Injector
 	public:
 		GlGpuFramebuffer(
 			const std::shared_ptr<GlGpuImage>& colorImage,
-			const std::shared_ptr<GlGpuImage>& depthImage,
-			const std::shared_ptr<GlGpuImage>& stencilImage);
-		virtual ~GlGpuFramebuffer();
+			const std::shared_ptr<GlGpuImage>& depthImage = nullptr,
+			const std::shared_ptr<GlGpuImage>& stencilImage = nullptr);
+		~GlGpuFramebuffer() override;
 
 		GLuint getFramebuffer() const noexcept;
 

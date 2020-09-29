@@ -10,6 +10,5 @@ namespace Injector
 
 		TranslateComponent(
 			const Vector3& translation = Vector3::one);
-		virtual ~TranslateComponent();
 	};
 }

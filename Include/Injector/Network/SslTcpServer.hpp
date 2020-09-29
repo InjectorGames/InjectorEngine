@@ -16,7 +16,7 @@ namespace Injector
 
 		friend class SslTcpSession;
 	 public:
-		SslTcpServer(
+		explicit SslTcpServer(
 			const std::function<SslTcpSession*(asio::ssl::stream<
 			    asio::ip::tcp::socket>)>& sessionFactory,
 			const std::shared_ptr<asio::io_context>& context =
@@ -25,6 +25,5 @@ namespace Injector
 				std::make_shared<asio::ssl::context>(asio::ssl::context::tlsv13_server),
 			const asio::ip::tcp::endpoint& localEndpoint =
 				TcpSocket::createEndpoint(TcpSocket::ipv6Any, 0));
-		virtual ~SslTcpServer();
 	};
 }

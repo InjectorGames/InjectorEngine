@@ -9,9 +9,6 @@ namespace Injector
 		message(_message + " at " + className + "::" + functionName + "()")
 	{
 	}
-	Exception::~Exception()
-	{
-	}
 
 	const char* Exception::what() const noexcept
 	{

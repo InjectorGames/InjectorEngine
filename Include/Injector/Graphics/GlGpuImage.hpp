@@ -22,8 +22,8 @@ namespace Injector
 			GpuImageWrap wrapV,
 			GpuImageWrap wrapW,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data);
-		virtual ~GlGpuImage();
+			const std::shared_ptr<ImageData>& data = nullptr);
+		~GlGpuImage() override;
 
 		GLuint getTexture() const noexcept;
 		GLenum getGlType() const noexcept;

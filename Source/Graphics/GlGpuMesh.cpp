@@ -1,5 +1,5 @@
 #include "Injector/Graphics/GlGpuMesh.hpp"
-#include "Injector/Exception/CastException.hpp"
+#include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
@@ -28,16 +28,19 @@ namespace Injector
 
 	void GlGpuMesh::draw(const std::shared_ptr<GlGpuPipeline>& pipeline)
 	{
+		if(!pipeline)
+		{
+			throw NullException(
+				"GlGpuMesh",
+				"draw",
+				"pipeline");
+		}
+
 		auto glVertexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(vertexBuffer);
 		auto glIndexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(indexBuffer);
 
 		if (!glVertexBuffer || !glIndexBuffer)
-		{
-			throw CastException(
-				"GlGpuMesh",
-				"GlGpuMesh",
-				"buffer");
-		}
+			return;
 
 		glBindVertexArray(vertexArray);
 		glVertexBuffer->bind();

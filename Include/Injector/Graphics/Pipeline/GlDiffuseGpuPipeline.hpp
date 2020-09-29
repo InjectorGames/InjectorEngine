@@ -17,7 +17,7 @@ namespace Injector
 			Vector4 ambientColor;
 			Vector4 lightColor;
 			Vector3 lightDirection;
-			float aligment;
+			float alignment;
 
 			UniformBufferObject(
 				const Vector4& _objectColor,
@@ -28,7 +28,7 @@ namespace Injector
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
 				lightDirection(_lightDirection),
-				aligment()
+				alignment()
 			{
 			}
 		};
@@ -45,7 +45,6 @@ namespace Injector
 			const Vector4& ambientColor = Vector4::one / 2,
 			const Vector4& lightColor = Vector4::one,
 			const Vector3& lightDirection = Vector3(1.0f, 2.0f, 3.0f));
-		virtual ~GlDiffuseGpuPipeline();
 
 		const Vector4& getObjectColor() const override;
 		void setObjectColor(const Vector4& objectColor) override;

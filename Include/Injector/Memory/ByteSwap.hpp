@@ -34,5 +34,4 @@ namespace Injector
 		static float swapLittleEndian(float value) noexcept;
 		static double swapLittleEndian(double value) noexcept;
 	};
-
 }

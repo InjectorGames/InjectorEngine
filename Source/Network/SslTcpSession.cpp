@@ -1,9 +1,8 @@
 #include "Injector/Network/SslTcpSession.hpp"
-#include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
-	void SslTcpSession::endSession()
+	void SslTcpSession::endSession() noexcept
 	{
 		delete this;
 	}
@@ -15,9 +14,6 @@ namespace Injector
 	SslTcpSession::SslTcpSession(
 		asio::ssl::stream<asio::ip::tcp::socket> _stream) :
 		stream(std::move(_stream))
-	{
-	}
-	SslTcpSession::~SslTcpSession()
 	{
 	}
 

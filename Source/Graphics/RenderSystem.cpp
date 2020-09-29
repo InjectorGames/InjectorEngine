@@ -9,9 +9,6 @@ namespace Injector
 		cameras()
 	{
 	}
-	RenderSystem::~RenderSystem()
-	{
-	}
 
 	size_t RenderSystem::getCameraCount() const noexcept
 	{

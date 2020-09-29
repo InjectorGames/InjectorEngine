@@ -399,7 +399,7 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-		auto normal = model.getInversed().getTransposed().getMatrix3();
+		auto normal = model.getInverted().getInverted().getMatrix3();
 
 		bindedCommandBuffer.pushConstants(
 			pipelineLayout,

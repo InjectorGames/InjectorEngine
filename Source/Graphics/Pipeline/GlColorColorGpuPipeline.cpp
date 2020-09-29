@@ -9,9 +9,6 @@ namespace Injector
 		GlColorGpuPipeline(vertexShader, fragmentShader, color)
 	{
 	}
-	GlColorColorGpuPipeline::~GlColorColorGpuPipeline()
-	{
-	}
 
 	void GlColorColorGpuPipeline::setAttributes()
 	{

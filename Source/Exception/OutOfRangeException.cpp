@@ -98,7 +98,4 @@ namespace Injector
 			"Out of range [" + std::to_string(value) + ", " + std::to_string(range) + "]")
 	{
 	}
-	OutOfRangeException::~OutOfRangeException()
-	{
-	}
 }

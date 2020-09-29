@@ -10,6 +10,5 @@ namespace Injector
 			const std::string& className,
 			const std::string& functionName,
 			const std::string& variableName);
-		virtual ~CastException();
 	};
 }

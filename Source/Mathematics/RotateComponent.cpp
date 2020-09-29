@@ -7,7 +7,4 @@ namespace Injector
 		rotation(_rotation)
 	{
 	}
-	RotateComponent::~RotateComponent()
-	{
-	}
 }

@@ -38,9 +38,6 @@ namespace Injector
 		mvpLocation = getUniformLocation(program, "u_MVP");
 		colorLocation = getUniformLocation(program, "u_Color");
 	}
-	GlColorGpuPipeline::~GlColorGpuPipeline()
-	{
-	}
 
 	const Vector4& GlColorGpuPipeline::getColor() const
 	{

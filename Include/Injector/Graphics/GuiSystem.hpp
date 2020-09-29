@@ -14,7 +14,6 @@ namespace Injector
 		std::set<std::shared_ptr<Entity>> guis;
 	 public:
 		GuiSystem();
-		virtual ~GuiSystem();
 
 		size_t getGuiCount() const noexcept;
 

@@ -15,9 +15,6 @@ namespace Injector
 				"window");
 		}
 	}
-	SimSkySystem::~SimSkySystem()
-	{
-	}
 
 	void SimSkySystem::update()
 	{

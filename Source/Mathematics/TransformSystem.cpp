@@ -10,9 +10,6 @@ namespace Injector
 		rotates()
 	{
 	}
-	TransformSystem::~TransformSystem()
-	{
-	}
 
 	void TransformSystem::update()
 	{

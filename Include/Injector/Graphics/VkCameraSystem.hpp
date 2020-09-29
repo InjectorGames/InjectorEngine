@@ -9,8 +9,8 @@ namespace Injector
 	 protected:
 		VkWindow& window;
 	 public:
-		VkCameraSystem(VkWindow& window);
-		virtual ~VkCameraSystem();
+		explicit VkCameraSystem(
+			VkWindow& window);
 
 		void update() override;
 	};

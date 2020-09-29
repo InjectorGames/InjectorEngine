@@ -19,9 +19,11 @@ namespace Injector
 		static std::string getInfoLog(GLuint program) noexcept;
 
 		static GLint getUniformLocation(
-			GLuint program, const std::string& name);
+			GLuint program,
+			const std::string& name);
 		static GLuint getUniformBlockIndex(
-			GLuint program, const std::string& name);
+			GLuint program,
+			const std::string& name);
 
 		static void setVertexAttributePointer(
 			GLuint index,
@@ -62,14 +64,16 @@ namespace Injector
 			const Matrix4& value,
 			GLboolean transpose = GL_FALSE) noexcept;
 	 public:
-		GlGpuPipeline(GLenum drawMode);
-		virtual ~GlGpuPipeline();
+		explicit GlGpuPipeline(GLenum drawMode);
+		~GlGpuPipeline() override;
 
 		GLuint getProgram() const noexcept;
 		GLenum getDrawMode() const noexcept;
 
 		virtual void bind();
-		virtual void flush();
-		virtual void setAttributes();
+		virtual void unbind();
+
+		virtual void flush() = 0;
+		virtual void setAttributes() = 0;
 	};
 }

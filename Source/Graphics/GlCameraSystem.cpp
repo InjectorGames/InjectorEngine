@@ -3,11 +3,9 @@
 
 namespace Injector
 {
-	GlCameraSystem::GlCameraSystem(GlWindow& _window) :
+	GlCameraSystem::GlCameraSystem(
+		GlWindow& _window) :
 		window(_window)
-	{
-	}
-	GlCameraSystem::~GlCameraSystem()
 	{
 	}
 

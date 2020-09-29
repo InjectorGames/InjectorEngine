@@ -3,15 +3,16 @@
 
 namespace Injector
 {
-	struct Vector2
+	struct Vector2 final
 	{
 		float x, y;
 
 		Vector2();
-		Vector2(float xy);
+		explicit Vector2(float xy);
 		Vector2(float x, float y);
-		Vector2(const IntVector2& vector);
+		explicit Vector2(const IntVector2& vector);
 
+		std::string getString() const noexcept;
 		float getDotProduct(const Vector2& vector) const noexcept;
 		float getDotProduct(const IntVector2& vector) const noexcept;
 		float getLength() const noexcept;

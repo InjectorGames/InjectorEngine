@@ -19,6 +19,6 @@ namespace Injector
 			VkImageUsageFlags flags,
 			TextureType type,
 			IntVector3 size);
-		virtual ~VkTexture();
+		~VkTexture() override;
 	};*/
 }

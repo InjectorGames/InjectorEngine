@@ -28,8 +28,11 @@ namespace Injector
 			const std::vector<Vector2>& texCoords,
 			const std::vector<Vector3>& normals,
 			const std::vector<Vector3>& tangents,
-			const std::vector<Vector3>& bitagents);
-		virtual ~ModelData();
+			const std::vector<Vector3>& bitangents);
+		virtual ~ModelData() = default;
+
+		// TODO: add texture loading,
+		// add getVertex status method "bool isXXX();"
 
 		std::vector<float> getVertex() const;
 		std::vector<float> getVertexColor() const;

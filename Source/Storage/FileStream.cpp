@@ -55,9 +55,6 @@ namespace Injector
 		size = static_cast<size_t>(tellg());
 		seekg(0, beg);
 	}
-	FileStream::~FileStream()
-	{
-	}
 
 	size_t FileStream::getSize() const noexcept
 	{

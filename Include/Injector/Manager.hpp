@@ -15,8 +15,9 @@ namespace Injector
 		std::set<std::shared_ptr<Entity>> entities;
 		std::vector<std::shared_ptr<System>> systems;
 	 public:
-		Manager(bool active = true);
-		virtual ~Manager();
+		explicit Manager(
+			bool active = true);
+		virtual ~Manager() = default;
 
 		virtual void update();
 

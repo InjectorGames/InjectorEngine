@@ -1,18 +1,32 @@
 #include "Injector/Mathematics/SizeVector2.hpp"
+#include <sstream>
 
 namespace Injector
 {
 	SizeVector2::SizeVector2() :
-		x(0), y(0)
+		x(0),
+		y(0)
 	{
 	}
-	SizeVector2::SizeVector2(size_t xy) :
-		x(xy), y(xy)
+	SizeVector2::SizeVector2(
+		size_t xy) :
+		x(xy),
+		y(xy)
 	{
 	}
-	SizeVector2::SizeVector2(size_t _x, size_t _y) :
-		x(_x), y(_y)
+	SizeVector2::SizeVector2(
+		size_t _x,
+		size_t _y) :
+		x(_x),
+		y(_y)
 	{
+	}
+
+	std::string SizeVector2::getString() const noexcept
+	{
+		auto ss = std::stringstream();
+		ss << x << " " << y;
+		return ss.str();
 	}
 
 	bool SizeVector2::operator==(const SizeVector2& vector) const noexcept

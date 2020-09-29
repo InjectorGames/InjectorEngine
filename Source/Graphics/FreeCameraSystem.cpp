@@ -24,9 +24,6 @@ namespace Injector
 				"window");
 		}
 	}
-	FreeCameraSystem::~FreeCameraSystem()
-	{
-	}
 
 	void FreeCameraSystem::update()
 	{

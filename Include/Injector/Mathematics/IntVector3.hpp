@@ -3,16 +3,17 @@
 
 namespace Injector
 {
-	struct IntVector3
+	struct IntVector3 final
 	{
 		int x, y, z;
 
 		IntVector3();
-		IntVector3(int xyz);
+		explicit IntVector3(int xyz);
 		IntVector3(int x, int y, int z);
 		IntVector3(const IntVector2& vectorS, int z);
 		IntVector3(int x, const IntVector2& vector);
 
+		std::string getString() const noexcept;
 		int getDotProduct(const IntVector3& vector) const noexcept;
 		IntVector3 getCrossProduct(const IntVector3& vector) const noexcept;
 		float getLength() const noexcept;

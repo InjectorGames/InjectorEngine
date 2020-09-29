@@ -57,6 +57,5 @@ namespace Injector
 			const std::string& className,
 			const std::string& functionName,
 			long double value, long double range);
-		virtual ~OutOfRangeException();
 	};
 }

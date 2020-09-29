@@ -4,14 +4,15 @@
 
 namespace Injector
 {
-	struct Matrix3
+	struct Matrix3 final
 	{
 		float m00, m01, m02;
 		float m10, m11, m12;
 		float m20, m21, m22;
 
 		Matrix3();
-		Matrix3(float value);
+		explicit Matrix3(
+			float value);
 		Matrix3(
 			float m00, float m01, float m02,
 			float m10, float m11, float m12,
@@ -21,9 +22,10 @@ namespace Injector
 			const Vector3& column1,
 			const Vector3& column2);
 
+		std::string getString() const noexcept;
 		float getDeterminant() const noexcept;
 		Matrix3 getTransposed() const noexcept;
-		Matrix3 getInversed() const noexcept;
+		Matrix3 getInverted() const noexcept;
 
 		Vector3 getRow0() const noexcept;
 		Vector3 getRow1() const noexcept;

@@ -9,8 +9,8 @@ namespace Injector
 	 protected:
 		GlWindow& window;
 	 public:
-		GlCameraSystem(GlWindow& window);
-		virtual ~GlCameraSystem();
+		explicit GlCameraSystem(
+			GlWindow& window);
 
 		void update() override;
 	};

@@ -1,15 +1,18 @@
 #pragma once
+#include <string>
 #include <cstdlib>
 
 namespace Injector
 {
-	struct SizeVector2
+	struct SizeVector2 final
 	{
 		size_t x, y;
 
 		SizeVector2();
-		SizeVector2(size_t xy);
+		explicit SizeVector2(size_t xy);
 		SizeVector2(size_t x, size_t y);
+
+		std::string getString() const noexcept;
 
 		bool operator==(const SizeVector2& vector) const noexcept;
 		bool operator!=(const SizeVector2& vector) const noexcept;

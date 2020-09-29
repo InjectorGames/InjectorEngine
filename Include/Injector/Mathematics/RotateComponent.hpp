@@ -10,6 +10,5 @@ namespace Injector
 
 		RotateComponent(
 			const Quaternion& rotation = Quaternion(Vector3::one));
-		virtual ~RotateComponent();
 	};
 }

@@ -1,5 +1,5 @@
 #include "Injector/Graphics/VkGpuMesh.hpp"
-#include "Injector/Exception/CastException.hpp"
+#include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
@@ -11,24 +11,24 @@ namespace Injector
 		GpuMesh(indexCount, indexType, vertexBuffer, indexBuffer)
 	{
 	}
-	VkGpuMesh::~VkGpuMesh()
-	{
-	}
 
 	void VkGpuMesh::draw(vk::CommandBuffer commandBuffer)
 	{
+		if(!commandBuffer)
+		{
+			throw NullException(
+				"VkGpuMesh",
+				"draw",
+				"commandBuffer");
+		}
+
 		const VkDeviceSize offset = 0;
 
 		auto vkVertexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(vertexBuffer);
 		auto vkIndexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(vertexBuffer);
 
 		if (!vkVertexBuffer || !vkIndexBuffer)
-		{
-			throw CastException(
-				"VkGpuMesh",
-				"VkGpuMesh",
-				"buffer");
-		}
+			return;
 
 		auto buffer = vkVertexBuffer->getBuffer();
 

@@ -13,21 +13,22 @@ namespace Injector
 		vk::PipelineCache pipelineCache;
 		vk::CommandBuffer bindedCommandBuffer;
 	 public:
-		VkGpuPipeline(vk::Device device);
-		virtual ~VkGpuPipeline();
+		explicit VkGpuPipeline(vk::Device device);
+		~VkGpuPipeline() override;
 
 		vk::Device getDevice();
 		vk::PipelineCache getPipelineCache();
+
+		virtual void bind(
+			vk::CommandBuffer commandBuffer,
+			size_t imageIndex);
 
 		virtual void recreate(
 			VmaAllocator allocator,
 			vk::RenderPass renderPass,
 			uint32_t imageCount,
-			const vk::Extent2D& surfaceExtent);
+			const vk::Extent2D& surfaceExtent) = 0;
 		virtual void flush(
-			size_t imageIndex);
-		virtual void bind(
-			vk::CommandBuffer commandBuffer,
-			size_t imageIndex);
+			size_t imageIndex) = 0;
 	};
 }

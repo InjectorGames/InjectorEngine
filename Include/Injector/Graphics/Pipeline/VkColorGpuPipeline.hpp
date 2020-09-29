@@ -33,7 +33,7 @@ namespace Injector
 			const std::shared_ptr<VkGpuShader>& vertexShader,
 			const std::shared_ptr<VkGpuShader>& fragmentShader,
 			const Vector4& color = Vector4::one);
-		virtual ~VkColorGpuPipeline();
+		~VkColorGpuPipeline() override;
 
 		const Vector4& getColor() const override;
 		void setColor(const Vector4& color) override;

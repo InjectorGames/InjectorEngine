@@ -11,7 +11,4 @@ namespace Injector
 		render(_render)
 	{
 	}
-	RenderComponent::~RenderComponent()
-	{
-	}
 }

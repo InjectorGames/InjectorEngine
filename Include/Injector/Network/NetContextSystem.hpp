@@ -9,7 +9,7 @@ namespace Injector
 	 private:
 		std::shared_ptr<asio::io_context> context;
 	 public:
-		NetContextSystem(
+		explicit NetContextSystem(
 			const std::shared_ptr<asio::io_context>& context =
 				std::make_shared<asio::io_context>());
 

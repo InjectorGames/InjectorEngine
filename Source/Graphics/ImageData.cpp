@@ -24,8 +24,16 @@ namespace Injector
 		pixels(_pixels)
 	{
 	}
-	ImageData::~ImageData()
+
+	bool ImageData::isValid() const noexcept
 	{
+		if(componentCount < 1 || componentCount > 4)
+			return false;
+
+		if(component16)
+			return size.x * size.y * componentCount * 2 == pixels.size();
+		else
+			return size.x * size.y * componentCount == pixels.size();
 	}
 
 	std::shared_ptr<ImageData> ImageData::readFromFile(

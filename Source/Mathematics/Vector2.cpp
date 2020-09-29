@@ -1,5 +1,7 @@
 #include "Injector/Mathematics/Vector2.hpp"
+
 #include <cmath>
+#include <sstream>
 
 namespace Injector
 {
@@ -28,6 +30,12 @@ namespace Injector
 	{
 	}
 
+	std::string Vector2::getString() const noexcept
+	{
+		auto ss = std::stringstream();
+		ss << x << " " << y;
+		return ss.str();
+	}
 	float Vector2::getDotProduct(const Vector2& vector) const noexcept
 	{
 		auto result = *this * vector;

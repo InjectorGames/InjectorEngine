@@ -5,17 +5,17 @@
 
 namespace Injector
 {
-	struct Quaternion
+	struct Quaternion final
 	{
 		float x, y, z, w;
 
 		Quaternion();
 		Quaternion(float x, float y, float z, float w);
 		Quaternion(float angle, const Vector3& axis);
-		Quaternion(const Vector3& eulerAngles);
+		explicit Quaternion(const Vector3& eulerAngles);
 		Quaternion(const Vector3& a, const Vector3& b);
-		Quaternion(const Matrix3& matrix);
-		Quaternion(const Matrix4& matrix);
+		explicit Quaternion(const Matrix3& matrix);
+		explicit Quaternion(const Matrix4& matrix);
 
 		float getDotProduct(const Quaternion& quaternion) const noexcept;
 		Quaternion getCrossProduct(const Quaternion& quaternion) const noexcept;

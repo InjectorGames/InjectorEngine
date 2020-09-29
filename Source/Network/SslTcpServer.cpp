@@ -56,7 +56,4 @@ namespace Injector
 				"sessionFactory");
 		}
 	}
-	SslTcpServer::~SslTcpServer()
-	{
-	}
 }

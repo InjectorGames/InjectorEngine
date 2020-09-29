@@ -16,6 +16,8 @@ namespace Injector
 		VkGpuShader(
 			const vk::Device& device,
 			const std::vector<char>& code);
+
+		// TODO: change to override
 		virtual ~VkGpuShader();
 
 		vk::Device getDevice() const noexcept;

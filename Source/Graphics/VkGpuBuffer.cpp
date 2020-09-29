@@ -1,5 +1,6 @@
 #define VMA_IMPLEMENTATION
 #include "Injector/Graphics/VkGpuBuffer.hpp"
+#include "Injector/Exception/NullException.hpp"
 #include "Injector/Exception/OutOfRangeException.hpp"
 
 namespace Injector
@@ -65,7 +66,9 @@ namespace Injector
 		return allocation;
 	}
 
-	void VkGpuBuffer::invalidate(size_t _size, size_t offset)
+	void VkGpuBuffer::invalidate(
+		size_t _size,
+		size_t offset)
 	{
 		auto result = vmaInvalidateAllocation(
 			allocator,
@@ -81,7 +84,9 @@ namespace Injector
 				"Failed to invalidate");
 		}
 	}
-	void VkGpuBuffer::flush(size_t _size, size_t offset)
+	void VkGpuBuffer::flush(
+		size_t _size,
+		size_t offset)
 	{
 		auto result = vmaFlushAllocation(
 			allocator,
@@ -100,7 +105,21 @@ namespace Injector
 
 	void* VkGpuBuffer::map(GpuBufferAccess access)
 	{
-		GpuBuffer::map(access);
+		if (!mappable)
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"map",
+				"Not mappable");
+		}
+		if (mapped)
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"map",
+				"Already mapped");
+		}
+
 		void* mappedData;
 
 		auto result = vmaMapMemory(
@@ -122,11 +141,37 @@ namespace Injector
 			invalidate(size, 0);
 		}
 
+		mapped = true;
+		mapAccess = access;
+		mapSize = size;
+		mapOffset = 0;
 		return mappedData;
 	}
-	void* VkGpuBuffer::map(GpuBufferAccess access, size_t size, size_t offset)
+	void* VkGpuBuffer::map(GpuBufferAccess access, size_t _size, size_t offset)
 	{
-		GpuBuffer::map(access);
+		if (!mappable)
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"map",
+				"Not mappable");
+		}
+		if (mapped)
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"map",
+				"Already mapped");
+		}
+		if (_size + offset > size)
+		{
+			throw OutOfRangeException(
+				"VkGpuBuffer",
+				"map",
+				static_cast<uint64_t>(_size + offset),
+				static_cast<uint64_t>(size));
+		}
+
 		void* mappedData;
 
 		auto result = vmaMapMemory(
@@ -145,14 +190,24 @@ namespace Injector
 		if (access == GpuBufferAccess::ReadOnly ||
 			access == GpuBufferAccess::ReadWrite)
 		{
-			invalidate(size, offset);
+			invalidate(_size, offset);
 		}
 
+		mapped = true;
+		mapAccess = access;
+		mapSize = _size;
+		mapOffset = offset;
 		return mappedData;
 	}
 	void VkGpuBuffer::unmap()
 	{
-		GpuBuffer::unmap();
+		if (!mapped)
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"map",
+				"Not mapped");
+		}
 
 		if (mapAccess == GpuBufferAccess::WriteOnly ||
 			mapAccess == GpuBufferAccess::ReadWrite)
@@ -180,13 +235,20 @@ namespace Injector
 				"setData",
 				"Already mapped");
 		}
+		if(!data)
+		{
+			throw NullException(
+				"VkGpuBuffer",
+				"setData",
+				"data");
+		}
 		if (_size > size)
 		{
 			throw OutOfRangeException(
 				"VkGpuBuffer",
 				"setData",
-				_size,
-				size);
+				static_cast<uint64_t>(_size),
+				static_cast<uint64_t>(size));
 		}
 
 		void* mappedData;
@@ -225,13 +287,20 @@ namespace Injector
 				"setData",
 				"Already mapped");
 		}
+		if(!data)
+		{
+			throw NullException(
+				"VkGpuBuffer",
+				"setData",
+				"data");
+		}
 		if (_size + offset > size)
 		{
 			throw OutOfRangeException(
 				"VkGpuBuffer",
 				"setData",
-				_size + offset,
-				size);
+				static_cast<uint64_t>(_size + offset),
+				static_cast<uint64_t>(size));
 		}
 
 		void* mappedData;

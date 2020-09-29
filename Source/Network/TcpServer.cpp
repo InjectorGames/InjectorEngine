@@ -28,9 +28,6 @@ namespace Injector
 				"acceptHandle");
 		}
 	}
-	TcpServer::~TcpServer()
-	{
-	}
 
 	asio::ip::tcp::endpoint TcpServer::getLocalEndpoint() const noexcept
 	{

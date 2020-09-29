@@ -4,7 +4,6 @@
 #include "Injector/Graphics/VkWindow.hpp"
 #include "Injector/Graphics/GlWindow.hpp"
 #include "Injector/Exception/NullException.hpp"
-#include "Injector/Exception/NotImplementedException.hpp"
 
 namespace Injector
 {
@@ -102,12 +101,6 @@ namespace Injector
 		{
 			active = false;
 		}
-	}
-	void Window::onFramebufferResize(const IntVector2& size)
-	{
-		throw NotImplementedException(
-			"Window",
-			"onResize");
 	}
 
 	IntVector2 Window::getSize() const noexcept
@@ -276,122 +269,6 @@ namespace Injector
 		glfwRequestWindowAttention(window);
 	}
 
-	std::shared_ptr<CameraSystem> Window::createCameraSystem()
-	{
-		throw NotImplementedException(
-			"Window",
-			"createCameraSystem");
-	}
-	std::shared_ptr<RenderSystem> Window::createRenderSystem()
-	{
-		throw NotImplementedException(
-			"Window",
-			"createRenderSystem");
-	}
-
-	std::shared_ptr<GpuBuffer> Window::createBuffer(
-		size_t size,
-		GpuBufferType type,
-		bool mappable,
-		const void* data)
-	{
-		throw NotImplementedException(
-			"Window",
-			"createBuffer");
-	}
-	std::shared_ptr<GpuMesh> Window::createMesh(
-		size_t indexCount,
-		GpuBufferIndex indexType,
-		const std::shared_ptr<GpuBuffer>& vertexBuffer,
-		const std::shared_ptr<GpuBuffer>& indexBuffer)
-	{
-		throw NotImplementedException(
-			"Window",
-			"createMesh");
-	}
-	std::shared_ptr<ShaderData> Window::readShaderData(
-		const std::string& filePath)
-	{
-		throw NotImplementedException(
-			"Window",
-			"readShaderData");
-	}
-	std::shared_ptr<GpuShader> Window::createShader(
-		GpuShaderStage stage,
-		const std::shared_ptr<ShaderData>& data)
-	{
-		throw NotImplementedException(
-			"Window",
-			"createShader");
-	}
-	std::shared_ptr<GpuImage> Window::createImage(
-		GpuImageType type,
-		const IntVector3& size,
-		GpuImageFormat format,
-		GpuImageFilter minFilter,
-		GpuImageFilter magFilter,
-		GpuImageWrap wrapU,
-		GpuImageWrap wrapV,
-		GpuImageWrap wrapW,
-		bool useMipmap,
-		const std::shared_ptr<ImageData>& data)
-	{
-		throw NotImplementedException(
-			"Window",
-			"createImage");
-	}
-	std::shared_ptr<GpuFramebuffer> Window::createFramebuffer(
-		const std::shared_ptr<GpuImage>& colorImage,
-		const std::shared_ptr<GpuImage>& depthImage,
-		const std::shared_ptr<GpuImage>& stencilImage)
-	{
-		throw NotImplementedException(
-			"Window",
-			"createFramebuffer");
-	}
-
-	std::shared_ptr<ColorGpuPipeline> Window::createColorPipeline(
-		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
-	{
-		throw NotImplementedException(
-			"Window",
-			"createColorPipeline");
-	}
-	std::shared_ptr<ColorGpuPipeline> Window::createColColorPipeline(
-		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
-	{
-		throw NotImplementedException(
-			"Window",
-			"createColColorPipeline");
-	}
-	std::shared_ptr<DiffuseGpuPipeline> Window::createDiffusePipeline(
-		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
-	{
-		throw NotImplementedException(
-			"Window",
-			"createDiffusePipeline");
-	}
-	std::shared_ptr<TextureDiffuseGpuPipeline> Window::createTexDiffusePipeline(
-		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader,
-		const std::shared_ptr<GpuImage>& texture)
-	{
-		throw NotImplementedException(
-			"Window",
-			"createTexDiffusePipeline");
-	}
-	std::shared_ptr<SimulatedSkyGpuPipeline> Window::createSkyPipeline(
-		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
-	{
-		throw NotImplementedException(
-			"Window",
-			"createSkyPipeline");
-	}
-
 	std::shared_ptr<GpuMesh> Window::createMesh(
 		const std::vector<float>& vertices,
 		bool mappableVertices,
@@ -528,9 +405,11 @@ namespace Injector
 		}
 		else if (graphicsApi == GraphicsAPI::Vulkan)
 		{
-			return Engine::createManager<VkWindow>(
+			/*return Engine::createManager<VkWindow>(
 				title,
-				size);
+				size,
+				false);*/
+			return nullptr;
 		}
 		else
 		{

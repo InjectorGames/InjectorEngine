@@ -9,9 +9,6 @@ namespace Injector
 		std::stringstream(string, mode)
 	{
 	}
-	MemoryStream::~MemoryStream()
-	{
-	}
 
 	std::istream& MemoryStream::read(char& value)
 	{

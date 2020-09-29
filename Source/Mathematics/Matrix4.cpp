@@ -44,15 +44,13 @@ namespace Injector
 
 	std::string Matrix4::getString() const noexcept
 	{
-		auto stream = std::stringstream();
-
-		stream <<
+		auto ss = std::stringstream();
+		ss <<
 			m00 << " " << m01 << " " << m02 << " " << m03 << "; " <<
 			m10 << " " << m11 << " " << m12 << " " << m13 << "; " <<
 			m20 << " " << m21 << " " << m22 << " " << m23 << "; " <<
 			m30 << " " << m31 << " " << m32 << " " << m33;
-
-		return stream.str();
+		return ss.str();
 	}
 	float Matrix4::getDeterminant() const noexcept
 	{
@@ -80,7 +78,7 @@ namespace Injector
 			m02, m12, m22, m32,
 			m03, m13, m23, m33);
 	}
-	Matrix4 Matrix4::getInversed() const noexcept
+	Matrix4 Matrix4::getInverted() const noexcept
 	{
 		auto c00 = m22 * m33 - m32 * m23;
 		auto c02 = m12 * m33 - m32 * m13;
@@ -378,11 +376,11 @@ namespace Injector
 	}
 	Matrix4 Matrix4::operator/(const Matrix4& matrix) const noexcept
 	{
-		return *this * matrix.getInversed();
+		return *this * matrix.getInverted();
 	}
 	Vector4 Matrix4::operator/(const Vector4& vector) const noexcept
 	{
-		return getInversed() * vector;
+		return getInverted() * vector;
 	}
 	Matrix4 Matrix4::operator*(const Matrix4& matrix) const noexcept
 	{
@@ -429,7 +427,7 @@ namespace Injector
 	}
 	Matrix4& Matrix4::operator/=(const Matrix4& matrix) noexcept
 	{
-		return *this *= matrix.getInversed();
+		return *this *= matrix.getInverted();
 	}
 	Matrix4& Matrix4::operator*=(const Matrix4& matrix) noexcept
 	{

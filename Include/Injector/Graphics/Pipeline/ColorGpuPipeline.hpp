@@ -6,9 +6,7 @@ namespace Injector
 	class ColorGpuPipeline : public GpuPipeline
 	{
 	 public:
-		virtual ~ColorGpuPipeline();
-
-		virtual const Vector4& getColor() const;
-		virtual void setColor(const Vector4& color);
+		virtual const Vector4& getColor() const = 0;
+		virtual void setColor(const Vector4& color) = 0;
 	};
 }

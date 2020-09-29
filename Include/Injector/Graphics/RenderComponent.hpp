@@ -17,6 +17,5 @@ namespace Injector
 			const std::shared_ptr<GpuPipeline>& pipeline = nullptr,
 			const std::shared_ptr<GpuMesh>& mesh = nullptr,
 			bool render = true);
-		virtual ~RenderComponent();
 	};
 }

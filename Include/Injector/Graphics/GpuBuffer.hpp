@@ -1,6 +1,7 @@
 #pragma once
 #include "Injector/Graphics/GpuBufferType.hpp"
 #include "Injector/Graphics/GpuBufferAccess.hpp"
+
 #include <cstdlib>
 
 namespace Injector
@@ -20,7 +21,7 @@ namespace Injector
 			GpuBufferType type,
 			size_t size,
 			bool mappable);
-		virtual ~GpuBuffer();
+		virtual ~GpuBuffer() = default;
 
 		GpuBufferType getType() const noexcept;
 		size_t getSize() const noexcept;
@@ -30,11 +31,20 @@ namespace Injector
 		size_t getMapSize() const noexcept;
 		size_t getMapOffset() const noexcept;
 
-		virtual void* map(GpuBufferAccess access);
-		virtual void* map(GpuBufferAccess access, size_t size, size_t offset);
-		virtual void unmap();
+		virtual void* map(
+			GpuBufferAccess access) = 0;
+		virtual void* map(
+			GpuBufferAccess access,
+			size_t size,
+			size_t offset) = 0;
+		virtual void unmap() = 0;
 
-		virtual void setData(const void* data, size_t size);
-		virtual void setData(const void* data, size_t size, size_t offset);
+		virtual void setData(
+			const void* data,
+			size_t size) = 0;
+		virtual void setData(
+			const void* data,
+			size_t size,
+			size_t offset) = 0;
 	};
 }

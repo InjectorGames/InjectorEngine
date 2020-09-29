@@ -24,6 +24,5 @@ namespace Injector
 			RotationOrigin origin = RotationOrigin::Spin,
 			const Matrix4& matrix = Matrix4::identity,
 			const std::shared_ptr<Entity>& parent = nullptr);
-		virtual ~TransformComponent();
 	};
 }

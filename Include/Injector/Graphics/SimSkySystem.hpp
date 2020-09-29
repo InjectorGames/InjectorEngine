@@ -10,9 +10,8 @@ namespace Injector
 		std::shared_ptr<Window> window;
 
 	 public:
-		SimSkySystem(
+		explicit SimSkySystem(
 			const std::shared_ptr<Window>& window);
-		virtual ~SimSkySystem();
 
 		void update() override;
 	};

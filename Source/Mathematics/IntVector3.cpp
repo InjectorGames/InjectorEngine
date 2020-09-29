@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cstdint>
+#include <sstream>
 
 namespace Injector
 {
@@ -44,6 +45,12 @@ namespace Injector
 	{
 	}
 
+	std::string IntVector3::getString() const noexcept
+	{
+		auto ss = std::stringstream();
+		ss << x << " " << y << " " << z;
+		return ss.str();
+	}
 	int IntVector3::getDotProduct(const IntVector3& vector) const noexcept
 	{
 		auto result = *this * vector;

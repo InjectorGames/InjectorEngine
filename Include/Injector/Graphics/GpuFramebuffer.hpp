@@ -15,7 +15,7 @@ namespace Injector
 			const std::shared_ptr<GpuImage>& colorImage,
 			const std::shared_ptr<GpuImage>& depthImage,
 			const std::shared_ptr<GpuImage>& stencilImage);
-		virtual ~GpuFramebuffer();
+		virtual ~GpuFramebuffer() = default;
 
 		std::shared_ptr<GpuImage> getColorImage() const noexcept;
 		std::shared_ptr<GpuImage> getDepthImage() const noexcept;

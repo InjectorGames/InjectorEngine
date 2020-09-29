@@ -45,9 +45,6 @@ namespace Injector
 			GL_DYNAMIC_DRAW,
 			nullptr);
 	}
-	GlSimulatedSkyGpuPipeline::~GlSimulatedSkyGpuPipeline()
-	{
-	}
 
 	float GlSimulatedSkyGpuPipeline::getHeight() const
 	{

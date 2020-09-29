@@ -6,9 +6,10 @@ namespace Injector
 	class Datagram
 	{
 	 public:
-		virtual ~Datagram();
-		virtual size_t getSize() const;
-		virtual void toBytes(MemoryStream& stream) const;
-		virtual void fromBytes(MemoryStream& stream);
+		virtual ~Datagram() = default;
+
+		virtual size_t getSize() const = 0;
+		virtual void toBytes(MemoryStream& stream) const = 0;
+		virtual void fromBytes(MemoryStream& stream) = 0;
 	};
 }

@@ -123,21 +123,15 @@ endif ()
 add_library(InjectorEngine STATIC
         Source/Exception/CastException.cpp
         Source/Exception/Exception.cpp
-        Source/Exception/NotImplementedException.cpp
         Source/Exception/NullException.cpp
         Source/Exception/OutOfRangeException.cpp
 
-        Source/Graphics/Pipeline/ColorGpuPipeline.cpp
-        Source/Graphics/Pipeline/DiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/GlColorColorGpuPipeline.cpp
         Source/Graphics/Pipeline/GlColorGpuPipeline.cpp
         Source/Graphics/Pipeline/GlDiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/GlGpuPipeline.cpp
         Source/Graphics/Pipeline/GlSimulatedSkyGpuPipeline.cpp
         Source/Graphics/Pipeline/GlTextureDiffuseGpuPipeline.cpp
-        Source/Graphics/Pipeline/GpuPipeline.cpp
-        Source/Graphics/Pipeline/SimulatedSkyGpuPipeline.cpp
-        Source/Graphics/Pipeline/TextureDiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/VkColorGpuPipeline.cpp
         Source/Graphics/Pipeline/VkDiffuseGpuPipeline.cpp
         Source/Graphics/Pipeline/VkGpuPipeline.cpp
@@ -200,7 +194,6 @@ add_library(InjectorEngine STATIC
         Source/Memory/ByteSwap.cpp
         Source/Memory/MemoryStream.cpp
 
-        Source/Network/Datagram.cpp
         Source/Network/NetContextSystem.cpp
         Source/Network/SslTcpClient.cpp
         Source/Network/SslTcpServer.cpp
@@ -212,12 +205,10 @@ add_library(InjectorEngine STATIC
 
         Source/Storage/FileStream.cpp
 
-        Source/Component.cpp
         Source/Compressor.cpp
         Source/Engine.cpp
         Source/Entity.cpp
-        Source/Manager.cpp
-        Source/System.cpp)
+        Source/Manager.cpp)
 target_link_libraries(InjectorEngine PUBLIC
         asio
         assimp

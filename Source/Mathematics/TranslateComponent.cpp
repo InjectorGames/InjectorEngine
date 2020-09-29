@@ -7,7 +7,4 @@ namespace Injector
 		translation(_translation)
 	{
 	}
-	TranslateComponent::~TranslateComponent()
-	{
-	}
 }

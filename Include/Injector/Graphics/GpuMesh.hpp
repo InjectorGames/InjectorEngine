@@ -19,8 +19,8 @@ namespace Injector
 		GpuMesh(
 			size_t indexCount,
 			GpuBufferIndex indexType,
-			const std::shared_ptr<GpuBuffer>& vertexBuffer,
-			const std::shared_ptr<GpuBuffer>& indexBuffer);
-		virtual ~GpuMesh();
+			const std::shared_ptr<GpuBuffer>& vertexBuffer = nullptr,
+			const std::shared_ptr<GpuBuffer>& indexBuffer = nullptr);
+		virtual ~GpuMesh() = default;
 	};
 }

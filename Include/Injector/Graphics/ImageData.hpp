@@ -21,7 +21,9 @@ namespace Injector
 			int componentCount,
 			bool component16,
 			const std::vector<uint8_t>& pixels);
-		virtual ~ImageData();
+		virtual ~ImageData() = default;
+
+		bool isValid() const noexcept;
 
 		static std::shared_ptr<ImageData> readFromFile(
 			const std::string& filePath,

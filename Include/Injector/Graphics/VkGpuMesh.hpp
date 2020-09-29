@@ -14,7 +14,6 @@ namespace Injector
 			GpuBufferIndex indexType,
 			const std::shared_ptr<GpuBuffer>& vertexBuffer,
 			const std::shared_ptr<GpuBuffer>& indexBuffer);
-		virtual ~VkGpuMesh();
 
 		void draw(vk::CommandBuffer commandBuffer);
 	};

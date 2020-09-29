@@ -4,7 +4,7 @@
 
 namespace Injector
 {
-	class Compressor
+	class Compressor final
 	{
 	 public:
 		static int getCompressSize(int sourceSize);

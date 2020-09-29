@@ -10,7 +10,4 @@ namespace Injector
 			"Variable \"" + variableName + "\" is null")
 	{
 	}
-	NullException::~NullException()
-	{
-	}
 }

@@ -11,9 +11,6 @@ namespace Injector
 		window(_window)
 	{
 	}
-	VkRenderSystem::~VkRenderSystem()
-	{
-	}
 
 	void VkRenderSystem::update()
 	{

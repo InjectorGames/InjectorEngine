@@ -19,21 +19,35 @@ namespace Injector
 			VmaAllocator allocator,
 			vk::BufferUsageFlags usageFlags,
 			VmaMemoryUsage usage);
-		virtual ~VkGpuBuffer();
+		~VkGpuBuffer() override;
 
 		VmaAllocator getAllocator() const noexcept;
 		vk::Buffer getBuffer() const noexcept;
 		VmaAllocation getAllocation() const noexcept;
 
-		void invalidate(size_t size, size_t offset);
-		void flush(size_t size, size_t offset);
+		void invalidate(
+			size_t size,
+			size_t offset);
+		void flush(
+			size_t size,
+			size_t offset);
 
-		void* map(GpuBufferAccess access) override;
-		void* map(GpuBufferAccess access, size_t size, size_t offset) override;
+		void* map(
+			GpuBufferAccess access =
+				GpuBufferAccess::ReadWrite) override;
+		void* map(
+			GpuBufferAccess access,
+			size_t size,
+			size_t offset) override;
 		void unmap() override;
 
-		void setData(const void* data, size_t size) override;
-		void setData(const void* data, size_t size, size_t offset) override;
+		void setData(
+			const void* data,
+			size_t size) override;
+		void setData(
+			const void* data,
+			size_t size,
+			size_t offset) override;
 
 		static vk::BufferUsageFlagBits toVkType(GpuBufferType type);
 		static bool isVkMappable(VmaMemoryUsage usage);

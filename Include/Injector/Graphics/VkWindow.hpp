@@ -113,10 +113,10 @@ namespace Injector
 			vk::CommandPoolCreateFlags flags,
 			uint32_t queueFamilyIndex);
 	 public:
-		VkWindow(const std::string& title = defaultTitle,
+		explicit VkWindow(const std::string& title = defaultTitle,
 			const IntVector2& size = defaultSize,
 			bool stereo = false);
-		virtual ~VkWindow();
+		~VkWindow() override;
 
 		vk::CommandBuffer getGraphicsCommandBuffer(uint32_t imageIndex) const;
 		vk::CommandBuffer getPresentCommandBuffer(uint32_t imageIndex) const;

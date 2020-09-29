@@ -194,6 +194,7 @@ namespace Injector
 	}
 	VkColorGpuPipeline::~VkColorGpuPipeline()
 	{
+		// TODO: Test if overrided destructor correct
 		device.destroyPipeline(pipeline);
 		device.destroyPipelineLayout(pipelineLayout);
 	}

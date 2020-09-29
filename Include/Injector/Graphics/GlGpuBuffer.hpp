@@ -16,8 +16,8 @@ namespace Injector
 			GpuBufferType type,
 			size_t size,
 			GLenum usage,
-			const void* data);
-		virtual ~GlGpuBuffer();
+			const void* data = 0);
+		~GlGpuBuffer() override;
 
 		GLuint getBuffer() const noexcept;
 		GLenum getGlType() const noexcept;
@@ -25,12 +25,22 @@ namespace Injector
 		void bind() noexcept;
 		void unbind() noexcept;
 
-		void* map(GpuBufferAccess access) override;
-		void* map(GpuBufferAccess access, size_t size, size_t offset) override;
+		void* map(
+			GpuBufferAccess access =
+				GpuBufferAccess::ReadWrite) override;
+		void* map(
+			GpuBufferAccess access,
+			size_t size,
+			size_t offset) override;
 		void unmap() override;
 
-		void setData(const void* data, size_t size) override;
-		void setData(const void* data, size_t size, size_t offset) override;
+		void setData(
+			const void* data,
+			size_t size) override;
+		void setData(
+			const void* data,
+			size_t size,
+			size_t offset) override;
 
 		static GLenum toGlType(GpuBufferType type);
 		static bool isGlMappable(GLenum usage);

@@ -9,9 +9,6 @@ namespace Injector
 		systems()
 	{
 	}
-	Manager::~Manager()
-	{
-	}
 
 	void Manager::update()
 	{

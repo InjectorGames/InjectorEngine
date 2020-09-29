@@ -59,9 +59,6 @@ namespace Injector
 
 		glfwSwapInterval(0);
 	}
-	GlWindow::~GlWindow()
-	{
-	}
 
 	bool GlWindow::isGLES() const noexcept
 	{

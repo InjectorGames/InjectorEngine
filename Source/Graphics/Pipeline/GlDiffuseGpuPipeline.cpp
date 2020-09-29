@@ -52,9 +52,6 @@ namespace Injector
 			GL_DYNAMIC_DRAW,
 			nullptr);
 	}
-	GlDiffuseGpuPipeline::~GlDiffuseGpuPipeline()
-	{
-	}
 
 	const Vector4& GlDiffuseGpuPipeline::getObjectColor() const
 	{
@@ -138,6 +135,6 @@ namespace Injector
 		const Matrix4& mvp)
 	{
 		setUniform(mvpLocation, mvp);
-		setUniform(normalLocation,model.getInversed().getMatrix3(), GL_TRUE);
+		setUniform(normalLocation, model.getInverted().getMatrix3(), GL_TRUE);
 	}
 }

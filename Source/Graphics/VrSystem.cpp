@@ -1,12 +1,8 @@
-#pragma once
 #include "Injector/Graphics/VrSystem.hpp"
 #include "Injector/Engine.hpp"
 
 namespace Injector
 {
-	VrSystem::~VrSystem()
-	{}
-
 	void VrSystem::update()
 	{
 		CameraComponent* cameraComponent;

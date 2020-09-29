@@ -11,7 +11,4 @@ namespace Injector
 		code(_code)
 	{
 	}
-	ShaderData::~ShaderData()
-	{
-	}
 }

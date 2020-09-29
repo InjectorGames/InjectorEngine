@@ -6,9 +6,6 @@ namespace Injector
 		guis()
 	{
 	}
-	GuiSystem::~GuiSystem()
-	{
-	}
 
 	size_t GuiSystem::getGuiCount() const noexcept
 	{

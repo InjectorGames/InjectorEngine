@@ -2,11 +2,9 @@
 
 namespace Injector
 {
-	VkCameraSystem::VkCameraSystem(VkWindow& _window) :
+	VkCameraSystem::VkCameraSystem(
+		VkWindow& _window) :
 		window(_window)
-	{
-	}
-	VkCameraSystem::~VkCameraSystem()
 	{
 	}
 

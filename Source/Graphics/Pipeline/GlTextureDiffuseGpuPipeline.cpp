@@ -65,9 +65,6 @@ namespace Injector
 		GlGpuPipeline::bind();
 		glUniform1i(textureLocation, 0);
 	}
-	GlTextureDiffuseGpuPipeline::~GlTextureDiffuseGpuPipeline()
-	{
-	}
 
 	std::shared_ptr<GpuImage> GlTextureDiffuseGpuPipeline::getTexture() const
 	{
@@ -185,6 +182,6 @@ namespace Injector
 	{
 		setUniform(mvpLocation, mvp);
 		setUniform(normalLocation,
-			model.getInversed().getMatrix3(), GL_TRUE);
+			model.getInverted().getMatrix3(), GL_TRUE);
 	}
 }

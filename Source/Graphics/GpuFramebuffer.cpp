@@ -19,9 +19,6 @@ namespace Injector
 				"colorImage");
 		}
 	}
-	GpuFramebuffer::~GpuFramebuffer()
-	{
-	}
 
 	std::shared_ptr<GpuImage> GpuFramebuffer::getColorImage() const noexcept
 	{

@@ -13,7 +13,7 @@ namespace Injector
 			const asio::error_code&,
 			asio::ip::tcp::socket)> acceptHandle;
 	 public:
-		TcpServer(
+		explicit TcpServer(
 			const std::function<void(
 				const asio::error_code&,
 				asio::ip::tcp::socket)>& acceptHandle,
@@ -21,7 +21,7 @@ namespace Injector
 				std::make_shared<asio::io_context>(),
 			const asio::ip::tcp::endpoint& localEndpoint =
 				TcpSocket::createEndpoint(TcpSocket::ipv6Any, 0));
-		virtual ~TcpServer();
+		virtual ~TcpServer() = default;
 
 		asio::ip::tcp::endpoint getLocalEndpoint() const noexcept;
 		std::string getLocalAddress() const noexcept;

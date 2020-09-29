@@ -23,9 +23,6 @@ namespace Injector
 		useMipmap(_useMipmap)
 	{
 	}
-	GpuImage::~GpuImage()
-	{
-	}
 
 	GpuImageType GpuImage::getType() const noexcept
 	{

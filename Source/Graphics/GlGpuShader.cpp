@@ -8,15 +8,33 @@ namespace Injector
 	bool GlGpuShader::getCompileStatus(GLuint shader)
 	{
 		GLint success;
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+
+		glGetShaderiv(
+			shader,
+			GL_COMPILE_STATUS,
+			&success);
+
 		return success == GL_TRUE;
 	}
 	std::string GlGpuShader::getInfoLog(GLuint shader)
 	{
 		GLint length;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
-		std::string infoLog(static_cast<size_t>(length), ' ');
-		glGetShaderInfoLog(shader, length, &length, infoLog.data());
+
+		glGetShaderiv(
+			shader,
+			GL_INFO_LOG_LENGTH,
+			&length);
+
+		auto infoLog = std::string(
+			static_cast<size_t>(length),
+			' ');
+
+		glGetShaderInfoLog(
+			shader,
+			length,
+			&length,
+			infoLog.data());
+
 		return infoLog;
 	}
 

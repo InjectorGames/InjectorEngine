@@ -7,9 +7,6 @@ namespace Injector
 		stage(_stage)
 	{
 	}
-	GpuShader::~GpuShader()
-	{
-	}
 
 	GpuShaderStage GpuShader::getStage() const noexcept
 	{

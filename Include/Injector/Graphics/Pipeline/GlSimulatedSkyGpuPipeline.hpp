@@ -15,7 +15,7 @@ namespace Injector
 		{
 			float height;
 
-			UniformBufferObject(
+			explicit UniformBufferObject(
 				float _height) :
 				height(_height)
 			{
@@ -29,7 +29,6 @@ namespace Injector
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
 			float height = 1.0f);
-		virtual ~GlSimulatedSkyGpuPipeline();
 
 		float getHeight() const override;
 		void setHeight(float height) override;

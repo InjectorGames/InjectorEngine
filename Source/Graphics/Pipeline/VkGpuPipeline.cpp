@@ -1,5 +1,5 @@
 #include "Injector/Graphics/Pipeline/VkGpuPipeline.hpp"
-#include "Injector/Exception/NotImplementedException.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
@@ -37,23 +37,6 @@ namespace Injector
 		return pipelineCache;
 	}
 
-	void VkGpuPipeline::recreate(
-		VmaAllocator allocator,
-		vk::RenderPass renderPass,
-		uint32_t imageCount,
-		const vk::Extent2D& surfaceExtent)
-	{
-		throw NotImplementedException(
-			"VkGpuPipeline",
-			"recreate");
-	}
-	void VkGpuPipeline::flush(
-		size_t imageIndex)
-	{
-		throw NotImplementedException(
-			"VkGpuPipeline",
-			"flush");
-	}
 	void VkGpuPipeline::bind(
 		vk::CommandBuffer commandBuffer,
 		size_t imageIndex)

@@ -26,7 +26,7 @@ namespace Injector
 			bool gles,
 			GpuShaderStage stage,
 			const std::shared_ptr<ShaderData>& data);
-		virtual ~GlGpuShader();
+		~GlGpuShader() override;
 
 		bool isGLES() const noexcept;
 		GLuint getShader() const noexcept;

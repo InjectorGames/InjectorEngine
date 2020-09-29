@@ -3,12 +3,12 @@
 
 namespace Injector
 {
-	struct SizeVector4
+	struct SizeVector4 final
 	{
 		size_t x, y, z, w;
 
 		SizeVector4();
-		SizeVector4(size_t xyzw);
+		explicit SizeVector4(size_t xyzw);
 		SizeVector4(size_t x, size_t y, size_t z, size_t w);
 		SizeVector4(const SizeVector2& vector, size_t z, size_t w);
 		SizeVector4(size_t x, const SizeVector2& vector, size_t w);
@@ -16,6 +16,7 @@ namespace Injector
 		SizeVector4(const SizeVector3& vector, size_t w);
 		SizeVector4(size_t x, const SizeVector3& vector);
 
+		std::string getString() const noexcept;
 		SizeVector2 getSizeVector2() const noexcept;
 		SizeVector3 getSizeVector3() const noexcept;
 

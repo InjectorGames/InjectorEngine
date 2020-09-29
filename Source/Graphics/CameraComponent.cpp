@@ -25,7 +25,4 @@ namespace Injector
 		renders(_renders)
 	{
 	}
-	CameraComponent::~CameraComponent()
-	{
-	}
 }

@@ -23,7 +23,7 @@ namespace Injector
 		bool render;
 		std::set<std::shared_ptr<Entity>> renders;
 
-		CameraComponent(
+		explicit CameraComponent(
 			int queue = 0,
 			CameraType type = CameraType::Perspective,
 			float aspectRatio = 1.0f,
@@ -34,6 +34,5 @@ namespace Injector
 			const Matrix4& matrix = Matrix4::identity,
 			bool render = true,
 			const std::set<std::shared_ptr<Entity>>& renders = {});
-		virtual ~CameraComponent();
 	};
 }

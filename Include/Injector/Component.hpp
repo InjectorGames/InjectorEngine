@@ -4,6 +4,6 @@ namespace Injector
 {
 	struct Component
 	{
-		virtual ~Component();
+		virtual ~Component() = default;
 	};
 }

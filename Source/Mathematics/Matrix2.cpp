@@ -1,4 +1,5 @@
 #include "Injector/Mathematics/Matrix2.hpp"
+#include <sstream>
 
 namespace Injector
 {
@@ -27,6 +28,14 @@ namespace Injector
 	{
 	}
 
+	std::string Matrix2::getString() const noexcept
+	{
+		auto ss = std::stringstream();
+		ss <<
+		   m00 << " " << m01 << "; " <<
+		   m10 << " " << m11;
+		return ss.str();
+	}
 	float Matrix2::getDeterminant() const noexcept
 	{
 		return
@@ -39,7 +48,7 @@ namespace Injector
 			m00, m10,
 			m01, m11);
 	}
-	Matrix2 Matrix2::getInversed() const noexcept
+	Matrix2 Matrix2::getInverted() const noexcept
 	{
 		auto determinant = 1.0f / getDeterminant();
 
@@ -144,11 +153,11 @@ namespace Injector
 	}
 	Matrix2 Matrix2::operator/(const Matrix2& matrix) const noexcept
 	{
-		return *this * matrix.getInversed();
+		return *this * matrix.getInverted();
 	}
 	Vector2 Matrix2::operator/(const Vector2& vector) const noexcept
 	{
-		return getInversed() * vector;
+		return getInverted() * vector;
 	}
 	Matrix2 Matrix2::operator*(const Matrix2& matrix) const noexcept
 	{
@@ -183,7 +192,7 @@ namespace Injector
 	}
 	Matrix2& Matrix2::operator/=(const Matrix2& matrix) noexcept
 	{
-		return *this *= matrix.getInversed();
+		return *this *= matrix.getInverted();
 	}
 	Matrix2& Matrix2::operator*=(const Matrix2& matrix) noexcept
 	{

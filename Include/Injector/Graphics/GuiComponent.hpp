@@ -8,6 +8,5 @@ namespace Injector
 	struct GuiComponent : public Component
 	{
 		GuiComponent();
-		virtual ~GuiComponent();
 	};
 }
