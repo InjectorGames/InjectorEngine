@@ -20,6 +20,3 @@
 [submodule "Libraries/lz4"]
 	path = Libraries/lz4
 	url = https://github.com/InjectorGames/lz4
-[submodule "Libraries/openvr"]
-	path = Libraries/openvr
-	url = https://github.com/ValveSoftware/openvr
