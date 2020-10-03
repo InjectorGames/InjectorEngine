@@ -194,17 +194,6 @@ add_library(InjectorEngine STATIC
     Source/Memory/ByteSwap.cpp
     Source/Memory/MemoryStream.cpp
 
-    Source/Network/Tcp/AsyncTcpClient.cpp
-    Source/Network/Tcp/AsyncTcpServer.cpp
-    Source/Network/Tcp/TcpClient.cpp
-    Source/Network/Tcp/TcpServer.cpp
-    Source/Network/Tcp/TcpSocket.cpp
-
-    Source/Network/Udp/AsyncUdpClient.cpp
-    Source/Network/Udp/AsyncUdpServer.cpp
-    Source/Network/Udp/UdpClient.cpp
-    Source/Network/Udp/UdpServer.cpp
-    Source/Network/Udp/UdpSocket.cpp
 
     Source/Network/ConsoleSystem.cpp
     Source/Network/Endpoint.cpp

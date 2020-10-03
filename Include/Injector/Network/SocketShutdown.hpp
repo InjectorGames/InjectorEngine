@@ -4,8 +4,8 @@ namespace Injector
 {
 	enum class SocketShutdown
 	{
-		ReadOnly,
-		WriteOnly,
-		ReadWrite,
+		Read,
+		Write,
+		Both,
 	};
 }
