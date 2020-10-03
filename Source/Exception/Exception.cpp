@@ -5,7 +5,7 @@ namespace Injector
 	Exception::Exception(
 		const std::string& className,
 		const std::string& functionName,
-		const std::string& _message) :
+		const std::string& _message) noexcept :
 		message(_message + " at " + className + "::" + functionName + "()")
 	{
 	}

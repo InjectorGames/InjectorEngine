@@ -3,14 +3,14 @@
 
 namespace Injector
 {
-	SizeVector3::SizeVector3() :
+	SizeVector3::SizeVector3() noexcept :
 		x(0),
 		y(0),
 		z(0)
 	{
 	}
 	SizeVector3::SizeVector3(
-		size_t xyz) :
+		size_t xyz) noexcept :
 		x(xyz),
 		y(xyz),
 		z(xyz)
@@ -19,7 +19,7 @@ namespace Injector
 	SizeVector3::SizeVector3(
 		size_t _x,
 		size_t _y,
-		size_t _z) :
+		size_t _z) noexcept :
 		x(_x),
 		y(_y),
 		z(_z)
@@ -27,7 +27,7 @@ namespace Injector
 	}
 	SizeVector3::SizeVector3(
 		const SizeVector2& vector,
-		size_t _z) :
+		size_t _z) noexcept :
 		x(vector.x),
 		y(vector.y),
 		z(_z)
@@ -35,7 +35,7 @@ namespace Injector
 	}
 	SizeVector3::SizeVector3(
 		size_t _x,
-		const SizeVector2& vector) :
+		const SizeVector2& vector) noexcept :
 		x(_x),
 		y(vector.x),
 		z(vector.y)

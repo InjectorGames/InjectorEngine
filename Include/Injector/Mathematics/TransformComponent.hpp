@@ -23,6 +23,6 @@ namespace Injector
 			const Vector3& scale = Vector3::one,
 			RotationOrigin origin = RotationOrigin::Spin,
 			const Matrix4& matrix = Matrix4::identity,
-			const std::shared_ptr<Entity>& parent = nullptr);
+			const std::shared_ptr<Entity>& parent = nullptr) noexcept;
 	};
 }

@@ -2,7 +2,7 @@
 
 namespace Injector
 {
-	Entity::Entity() :
+	Entity::Entity() noexcept :
 		components()
 	{
 	}

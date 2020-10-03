@@ -16,7 +16,7 @@ namespace Injector
 		std::vector<std::shared_ptr<System>> systems;
 	 public:
 		explicit Manager(
-			bool active = true);
+			bool active = true) noexcept;
 		virtual ~Manager() = default;
 
 		virtual void update();

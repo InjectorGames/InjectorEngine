@@ -9,6 +9,9 @@ namespace Injector
 		std::ios::openmode mode) :
 		std::fstream(filePath, mode | std::ios::ate)
 	{
+		// TODO: move is open check outside constructor
+		// and mark constructor as noexcept
+
 		if (!is_open())
 		{
 			throw Exception(

@@ -396,6 +396,7 @@ namespace Injector
 			addressInfos->ai_addrlen);
 
 		freeaddrinfo(addressInfos);
+		return true;
 	}
 
 	bool Endpoint::less(

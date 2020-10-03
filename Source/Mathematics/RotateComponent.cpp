@@ -3,7 +3,7 @@
 namespace Injector
 {
 	RotateComponent::RotateComponent(
-		const Quaternion& _rotation) :
+		const Quaternion& _rotation) noexcept :
 		rotation(_rotation)
 	{
 	}

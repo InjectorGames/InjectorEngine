@@ -5,14 +5,14 @@
 
 namespace Injector
 {
-	Matrix4::Matrix4() :
+	Matrix4::Matrix4() noexcept :
 		m00(0.0f), m01(0.0f), m02(0.0f), m03(0.0f),
 		m10(0.0f), m11(0.0f), m12(0.0f), m13(0.0f),
 		m20(0.0f), m21(0.0f), m22(0.0f), m23(0.0f),
 		m30(0.0f), m31(0.0f), m32(0.0f), m33(0.0f)
 	{
 	}
-	Matrix4::Matrix4(float value) :
+	Matrix4::Matrix4(float value) noexcept :
 		m00(value), m01(value), m02(value), m03(value),
 		m10(value), m11(value), m12(value), m13(value),
 		m20(value), m21(value), m22(value), m23(value),
@@ -23,7 +23,7 @@ namespace Injector
 		float _m00, float _m01, float _m02, float _m03,
 		float _m10, float _m11, float _m12, float _m13,
 		float _m20, float _m21, float _m22, float _m23,
-		float _m30, float _m31, float _m32, float _m33) :
+		float _m30, float _m31, float _m32, float _m33) noexcept :
 		m00(_m00), m01(_m01), m02(_m02), m03(_m03),
 		m10(_m10), m11(_m11), m12(_m12), m13(_m13),
 		m20(_m20), m21(_m21), m22(_m22), m23(_m23),
@@ -34,7 +34,7 @@ namespace Injector
 		const Vector4& column0,
 		const Vector4& column1,
 		const Vector4& column2,
-		const Vector4& column3) :
+		const Vector4& column3) noexcept :
 		m00(column0.x), m01(column0.y), m02(column0.z), m03(column0.w),
 		m10(column1.x), m11(column1.y), m12(column1.z), m13(column1.w),
 		m20(column2.x), m21(column2.y), m22(column2.z), m23(column2.w),

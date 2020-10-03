@@ -7,11 +7,11 @@ namespace Injector
 	{
 		int x, y, z;
 
-		IntVector3();
-		explicit IntVector3(int xyz);
-		IntVector3(int x, int y, int z);
-		IntVector3(const IntVector2& vectorS, int z);
-		IntVector3(int x, const IntVector2& vector);
+		IntVector3() noexcept;
+		explicit IntVector3(int xyz) noexcept;
+		IntVector3(int x, int y, int z) noexcept;
+		IntVector3(const IntVector2& vectorS, int z) noexcept;
+		IntVector3(int x, const IntVector2& vector) noexcept;
 
 		std::string getString() const noexcept;
 		int getDotProduct(const IntVector3& vector) const noexcept;

@@ -15,7 +15,7 @@ namespace Injector
 		std::set<std::shared_ptr<Entity>> translates;
 		std::set<std::shared_ptr<Entity>> rotates;
 	 public:
-		TransformSystem();
+		TransformSystem() noexcept;
 
 		void update() override;
 

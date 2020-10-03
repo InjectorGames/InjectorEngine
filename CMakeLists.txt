@@ -74,7 +74,6 @@ endif ()
 find_package(Vulkan REQUIRED)
 find_package(OpenSSL REQUIRED)
 
-include(CMake/asio.cmake)
 include(CMake/stb.cmake)
 include(CMake/VulkanMemoryAllocator.cmake)
 
@@ -194,10 +193,8 @@ add_library(InjectorEngine STATIC
     Source/Memory/ByteSwap.cpp
     Source/Memory/MemoryStream.cpp
 
-
     Source/Network/ConsoleSystem.cpp
     Source/Network/Endpoint.cpp
-    Source/Network/NetContextSystem.cpp
     Source/Network/Socket.cpp
 
     Source/Storage/FileStream.cpp
@@ -207,7 +204,6 @@ add_library(InjectorEngine STATIC
     Source/Entity.cpp
     Source/Manager.cpp)
 target_link_libraries(InjectorEngine PUBLIC
-    asio
     assimp
     glew_s
     glfw

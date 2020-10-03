@@ -9,6 +9,7 @@ namespace Injector
 		Quaternion rotation;
 
 		RotateComponent(
-			const Quaternion& rotation = Quaternion(Vector3::one));
+			const Quaternion& rotation =
+				Quaternion(Vector3::one)) noexcept;
 	};
 }

@@ -6,7 +6,7 @@
 
 namespace Injector
 {
-	IntVector4::IntVector4() :
+	IntVector4::IntVector4() noexcept :
 		x(0),
 		y(0),
 		z(0),
@@ -14,7 +14,7 @@ namespace Injector
 	{
 	}
 	IntVector4::IntVector4(
-		int xyzw) :
+		int xyzw) noexcept :
 		x(xyzw),
 		y(xyzw),
 		z(xyzw),
@@ -25,7 +25,7 @@ namespace Injector
 		int _x,
 		int _y,
 		int _z,
-		int _w) :
+		int _w) noexcept :
 		x(_x),
 		y(_y),
 		z(_z),
@@ -35,7 +35,7 @@ namespace Injector
 	IntVector4::IntVector4(
 		const IntVector2& vector,
 		int _z,
-		int _w) :
+		int _w) noexcept :
 		x(vector.x),
 		y(vector.y),
 		z(_z),
@@ -44,7 +44,7 @@ namespace Injector
 	}
 	IntVector4::IntVector4(
 		int _x,
-		const IntVector2& vector, int _w) :
+		const IntVector2& vector, int _w) noexcept :
 		x(_x),
 		y(vector.x),
 		z(vector.y),
@@ -54,7 +54,7 @@ namespace Injector
 	IntVector4::IntVector4(
 		int _x,
 		int _y,
-		const IntVector2& vector) :
+		const IntVector2& vector) noexcept :
 		x(_x),
 		y(_y),
 		z(vector.x),
@@ -63,7 +63,7 @@ namespace Injector
 	}
 	IntVector4::IntVector4(
 		const IntVector3& vector,
-		int _w) :
+		int _w) noexcept :
 		x(vector.x),
 		y(vector.y),
 		z(vector.z),
@@ -72,7 +72,7 @@ namespace Injector
 	}
 	IntVector4::IntVector4(
 		int _x,
-		const IntVector3& vector) :
+		const IntVector3& vector) noexcept :
 		x(_x),
 		y(vector.x),
 		z(vector.y),

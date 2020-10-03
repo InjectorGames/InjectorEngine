@@ -11,19 +11,19 @@ namespace Injector
 		float m20, m21, m22, m23;
 		float m30, m31, m32, m33;
 
-		Matrix4();
+		Matrix4() noexcept;
 		explicit Matrix4(
-			float value);
+			float value) noexcept;
 		Matrix4(
 			float m00, float m01, float m02, float m03,
 			float m10, float m11, float m12, float m13,
 			float m20, float m21, float m22, float m23,
-			float m30, float m31, float m32, float m33);
+			float m30, float m31, float m32, float m33) noexcept;
 		Matrix4(
 			const Vector4& column0,
 			const Vector4& column1,
 			const Vector4& column2,
-			const Vector4& column3);
+			const Vector4& column3) noexcept;
 
 		std::string getString() const noexcept;
 		float getDeterminant() const noexcept;

@@ -3,7 +3,7 @@
 
 namespace Injector
 {
-	Manager::Manager(bool _active) :
+	Manager::Manager(bool _active) noexcept :
 		active(_active),
 		entities(),
 		systems()

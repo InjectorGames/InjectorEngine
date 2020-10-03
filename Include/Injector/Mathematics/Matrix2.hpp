@@ -8,15 +8,15 @@ namespace Injector
 		float m00, m01;
 		float m10, m11;
 
-		Matrix2();
+		Matrix2() noexcept;
 		explicit Matrix2(
-			float value);
+			float value) noexcept;
 		Matrix2(
 			float m00, float m01,
-			float m10, float m11);
+			float m10, float m11) noexcept;
 		Matrix2(
 			const Vector2& column0,
-			const Vector2& column1);
+			const Vector2& column1) noexcept;
 
 		std::string getString() const noexcept;
 		float getDeterminant() const noexcept;

@@ -9,13 +9,13 @@ namespace Injector
 	{
 		float x, y, z, w;
 
-		Quaternion();
-		Quaternion(float x, float y, float z, float w);
-		Quaternion(float angle, const Vector3& axis);
-		explicit Quaternion(const Vector3& eulerAngles);
-		Quaternion(const Vector3& a, const Vector3& b);
-		explicit Quaternion(const Matrix3& matrix);
-		explicit Quaternion(const Matrix4& matrix);
+		Quaternion() noexcept;
+		Quaternion(float x, float y, float z, float w) noexcept;
+		Quaternion(float angle, const Vector3& axis) noexcept;
+		explicit Quaternion(const Vector3& eulerAngles) noexcept;
+		Quaternion(const Vector3& a, const Vector3& b) noexcept;
+		explicit Quaternion(const Matrix3& matrix) noexcept;
+		explicit Quaternion(const Matrix4& matrix) noexcept;
 
 		float getDotProduct(const Quaternion& quaternion) const noexcept;
 		Quaternion getCrossProduct(const Quaternion& quaternion) const noexcept;

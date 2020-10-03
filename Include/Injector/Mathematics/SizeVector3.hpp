@@ -7,11 +7,11 @@ namespace Injector
 	{
 		size_t x, y, z;
 
-		SizeVector3();
-		explicit SizeVector3(size_t xyz);
-		SizeVector3(size_t x, size_t y, size_t z);
-		SizeVector3(const SizeVector2& vectorS, size_t z);
-		SizeVector3(size_t x, const SizeVector2& vector);
+		SizeVector3() noexcept;
+		explicit SizeVector3(size_t xyz) noexcept;
+		SizeVector3(size_t x, size_t y, size_t z) noexcept;
+		SizeVector3(const SizeVector2& vectorS, size_t z) noexcept;
+		SizeVector3(size_t x, const SizeVector2& vector) noexcept;
 
 		std::string getString() const noexcept;
 		SizeVector2 getSizeVector2() const noexcept;

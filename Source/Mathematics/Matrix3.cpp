@@ -3,13 +3,13 @@
 
 namespace Injector
 {
-	Matrix3::Matrix3() :
+	Matrix3::Matrix3() noexcept :
 		m00(0.0f), m01(0.0f), m02(0.0f),
 		m10(0.0f), m11(0.0f), m12(0.0f),
 		m20(0.0f), m21(0.0f), m22(0.0f)
 	{
 	}
-	Matrix3::Matrix3(float value) :
+	Matrix3::Matrix3(float value) noexcept :
 		m00(value), m01(value), m02(value),
 		m10(value), m11(value), m12(value),
 		m20(value), m21(value), m22(value)
@@ -18,7 +18,7 @@ namespace Injector
 	Matrix3::Matrix3(
 		float _m00, float _m01, float _m02,
 		float _m10, float _m11, float _m12,
-		float _m20, float _m21, float _m22) :
+		float _m20, float _m21, float _m22) noexcept :
 		m00(_m00), m01(_m01), m02(_m02),
 		m10(_m10), m11(_m11), m12(_m12),
 		m20(_m20), m21(_m21), m22(_m22)
@@ -27,7 +27,7 @@ namespace Injector
 	Matrix3::Matrix3(
 		const Vector3& column0,
 		const Vector3& column1,
-		const Vector3& column2) :
+		const Vector3& column2) noexcept :
 		m00(column0.x), m01(column0.y), m02(column0.z),
 		m10(column1.x), m11(column1.y), m12(column1.z),
 		m20(column2.x), m21(column2.y), m22(column2.z)

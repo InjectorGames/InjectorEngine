@@ -9,6 +9,7 @@ namespace Injector
 		Vector3 translation;
 
 		TranslateComponent(
-			const Vector3& translation = Vector3::one);
+			const Vector3& translation =
+				Vector3::one) noexcept;
 	};
 }

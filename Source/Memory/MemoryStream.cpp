@@ -5,7 +5,7 @@ namespace Injector
 {
 	MemoryStream::MemoryStream(
 		const std::string& string,
-		const std::ios::openmode mode) :
+		const std::ios::openmode mode) noexcept :
 		std::stringstream(string, mode)
 	{
 	}

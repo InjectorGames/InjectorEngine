@@ -12,8 +12,7 @@ namespace Injector
 		Exception(
 			const std::string& className,
 			const std::string& functionName,
-			const std::string& message);
-		virtual ~Exception() = default;
+			const std::string& message) noexcept;
 
 		const char* what() const noexcept override;
 	};

@@ -9,7 +9,7 @@ namespace Injector
 		MemoryStream(
 			const std::string& string,
 			std::ios::openmode mode =
-				ios_base::in | ios_base::out);
+				ios_base::in | ios_base::out) noexcept;
 
 		std::istream& read(char& value);
 		std::istream& read(char* values, size_t count);

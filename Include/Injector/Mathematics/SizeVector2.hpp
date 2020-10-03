@@ -8,9 +8,9 @@ namespace Injector
 	{
 		size_t x, y;
 
-		SizeVector2();
-		explicit SizeVector2(size_t xy);
-		SizeVector2(size_t x, size_t y);
+		SizeVector2() noexcept;
+		explicit SizeVector2(size_t xy) noexcept;
+		SizeVector2(size_t x, size_t y) noexcept;
 
 		std::string getString() const noexcept;
 

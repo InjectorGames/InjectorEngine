@@ -3,20 +3,20 @@
 
 namespace Injector
 {
-	SizeVector2::SizeVector2() :
+	SizeVector2::SizeVector2() noexcept :
 		x(0),
 		y(0)
 	{
 	}
 	SizeVector2::SizeVector2(
-		size_t xy) :
+		size_t xy) noexcept :
 		x(xy),
 		y(xy)
 	{
 	}
 	SizeVector2::SizeVector2(
 		size_t _x,
-		size_t _y) :
+		size_t _y) noexcept :
 		x(_x),
 		y(_y)
 	{

@@ -23,7 +23,7 @@ namespace Injector
 	 public:
 		ConsoleSystem(
 			const std::map<std::string, std::function<void(
-				const std::string&)>>& commandHandles);
+				const std::string&)>>& commandHandles) noexcept;
 		~ConsoleSystem() override;
 		ConsoleSystem(const ConsoleSystem&) = delete;
 

@@ -3,26 +3,26 @@
 
 namespace Injector
 {
-	Matrix2::Matrix2() :
+	Matrix2::Matrix2() noexcept :
 		m00(0.0f), m01(0.0f),
 		m10(0.0f), m11(0.0f)
 	{
 	}
-	Matrix2::Matrix2(float value) :
+	Matrix2::Matrix2(float value) noexcept :
 		m00(value), m01(value),
 		m10(value), m11(value)
 	{
 	}
 	Matrix2::Matrix2(
 		float _m00, float _m01,
-		float _m10, float _m11) :
+		float _m10, float _m11) noexcept :
 		m00(_m00), m01(_m01),
 		m10(_m10), m11(_m11)
 	{
 	}
 	Matrix2::Matrix2(
 		const Vector2& column0,
-		const Vector2& column1) :
+		const Vector2& column1) noexcept :
 		m00(column0.x), m01(column0.y),
 		m10(column1.x), m11(column1.y)
 	{

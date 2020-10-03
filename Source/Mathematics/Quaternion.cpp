@@ -6,15 +6,27 @@
 
 namespace Injector
 {
-	Quaternion::Quaternion() :
-		x(0.0f), y(0.0f), z(0.0f), w(0.0f)
+	Quaternion::Quaternion() noexcept :
+		x(0.0f),
+		y(0.0f),
+		z(0.0f),
+		w(0.0f)
 	{
 	}
-	Quaternion::Quaternion(float _x, float _y, float _z, float _w) :
-		x(_x), y(_y), z(_z), w(_w)
+	Quaternion::Quaternion(
+		float _x,
+		float _y,
+		float _z,
+		float _w) noexcept :
+		x(_x),
+		y(_y),
+		z(_z),
+		w(_w)
 	{
 	}
-	Quaternion::Quaternion(float angle, const Vector3& axis)
+	Quaternion::Quaternion(
+		float angle,
+		const Vector3& axis) noexcept
 	{
 		auto v = axis * sin(angle * 0.5f);
 		x = v.x;
@@ -22,7 +34,8 @@ namespace Injector
 		z = v.z;
 		w = cos(angle * 0.5f);
 	}
-	Quaternion::Quaternion(const Vector3& eulerAngles)
+	Quaternion::Quaternion(
+		const Vector3& eulerAngles) noexcept
 	{
 		auto s = eulerAngles * 0.5f;
 		s = s.getSine();
@@ -35,7 +48,9 @@ namespace Injector
 		z = c.x * c.y * s.z - s.x * s.y * c.z;
 		w = c.x * c.y * c.z + s.x * s.y * s.z;
 	}
-	Quaternion::Quaternion(const Vector3& a, const Vector3& b)
+	Quaternion::Quaternion(
+		const Vector3& a,
+		const Vector3& b) noexcept
 	{
 		auto norm = sqrt(a.getDotProduct(a) * b.getDotProduct(b));
 		auto real = norm + a.getDotProduct(b);
@@ -59,7 +74,8 @@ namespace Injector
 
 		*this = Quaternion(t.x, t.y, t.z, real).getNormalized();
 	}
-	Quaternion::Quaternion(const Matrix3& matrix)
+	Quaternion::Quaternion(
+		const Matrix3& matrix) noexcept
 	{
 		auto fourXSquaredMinus1 = matrix.m00 - matrix.m11 - matrix.m22;
 		auto fourYSquaredMinus1 = matrix.m11 - matrix.m00 - matrix.m22;
@@ -111,10 +127,11 @@ namespace Injector
 			z = biggestValue;
 			w = (matrix.m01 - matrix.m10) * multiplier;
 		default:
-			throw Exception("Quaternion", "Quaternion", "Something went wrong");
+			x = y = z = w = 0.0f;
 		}
 	}
-	Quaternion::Quaternion(const Matrix4& matrix)
+	Quaternion::Quaternion(
+		const Matrix4& matrix) noexcept
 	{
 		auto fourXSquaredMinus1 = matrix.m00 - matrix.m11 - matrix.m22;
 		auto fourYSquaredMinus1 = matrix.m11 - matrix.m00 - matrix.m22;
@@ -166,7 +183,7 @@ namespace Injector
 			z = biggestValue;
 			w = (matrix.m01 - matrix.m10) * multiplier;
 		default:
-			throw Exception("Quaternion", "Quaternion", "Something went wrong");
+			x = y = z = w = 0.0f;
 		}
 	}
 

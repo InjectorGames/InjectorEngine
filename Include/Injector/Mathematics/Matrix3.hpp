@@ -10,17 +10,17 @@ namespace Injector
 		float m10, m11, m12;
 		float m20, m21, m22;
 
-		Matrix3();
+		Matrix3() noexcept;
 		explicit Matrix3(
-			float value);
+			float value) noexcept;
 		Matrix3(
 			float m00, float m01, float m02,
 			float m10, float m11, float m12,
-			float m20, float m21, float m22);
+			float m20, float m21, float m22) noexcept;
 		Matrix3(
 			const Vector3& column0,
 			const Vector3& column1,
-			const Vector3& column2);
+			const Vector3& column2) noexcept;
 
 		std::string getString() const noexcept;
 		float getDeterminant() const noexcept;

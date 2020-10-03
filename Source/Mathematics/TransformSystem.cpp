@@ -4,7 +4,7 @@
 
 namespace Injector
 {
-	TransformSystem::TransformSystem() :
+	TransformSystem::TransformSystem() noexcept :
 		transforms(),
 		translates(),
 		rotates()

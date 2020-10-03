@@ -9,6 +9,6 @@ namespace Injector
 		CastException(
 			const std::string& className,
 			const std::string& functionName,
-			const std::string& variableName);
+			const std::string& variableName) noexcept;
 	};
 }

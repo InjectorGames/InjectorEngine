@@ -240,24 +240,13 @@ namespace Injector
 		int shutdownType;
 
 		if(shutdown == SocketShutdown::Read)
-		{
 			shutdownType = SHUT_RD;
-		}
 		else if(shutdown == SocketShutdown::Write)
-		{
 			shutdownType =  SHUT_WR;
-		}
 		else if(shutdown == SocketShutdown::Both)
-		{
 			shutdownType = SHUT_RDWR;
-		}
 		else
-		{
-			throw Exception(
-				"Socket",
-				"shutdown",
-				"Unsupported shutdown type");
-		}
+			return false;
 
 		return ::shutdown(
 			static_cast<int>(handle),

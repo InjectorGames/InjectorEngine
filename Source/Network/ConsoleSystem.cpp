@@ -18,7 +18,7 @@ namespace Injector
 
 	ConsoleSystem::ConsoleSystem(
 		const std::map<std::string, std::function<void(
-			const std::string&)>>& _commandHandles) :
+			const std::string&)>>& _commandHandles) noexcept :
 		running(true),
 		mutex(),
 		thread(&ConsoleSystem::inputHandle, this),

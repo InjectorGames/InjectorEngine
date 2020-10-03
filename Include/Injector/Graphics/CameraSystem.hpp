@@ -15,7 +15,7 @@ namespace Injector
 
 		void updateAspectRatio(float aspectRatio);
 	 public:
-		CameraSystem();
+		CameraSystem() noexcept;
 
 		size_t getCameraCount() const noexcept;
 

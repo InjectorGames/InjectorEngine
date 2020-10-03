@@ -5,7 +5,7 @@
 
 namespace Injector
 {
-	Vector4::Vector4() :
+	Vector4::Vector4() noexcept :
 		x(0.0f),
 		y(0.0f),
 		z(0.0f),
@@ -13,7 +13,7 @@ namespace Injector
 	{
 	}
 	Vector4::Vector4(
-		float xyzw) :
+		float xyzw) noexcept :
 		x(xyzw),
 		y(xyzw),
 		z(xyzw),
@@ -24,7 +24,7 @@ namespace Injector
 		float _x,
 		float _y,
 		float _z,
-		float _w) :
+		float _w) noexcept :
 		x(_x),
 		y(_y),
 		z(_z),
@@ -34,7 +34,7 @@ namespace Injector
 	Vector4::Vector4(
 		const Vector2& vector,
 		float _z,
-		float _w) :
+		float _w) noexcept :
 		x(vector.x),
 		y(vector.y),
 		z(_z),
@@ -44,7 +44,7 @@ namespace Injector
 	Vector4::Vector4(
 		float _x,
 		const Vector2& vector,
-		float _w) :
+		float _w) noexcept :
 		x(_x), y(vector.x),
 		z(vector.y),
 		w(_w)
@@ -53,7 +53,7 @@ namespace Injector
 	Vector4::Vector4(
 		float _x,
 		float _y,
-		const Vector2& vector) :
+		const Vector2& vector) noexcept :
 		x(_x),
 		y(_y),
 		z(vector.x),
@@ -62,7 +62,7 @@ namespace Injector
 	}
 	Vector4::Vector4(
 		const Vector3& vector,
-		float _w) :
+		float _w) noexcept :
 		x(vector.x),
 		y(vector.y),
 		z(vector.z),
@@ -71,7 +71,7 @@ namespace Injector
 	}
 	Vector4::Vector4(
 		float _x,
-		const Vector3& vector) :
+		const Vector3& vector) noexcept :
 		x(_x),
 		y(vector.x),
 		z(vector.y),
@@ -79,7 +79,7 @@ namespace Injector
 	{
 	}
 	Vector4::Vector4(
-		const IntVector4& vector) :
+		const IntVector4& vector) noexcept :
 		x(static_cast<float>(vector.x)),
 		y(static_cast<float>(vector.y)),
 		z(static_cast<float>(vector.z)),
@@ -89,7 +89,7 @@ namespace Injector
 	Vector4::Vector4(
 		const IntVector2& vector,
 		float _z,
-		float _w) :
+		float _w) noexcept :
 		x(static_cast<float>(vector.x)),
 		y(static_cast<float>(vector.y)),
 		z(_z),
@@ -99,7 +99,7 @@ namespace Injector
 	Vector4::Vector4(
 		float _x,
 		const IntVector2& vector,
-		float _w) :
+		float _w) noexcept :
 		x(_x),
 		y(static_cast<float>(vector.x)),
 		z(static_cast<float>(vector.y)),
@@ -109,7 +109,7 @@ namespace Injector
 	Vector4::Vector4(
 		float _x,
 		float _y,
-		const IntVector2& vector) :
+		const IntVector2& vector) noexcept :
 		x(_x),
 		y(_y),
 		z(static_cast<float>(vector.x)),
@@ -118,7 +118,7 @@ namespace Injector
 	}
 	Vector4::Vector4(
 		const IntVector3& vector,
-		float _w) :
+		float _w) noexcept :
 		x(static_cast<float>(vector.x)),
 		y(static_cast<float>(vector.y)),
 		z(static_cast<float>(vector.z)),
@@ -127,7 +127,7 @@ namespace Injector
 	}
 	Vector4::Vector4(
 		float _x,
-		const IntVector3& vector) :
+		const IntVector3& vector) noexcept :
 		x(_x),
 		y(static_cast<float>(vector.x)),
 		z(static_cast<float>(vector.y)),

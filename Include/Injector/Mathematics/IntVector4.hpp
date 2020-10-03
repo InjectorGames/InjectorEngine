@@ -7,14 +7,14 @@ namespace Injector
 	{
 		int x, y, z, w;
 
-		IntVector4();
-		explicit IntVector4(int xyzw);
-		IntVector4(int x, int y, int z, int w);
-		IntVector4(const IntVector2& vector, int z, int w);
-		IntVector4(int x, const IntVector2& vector, int w);
-		IntVector4(int x, int y, const IntVector2& vector);
-		IntVector4(const IntVector3& vector, int w);
-		IntVector4(int x, const IntVector3& vector);
+		IntVector4() noexcept;
+		explicit IntVector4(int xyzw) noexcept;
+		IntVector4(int x, int y, int z, int w) noexcept;
+		IntVector4(const IntVector2& vector, int z, int w) noexcept;
+		IntVector4(int x, const IntVector2& vector, int w) noexcept;
+		IntVector4(int x, int y, const IntVector2& vector) noexcept;
+		IntVector4(const IntVector3& vector, int w) noexcept;
+		IntVector4(int x, const IntVector3& vector) noexcept;
 
 		std::string getString() const noexcept;
 		int getDotProduct(const IntVector4& vector) const noexcept;

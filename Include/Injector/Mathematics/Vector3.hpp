@@ -8,14 +8,14 @@ namespace Injector
 	{
 		float x, y, z;
 
-		Vector3();
-		explicit Vector3(float xyz);
-		Vector3(float x, float y, float z);
-		Vector3(const Vector2& vector, float z);
-		Vector3(float x, const Vector2& vector);
-		explicit Vector3(const IntVector3& vector);
-		Vector3(const IntVector2& vector, float z);
-		Vector3(float x, const IntVector2& vector);
+		Vector3() noexcept;
+		explicit Vector3(float xyz) noexcept;
+		Vector3(float x, float y, float z) noexcept;
+		Vector3(const Vector2& vector, float z) noexcept;
+		Vector3(float x, const Vector2& vector) noexcept;
+		explicit Vector3(const IntVector3& vector) noexcept;
+		Vector3(const IntVector2& vector, float z) noexcept;
+		Vector3(float x, const IntVector2& vector) noexcept;
 
 		std::string getString() const noexcept;
 		float getDotProduct(const Vector3& vector) const noexcept;

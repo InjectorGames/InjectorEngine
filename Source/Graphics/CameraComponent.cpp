@@ -12,7 +12,7 @@ namespace Injector
 		const Vector2& _clipPlane,
 		const Matrix4& _matrix,
 		bool _render,
-		const std::set<std::shared_ptr<Entity>>& _renders) :
+		const std::set<std::shared_ptr<Entity>>& _renders) noexcept :
 		queue(_queue),
 		type(_type),
 		aspectRatio(_aspectRatio),

@@ -7,10 +7,10 @@ namespace Injector
 	{
 		float x, y;
 
-		Vector2();
-		explicit Vector2(float xy);
-		Vector2(float x, float y);
-		explicit Vector2(const IntVector2& vector);
+		Vector2() noexcept;
+		explicit Vector2(float xy) noexcept;
+		Vector2(float x, float y) noexcept;
+		explicit Vector2(const IntVector2& vector) noexcept;
 
 		std::string getString() const noexcept;
 		float getDotProduct(const Vector2& vector) const noexcept;

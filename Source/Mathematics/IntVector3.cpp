@@ -6,14 +6,14 @@
 
 namespace Injector
 {
-	IntVector3::IntVector3() :
+	IntVector3::IntVector3() noexcept :
 		x(0),
 		y(0),
 		z(0)
 	{
 	}
 	IntVector3::IntVector3(
-		int xyz) :
+		int xyz) noexcept :
 		x(xyz),
 		y(xyz),
 		z(xyz)
@@ -22,7 +22,7 @@ namespace Injector
 	IntVector3::IntVector3(
 		int _x,
 		int _y,
-		int _z) :
+		int _z) noexcept :
 		x(_x),
 		y(_y),
 		z(_z)
@@ -30,7 +30,7 @@ namespace Injector
 	}
 	IntVector3::IntVector3(
 		const IntVector2& vector,
-		int _z) :
+		int _z) noexcept :
 		x(vector.x),
 		y(vector.y),
 		z(_z)
@@ -38,7 +38,7 @@ namespace Injector
 	}
 	IntVector3::IntVector3(
 		int _x,
-		const IntVector2& vector) :
+		const IntVector2& vector) noexcept :
 		x(_x),
 		y(vector.x),
 		z(vector.y)

@@ -21,7 +21,7 @@ namespace Injector
 		}
 	}
 
-	CameraSystem::CameraSystem() :
+	CameraSystem::CameraSystem() noexcept :
 		cameras(),
 		lastAspectRatio()
 	{

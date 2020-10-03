@@ -1,7 +1,4 @@
 
-[submodule "Libraries/asio"]
-	path = Libraries/asio
-	url = https://github.com/InjectorGames/asio
 [submodule "Libraries/glew"]
 	path = Libraries/glew
 	url = https://github.com/InjectorGames/glew

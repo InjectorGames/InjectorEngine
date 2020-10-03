@@ -5,14 +5,14 @@
 
 namespace Injector
 {
-	Vector3::Vector3() :
+	Vector3::Vector3() noexcept :
 		x(0.0f),
 		y(0.0f),
 		z(0.0f)
 	{
 	}
 	Vector3::Vector3(
-		float xyz) :
+		float xyz) noexcept :
 		x(xyz),
 		y(xyz),
 		z(xyz)
@@ -21,7 +21,7 @@ namespace Injector
 	Vector3::Vector3(
 		float _x,
 		float _y,
-		float _z) :
+		float _z) noexcept :
 		x(_x),
 		y(_y),
 		z(_z)
@@ -29,7 +29,7 @@ namespace Injector
 	}
 	Vector3::Vector3(
 		const Vector2& vector,
-		float _z) :
+		float _z) noexcept :
 		x(vector.x),
 		y(vector.y),
 		z(_z)
@@ -37,14 +37,14 @@ namespace Injector
 	}
 	Vector3::Vector3(
 		float _x,
-		const Vector2& vector) :
+		const Vector2& vector) noexcept :
 		x(_x),
 		y(vector.x),
 		z(vector.y)
 	{
 	}
 	Vector3::Vector3(
-		const IntVector3& vector) :
+		const IntVector3& vector) noexcept :
 		x(static_cast<float>(vector.x)),
 		y(static_cast<float>(vector.y)),
 		z(static_cast<float>(vector.z))
@@ -52,7 +52,7 @@ namespace Injector
 	}
 	Vector3::Vector3(
 		const IntVector2& vector,
-		float _z) :
+		float _z) noexcept :
 		x(static_cast<float>(vector.x)),
 		y(static_cast<float>(vector.y)),
 		z(_z)
@@ -60,7 +60,7 @@ namespace Injector
 	}
 	Vector3::Vector3(
 		float _x,
-		const IntVector2& vector) :
+		const IntVector2& vector) noexcept :
 		x(_x),
 		y(static_cast<float>(vector.x)),
 		z(static_cast<float>(vector.y))

@@ -7,14 +7,14 @@ namespace Injector
 	{
 		size_t x, y, z, w;
 
-		SizeVector4();
-		explicit SizeVector4(size_t xyzw);
-		SizeVector4(size_t x, size_t y, size_t z, size_t w);
-		SizeVector4(const SizeVector2& vector, size_t z, size_t w);
-		SizeVector4(size_t x, const SizeVector2& vector, size_t w);
-		SizeVector4(size_t x, size_t y, const SizeVector2& vector);
-		SizeVector4(const SizeVector3& vector, size_t w);
-		SizeVector4(size_t x, const SizeVector3& vector);
+		SizeVector4() noexcept;
+		explicit SizeVector4(size_t xyzw) noexcept;
+		SizeVector4(size_t x, size_t y, size_t z, size_t w) noexcept;
+		SizeVector4(const SizeVector2& vector, size_t z, size_t w) noexcept;
+		SizeVector4(size_t x, const SizeVector2& vector, size_t w) noexcept;
+		SizeVector4(size_t x, size_t y, const SizeVector2& vector) noexcept;
+		SizeVector4(const SizeVector3& vector, size_t w) noexcept;
+		SizeVector4(size_t x, const SizeVector3& vector) noexcept;
 
 		std::string getString() const noexcept;
 		SizeVector2 getSizeVector2() const noexcept;

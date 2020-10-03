@@ -8,20 +8,20 @@ namespace Injector
 	{
 		float x, y, z, w;
 
-		Vector4();
-		explicit Vector4(float xyzw);
-		Vector4(float x, float y, float z, float w);
-		Vector4(const Vector2& vector, float z, float w);
-		Vector4(float x, const Vector2& vector, float w);
-		Vector4(float x, float y, const Vector2& vector);
-		Vector4(const Vector3& vector, float w);
-		Vector4(float x, const Vector3& vector);
-		explicit Vector4(const IntVector4& vector);
-		Vector4(const IntVector2& vector, float z, float w);
-		Vector4(float x, const IntVector2& vector, float w);
-		Vector4(float x, float y, const IntVector2& vector);
-		Vector4(const IntVector3& vector, float w);
-		Vector4(float x, const IntVector3& vector);
+		Vector4() noexcept;
+		explicit Vector4(float xyzw) noexcept;
+		Vector4(float x, float y, float z, float w) noexcept;
+		Vector4(const Vector2& vector, float z, float w) noexcept;
+		Vector4(float x, const Vector2& vector, float w) noexcept;
+		Vector4(float x, float y, const Vector2& vector) noexcept;
+		Vector4(const Vector3& vector, float w) noexcept;
+		Vector4(float x, const Vector3& vector) noexcept;
+		explicit Vector4(const IntVector4& vector) noexcept;
+		Vector4(const IntVector2& vector, float z, float w) noexcept;
+		Vector4(float x, const IntVector2& vector, float w) noexcept;
+		Vector4(float x, float y, const IntVector2& vector) noexcept;
+		Vector4(const IntVector3& vector, float w) noexcept;
+		Vector4(float x, const IntVector3& vector) noexcept;
 
 		std::string getString() const noexcept;
 		float getDotProduct(const Vector4& vector) const noexcept;

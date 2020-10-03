@@ -6,20 +6,20 @@
 
 namespace Injector
 {
-	IntVector2::IntVector2() :
+	IntVector2::IntVector2() noexcept :
 		x(0),
 		y(0)
 	{
 	}
 	IntVector2::IntVector2(
-		int xy) :
+		int xy) noexcept :
 		x(xy),
 		y(xy)
 	{
 	}
 	IntVector2::IntVector2(
 		int _x,
-		int _y) :
+		int _y) noexcept :
 		x(_x),
 		y(_y)
 	{

@@ -12,7 +12,7 @@ namespace Injector
 	 private:
 		std::map<std::type_index, Component*> components;
 	 public:
-		Entity();
+		Entity() noexcept;
 		~Entity();
 
 		void destroyComponents() noexcept;

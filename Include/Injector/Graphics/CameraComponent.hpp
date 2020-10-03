@@ -33,6 +33,6 @@ namespace Injector
 			const Vector2& clipPlane = Vector2(0.01f, 1000.0f),
 			const Matrix4& matrix = Matrix4::identity,
 			bool render = true,
-			const std::set<std::shared_ptr<Entity>>& renders = {});
+			const std::set<std::shared_ptr<Entity>>& renders = {}) noexcept;
 	};
 }
