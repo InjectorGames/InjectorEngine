@@ -78,5 +78,9 @@ namespace Injector
 		static const IntVector3 one;
 		static const IntVector3 minimum;
 		static const IntVector3 maximum;
+
+		static bool less(
+			const IntVector3& a,
+			const IntVector3& b) noexcept;
 	};
 }

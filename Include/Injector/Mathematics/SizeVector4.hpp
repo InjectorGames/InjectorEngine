@@ -26,5 +26,9 @@ namespace Injector
 		static const SizeVector4 zero;
 		static const SizeVector4 one;
 		static const SizeVector4 maximum;
+
+		static bool less(
+			const SizeVector4& a,
+			const SizeVector4& b) noexcept;
 	};
 }

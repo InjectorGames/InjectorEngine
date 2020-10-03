@@ -71,4 +71,12 @@ namespace Injector
 	const SizeVector3 SizeVector3::zero = SizeVector3(0);
 	const SizeVector3 SizeVector3::one = SizeVector3(1);
 	const SizeVector3 SizeVector3::maximum = SizeVector3(SIZE_MAX);
+
+	bool SizeVector3::less(
+		const SizeVector3& a,
+		const SizeVector3& b) noexcept
+	{
+		return std::tie(a.x, a.y, a.z) <
+			std::tie(b.x, b.y, b.z);
+	}
 }

@@ -444,4 +444,12 @@ namespace Injector
 		w *= value;
 		return *this;
 	}
+
+	bool Quaternion::less(
+		const Quaternion& a,
+		const Quaternion& b) noexcept
+	{
+		return std::tie(a.x, a.y, a.z, a.w) <
+			std::tie(b.x, b.y, b.z, b.w);
+	}
 }

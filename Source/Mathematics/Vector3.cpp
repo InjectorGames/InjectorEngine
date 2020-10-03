@@ -388,4 +388,12 @@ namespace Injector
 	const Vector3 Vector3::zero = Vector3(0.0f);
 	const Vector3 Vector3::minusOne = Vector3(-1.0f);
 	const Vector3 Vector3::one = Vector3(1.0f);
+
+	bool Vector3::less(
+		const Vector3& a,
+		const Vector3& b) noexcept
+	{
+		return std::tie(a.x, a.y, a.z) <
+			std::tie(b.x, b.y, b.z);
+	}
 }

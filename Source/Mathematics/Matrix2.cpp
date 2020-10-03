@@ -274,4 +274,17 @@ namespace Injector
 	const Matrix2 Matrix2::identity = Matrix2(
 		1.0f, 0.0f,
 		0.0f, 1.0f);
+
+	bool Matrix2::less(
+		const Matrix2& a,
+		const Matrix2& b) noexcept
+	{
+		return
+			std::tie(
+				a.m00, a.m01,
+				a.m10, a.m11) <
+			std::tie(
+				b.m00, b.m01,
+				b.m10, b.m11);
+	}
 }

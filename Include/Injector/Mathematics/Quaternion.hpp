@@ -63,5 +63,9 @@ namespace Injector
 		Quaternion& operator+=(float value) noexcept;
 		Quaternion& operator/=(float value) noexcept;
 		Quaternion& operator*=(float value) noexcept;
+
+		static bool less(
+			const Quaternion& a,
+			const Quaternion& b) noexcept;
 	};
 }

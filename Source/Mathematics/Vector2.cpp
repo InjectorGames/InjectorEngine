@@ -108,7 +108,9 @@ namespace Injector
 	}
 	bool Vector2::operator!=(const Vector2& vector) const noexcept
 	{
-		return !(*this == vector);
+		return
+			x != vector.x ||
+			y != vector.y;
 	}
 
 	Vector2& Vector2::operator--() noexcept
@@ -292,4 +294,12 @@ namespace Injector
 	const Vector2 Vector2::zero = Vector2(0.0f);
 	const Vector2 Vector2::minusOne = Vector2(-1.0f);
 	const Vector2 Vector2::one = Vector2(1.0f);
+
+	bool Vector2::less(
+		const Vector2& a,
+		const Vector2& b) noexcept
+	{
+		return std::tie(a.x, a.y) <
+			std::tie(b.x, b.y);
+	}
 }

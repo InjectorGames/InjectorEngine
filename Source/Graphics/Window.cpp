@@ -387,6 +387,14 @@ namespace Injector
 		const std::string& title,
 		const IntVector2& size)
 	{
+		if(!Engine::getVideoInitialized())
+		{
+			throw Exception(
+				"Window",
+				"create",
+				"Engine Video is not initialized");
+		}
+
 		auto graphicsApi = Engine::getGraphicsApi();
 
 		if (graphicsApi == GraphicsAPI::OpenGL)
@@ -415,7 +423,7 @@ namespace Injector
 		{
 			throw Exception(
 				"Window",
-				"createWindow",
+				"create",
 				"Unknown graphics API");
 		}
 	}

@@ -5,8 +5,8 @@ if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 endif ()
 
 project(InjectorEngine
-        VERSION 1.0.0
-        LANGUAGES CXX)
+    VERSION 1.0.0
+    LANGUAGES CXX)
 
 option(INJECTOR_BUILD_EDITOR "Build editor executable" ON)
 option(INJECTOR_BUILD_VR "Build with virtual reality support" ON)
@@ -121,146 +121,154 @@ if (INJECTOR_SUPPORT_VR)
 endif ()
 
 add_library(InjectorEngine STATIC
-        Source/Exception/CastException.cpp
-        Source/Exception/Exception.cpp
-        Source/Exception/NullException.cpp
-        Source/Exception/OutOfRangeException.cpp
+    Source/Exception/CastException.cpp
+    Source/Exception/Exception.cpp
+    Source/Exception/NullException.cpp
+    Source/Exception/OutOfRangeException.cpp
 
-        Source/Graphics/Pipeline/GlColorColorGpuPipeline.cpp
-        Source/Graphics/Pipeline/GlColorGpuPipeline.cpp
-        Source/Graphics/Pipeline/GlDiffuseGpuPipeline.cpp
-        Source/Graphics/Pipeline/GlGpuPipeline.cpp
-        Source/Graphics/Pipeline/GlSimulatedSkyGpuPipeline.cpp
-        Source/Graphics/Pipeline/GlTextureDiffuseGpuPipeline.cpp
-        Source/Graphics/Pipeline/VkColorGpuPipeline.cpp
-        Source/Graphics/Pipeline/VkDiffuseGpuPipeline.cpp
-        Source/Graphics/Pipeline/VkGpuPipeline.cpp
+    Source/Graphics/Pipeline/GlColorColorGpuPipeline.cpp
+    Source/Graphics/Pipeline/GlColorGpuPipeline.cpp
+    Source/Graphics/Pipeline/GlDiffuseGpuPipeline.cpp
+    Source/Graphics/Pipeline/GlGpuPipeline.cpp
+    Source/Graphics/Pipeline/GlSimulatedSkyGpuPipeline.cpp
+    Source/Graphics/Pipeline/GlTextureDiffuseGpuPipeline.cpp
+    Source/Graphics/Pipeline/VkColorGpuPipeline.cpp
+    Source/Graphics/Pipeline/VkDiffuseGpuPipeline.cpp
+    Source/Graphics/Pipeline/VkGpuPipeline.cpp
 
-        Source/Graphics/CameraComponent.cpp
-        Source/Graphics/CameraSystem.cpp
-        Source/Graphics/FreeCameraSystem.cpp
-        Source/Graphics/GlCameraSystem.cpp
-        Source/Graphics/GlGpuBuffer.cpp
-        Source/Graphics/GlGpuFramebuffer.cpp
-        Source/Graphics/GlGpuShader.cpp
-        Source/Graphics/GlGpuImage.cpp
-        Source/Graphics/GlGpuMesh.cpp
-        Source/Graphics/GlGpuShader.cpp
-        Source/Graphics/GlRenderSystem.cpp
-        Source/Graphics/GlWindow.cpp
-        Source/Graphics/GpuBuffer.cpp
-        Source/Graphics/GpuFramebuffer.cpp
-        Source/Graphics/GpuImage.cpp
-        Source/Graphics/GpuMesh.cpp
-        Source/Graphics/GpuShader.cpp
-        Source/Graphics/GuiComponent.cpp
-        Source/Graphics/GuiSystem.cpp
-        Source/Graphics/ImageData.cpp
-        Source/Graphics/ModelData.cpp
-        Source/Graphics/RenderComponent.cpp
-        Source/Graphics/RenderSystem.cpp
-        Source/Graphics/ShaderData.cpp
-        Source/Graphics/SimSkySystem.cpp
-        Source/Graphics/VkCameraSystem.cpp
-        Source/Graphics/VkGpuBuffer.cpp
-        Source/Graphics/VkGpuImage.cpp
-        Source/Graphics/VkGpuMesh.cpp
-        Source/Graphics/VkGpuShader.cpp
-        Source/Graphics/VkRenderSystem.cpp
-        Source/Graphics/VkSwapchainData.cpp
-        Source/Graphics/VkWindow.cpp
-        Source/Graphics/VrSystem.cpp
-        Source/Graphics/Window.cpp
+    Source/Graphics/CameraComponent.cpp
+    Source/Graphics/CameraSystem.cpp
+    Source/Graphics/FreeCameraSystem.cpp
+    Source/Graphics/GlCameraSystem.cpp
+    Source/Graphics/GlGpuBuffer.cpp
+    Source/Graphics/GlGpuFramebuffer.cpp
+    Source/Graphics/GlGpuShader.cpp
+    Source/Graphics/GlGpuImage.cpp
+    Source/Graphics/GlGpuMesh.cpp
+    Source/Graphics/GlGpuShader.cpp
+    Source/Graphics/GlRenderSystem.cpp
+    Source/Graphics/GlWindow.cpp
+    Source/Graphics/GpuBuffer.cpp
+    Source/Graphics/GpuFramebuffer.cpp
+    Source/Graphics/GpuImage.cpp
+    Source/Graphics/GpuMesh.cpp
+    Source/Graphics/GpuShader.cpp
+    Source/Graphics/GuiComponent.cpp
+    Source/Graphics/GuiSystem.cpp
+    Source/Graphics/ImageData.cpp
+    Source/Graphics/ModelData.cpp
+    Source/Graphics/RenderComponent.cpp
+    Source/Graphics/RenderSystem.cpp
+    Source/Graphics/ShaderData.cpp
+    Source/Graphics/SimSkySystem.cpp
+    Source/Graphics/VkCameraSystem.cpp
+    Source/Graphics/VkGpuBuffer.cpp
+    Source/Graphics/VkGpuImage.cpp
+    Source/Graphics/VkGpuMesh.cpp
+    Source/Graphics/VkGpuShader.cpp
+    Source/Graphics/VkRenderSystem.cpp
+    Source/Graphics/VkSwapchainData.cpp
+    Source/Graphics/VkWindow.cpp
+    Source/Graphics/VrSystem.cpp
+    Source/Graphics/Window.cpp
 
-        Source/Mathematics/Converter.cpp
-        Source/Mathematics/IntVector2.cpp
-        Source/Mathematics/IntVector3.cpp
-        Source/Mathematics/IntVector4.cpp
-        Source/Mathematics/Matrix2.cpp
-        Source/Mathematics/Matrix3.cpp
-        Source/Mathematics/Matrix4.cpp
-        Source/Mathematics/Quaternion.cpp
-        Source/Mathematics/RotateComponent.cpp
-        Source/Mathematics/SizeVector2.cpp
-        Source/Mathematics/SizeVector3.cpp
-        Source/Mathematics/SizeVector4.cpp
-        Source/Mathematics/TransformComponent.cpp
-        Source/Mathematics/TransformSystem.cpp
-        Source/Mathematics/TranslateComponent.cpp
-        Source/Mathematics/Vector2.cpp
-        Source/Mathematics/Vector3.cpp
-        Source/Mathematics/Vector4.cpp
+    Source/Mathematics/Converter.cpp
+    Source/Mathematics/IntVector2.cpp
+    Source/Mathematics/IntVector3.cpp
+    Source/Mathematics/IntVector4.cpp
+    Source/Mathematics/Matrix2.cpp
+    Source/Mathematics/Matrix3.cpp
+    Source/Mathematics/Matrix4.cpp
+    Source/Mathematics/Quaternion.cpp
+    Source/Mathematics/RotateComponent.cpp
+    Source/Mathematics/SizeVector2.cpp
+    Source/Mathematics/SizeVector3.cpp
+    Source/Mathematics/SizeVector4.cpp
+    Source/Mathematics/TransformComponent.cpp
+    Source/Mathematics/TransformSystem.cpp
+    Source/Mathematics/TranslateComponent.cpp
+    Source/Mathematics/Vector2.cpp
+    Source/Mathematics/Vector3.cpp
+    Source/Mathematics/Vector4.cpp
 
-        Source/Memory/ByteSwap.cpp
-        Source/Memory/MemoryStream.cpp
+    Source/Memory/ByteSwap.cpp
+    Source/Memory/MemoryStream.cpp
 
-        Source/Network/NetContextSystem.cpp
-        Source/Network/SslTcpClient.cpp
-        Source/Network/SslTcpServer.cpp
-        Source/Network/SslTcpSession.cpp
-        Source/Network/TcpClient.cpp
-        Source/Network/TcpServer.cpp
-        Source/Network/TcpSocket.cpp
-        Source/Network/UdpSocket.cpp
+    Source/Network/Tcp/AsyncTcpClient.cpp
+    Source/Network/Tcp/AsyncTcpServer.cpp
+    Source/Network/Tcp/TcpClient.cpp
+    Source/Network/Tcp/TcpServer.cpp
+    Source/Network/Tcp/TcpSocket.cpp
 
-        Source/Storage/FileStream.cpp
+    Source/Network/Udp/AsyncUdpClient.cpp
+    Source/Network/Udp/AsyncUdpServer.cpp
+    Source/Network/Udp/UdpClient.cpp
+    Source/Network/Udp/UdpServer.cpp
+    Source/Network/Udp/UdpSocket.cpp
 
-        Source/Compressor.cpp
-        Source/Engine.cpp
-        Source/Entity.cpp
-        Source/Manager.cpp)
+    Source/Network/ConsoleSystem.cpp
+    Source/Network/Endpoint.cpp
+    Source/Network/NetContextSystem.cpp
+    Source/Network/Socket.cpp
+
+    Source/Storage/FileStream.cpp
+
+    Source/Compressor.cpp
+    Source/Engine.cpp
+    Source/Entity.cpp
+    Source/Manager.cpp)
 target_link_libraries(InjectorEngine PUBLIC
-        asio
-        assimp
-        glew_s
-        glfw
-        lz4_static
-        OpenSSL::SSL
-        OpenSSL::Crypto
-        ${OPENVR_LINK_LIB}
-        stb
-        VulkanMemoryAllocator
-        Vulkan::Vulkan)
+    asio
+    assimp
+    glew_s
+    glfw
+    lz4_static
+    OpenSSL::SSL
+    OpenSSL::Crypto
+    ${OPENVR_LINK_LIB}
+    stb
+    VulkanMemoryAllocator
+    Vulkan::Vulkan)
 target_include_directories(InjectorEngine PUBLIC
-        ${PROJECT_BINARY_DIR}
-        ${PROJECT_SOURCE_DIR}/Include
-        ${GLEW_INCLUDE_DIRS}
-        ${LZ4_INCLUDE_DIRS}
-        ${OPENVR_INCLUDE_DIRS}
-        ${Vulkan_INCLUDE_DIRS})
+    ${PROJECT_BINARY_DIR}
+    ${PROJECT_SOURCE_DIR}/Include
+    ${GLEW_INCLUDE_DIRS}
+    ${LZ4_INCLUDE_DIRS}
+    ${OPENVR_INCLUDE_DIRS}
+    ${Vulkan_INCLUDE_DIRS})
 
 if (INJECTOR_BUILD_EDITOR)
     add_executable(InjectorEditor
-            Source/Editor.cpp)
+        Source/Editor.cpp)
     target_link_libraries(InjectorEditor PRIVATE
-            InjectorEngine)
+        InjectorEngine)
     target_include_directories(InjectorEditor PRIVATE
-            ${PROJECT_BINARY_DIR}
-            ${PROJECT_SOURCE_DIR}/Include)
+        ${PROJECT_BINARY_DIR}
+        ${PROJECT_SOURCE_DIR}/Include)
 endif ()
 
 set(INJECTOR_RESOURCES
-        Images/GrayBox.png
-        Images/Logo16.png
-        Images/Logo32.png
-        Images/Logo48.png
+    Images/GrayBox.png
+    Images/Logo16.png
+    Images/Logo32.png
+    Images/Logo48.png
 
-        Models/UtahTeapot.fbx
+    Models/UtahTeapot.fbx
 
-        Shaders/ColorColor.frag
-        Shaders/ColorColor.vert
-        Shaders/Color.frag
-        Shaders/Color.vert
-        Shaders/SimulatedSky.vert
-        Shaders/SimulatedSky.frag
-        Shaders/Diffuse.frag
-        Shaders/Diffuse.vert
-        Shaders/TextureDiffuse.frag
-        Shaders/TextureDiffuse.vert
-        Shaders/Color.frag.spv
-        Shaders/Color.vert.spv
-        Shaders/Diffuse.frag.spv
-        Shaders/Diffuse.vert.spv)
+    Shaders/ColorColor.frag
+    Shaders/ColorColor.vert
+    Shaders/Color.frag
+    Shaders/Color.vert
+    Shaders/SimulatedSky.vert
+    Shaders/SimulatedSky.frag
+    Shaders/Diffuse.frag
+    Shaders/Diffuse.vert
+    Shaders/TextureDiffuse.frag
+    Shaders/TextureDiffuse.vert
+    Shaders/Color.frag.spv
+    Shaders/Color.vert.spv
+    Shaders/Diffuse.frag.spv
+    Shaders/Diffuse.vert.spv)
 
 foreach (FILE ${INJECTOR_RESOURCES})
     configure_file(Resources/${FILE} Resources/${FILE} COPYONLY)

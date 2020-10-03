@@ -81,5 +81,9 @@ namespace Injector
 		static const IntVector4 one;
 		static const IntVector4 minimum;
 		static const IntVector4 maximum;
+
+		static bool less(
+			const IntVector4& a,
+			const IntVector4& b) noexcept;
 	};
 }

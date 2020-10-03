@@ -66,5 +66,9 @@ namespace Injector
 		static const Matrix2 minusOne;
 		static const Matrix2 one;
 		static const Matrix2 identity;
+
+		static bool less(
+			const Matrix2& a,
+			const Matrix2& b) noexcept;
 	};
 }

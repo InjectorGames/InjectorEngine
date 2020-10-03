@@ -423,4 +423,12 @@ namespace Injector
 	const IntVector3 IntVector3::one = IntVector3(1);
 	const IntVector3 IntVector3::minimum = IntVector3(INT32_MIN);
 	const IntVector3 IntVector3::maximum = IntVector3(INT32_MAX);
+
+	bool IntVector3::less(
+		const IntVector3& a,
+		const IntVector3& b) noexcept
+	{
+		return std::tie(a.x, a.y, a.z) <
+			std::tie(b.x, b.y, b.z);
+	}
 }

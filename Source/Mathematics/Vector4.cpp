@@ -480,4 +480,12 @@ namespace Injector
 	const Vector4 Vector4::zero = Vector4(0.0f);
 	const Vector4 Vector4::minusOne = Vector4(-1.0f);
 	const Vector4 Vector4::one = Vector4(1.0f);
+
+	bool Vector4::less(
+		const Vector4& a,
+		const Vector4& b) noexcept
+	{
+		return std::tie(a.x, a.y, a.z, a.w) <
+			std::tie(b.x, b.y, b.z, b.w);
+	}
 }

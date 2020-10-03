@@ -347,4 +347,19 @@ namespace Injector
 		1.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 1.0f);
+
+	bool Matrix3::less(
+		const Matrix3& a,
+		const Matrix3& b) noexcept
+	{
+		return
+			std::tie(
+				a.m00, a.m01, a.m02,
+				a.m10, a.m11, a.m12,
+				a.m20, a.m21, a.m22) <
+			std::tie(
+				b.m00, b.m01, b.m02,
+				b.m10, b.m11, b.m12,
+				b.m20, b.m21, b.m22);
+	}
 }

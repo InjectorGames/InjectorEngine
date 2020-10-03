@@ -65,5 +65,9 @@ namespace Injector
 		static const Vector2 zero;
 		static const Vector2 minusOne;
 		static const Vector2 one;
+
+		static bool less(
+			const Vector2& a,
+			const Vector2& b) noexcept;
 	};
 }

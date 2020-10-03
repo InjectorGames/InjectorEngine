@@ -502,4 +502,12 @@ namespace Injector
 	const IntVector4 IntVector4::one = IntVector4(1);
 	const IntVector4 IntVector4::minimum = IntVector4(INT32_MIN);
 	const IntVector4 IntVector4::maximum = IntVector4(INT32_MAX);
+
+	bool IntVector4::less(
+		const IntVector4& a,
+		const IntVector4& b) noexcept
+	{
+		return std::tie(a.x, a.y, a.z, a.w) <
+			std::tie(b.x, b.y, b.z, b.w);
+	}
 }

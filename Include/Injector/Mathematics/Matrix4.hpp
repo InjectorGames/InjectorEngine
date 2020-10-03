@@ -113,5 +113,9 @@ namespace Injector
 		static const Matrix4 minusOne;
 		static const Matrix4 one;
 		static const Matrix4 identity;
+
+		static bool less(
+			const Matrix4& a,
+			const Matrix4& b) noexcept;
 	};
 }
