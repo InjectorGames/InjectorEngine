@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Network/Endpoint.hpp"
-#include "Injector/Network/SocketType.hpp"
+#include "Injector/Network/SocketProtocol.hpp"
 #include "Injector/Network/SocketShutdown.hpp"
 
 namespace Injector
@@ -8,41 +8,46 @@ namespace Injector
 	class Socket
 	{
 	 protected:
-		uint64_t handle;
+		SocketFamily family;
+		SocketProtocol protocol;
+		int handle;
 	 public:
-		// Creates a new empty socket
+		// Creates a new null socket
 		Socket() noexcept;
-		// Closes and destroys socket
+		// Creates a new socket
+		Socket(
+			SocketFamily family,
+			SocketProtocol protocol);
+		// Shutdowns, closes and destroys socket
 		virtual ~Socket();
 
-		// Returns true if socket is not null
-		bool isValid() noexcept;
+		// Returns socket address family
+		SocketFamily getAddressFamily() const noexcept;
+		// Returns socket protocol type
+		SocketProtocol getProtocolType() const noexcept;
 
-		// Returns true if socket is listening on success
-		bool getIsListening(bool& listening) noexcept;
-		// Returns socket type on success
-		bool getSocketType(SocketType& socketType) noexcept;
+		// Returns true if socket is listening
+		bool getIsListening() const;
 
-		// TODO: add other options
+		// Returns current endpoint to which socket is bound
+		Endpoint getLocalEndpoint() const;
+		// Returns endpoint of connected socked
+		Endpoint getRemoteEndpoint() const;
 
-		// Returns current endpoint to which socket is bound on success
-		bool getLocalEndpoint(
-			Endpoint& endpoint) noexcept;
-		// Returns endpoint of connected socked on success
-		bool getRemoteEndpoint(
-			Endpoint& endpoint) noexcept;
+		// Sets socket blocking mode
+		void setBlocking(bool blocking) const;
 
-		// Assigns socket local endpoint on success
-		bool bind(const Endpoint& endpoint) noexcept;
-		// Connects socket to remote endpoint on success
-		bool connect(const Endpoint& endpoint) noexcept;
+		// Assigns socket local endpoint
+		void bind(const Endpoint& endpoint);
+		// Listens for connections on socket
+		void listen();
 
-		// Listens for connections on socket on success
-		bool listen() noexcept;
-		// Accepts connection on socket on success
+		// Returns true if connection has been accepted
 		bool accept(
 			Endpoint& endpoint,
 			Socket& socket) noexcept;
+		// Returns true if connected to remote endpoint
+		bool connect(const Endpoint& endpoint) noexcept;
 
 		// Receives message from connected endpoint
 		int receive(
@@ -53,6 +58,23 @@ namespace Injector
 			const void* buffer,
 			size_t size) noexcept;
 
+		// Receives message from connected endpoint
+		template<class T = uint8_t>
+		int receive(std::vector<T>& buffer)
+		{
+			receive(
+				buffer.data(),
+				buffer.size() * sizeof(T));
+		}
+		// Sends message to connected endpoint
+		template<class T = uint8_t>
+		int send(const std::vector<T>& buffer)
+		{
+			send(
+				buffer.data(),
+				buffer.size() * sizeof(T));
+		}
+
 		// Receives message from specified endpoint
 		int receiveFrom(
 			void* buffer,
@@ -60,23 +82,39 @@ namespace Injector
 			Endpoint& endpoint) noexcept;
 		// Sends message to specified endpoint
 		int sendTo(
-			void* buffer,
+			const void* buffer,
 			size_t size,
 			const Endpoint& endpoint) noexcept;
+
+		// Receives message from specified endpoint
+		template<class T = uint8_t>
+		int receiveFrom(
+			std::vector<T>& buffer,
+			Endpoint& endpoint)
+		{
+			receiveFrom(
+				buffer.data(),
+				buffer.size() * sizeof(T),
+				endpoint);
+		}
+		// Sends message to specified endpoint
+		template<class T = uint8_t>
+		int sendTo(
+			const std::vector<T>& buffer,
+			const Endpoint& endpoint)
+		{
+			sendTo(
+				buffer.data(),
+				buffer.size() * sizeof(T),
+				endpoint);
+		}
 
 		// Shutdowns part of a full-duplex connection
 		// Read: shutdowns socket sending
 		// Write: shutdowns socket receiving
 		// Both: shutdowns sending and receiving
-		bool shutdown(
-			SocketShutdown shutdown) noexcept;
+		void shutdown(SocketShutdown shutdown);
 		// Closes socket connection and releases all resources
-		bool close() noexcept;
-
-		// Creates a new socket on success
-		static bool create(
-			AddressFamily family,
-			SocketType type,
-			Socket& socket) noexcept;
+		void close();
 	};
 }

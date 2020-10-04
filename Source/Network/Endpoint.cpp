@@ -13,6 +13,16 @@
 
 namespace Injector
 {
+	const std::string Endpoint::anyAddressIPv4 = "0.0.0.0";
+	const std::string Endpoint::anyAddressIPv6 = "::";
+	const std::string Endpoint::loopbackAddressIPv4 = "127.0.0.1";
+	const std::string Endpoint::loopbackAddressIPv6 = "::1";
+	const std::string Endpoint::anyPortNumber = "0";
+	const size_t Endpoint::addressSizeIPv4 = sizeof(in_addr);
+	const size_t Endpoint::addressSizeIPv6 = sizeof(in6_addr);
+	const Endpoint Endpoint::anyIPv4 = Endpoint(anyAddressIPv4, anyPortNumber);
+	const Endpoint Endpoint::anyIPv6 = Endpoint(anyAddressIPv6, anyPortNumber);
+
 	Endpoint::Endpoint() noexcept
 	{
 		handle = new sockaddr_storage();
@@ -21,6 +31,119 @@ namespace Injector
 			handle,
 			0,
 			sizeof(sockaddr_storage));
+	}
+	Endpoint::Endpoint(
+		const std::string& address,
+		const std::string& port)
+	{
+		auto hints = addrinfo();
+
+		memset(
+			&hints,
+			0,
+			sizeof(addrinfo));
+
+		hints.ai_flags =
+			AI_NUMERICHOST |
+			AI_NUMERICSERV;
+
+		addrinfo* addressInfos;
+
+		auto result = getaddrinfo(
+			address.c_str(),
+			port.c_str(),
+			&hints,
+			&addressInfos);
+
+		if (result != 0)
+		{
+			freeaddrinfo(addressInfos);
+
+			throw Exception(
+				"Endpoint",
+				"Endpoint",
+				"Failed to get address information");
+		}
+
+		handle = new sockaddr_storage();
+
+		memset(
+			handle,
+			0,
+			sizeof(sockaddr_storage));
+
+		memcpy(
+			handle,
+			addressInfos->ai_addr,
+			addressInfos->ai_addrlen);
+
+		freeaddrinfo(addressInfos);
+	}
+	Endpoint::Endpoint(
+		const std::vector<uint8_t>& address,
+		uint16_t port)
+	{
+		if (address.size() != sizeof(in_addr))
+		{
+			throw Exception(
+				"Endpoint",
+				"Endpoint",
+				"Incorrect address size");
+		}
+
+		handle = new sockaddr_storage();
+
+		memset(
+			handle,
+			0,
+			sizeof(sockaddr_storage));
+
+		auto socketAddress =
+			reinterpret_cast<sockaddr_in*>(handle);
+
+		socketAddress->sin_family = AF_INET;
+
+		memcpy(
+			&socketAddress->sin_addr,
+			address.data(),
+			sizeof(in_addr));
+
+		socketAddress->sin_port = port;
+	}
+	Endpoint::Endpoint(
+		const std::vector<uint8_t>& address,
+		uint16_t port,
+		uint32_t scopeID,
+		uint32_t flowInfo)
+	{
+		if (address.size() != sizeof(in6_addr))
+		{
+			throw Exception(
+				"Endpoint",
+				"Endpoint",
+				"Incorrect address size");
+		}
+
+		handle = new sockaddr_storage();
+
+		memset(
+			handle,
+			0,
+			sizeof(sockaddr_storage));
+
+		auto socketAddress =
+			reinterpret_cast<sockaddr_in6*>(handle);
+
+		socketAddress->sin6_family = AF_INET6;
+		socketAddress->sin6_scope_id = scopeID;
+		socketAddress->sin6_flowinfo = flowInfo;
+
+		memcpy(
+			&socketAddress->sin6_addr,
+			address.data(),
+			sizeof(in6_addr));
+
+		socketAddress->sin6_port = port;
 	}
 	Endpoint::Endpoint(
 		const Endpoint& endpoint) noexcept
@@ -43,39 +166,87 @@ namespace Injector
 	{
 		return handle;
 	}
-
-	bool Endpoint::getAddressFamily(AddressFamily& addressFamily) const noexcept
+	SocketFamily Endpoint::getSocketFamily() const noexcept
 	{
 		auto socketAddress =
 			reinterpret_cast<sockaddr_storage*>(handle);
 
 		if (socketAddress->ss_family == AF_INET)
-			addressFamily = AddressFamily::IPv4;
+			return SocketFamily::IPv4;
 		else if (socketAddress->ss_family == AF_INET6)
-			addressFamily = AddressFamily::IPv6;
+			return SocketFamily::IPv6;
 		else
-			return false;
-
-		return true;
+			return SocketFamily::Unspecified;
 	}
-	bool Endpoint::getScopeID(uint32_t& scopeID) const noexcept
+
+	std::vector<uint8_t> Endpoint::getAddress() const
 	{
 		auto socketAddress =
 			reinterpret_cast<sockaddr_storage*>(handle);
 
-		if (socketAddress->ss_family != AF_INET6)
-			return false;
+		if (socketAddress->ss_family == AF_INET)
+		{
+			auto address = std::vector<uint8_t>(sizeof(in_addr));
 
-		auto socketAddress6 =
-			reinterpret_cast<sockaddr_in6*>(handle);
+			auto socketAddress4 =
+				reinterpret_cast<sockaddr_in*>(handle);
 
-		scopeID = static_cast<uint32_t>(
-			socketAddress6->sin6_scope_id);
+			memcpy(
+				address.data(),
+				&socketAddress4->sin_addr,
+				sizeof(in_addr));
 
-		return true;
+			return std::move(address);
+		}
+		else if (socketAddress->ss_family == AF_INET6)
+		{
+			auto address = std::vector<uint8_t>(sizeof(in6_addr));
+
+			auto socketAddress6 =
+				reinterpret_cast<sockaddr_in6*>(handle);
+
+			memcpy(
+				address.data(),
+				&socketAddress6->sin6_addr,
+				sizeof(in6_addr));
+
+			return std::move(address);
+		}
+		else
+		{
+			throw Exception(
+				"Endpoint",
+				"getAddress",
+				"Unspecified address family");
+		}
+	}
+	uint16_t Endpoint::getPort() const
+	{
+		auto socketAddress =
+			reinterpret_cast<sockaddr_storage*>(handle);
+
+		if (socketAddress->ss_family == AF_INET)
+		{
+			auto socketAddress4 =
+				reinterpret_cast<sockaddr_in*>(handle);
+			return socketAddress4->sin_port;
+		}
+		else if (socketAddress->ss_family == AF_INET6)
+		{
+			auto socketAddress6 =
+				reinterpret_cast<sockaddr_in6*>(handle);
+			return socketAddress6->sin6_port;
+		}
+		else
+		{
+			throw Exception(
+				"Endpoint",
+				"getPort",
+				"Unspecified address family");
+		}
 	}
 
-	bool Endpoint::getAddress(std::string& address) const noexcept
+	std::string Endpoint::getAddressString() const
 	{
 		auto socketAddress =
 			reinterpret_cast<sockaddr*>(handle);
@@ -95,49 +266,16 @@ namespace Injector
 			flags);
 
 		if (result != 0)
-			return false;
+		{
+			throw Exception(
+				"Endpoint",
+				"getAddressString",
+				"Failed to get name information");
+		}
 
-		address = std::string(addressString);
-		return true;
+		return std::string(addressString);
 	}
-	bool Endpoint::getAddress(std::vector<uint8_t>& address) const noexcept
-	{
-		auto socketAddress =
-			reinterpret_cast<sockaddr_storage*>(handle);
-
-		if (socketAddress->ss_family == AF_INET)
-		{
-			address = std::vector<uint8_t>(sizeof(in_addr));
-
-			auto socketAddress4 =
-				reinterpret_cast<sockaddr_in*>(handle);
-
-			memcpy(
-				address.data(),
-				&socketAddress4->sin_addr,
-				sizeof(in_addr));
-		}
-		else if (socketAddress->ss_family == AF_INET6)
-		{
-			address = std::vector<uint8_t>(sizeof(in6_addr));
-
-			auto socketAddress6 =
-				reinterpret_cast<sockaddr_in6*>(handle);
-
-			memcpy(
-				address.data(),
-				&socketAddress6->sin6_addr,
-				sizeof(in6_addr));
-		}
-		else
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	bool Endpoint::getPort(std::string& port) const noexcept
+	std::string Endpoint::getPortString() const
 	{
 		auto socketAddress =
 			reinterpret_cast<sockaddr*>(handle);
@@ -157,41 +295,19 @@ namespace Injector
 			flags);
 
 		if (result != 0)
-			return false;
-
-		port = std::string(portString);
-		return true;
-	}
-	bool Endpoint::getPort(uint16_t& port) const noexcept
-	{
-		auto socketAddress =
-			reinterpret_cast<sockaddr_storage*>(handle);
-
-		if (socketAddress->ss_family == AF_INET)
 		{
-			auto socketAddress4 =
-				reinterpret_cast<sockaddr_in*>(handle);
-			port = static_cast<uint16_t>(
-				socketAddress4->sin_port);
-		}
-		else if (socketAddress->ss_family == AF_INET6)
-		{
-			auto socketAddress6 =
-				reinterpret_cast<sockaddr_in6*>(handle);
-			port = static_cast<uint16_t>(
-				socketAddress6->sin6_port);
-		}
-		else
-		{
-			return false;
+			throw Exception(
+				"Endpoint",
+				"getPortString",
+				"Failed to get name information");
 		}
 
-		return true;
+		return std::string(portString);
 	}
 
-	bool Endpoint::getAddressAndPort(
+	void Endpoint::getAddressAndPortString(
 		std::string& address,
-		std::string& port) const noexcept
+		std::string& port) const
 	{
 		auto socketAddress =
 			reinterpret_cast<sockaddr*>(handle);
@@ -213,11 +329,48 @@ namespace Injector
 			flags);
 
 		if (result != 0)
-			return false;
+		{
+			throw Exception(
+				"Endpoint",
+				"getAddressAndPortString",
+				"Failed to get name information");
+		}
 
 		address = std::string(addressString);
 		port = std::string(portString);
-		return true;
+	}
+
+	uint32_t Endpoint::getScopeID() const
+	{
+		auto socketAddress =
+			reinterpret_cast<sockaddr_in6*>(handle);
+
+		if (socketAddress->sin6_family != AF_INET6)
+		{
+			throw Exception(
+				"Endpoint",
+				"getScopeID",
+				"Address family is not IPv6");
+		}
+
+		return socketAddress->sin6_scope_id;
+	}
+	uint32_t Endpoint::getFlowInfo() const
+	{
+		auto socketAddress =
+			reinterpret_cast<sockaddr_in6*>(handle);
+
+		if (socketAddress->sin6_family != AF_INET6)
+		{
+			{
+				throw Exception(
+					"Endpoint",
+					"getFlowInfo",
+					"Address family is not IPv6");
+			}
+		}
+
+		return socketAddress->sin6_flowinfo;
 	}
 
 	bool Endpoint::operator==(
@@ -252,11 +405,11 @@ namespace Injector
 			auto otherSocketAddress6 =
 				reinterpret_cast<sockaddr_in6*>(endpoint.handle);
 
-			// TODO: add flow comparison?
-
 			return
 				socketAddress6->sin6_port ==
 					otherSocketAddress6->sin6_port &&
+				socketAddress6->sin6_flowinfo ==
+					otherSocketAddress6->sin6_flowinfo &&
 				socketAddress6->sin6_scope_id ==
 					otherSocketAddress6->sin6_scope_id &&
 				memcmp(&socketAddress6->sin6_addr,
@@ -274,12 +427,11 @@ namespace Injector
 		return !(*this == endpoint);
 	}
 
-	bool Endpoint::resolve(
-		AddressFamily addressFamily,
-		SocketType socketType,
+	std::vector<Endpoint> Endpoint::resolve(
+		SocketFamily family,
+		SocketProtocol protocol,
 		const std::string& host,
-		const std::string& service,
-		std::vector<Endpoint>& endpoints) noexcept
+		const std::string& service)
 	{
 		auto hints = addrinfo();
 
@@ -292,15 +444,21 @@ namespace Injector
 			AI_ADDRCONFIG |
 			AI_V4MAPPED;
 
-		if(addressFamily == AddressFamily::IPv4)
+		if(family == SocketFamily::IPv4)
 			hints.ai_family = AF_INET;
-		else if(addressFamily == AddressFamily::IPv6)
+		else if(family == SocketFamily::IPv6)
 			hints.ai_family = AF_INET6;
 
-		if(socketType == SocketType::Stream)
+		if(protocol == SocketProtocol::TCP)
+		{
 			hints.ai_socktype = SOCK_STREAM;
-		else if(socketType == SocketType::Datagram)
+			hints.ai_protocol = IPPROTO_TCP;
+		}
+		else if(protocol == SocketProtocol::UDP)
+		{
 			hints.ai_socktype = SOCK_DGRAM;
+			hints.ai_protocol = IPPROTO_UDP;
+		}
 
 		addrinfo* addressInfos;
 
@@ -311,9 +469,14 @@ namespace Injector
 			&addressInfos);
 
 		if (result != 0)
-			return false;
+		{
+			throw Exception(
+				"Endpoint",
+				"resolve",
+				"Failed to get address information");
+		}
 
-		endpoints = std::vector<Endpoint>();
+		auto endpoints = std::vector<Endpoint>();
 
 		for (auto i = addressInfos; i->ai_next != nullptr; i = i->ai_next)
 		{
@@ -328,12 +491,12 @@ namespace Injector
 		}
 
 		freeaddrinfo(addressInfos);
-		return true;
+		return std::move(endpoints);
 	}
-	bool Endpoint::resolve(
+	void Endpoint::resolve(
 		const Endpoint& endpoint,
 		std::string& host,
-		std::string& service) noexcept
+		std::string& service)
 	{
 		auto socketAddress =
 			reinterpret_cast<sockaddr*>(endpoint.handle);
@@ -354,49 +517,15 @@ namespace Injector
 			flags);
 
 		if (result != 0)
-			return false;
+		{
+			throw Exception(
+				"Endpoint",
+				"resolve",
+				"Failed to get name information");
+		}
 
 		host = std::string(hostString);
 		service = std::string(serviceString);
-		return true;
-	}
-
-	bool Endpoint::create(
-		const std::string& address,
-		const std::string& port,
-		Endpoint& endpoint) noexcept
-	{
-		auto hints = addrinfo();
-
-		memset(
-			&hints,
-			0,
-			sizeof(addrinfo));
-
-		hints.ai_flags =
-			AI_NUMERICHOST |
-			AI_NUMERICSERV;
-
-		addrinfo* addressInfos;
-
-		auto result = getaddrinfo(
-			address.c_str(),
-			port.c_str(),
-			&hints,
-			&addressInfos);
-
-		if (result != 0)
-			return false;
-
-		endpoint = Endpoint();
-
-		memcpy(
-			endpoint.handle,
-			addressInfos->ai_addr,
-			addressInfos->ai_addrlen);
-
-		freeaddrinfo(addressInfos);
-		return true;
 	}
 
 	bool Endpoint::less(
@@ -433,10 +562,10 @@ namespace Injector
 			auto otherSocketAddress6 =
 				reinterpret_cast<sockaddr_in6*>(b.handle);
 
-			// TODO: add flow comparison?
-
 			if (socketAddress6->sin6_port != otherSocketAddress6->sin6_port)
 				return socketAddress6->sin6_port < otherSocketAddress6->sin6_port;
+			if (socketAddress6->sin6_scope_id != otherSocketAddress6->sin6_scope_id)
+				return socketAddress6->sin6_scope_id < otherSocketAddress6->sin6_scope_id;
 			if (socketAddress6->sin6_scope_id != otherSocketAddress6->sin6_scope_id)
 				return socketAddress6->sin6_scope_id < otherSocketAddress6->sin6_scope_id;
 

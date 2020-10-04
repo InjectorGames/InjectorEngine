@@ -3,8 +3,9 @@
 #include "Injector/Exception/Exception.hpp"
 
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+#include <netdb.h>
+#include <fcntl.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #define NULL_SOCKET -1
 #elif INJECTOR_SYSTEM_WINDOWS
@@ -17,157 +18,300 @@
 namespace Injector
 {
 	Socket::Socket() noexcept :
+		family(SocketFamily::Unspecified),
+		protocol(SocketProtocol::RAW),
 		handle(NULL_SOCKET)
 	{
 	}
+	Socket::Socket(
+		SocketFamily _family,
+		SocketProtocol _protocol) :
+		family(_family),
+		protocol(_protocol)
+	{
+		int socketFamily;
+
+		if (_family == SocketFamily::IPv4)
+		{
+			socketFamily = AF_INET;
+		}
+		else if (_family == SocketFamily::IPv6)
+		{
+			socketFamily = AF_INET6;
+		}
+		else
+		{
+			throw Exception(
+				"Socket",
+				"Socket",
+				"Unsupported address family");
+		}
+
+		int socketType;
+		int socketProtocol;
+
+		if(_protocol == SocketProtocol::TCP)
+		{
+			socketType = SOCK_STREAM;
+			socketProtocol = IPPROTO_TCP;
+		}
+		else if(_protocol == SocketProtocol::UDP)
+		{
+			socketType = SOCK_DGRAM;
+			socketProtocol = IPPROTO_UDP;
+		}
+		else
+		{
+			throw Exception(
+				"Socket",
+				"Socket",
+				"Unsupported protocol type");
+		}
+
+		auto socket = ::socket(
+			socketFamily,
+			socketType,
+			socketProtocol);
+
+		if(socket == NULL_SOCKET)
+		{
+			throw Exception(
+				"Socket",
+				"Socket",
+				"Failed to create socket");
+		}
+
+		handle = socket;
+	}
 	Socket::~Socket()
 	{
-		shutdown(SocketShutdown::Both);
-		close();
+		::shutdown(handle, SHUT_RDWR);
+		::close(handle);
 	}
 
-	bool Socket::isValid() noexcept
+	SocketFamily Socket::getAddressFamily() const noexcept
 	{
-		return handle != NULL_SOCKET;
+		return family;
+	}
+	SocketProtocol Socket::getProtocolType() const noexcept
+	{
+		return protocol;
 	}
 
-	bool Socket::getIsListening(bool& listening) noexcept
+	bool Socket::getIsListening() const
 	{
-		bool value;
+		bool listening;
 		socklen_t length = sizeof(bool);
 
 		auto result = ::getsockopt(
-			static_cast<int>(handle),
+			handle,
 			SOL_SOCKET,
 			SO_ACCEPTCONN,
-			&value,
+			&listening,
 			&length);
 
 		if(result != 0)
-			return false;
+		{
+			throw Exception(
+				"Socket",
+				"getIsListening",
+				"Failed to get socket option");
+		}
 
-		listening = value;
-		return true;
-	}
-	bool Socket::getSocketType(SocketType& socketType) noexcept
-	{
-		int value;
-		socklen_t length = sizeof(int);
-
-		auto result = ::getsockopt(
-			static_cast<int>(handle),
-			SOL_SOCKET,
-			SO_TYPE,
-			&value,
-			&length);
-
-		if(result != 0)
-			return false;
-
-		if(value == SOCK_STREAM)
-			socketType = SocketType::Stream;
-		else if(value == SOCK_DGRAM)
-			socketType = SocketType::Datagram;
-		else
-			return false;
-
-		return true;
+		return listening;
 	}
 
-	bool Socket::getLocalEndpoint(
-		Endpoint& endpoint) noexcept
+	Endpoint Socket::getLocalEndpoint() const
 	{
-		auto newEndpoint = Endpoint();
+		auto endpoint = Endpoint();
 
-		auto socketAddress = reinterpret_cast<sockaddr*>(
-			newEndpoint.getHandle());
-		socklen_t addressLength =
+		auto address = reinterpret_cast<sockaddr*>(
+			endpoint.getHandle());
+		socklen_t length =
 			sizeof(sockaddr_storage);
 
 		auto result = ::getsockname(
-			static_cast<int>(handle),
-			socketAddress,
-			&addressLength);
+			handle,
+			address,
+			&length);
 
 		if (result != 0)
-			return false;
+		{
+			throw Exception(
+				"Socket",
+				"getLocalEndpoint",
+				"Failed to get socket name");
+		}
 
-		endpoint = newEndpoint;
-		return true;
+		return endpoint;
 	}
-	bool Socket::getRemoteEndpoint(
-		Endpoint& endpoint) noexcept
+	Endpoint Socket::getRemoteEndpoint() const
 	{
-		auto newEndpoint = Endpoint();
+		auto endpoint = Endpoint();
 
-		auto socketAddress = reinterpret_cast<sockaddr*>(
-			newEndpoint.getHandle());
-		socklen_t addressLength =
+		auto address = reinterpret_cast<sockaddr*>(
+			endpoint.getHandle());
+		socklen_t length =
 			sizeof(sockaddr_storage);
 
 		auto result = ::getpeername(
-			static_cast<int>(handle),
-			socketAddress,
-			&addressLength);
+			handle,
+			address,
+			&length);
 
 		if (result != 0)
-			return false;
+		{
+			throw Exception(
+				"Socket",
+				"getRemoteEndpoint",
+				"Failed to get socket name");
+		}
 
-		endpoint = newEndpoint;
-		return true;
+		return endpoint;
 	}
 
-	bool Socket::bind(const Endpoint& endpoint) noexcept
+	void Socket::setBlocking(bool blocking) const
 	{
-		auto socketAddress =
-			reinterpret_cast<const sockaddr*>(endpoint.getHandle());
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+		auto flags = fcntl(
+			handle,
+			F_GETFL,
+			0);
 
-		return ::bind(
-			static_cast<int>(handle),
-			socketAddress,
-			sizeof(sockaddr_storage)) == 0;
+		if (flags == -1)
+		{
+			throw Exception(
+				"Socket",
+				"setBlocking",
+				"Failed to get flags");
+		}
+
+		flags = blocking ?
+			(flags & ~O_NONBLOCK) :
+			(flags | O_NONBLOCK);
+
+		flags = fcntl(
+			handle,
+			F_SETFL,
+			flags);
+
+		if (flags == -1)
+		{
+			throw Exception(
+				"Socket",
+				"setBlocking",
+				"Failed to set flags");
+		}
+#elif INJECTOR_SYSTEM_WINDOWS
+		u_long mode = blocking ?
+			0 :
+			1;
+
+		auto result = ioctlsocket(
+			handle,
+			FIONBIO,
+			&mode);
+
+   		if(result != 0)
+   		{
+			throw Exception(
+				"Socket",
+				"setBlockingMode",
+				"Failed to set socket mode");
+   		}
+#endif
 	}
-	bool Socket::connect(const Endpoint& endpoint) noexcept
+
+	void Socket::bind(const Endpoint& endpoint)
 	{
-		auto socketAddress =
-			reinterpret_cast<const sockaddr*>(endpoint.getHandle());
+		auto address = reinterpret_cast<const sockaddr*>(
+			endpoint.getHandle());
+		auto family = endpoint.getSocketFamily();
 
-		return ::connect(
-			static_cast<int>(handle),
-			socketAddress,
-			sizeof(sockaddr_storage)) == 0;
+		socklen_t length;
+
+		if(family == SocketFamily::IPv4)
+		{
+			length = sizeof(sockaddr_in);
+		}
+		else if(family == SocketFamily::IPv6)
+		{
+			length = sizeof(sockaddr_in6);
+		}
+		else
+		{
+			throw Exception(
+				"Socket",
+				"bind",
+				"Unsupported address family");
+		}
+
+		auto result = ::bind(
+			handle,
+			address,
+			length);
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"bind",
+				"Failed to bind socket");
+		}
 	}
-
-	bool Socket::listen() noexcept
+	void Socket::listen()
 	{
-		return ::listen(
-			static_cast<int>(handle),
-			SOMAXCONN) == 0;
+		auto result = ::listen(
+			handle,
+			SOMAXCONN);
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"listen",
+				"Failed to listen socket");
+		}
 	}
+
 	bool Socket::accept(
 		Endpoint& endpoint,
 		Socket& socket) noexcept
 	{
 		auto newEndpoint = Endpoint();
 
-		auto socketAddress =
-			reinterpret_cast<sockaddr*>(endpoint.getHandle());
-		socklen_t addressLength =
+		auto address = reinterpret_cast<sockaddr*>(
+			endpoint.getHandle());
+		socklen_t length =
 			sizeof(sockaddr_storage);
 
 		auto result = ::accept(
-			static_cast<int>(handle),
-			socketAddress,
-			&addressLength);
+			handle,
+			address,
+			&length);
 
-		if (result != 0)
+		if (result == NULL_SOCKET)
 			return false;
 
 		endpoint = newEndpoint;
 
 		socket = Socket();
-		socket.handle = handle;
+		socket.family = family;
+		socket.protocol = protocol;
+		socket.handle = result;
 		return true;
+	}
+	bool Socket::connect(const Endpoint& endpoint) noexcept
+	{
+		auto address = reinterpret_cast<const sockaddr*>(
+			endpoint.getHandle());
+
+		auto result = ::connect(
+			handle,
+			address,
+			sizeof(sockaddr_storage));
+
+		return result == 0;
 	}
 
 	int Socket::receive(
@@ -175,7 +319,7 @@ namespace Injector
 		size_t size) noexcept
 	{
 		return static_cast<int>(::recv(
-			static_cast<int>(handle),
+			handle,
 			buffer,
 			size,
 			0));
@@ -185,7 +329,7 @@ namespace Injector
 		size_t size) noexcept
 	{
 		return static_cast<int>(::send(
-			static_cast<int>(handle),
+			handle,
 			buffer,
 			size,
 			0));
@@ -198,101 +342,90 @@ namespace Injector
 	{
 		auto newEndpoint = Endpoint();
 
-		auto socketAddress = reinterpret_cast<sockaddr*>(
+		auto address = reinterpret_cast<sockaddr*>(
 			newEndpoint.getHandle());
-		socklen_t addressLength =
+		socklen_t length =
 			sizeof(sockaddr_storage);
 
 		auto result = ::recvfrom(
-			static_cast<int>(handle),
+			handle,
 			buffer,
 			size,
 			0,
-			socketAddress,
-			&addressLength);
+			address,
+			&length);
 
-		if(result == -1)
-			return false;
+		if(result < 0)
+			return result;
 
-		endpoint = std::move(newEndpoint);
+		endpoint = newEndpoint;
 		return result;
 	}
 	int Socket::sendTo(
-		void* buffer,
+		const void* buffer,
 		size_t size,
 		const Endpoint& endpoint) noexcept
 	{
-		auto socketAddress = reinterpret_cast<const sockaddr*>(
+		auto address = reinterpret_cast<const sockaddr*>(
 			endpoint.getHandle());
 
 		return static_cast<int>(::sendto(
-			static_cast<int>(handle),
+			handle,
 			buffer,
 			size,
 			0,
-			socketAddress,
+			address,
 			sizeof(sockaddr_storage)));
 	}
 
-	bool Socket::shutdown(
-		SocketShutdown shutdown) noexcept
+	void Socket::shutdown(SocketShutdown shutdown)
 	{
 		int shutdownType;
 
 		if(shutdown == SocketShutdown::Read)
+		{
 			shutdownType = SHUT_RD;
+		}
 		else if(shutdown == SocketShutdown::Write)
+		{
 			shutdownType =  SHUT_WR;
+		}
 		else if(shutdown == SocketShutdown::Both)
+		{
 			shutdownType = SHUT_RDWR;
+		}
 		else
-			return false;
+		{
+			throw Exception(
+				"Socket",
+				"shutdown",
+				"Unsupported shutdown type");
+		}
 
-		return ::shutdown(
-			static_cast<int>(handle),
-			shutdownType) == 0;
+		auto result = ::shutdown(
+			handle,
+			shutdownType);
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"shutdown",
+				"Failed to shutdown socket");
+		}
 	}
-	bool Socket::close() noexcept
+	void Socket::close()
 	{
+		auto result = ::close(handle);
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"close",
+				"Failed to close socket");
+		}
+
 		handle = NULL_SOCKET;
-
-		return ::close(
-			static_cast<int>(handle));;
-	}
-
-	bool Socket::create(
-		AddressFamily family,
-		SocketType type,
-		Socket& socket) noexcept
-	{
-		int addressFamily;
-
-		if (family == AddressFamily::IPv4)
-			addressFamily = AF_INET;
-		else if (family == AddressFamily::IPv6)
-			addressFamily = AF_INET6;
-		else
-			return false;
-
-		int socketType;
-
-		if(type == SocketType::Stream)
-			socketType =  SOCK_STREAM;
-		else if(type == SocketType::Datagram)
-			socketType = SOCK_DGRAM;
-		else
-			return false;
-
-		auto handle = static_cast<uint64_t>(::socket(
-			addressFamily,
-			socketType,
-			0));
-
-		if(handle == NULL_SOCKET)
-			return false;
-
-		socket = Socket();
-		socket.handle = handle;
-		return true;
 	}
 }

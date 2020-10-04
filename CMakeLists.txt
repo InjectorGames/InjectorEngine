@@ -196,6 +196,10 @@ add_library(InjectorEngine STATIC
     Source/Network/ConsoleSystem.cpp
     Source/Network/Endpoint.cpp
     Source/Network/Socket.cpp
+    Source/Network/TcpClientSystem.cpp
+    Source/Network/TcpServerSystem.cpp
+    Source/Network/UdpClientSystem.cpp
+    Source/Network/UdpServerSystem.cpp
 
     Source/Storage/FileStream.cpp
 

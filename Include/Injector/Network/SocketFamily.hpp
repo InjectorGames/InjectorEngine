@@ -2,7 +2,7 @@
 
 namespace Injector
 {
-	enum class AddressFamily
+	enum class SocketFamily
 	{
 		Unspecified,
 		IPv4,
