@@ -125,28 +125,39 @@ add_library(InjectorEngine STATIC
     Source/Exception/NullException.cpp
     Source/Exception/OutOfRangeException.cpp
 
-    Source/Graphics/Pipeline/GlColorColorGpuPipeline.cpp
-    Source/Graphics/Pipeline/GlColorGpuPipeline.cpp
-    Source/Graphics/Pipeline/GlDiffuseGpuPipeline.cpp
-    Source/Graphics/Pipeline/GlGpuPipeline.cpp
-    Source/Graphics/Pipeline/GlSimulatedSkyGpuPipeline.cpp
-    Source/Graphics/Pipeline/GlTextureDiffuseGpuPipeline.cpp
-    Source/Graphics/Pipeline/VkColorGpuPipeline.cpp
-    Source/Graphics/Pipeline/VkDiffuseGpuPipeline.cpp
-    Source/Graphics/Pipeline/VkGpuPipeline.cpp
+    Source/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.cpp
+    Source/Graphics/OpenGL/Pipeline/GlColorGpuPipeline.cpp
+    Source/Graphics/OpenGL/Pipeline/GlDiffuseGpuPipeline.cpp
+    Source/Graphics/OpenGL/Pipeline/GlGpuPipeline.cpp
+    Source/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.cpp
+    Source/Graphics/OpenGL/Pipeline/GlTextureDiffuseGpuPipeline.cpp
+
+    Source/Graphics/OpenGL/GlCameraSystem.cpp
+    Source/Graphics/OpenGL/GlGpuBuffer.cpp
+    Source/Graphics/OpenGL/GlGpuFramebuffer.cpp
+    Source/Graphics/OpenGL/GlGpuShader.cpp
+    Source/Graphics/OpenGL/GlGpuImage.cpp
+    Source/Graphics/OpenGL/GlGpuMesh.cpp
+    Source/Graphics/OpenGL/GlGpuShader.cpp
+    Source/Graphics/OpenGL/GlRenderSystem.cpp
+    Source/Graphics/OpenGL/GlWindow.cpp
+
+    Source/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.cpp
+    Source/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.cpp
+    Source/Graphics/Vulkan/Pipeline/VkGpuPipeline.cpp
+
+    Source/Graphics/Vulkan/VkCameraSystem.cpp
+    Source/Graphics/Vulkan/VkGpuBuffer.cpp
+    Source/Graphics/Vulkan/VkGpuImage.cpp
+    Source/Graphics/Vulkan/VkGpuMesh.cpp
+    Source/Graphics/Vulkan/VkGpuShader.cpp
+    Source/Graphics/Vulkan/VkRenderSystem.cpp
+    Source/Graphics/Vulkan/VkSwapchainData.cpp
+    Source/Graphics/Vulkan/Pipeline/VkWindow.cpp
 
     Source/Graphics/CameraComponent.cpp
     Source/Graphics/CameraSystem.cpp
     Source/Graphics/FreeCameraSystem.cpp
-    Source/Graphics/GlCameraSystem.cpp
-    Source/Graphics/GlGpuBuffer.cpp
-    Source/Graphics/GlGpuFramebuffer.cpp
-    Source/Graphics/GlGpuShader.cpp
-    Source/Graphics/GlGpuImage.cpp
-    Source/Graphics/GlGpuMesh.cpp
-    Source/Graphics/GlGpuShader.cpp
-    Source/Graphics/GlRenderSystem.cpp
-    Source/Graphics/GlWindow.cpp
     Source/Graphics/GpuBuffer.cpp
     Source/Graphics/GpuFramebuffer.cpp
     Source/Graphics/GpuImage.cpp
@@ -160,46 +171,42 @@ add_library(InjectorEngine STATIC
     Source/Graphics/RenderSystem.cpp
     Source/Graphics/ShaderData.cpp
     Source/Graphics/SimSkySystem.cpp
-    Source/Graphics/VkCameraSystem.cpp
-    Source/Graphics/VkGpuBuffer.cpp
-    Source/Graphics/VkGpuImage.cpp
-    Source/Graphics/VkGpuMesh.cpp
-    Source/Graphics/VkGpuShader.cpp
-    Source/Graphics/VkRenderSystem.cpp
-    Source/Graphics/VkSwapchainData.cpp
-    Source/Graphics/VkWindow.cpp
     Source/Graphics/VrSystem.cpp
     Source/Graphics/Window.cpp
 
+    Source/Mathematics/Vector/IntVector2.cpp
+    Source/Mathematics/Vector/IntVector3.cpp
+    Source/Mathematics/Vector/IntVector4.cpp
+    Source/Mathematics/Vector/SizeVector2.cpp
+    Source/Mathematics/Vector/SizeVector3.cpp
+    Source/Mathematics/Vector/SizeVector4.cpp
+    Source/Mathematics/Vector/Vector2.cpp
+    Source/Mathematics/Vector/Vector3.cpp
+    Source/Mathematics/Vector/Vector4.cpp
+
+    Source/Mathematics/Matrix/Matrix2.cpp
+    Source/Mathematics/Matrix/Matrix3.cpp
+    Source/Mathematics/Matrix/Matrix4.cpp
+
     Source/Mathematics/Converter.cpp
-    Source/Mathematics/IntVector2.cpp
-    Source/Mathematics/IntVector3.cpp
-    Source/Mathematics/IntVector4.cpp
-    Source/Mathematics/Matrix2.cpp
-    Source/Mathematics/Matrix3.cpp
-    Source/Mathematics/Matrix4.cpp
     Source/Mathematics/Quaternion.cpp
     Source/Mathematics/RotateComponent.cpp
-    Source/Mathematics/SizeVector2.cpp
-    Source/Mathematics/SizeVector3.cpp
-    Source/Mathematics/SizeVector4.cpp
     Source/Mathematics/TransformComponent.cpp
     Source/Mathematics/TransformSystem.cpp
     Source/Mathematics/TranslateComponent.cpp
-    Source/Mathematics/Vector2.cpp
-    Source/Mathematics/Vector3.cpp
-    Source/Mathematics/Vector4.cpp
 
     Source/Memory/ByteSwap.cpp
     Source/Memory/MemoryStream.cpp
 
+    Source/Network/TCP/TcpClientSystem.cpp
+    Source/Network/TCP/TcpServerSystem.cpp
+
+    Source/Network/UDP/UdpClientSystem.cpp
+    Source/Network/UDP/UdpServerSystem.cpp
+
     Source/Network/ConsoleSystem.cpp
     Source/Network/Endpoint.cpp
     Source/Network/Socket.cpp
-    Source/Network/TcpClientSystem.cpp
-    Source/Network/TcpServerSystem.cpp
-    Source/Network/UdpClientSystem.cpp
-    Source/Network/UdpServerSystem.cpp
 
     Source/Storage/FileStream.cpp
 

@@ -1,7 +1,7 @@
 #include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
-#include "Injector/Graphics/GlWindow.hpp"
-#include "Injector/Graphics/VkWindow.hpp"
+#include "Injector/Graphics/OpenGL/GlWindow.hpp"
+#include "Injector/Graphics/Vulkan/VkWindow.hpp"
 
 #include <thread>
 #include <iostream>
@@ -41,8 +41,8 @@ namespace Injector
 #endif
 
 	bool Engine::engineInitialized = false;
-	bool Engine::videoInitialized = false;
-	bool Engine::vrInitialized = false;
+	bool Engine::graphicsInitialized = false;
+	bool Engine::virtualRealityInitialized = false;
 
 	bool Engine::updateRunning = false;
 	bool Engine::capUpdateRate = true;
@@ -53,7 +53,7 @@ namespace Injector
 	double Engine::updateStartTime = 0.0;
 	double Engine::updateDeltaTime = 0.0;
 
-	GraphicsAPI Engine::graphicsApi = GraphicsAPI::Unknown;
+	GraphicsAPI Engine::graphicsAPI = GraphicsAPI::Unknown;
 	Matrix4 Engine::hmdModelMatrix = Matrix4::identity;
 	Matrix4 Engine::leftEyeModelMatrix = Matrix4::identity;
 	Matrix4 Engine::rightEyeModelMatrix = Matrix4::identity;
@@ -139,115 +139,115 @@ namespace Injector
 
 		managers.clear();
 
-		if (videoInitialized)
-			terminateVideo();
-		if (vrInitialized)
-			terminateVr();
+		if (graphicsInitialized)
+			terminateGraphics();
+		if (virtualRealityInitialized)
+			terminateVirtualReality();
 
 		engineInitialized = false;
 
 		std::cout << "Engine: Terminated\n";
 	}
-	bool Engine::getEngineInitialized() noexcept
+	bool Engine::isEngineInitialized() noexcept
 	{
 		return engineInitialized;
 	}
 
-	void Engine::videoErrorCallback(
+	void Engine::glfwErrorCallback(
 		int error, const char* description)
 	{
 		throw Exception(
 			"Engine",
-			"videoErrorCallback",
+			"glfwErrorCallback",
 			std::string(description));
 	}
-	void Engine::initializeVideo(
-		GraphicsAPI _graphicsApi)
+	void Engine::initializeGraphics(
+		GraphicsAPI _graphicsAPI)
 	{
 		if (engineInitialized)
 		{
 			throw Exception(
 				"Engine",
-				"initializeVideo",
+				"initializeGraphics",
 				"Engine is already initialized");
 
 		}
-		if (videoInitialized)
+		if (graphicsInitialized)
 		{
 			throw Exception(
 				"Engine",
-				"initializeVideo",
-				"Video is already initialized");
+				"initializeGraphics",
+				"Graphics is already initialized");
 		}
 
-		glfwSetErrorCallback(videoErrorCallback);
+		glfwSetErrorCallback(glfwErrorCallback);
 
 		if (!glfwInit())
 		{
 			throw Exception(
 				"Engine",
-				"initializeVideo",
+				"initializeGraphics",
 				"Failed to initialize GLFW");
 		}
 
-		if (_graphicsApi == GraphicsAPI::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
+		if (_graphicsAPI == GraphicsAPI::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
 		{
 			throw Exception(
 				"Engine",
-				"initializeVideo",
+				"initializeGraphics",
 				"Vulkan is not supported");
 		}
 
-		graphicsApi = _graphicsApi;
-		videoInitialized = true;
+		graphicsAPI = _graphicsAPI;
+		graphicsInitialized = true;
 
-		std::cout << "Engine: Initialized Video\n";
+		std::cout << "Engine: Initialized Graphics\n";
 	}
-	void Engine::terminateVideo()
+	void Engine::terminateGraphics()
 	{
 		if (!engineInitialized)
 		{
 			throw Exception(
 				"Engine",
-				"terminateVideo",
+				"terminateGraphics",
 				"Engine is already terminated");
 		}
-		if (!videoInitialized)
+		if (!graphicsInitialized)
 		{
 			throw Exception(
 				"Engine",
-				"terminateVideo",
-				"Video is already terminated");
+				"terminateGraphics",
+				"Graphics is already terminated");
 		}
 
 		glfwTerminate();
 
-		graphicsApi = GraphicsAPI::Unknown;
-		videoInitialized = false;
+		graphicsAPI = GraphicsAPI::Unknown;
+		graphicsInitialized = false;
 
-		std::cout << "Engine: Terminated Video\n";
+		std::cout << "Engine: Terminated Graphics\n";
 	}
-	bool Engine::getVideoInitialized() noexcept
+	bool Engine::isGraphicsInitialized() noexcept
 	{
-		return videoInitialized;
+		return graphicsInitialized;
 	}
 
-	void Engine::initializeVr()
+	void Engine::initializeVirtualReality()
 	{
 		if (engineInitialized)
 		{
 			throw Exception(
 				"Engine",
-				"initializeVr",
+				"initializeVirtualReality",
 				"Engine is already initialized");
 
 		}
-		if (vrInitialized)
+		if (virtualRealityInitialized)
 		{
 			throw Exception(
 				"Engine",
-				"initializeVr",
-				"VR is already initialized");
+				"initializeVirtualReality",
+				"Virtual Reality is already initialized");
 		}
 
 #if INJECTOR_SUPPORT_VR
@@ -264,47 +264,47 @@ namespace Injector
 				std::string(vr::VR_GetVRInitErrorAsSymbol(error)));
 		}
 
-		vrInitialized = true;
-		std::cout << "Engine: Initialized VR\n";
+		virtualRealityInitialized = true;
+		std::cout << "Engine: Initialized Virtual Reality\n";
 #else
 		throw Exception(
 			"Engine",
-			"initializeVr",
-			"VR is not supported");
+			"initializeVirtualReality",
+			"Virtual Reality is not supported");
 #endif
 	}
-	void Engine::terminateVr()
+	void Engine::terminateVirtualReality()
 	{
 		if (!engineInitialized)
 		{
 			throw Exception(
 				"Engine",
-				"terminateVr",
+				"terminateVirtualReality",
 				"Engine is already terminated");
 		}
-		if (!vrInitialized)
+		if (!virtualRealityInitialized)
 		{
 			throw Exception(
 				"Engine",
-				"terminateVr",
-				"VR is already terminated");
+				"terminateVirtualReality",
+				"Virtual Reality is already terminated");
 		}
 
 #if INJECTOR_SUPPORT_VR
 		vr::VR_Shutdown();
-		vrInitialized = false;
+		virtualRealityInitialized = false;
 
-		std::cout << "Engine: Terminated VR\n";
+		std::cout << "Engine: Terminated Virtual Reality\n";
 #else
 		throw Exception(
 			"Engine",
-			"initializeVr",
-			"VR is not supported");
+			"initializeVirtualReality",
+			"Virtual Reality is not supported");
 #endif
 	}
-	bool Engine::getVrInitialized() noexcept
+	bool Engine::isVirtualRealityInitialized() noexcept
 	{
-		return vrInitialized;
+		return virtualRealityInitialized;
 	}
 
 	void Engine::startUpdateLoop()
@@ -360,11 +360,11 @@ namespace Injector
 				}
 			}
 
-			if (videoInitialized)
+			if (graphicsInitialized)
 				glfwPollEvents();
 
 #if INJECTOR_SUPPORT_VR
-			if(vrInitialized)
+			if(virtualRealityInitialized)
 			{
 				auto vrSystem = vr::VRSystem();
 
@@ -442,9 +442,9 @@ namespace Injector
 			std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 	}
 
-	GraphicsAPI Engine::getGraphicsApi() noexcept
+	GraphicsAPI Engine::getGraphicsAPI() noexcept
 	{
-		return graphicsApi;
+		return graphicsAPI;
 	}
 	const Matrix4& Engine::getHmdModelMatrix() noexcept
 	{

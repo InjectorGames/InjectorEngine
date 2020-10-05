@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/Mathematics/Matrix4.hpp"
+#include "Injector/Mathematics/Matrix/Matrix4.hpp"
 
 namespace Injector
 {

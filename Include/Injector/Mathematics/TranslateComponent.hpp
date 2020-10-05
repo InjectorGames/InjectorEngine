@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Component.hpp"
-#include "Injector/Mathematics/Vector3.hpp"
+#include "Injector/Mathematics/Vector/Vector3.hpp"
 
 namespace Injector
 {

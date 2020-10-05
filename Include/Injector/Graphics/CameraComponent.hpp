@@ -2,7 +2,7 @@
 #include "Injector/Component.hpp"
 #include "Injector/Entity.hpp"
 #include "Injector/Graphics/CameraType.hpp"
-#include "Injector/Mathematics/Matrix4.hpp"
+#include "Injector/Mathematics/Matrix/Matrix4.hpp"
 #include "Injector/Mathematics/Converter.hpp"
 
 #include <set>

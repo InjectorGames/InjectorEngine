@@ -1,7 +1,7 @@
 #pragma once
-#include "Injector/Mathematics/Vector3.hpp"
-#include "Injector/Mathematics/Matrix3.hpp"
-#include "Injector/Mathematics/Matrix4.hpp"
+#include "Injector/Mathematics/Vector/Vector3.hpp"
+#include "Injector/Mathematics/Matrix/Matrix3.hpp"
+#include "Injector/Mathematics/Matrix/Matrix4.hpp"
 
 namespace Injector
 {

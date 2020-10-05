@@ -1,7 +1,7 @@
 #pragma once
 #include "Injector/Defines.hpp"
 #include "Injector/Manager.hpp"
-#include "Injector/Mathematics/Matrix4.hpp"
+#include "Injector/Mathematics/Matrix/Matrix4.hpp"
 #include "Injector/Graphics/GraphicsAPI.hpp"
 
 #include <chrono>
@@ -12,8 +12,8 @@ namespace Injector
 	{
 	 private:
 		static bool engineInitialized;
-		static bool videoInitialized;
-		static bool vrInitialized;
+		static bool graphicsInitialized;
+		static bool virtualRealityInitialized;
 
 		static bool updateRunning;
 		static bool capUpdateRate;
@@ -24,7 +24,7 @@ namespace Injector
 		static double updateStartTime;
 		static double updateDeltaTime;
 
-		static GraphicsAPI graphicsApi;
+		static GraphicsAPI graphicsAPI;
 		static Matrix4 hmdModelMatrix;
 		static Matrix4 leftEyeModelMatrix;
 		static Matrix4 rightEyeModelMatrix;
@@ -49,18 +49,18 @@ namespace Injector
 			int minorVersion = INJECTOR_VERSION_MINOR,
 			int patchVersion = INJECTOR_VERSION_PATCH);
 		static void terminateEngine();
-		static bool getEngineInitialized() noexcept;
+		static bool isEngineInitialized() noexcept;
 
-		static void videoErrorCallback(
+		static void glfwErrorCallback(
 			int error, const char* description);
-		static void initializeVideo(
+		static void initializeGraphics(
 			GraphicsAPI graphicsApi = GraphicsAPI::OpenGL);
-		static void terminateVideo();
-		static bool getVideoInitialized() noexcept;
+		static void terminateGraphics();
+		static bool isGraphicsInitialized() noexcept;
 
-		static void initializeVr();
-		static void terminateVr();
-		static bool getVrInitialized() noexcept;
+		static void initializeVirtualReality();
+		static void terminateVirtualReality();
+		static bool isVirtualRealityInitialized() noexcept;
 
 		static void startUpdateLoop();
 		static void stopUpdateLoop();
@@ -70,7 +70,7 @@ namespace Injector
 			time_point getTickNow() noexcept;
 		static double getTimeNow() noexcept;
 
-		static GraphicsAPI getGraphicsApi() noexcept;
+		static GraphicsAPI getGraphicsAPI() noexcept;
 		static const Matrix4& getHmdModelMatrix() noexcept;
 		static const Matrix4& getLeftEyeModelMatrix() noexcept;
 		static const Matrix4& getRightEyeModelMatrix() noexcept;

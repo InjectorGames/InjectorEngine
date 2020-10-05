@@ -3,7 +3,7 @@
 #include "Injector/Graphics/GpuImageWrap.hpp"
 #include "Injector/Graphics/GpuImageFormat.hpp"
 #include "Injector/Graphics/GpuImageFilter.hpp"
-#include "Injector/Mathematics/IntVector3.hpp"
+#include "Injector/Mathematics/Vector/IntVector3.hpp"
 
 namespace Injector
 {

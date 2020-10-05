@@ -1,8 +1,8 @@
 #include "Injector/Graphics/Window.hpp"
 #include "Injector/Engine.hpp"
 #include "Injector/Defines.hpp"
-#include "Injector/Graphics/VkWindow.hpp"
-#include "Injector/Graphics/GlWindow.hpp"
+#include "Injector/Graphics/Vulkan/VkWindow.hpp"
+#include "Injector/Graphics/OpenGL/GlWindow.hpp"
 #include "Injector/Exception/NullException.hpp"
 
 namespace Injector
@@ -386,7 +386,7 @@ namespace Injector
 		const std::string& title,
 		const IntVector2& size)
 	{
-		if(!Engine::getVideoInitialized())
+		if(!Engine::isGraphicsInitialized())
 		{
 			throw Exception(
 				"Window",
@@ -394,7 +394,7 @@ namespace Injector
 				"Video is not initialized");
 		}
 
-		auto graphicsApi = Engine::getGraphicsApi();
+		auto graphicsApi = Engine::getGraphicsAPI();
 
 		if (graphicsApi == GraphicsAPI::OpenGL)
 		{
