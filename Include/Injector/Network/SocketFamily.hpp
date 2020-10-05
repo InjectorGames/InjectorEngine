@@ -2,10 +2,10 @@
 
 namespace Injector
 {
-	enum class SocketFamily
+	enum class SocketFamily : int
 	{
-		Unspecified,
-		IPv4,
-		IPv6,
+		Unspecified = 0,
+		IPv4 = 2,
+		IPv6 = 30,
 	};
 }

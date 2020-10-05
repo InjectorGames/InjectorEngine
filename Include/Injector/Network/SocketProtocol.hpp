@@ -2,10 +2,10 @@
 
 namespace Injector
 {
-	enum class SocketProtocol
+	enum class SocketProtocol : int
 	{
-		RAW,
-		TCP,
-		UDP,
+		Unspecified = - 1,
+		TCP = 6,
+		UDP = 17,
 	};
 }

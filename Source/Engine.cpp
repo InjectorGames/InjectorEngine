@@ -6,13 +6,20 @@
 #include <thread>
 #include <iostream>
 
-#if INJECTOR_SUPPORT_VR
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+#elif INJECTOR_SYSTEM_WINDOWS
+// TODO:
+#else
+#error Unknown operating system
+#endif
+
+#if INJECTOR_SUPPORT_VIRTUAL_REALITY
 #include "openvr.h"
 #endif
 
 namespace Injector
 {
-#if INJECTOR_SUPPORT_VR
+#if INJECTOR_SUPPORT_VIRTUAL_REALITY
 	static vr::TrackedDevicePose_t* renderPoses =
 		new vr::TrackedDevicePose_t[vr::k_unMaxTrackedDeviceCount];
 
@@ -41,6 +48,7 @@ namespace Injector
 #endif
 
 	bool Engine::engineInitialized = false;
+	bool Engine::networkInitialized = false;
 	bool Engine::graphicsInitialized = false;
 	bool Engine::virtualRealityInitialized = false;
 
@@ -139,6 +147,8 @@ namespace Injector
 
 		managers.clear();
 
+		if(networkInitialized)
+			terminateNetwork();
 		if (graphicsInitialized)
 			terminateGraphics();
 		if (virtualRealityInitialized)
@@ -151,6 +161,63 @@ namespace Injector
 	bool Engine::isEngineInitialized() noexcept
 	{
 		return engineInitialized;
+	}
+
+	void Engine::initializeNetwork()
+	{
+		if (engineInitialized)
+		{
+			throw Exception(
+				"Engine",
+				"initializeNetwork",
+				"Engine is already initialized");
+		}
+		if (networkInitialized)
+		{
+			throw Exception(
+				"Engine",
+				"initializeNetwork",
+				"Network is already initialized");
+		}
+
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+		signal(SIGPIPE, SIG_IGN);
+#elif INJECTOR_SYSTEM_WINDOWS
+		// WSAStartup();
+#endif
+
+		networkInitialized = true;
+		std::cout << "Engine: Initialized Network\n";
+	}
+	void Engine::terminateNetwork()
+	{
+		if (!engineInitialized)
+		{
+			throw Exception(
+				"Engine",
+				"terminateNetwork",
+				"Engine is already terminated");
+		}
+		if (!networkInitialized)
+		{
+			throw Exception(
+				"Engine",
+				"terminateNetwork",
+				"Network is already terminated");
+		}
+
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+		signal(SIGPIPE, SIG_DFL);
+#elif INJECTOR_SYSTEM_WINDOWS
+		// WSACleanup();
+#endif
+
+		networkInitialized = false;
+		std::cout << "Engine: Terminated Network\n";
+	}
+	bool Engine::isNetworkInitialized()
+	{
+		return networkInitialized;
 	}
 
 	void Engine::glfwErrorCallback(
@@ -170,7 +237,6 @@ namespace Injector
 				"Engine",
 				"initializeGraphics",
 				"Engine is already initialized");
-
 		}
 		if (graphicsInitialized)
 		{
@@ -250,7 +316,7 @@ namespace Injector
 				"Virtual Reality is already initialized");
 		}
 
-#if INJECTOR_SUPPORT_VR
+#if INJECTOR_SUPPORT_VIRTUAL_REALITY
 		vr::EVRInitError error;
 
 		vr::VR_Init(&error,
@@ -290,7 +356,7 @@ namespace Injector
 				"Virtual Reality is already terminated");
 		}
 
-#if INJECTOR_SUPPORT_VR
+#if INJECTOR_SUPPORT_VIRTUAL_REALITY
 		vr::VR_Shutdown();
 		virtualRealityInitialized = false;
 
@@ -363,7 +429,7 @@ namespace Injector
 			if (graphicsInitialized)
 				glfwPollEvents();
 
-#if INJECTOR_SUPPORT_VR
+#if INJECTOR_SUPPORT_VIRTUAL_REALITY
 			if(virtualRealityInitialized)
 			{
 				auto vrSystem = vr::VRSystem();

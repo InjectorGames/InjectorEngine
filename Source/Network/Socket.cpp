@@ -1,5 +1,5 @@
 #include "Injector/Network/Socket.hpp"
-#include "Injector/Defines.hpp"
+#include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
 
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
@@ -12,14 +12,14 @@
 #include <winsock2.h>
 #define NULL_SOCKET INVALID_SOCKET
 #else
-#error Unknown operation system
+#error Unknown operating system
 #endif
 
 namespace Injector
 {
 	Socket::Socket() noexcept :
 		family(SocketFamily::Unspecified),
-		protocol(SocketProtocol::RAW),
+		protocol(SocketProtocol::Unspecified),
 		handle(NULL_SOCKET)
 	{
 	}
@@ -29,6 +29,14 @@ namespace Injector
 		family(_family),
 		protocol(_protocol)
 	{
+		if(!Engine::isNetworkInitialized())
+		{
+			throw Exception(
+				"Socket",
+				"Socket",
+				"Network is not initialized");
+		}
+
 		int socketFamily;
 
 		if (_family == SocketFamily::IPv4)

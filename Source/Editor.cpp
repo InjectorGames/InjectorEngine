@@ -172,11 +172,11 @@ int main()
 {
 	try
 	{
-		//Engine::initializeVideo(
+		//Engine::initializeGraphics(
 		// 	GraphicsAPI::Vulkan);
-		Engine::initializeVideo(
+		Engine::initializeGraphics(
 			GraphicsAPI::OpenGL);
-		Engine::initializeVr();
+		Engine::initializeVirtualReality();
 		Engine::setTargetUpdateRate(90);
 		Engine::initializeEngine();
 
@@ -189,8 +189,9 @@ int main()
 	}
 	catch (const std::exception& exception)
 	{
-		std::cout << typeid(exception).name() <<
-			": " << exception.what() << "\n";
+		std::cout << "Engine: " <<
+			typeid(exception).name() << ": " <<
+			exception.what() << "\n";
 
 		std::cout << "PRESS ANY KEY TO EXIT";
 		std::cin.get();

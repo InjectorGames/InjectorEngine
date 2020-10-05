@@ -12,6 +12,7 @@ namespace Injector
 	{
 	 private:
 		static bool engineInitialized;
+		static bool networkInitialized;
 		static bool graphicsInitialized;
 		static bool virtualRealityInitialized;
 
@@ -50,6 +51,10 @@ namespace Injector
 			int patchVersion = INJECTOR_VERSION_PATCH);
 		static void terminateEngine();
 		static bool isEngineInitialized() noexcept;
+
+		static void initializeNetwork();
+		static void terminateNetwork();
+		static bool isNetworkInitialized();
 
 		static void glfwErrorCallback(
 			int error, const char* description);

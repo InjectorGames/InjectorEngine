@@ -2,10 +2,10 @@
 
 namespace Injector
 {
-	enum class SocketShutdown
+	enum class SocketShutdown : int
 	{
-		Read,
-		Write,
-		Both,
+		Read = 0,
+		Write = 1,
+		Both = 2,
 	};
 }

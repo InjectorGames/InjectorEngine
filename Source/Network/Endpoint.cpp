@@ -1,5 +1,5 @@
 #include "Injector/Network/Endpoint.hpp"
-#include "Injector/Defines.hpp"
+#include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
 
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
@@ -8,7 +8,7 @@
 #elif INJECTOR_SYSTEM_WINDOWS
 #include <winsock2.h>
 #else
-#error Unknown operation system
+#error Unknown operating system
 #endif
 
 namespace Injector
@@ -155,7 +155,8 @@ namespace Injector
 			endpoint.handle,
 			sizeof(sockaddr_storage));
 	}
-	Endpoint::Endpoint(Endpoint&& endpoint) noexcept
+	Endpoint::Endpoint(
+		Endpoint&& endpoint) noexcept
 	{
 		handle = endpoint.handle;
 		endpoint.handle = nullptr;
@@ -470,6 +471,14 @@ namespace Injector
 		const std::string& host,
 		const std::string& service)
 	{
+		if(!Engine::isNetworkInitialized())
+		{
+			throw Exception(
+				"Endpoint",
+				"resolve",
+				"Network is not initialized");
+		}
+
 		auto hints = addrinfo();
 
 		memset(
@@ -535,6 +544,14 @@ namespace Injector
 		std::string& host,
 		std::string& service)
 	{
+		if(!Engine::isNetworkInitialized())
+		{
+			throw Exception(
+				"Endpoint",
+				"resolve",
+				"Network is not initialized");
+		}
+
 		auto socketAddress =
 			reinterpret_cast<sockaddr*>(endpoint.handle);
 
