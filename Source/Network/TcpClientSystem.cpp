@@ -2,18 +2,17 @@
 #include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
 
-#include <thread>
-#include <future>
-
 namespace Injector
 {
 	TcpClientSystem::TcpClientSystem(
 		SocketFamily family,
-		double _timeoutTime) :
+		double _timeoutTime,
+		size_t receiveBufferSize) :
 		tcpSocket(family, SocketProtocol::TCP),
-		socketConnect(SocketConnect::NotConnected),
+		socketConnect(SocketConnect::Disconnected),
 		timeoutTime(_timeoutTime),
-		lastResponseTime()
+		lastResponseTime(),
+		receiveBuffer(receiveBufferSize)
 	{
 		auto localEndpoint = Endpoint();
 
@@ -41,29 +40,31 @@ namespace Injector
 	{
 		if(socketConnect == SocketConnect::Connected)
 		{
-			auto buffer = std::vector<char>(65535,'0');
-			auto byteCount = tcpSocket.receive(buffer);
+			auto count = tcpSocket.receive(receiveBuffer);
 
-			if(byteCount > 0)
+			if(count > 0)
 			{
-				auto data = std::string(buffer.data());
-				printf(data.c_str());
 				lastResponseTime = Engine::getUpdateStartTime();
-			}
-		}
-		else if(socketConnect == SocketConnect::ConnectInProgress)
-		{
-			if(tcpSocket.send(nullptr, 0) != -1)
-			{
-				socketConnect = SocketConnect::Connected;
-				lastResponseTime = Engine::getUpdateStartTime();
-
-				auto buffer = std::string("GET / HTTP/1.1\r\nHost: 192.168.1.1\r\n\r\n");
-				auto result = tcpSocket.send(buffer.data(), buffer.size());
+				onReceive(count);
 			}
 			else if(Engine::getUpdateStartTime() - lastResponseTime > timeoutTime)
 			{
-				socketConnect = SocketConnect::NotConnected;
+				socketConnect = SocketConnect::Disconnected;
+				onDisconnect();
+			}
+		}
+		else if(socketConnect == SocketConnect::Connecting)
+		{
+			if(tcpSocket.send(nullptr, 0) == 0)
+			{
+				socketConnect = SocketConnect::Connected;
+				lastResponseTime = Engine::getUpdateStartTime();
+				onConnect(true);
+			}
+			else if(Engine::getUpdateStartTime() - lastResponseTime > timeoutTime)
+			{
+				socketConnect = SocketConnect::Disconnected;
+				onConnect(false);
 			}
 		}
 	}
@@ -71,8 +72,23 @@ namespace Injector
 	void TcpClientSystem::connect(
 		const Endpoint& endpoint)
 	{
+		if(socketConnect == SocketConnect::Connected)
+		{
+			throw Exception(
+				"TcpClientSystem",
+				"connect",
+				"Already connected");
+		}
+		else if(socketConnect == SocketConnect::Connecting)
+		{
+			throw Exception(
+				"TcpClientSystem",
+				"connect",
+				"Still in progress");
+		}
+
 		tcpSocket.connect(endpoint);
-		socketConnect = SocketConnect::ConnectInProgress;
+		socketConnect = SocketConnect::Connecting;
 		lastResponseTime = Engine::getUpdateStartTime();
 	}
 }

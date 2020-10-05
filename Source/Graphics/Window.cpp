@@ -73,7 +73,6 @@ namespace Injector
 	Window::~Window()
 	{
 		glfwDestroyWindow(window);
-		window = nullptr;
 	}
 
 	const Vector2& Window::getDeltaScroll() const noexcept
@@ -392,7 +391,7 @@ namespace Injector
 			throw Exception(
 				"Window",
 				"create",
-				"Engine Video is not initialized");
+				"Video is not initialized");
 		}
 
 		auto graphicsApi = Engine::getGraphicsApi();

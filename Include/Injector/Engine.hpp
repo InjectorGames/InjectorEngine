@@ -44,7 +44,10 @@ namespace Injector
 		static double getUpdateStartTime() noexcept;
 		static double getUpdateDeltaTime() noexcept;
 
-		static void initializeEngine();
+		static void initializeEngine(
+			int majorVersion = INJECTOR_VERSION_MAJOR,
+			int minorVersion = INJECTOR_VERSION_MINOR,
+			int patchVersion = INJECTOR_VERSION_PATCH);
 		static void terminateEngine();
 		static bool getEngineInitialized() noexcept;
 

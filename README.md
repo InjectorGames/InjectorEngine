@@ -28,6 +28,6 @@
 * [glm](https://github.com/g-truc/glm)
 
 ## OpenSSL
-Linux: apt-get install openssl
-Windows: choco install openssl
-MacOS: brew install openssl
+* Linux: [apt](https://wikipedia.org/wiki/APT_(software)) install openssl
+* Windows: [choco](https://chocolatey.org) install openssl
+* MacOS: [brew](https://brew.sh) install openssl

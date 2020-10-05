@@ -800,6 +800,14 @@ namespace Injector
 		bool stereo) :
 		Window(createWindow(title, size))
 	{
+		if(size.x < 1 || size.y < 0)
+		{
+			throw Exception(
+				"VkWindow",
+				"VkWindow",
+				"Incorrect size");
+		}
+
 		// TODO: stereo rendering
 
 		instance = createInstance(title.c_str(), 1);

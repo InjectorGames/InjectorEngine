@@ -4,9 +4,8 @@ namespace Injector
 {
 	enum class SocketConnect
 	{
-		FailedToConnect,
-		NotConnected,
-		ConnectInProgress,
+		Disconnected,
+		Connecting,
 		Connected,
 	};
 }

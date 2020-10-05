@@ -94,7 +94,10 @@ namespace Injector
 		return updateDeltaTime;
 	}
 
-	void Engine::initializeEngine()
+	void Engine::initializeEngine(
+		int majorVersion,
+		int minorVersion,
+		int patchVersion)
 	{
 		if (engineInitialized)
 		{
@@ -112,10 +115,10 @@ namespace Injector
 
 		engineInitialized = true;
 
-		std::cout << "Initialized Injector Engine (" <<
-				  INJECTOR_VERSION_MAJOR << "." <<
-				  INJECTOR_VERSION_MINOR << "." <<
-				  INJECTOR_VERSION_PATCH << ")\n";
+		std::cout << "Engine: Initialized (" <<
+			majorVersion << "." <<
+			minorVersion << "." <<
+			patchVersion << ")\n";
 	}
 	void Engine::terminateEngine()
 	{
@@ -143,7 +146,7 @@ namespace Injector
 
 		engineInitialized = false;
 
-		std::cout << "Terminated Injector Engine\n";
+		std::cout << "Engine: Terminated\n";
 	}
 	bool Engine::getEngineInitialized() noexcept
 	{
@@ -198,7 +201,7 @@ namespace Injector
 		graphicsApi = _graphicsApi;
 		videoInitialized = true;
 
-		std::cout << "Initialized engine Video\n";
+		std::cout << "Engine: Initialized Video\n";
 	}
 	void Engine::terminateVideo()
 	{
@@ -222,7 +225,7 @@ namespace Injector
 		graphicsApi = GraphicsAPI::Unknown;
 		videoInitialized = false;
 
-		std::cout << "Terminated engine Video\n";
+		std::cout << "Engine: Terminated Video\n";
 	}
 	bool Engine::getVideoInitialized() noexcept
 	{
@@ -262,7 +265,7 @@ namespace Injector
 		}
 
 		vrInitialized = true;
-		std::cout << "Initialized engine VR\n";
+		std::cout << "Engine: Initialized VR\n";
 #else
 		throw Exception(
 			"Engine",
@@ -291,7 +294,7 @@ namespace Injector
 		vr::VR_Shutdown();
 		vrInitialized = false;
 
-		std::cout << "Terminated engine VR\n";
+		std::cout << "Engine: Terminated VR\n";
 #else
 		throw Exception(
 			"Engine",

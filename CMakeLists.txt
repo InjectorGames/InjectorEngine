@@ -5,7 +5,7 @@ if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 endif ()
 
 project(InjectorEngine
-    VERSION 1.0.0
+    VERSION 0.1.0
     LANGUAGES CXX)
 
 option(INJECTOR_BUILD_EDITOR "Build editor executable" ON)

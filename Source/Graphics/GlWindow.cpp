@@ -17,6 +17,14 @@ namespace Injector
 		const std::string& title,
 		const IntVector2& size)
 	{
+		if(size.x < 1 || size.y < 0)
+		{
+			throw Exception(
+				"GlWindow",
+				"GlWindow",
+				"Incorrect size");
+		}
+
 		glfwDefaultWindowHints();
 
 		glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
@@ -42,7 +50,12 @@ namespace Injector
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		}
 
-		return glfwCreateWindow(size.x, size.y, title.c_str(), nullptr, nullptr);
+		return glfwCreateWindow(
+			size.x,
+			size.y,
+			title.c_str(),
+			nullptr,
+			nullptr);
 	}
 
 	GlWindow::GlWindow(
