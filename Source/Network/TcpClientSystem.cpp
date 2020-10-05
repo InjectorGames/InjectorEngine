@@ -1,4 +1,5 @@
 #include "Injector/Network/TcpClientSystem.hpp"
+#include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
 
 #include <thread>
@@ -7,23 +8,22 @@
 namespace Injector
 {
 	TcpClientSystem::TcpClientSystem(
-		SocketFamily family) :
+		SocketFamily family,
+		double _timeoutTime) :
 		tcpSocket(family, SocketProtocol::TCP),
-		connected(false)
+		socketConnect(SocketConnect::NotConnected),
+		timeoutTime(_timeoutTime),
+		lastResponseTime()
 	{
 		auto localEndpoint = Endpoint();
 
 		if (family == SocketFamily::IPv4)
 		{
-			localEndpoint = Endpoint(
-				Endpoint::anyAddressIPv4,
-				Endpoint::anyPortNumber);
+			localEndpoint = Endpoint::anyIPv4;
 		}
 		else if (family == SocketFamily::IPv6)
 		{
-			localEndpoint = Endpoint(
-				Endpoint::anyAddressIPv6,
-				Endpoint::anyPortNumber);
+			localEndpoint = Endpoint::anyIPv6;
 		}
 		else
 		{
@@ -39,13 +39,40 @@ namespace Injector
 
 	void TcpClientSystem::update()
 	{
+		if(socketConnect == SocketConnect::Connected)
+		{
+			auto buffer = std::vector<char>(65535,'0');
+			auto byteCount = tcpSocket.receive(buffer);
 
+			if(byteCount > 0)
+			{
+				auto data = std::string(buffer.data());
+				printf(data.c_str());
+				lastResponseTime = Engine::getUpdateStartTime();
+			}
+		}
+		else if(socketConnect == SocketConnect::ConnectInProgress)
+		{
+			if(tcpSocket.send(nullptr, 0) != -1)
+			{
+				socketConnect = SocketConnect::Connected;
+				lastResponseTime = Engine::getUpdateStartTime();
+
+				auto buffer = std::string("GET / HTTP/1.1\r\nHost: 192.168.1.1\r\n\r\n");
+				auto result = tcpSocket.send(buffer.data(), buffer.size());
+			}
+			else if(Engine::getUpdateStartTime() - lastResponseTime > timeoutTime)
+			{
+				socketConnect = SocketConnect::NotConnected;
+			}
+		}
 	}
 
 	void TcpClientSystem::connect(
-		const Endpoint& endpoint) noexcept
+		const Endpoint& endpoint)
 	{
-		// TODO:
-		//tcpSocket.connect();
+		tcpSocket.connect(endpoint);
+		socketConnect = SocketConnect::ConnectInProgress;
+		lastResponseTime = Engine::getUpdateStartTime();
 	}
 }

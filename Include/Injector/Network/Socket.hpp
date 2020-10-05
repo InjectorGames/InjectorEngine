@@ -62,7 +62,7 @@ namespace Injector
 		template<class T = uint8_t>
 		int receive(std::vector<T>& buffer)
 		{
-			receive(
+			return receive(
 				buffer.data(),
 				buffer.size() * sizeof(T));
 		}
@@ -70,7 +70,7 @@ namespace Injector
 		template<class T = uint8_t>
 		int send(const std::vector<T>& buffer)
 		{
-			send(
+			return send(
 				buffer.data(),
 				buffer.size() * sizeof(T));
 		}
@@ -92,7 +92,7 @@ namespace Injector
 			std::vector<T>& buffer,
 			Endpoint& endpoint)
 		{
-			receiveFrom(
+			return receiveFrom(
 				buffer.data(),
 				buffer.size() * sizeof(T),
 				endpoint);
@@ -103,7 +103,7 @@ namespace Injector
 			const std::vector<T>& buffer,
 			const Endpoint& endpoint)
 		{
-			sendTo(
+			return sendTo(
 				buffer.data(),
 				buffer.size() * sizeof(T),
 				endpoint);

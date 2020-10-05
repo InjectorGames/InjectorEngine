@@ -190,12 +190,12 @@ namespace Injector
 			(flags & ~O_NONBLOCK) :
 			(flags | O_NONBLOCK);
 
-		flags = fcntl(
+		auto result = fcntl(
 			handle,
 			F_SETFL,
 			flags);
 
-		if (flags == -1)
+		if (result == -1)
 		{
 			throw Exception(
 				"Socket",
@@ -305,11 +305,21 @@ namespace Injector
 	{
 		auto address = reinterpret_cast<const sockaddr*>(
 			endpoint.getHandle());
+		auto family = endpoint.getSocketFamily();
+
+		socklen_t length;
+
+		if(family == SocketFamily::IPv4)
+			length = sizeof(sockaddr_in);
+		else if(family == SocketFamily::IPv6)
+			length = sizeof(sockaddr_in6);
+		else
+			return false;
 
 		auto result = ::connect(
 			handle,
 			address,
-			sizeof(sockaddr_storage));
+			length);
 
 		return result == 0;
 	}
@@ -318,21 +328,21 @@ namespace Injector
 		void* buffer,
 		size_t size) noexcept
 	{
-		return static_cast<int>(::recv(
+		return ::recv(
 			handle,
 			buffer,
 			size,
-			0));
+			0);
 	}
 	int Socket::send(
 		const void* buffer,
 		size_t size) noexcept
 	{
-		return static_cast<int>(::send(
+		return ::send(
 			handle,
 			buffer,
 			size,
-			0));
+			0);
 	}
 
 	int Socket::receiveFrom(
@@ -369,13 +379,13 @@ namespace Injector
 		auto address = reinterpret_cast<const sockaddr*>(
 			endpoint.getHandle());
 
-		return static_cast<int>(::sendto(
+		return ::sendto(
 			handle,
 			buffer,
 			size,
 			0,
 			address,
-			sizeof(sockaddr_storage)));
+			sizeof(sockaddr_storage));
 	}
 
 	void Socket::shutdown(SocketShutdown shutdown)

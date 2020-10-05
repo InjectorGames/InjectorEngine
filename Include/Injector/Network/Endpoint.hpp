@@ -51,6 +51,8 @@ namespace Injector
 			uint32_t flowInfo);
 		// Copies other endpoint
 		Endpoint(const Endpoint& endpoint) noexcept;
+		// Moves other endpoint
+		Endpoint(Endpoint&& endpoint) noexcept;
 		// Destroys endpoint
 		virtual ~Endpoint();
 
@@ -80,9 +82,14 @@ namespace Injector
 		uint32_t getFlowInfo() const;
 
 		// Returns true if socket endpoints is equal
-		bool operator==(const Endpoint& vector) const noexcept;
+		bool operator==(const Endpoint& endpoint) const noexcept;
 		// Returns true if socket endpoints is not equal
-		bool operator!=(const Endpoint& vector) const noexcept;
+		bool operator!=(const Endpoint& endpoint) const noexcept;
+
+		// Endpoint copy assigment operator
+		Endpoint& operator=(const Endpoint& endpoint) noexcept;
+		// Endpoint move assigment operator
+		Endpoint& operator=(Endpoint&& endpoint) noexcept;
 
 		// Resolves socket endpoints from host and service
 		static std::vector<Endpoint> resolve(

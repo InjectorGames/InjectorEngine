@@ -44,11 +44,13 @@ namespace Injector
 	bool Engine::videoInitialized = false;
 	bool Engine::vrInitialized = false;
 
+	bool Engine::updateRunning = false;
 	bool Engine::capUpdateRate = true;
 	int Engine::targetUpdateRate = 60;
 
-	bool Engine::updateRunning = false;
-	Engine::tick_t Engine::updateStartTick = {};
+	std::chrono::steady_clock::
+		time_point Engine::updateStartTick = {};
+	double Engine::updateStartTime = 0.0;
 	double Engine::updateDeltaTime = 0.0;
 
 	GraphicsAPI Engine::graphicsApi = GraphicsAPI::Unknown;
@@ -78,9 +80,14 @@ namespace Injector
 		targetUpdateRate = ups;
 	}
 
-	Engine::tick_t Engine::getUpdateStartTick() noexcept
+	std::chrono::steady_clock::
+		time_point Engine::getUpdateStartTick() noexcept
 	{
 		return updateStartTick;
+	}
+	double Engine::getUpdateStartTime() noexcept
+	{
+		return updateStartTime;
 	}
 	double Engine::getUpdateDeltaTime() noexcept
 	{
@@ -97,6 +104,12 @@ namespace Injector
 				"Already initialized");
 		}
 
+		updateStartTick =
+			std::chrono::high_resolution_clock::now();
+		updateStartTime = std::chrono::duration_cast<std::chrono::duration<
+			double>>(updateStartTick.time_since_epoch()).count();
+		updateDeltaTime = 0.0f;
+
 		engineInitialized = true;
 
 		std::cout << "Initialized Injector Engine (" <<
@@ -112,6 +125,13 @@ namespace Injector
 				"Engine",
 				"terminateEngine",
 				"Already terminated");
+		}
+		if(updateRunning)
+		{
+			throw Exception(
+				"Engine",
+				"terminateEngine",
+				"Update is still running");
 		}
 
 		managers.clear();
@@ -303,6 +323,9 @@ namespace Injector
 				std::chrono::duration<double>>(tick - updateStartTick).count();
 			updateStartTick = tick;
 
+			updateStartTime = std::chrono::duration_cast<
+				std::chrono::duration<double>>(tick.time_since_epoch()).count();
+
 			for (auto& manager : managers)
 				manager->update();
 
@@ -405,7 +428,8 @@ namespace Injector
 		return updateRunning;
 	}
 
-	Engine::tick_t Engine::getTickNow() noexcept
+	std::chrono::steady_clock::
+		time_point Engine::getTickNow() noexcept
 	{
 		return std::chrono::high_resolution_clock::now();
 	}

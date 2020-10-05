@@ -2,8 +2,9 @@
 
 namespace Injector
 {
-	enum class TcpSocketConnect
+	enum class SocketConnect
 	{
+		FailedToConnect,
 		NotConnected,
 		ConnectInProgress,
 		Connected,

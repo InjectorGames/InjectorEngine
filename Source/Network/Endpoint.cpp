@@ -155,11 +155,19 @@ namespace Injector
 			endpoint.handle,
 			sizeof(sockaddr_storage));
 	}
+	Endpoint::Endpoint(Endpoint&& endpoint) noexcept
+	{
+		handle = endpoint.handle;
+		endpoint.handle = nullptr;
+	}
 	Endpoint::~Endpoint()
 	{
-		auto socketAddress =
-			static_cast<sockaddr_storage*>(handle);
-		delete socketAddress;
+		if(handle)
+		{
+			auto address =
+				reinterpret_cast<sockaddr_storage*>(handle);
+			delete address;
+		}
 	}
 
 	void* Endpoint::getHandle() const noexcept
@@ -425,6 +433,35 @@ namespace Injector
 		const Endpoint& endpoint) const noexcept
 	{
 		return !(*this == endpoint);
+	}
+
+	Endpoint& Endpoint::operator=(
+		const Endpoint& endpoint) noexcept
+	{
+		if(this != &endpoint)
+		{
+			memcpy(
+				handle,
+				endpoint.handle,
+				sizeof(sockaddr_storage));
+		}
+
+		return *this;
+	}
+	Endpoint& Endpoint::
+		operator=(Endpoint&& endpoint) noexcept
+	{
+		if(this != &endpoint)
+		{
+			auto address =
+				reinterpret_cast<sockaddr_storage*>(handle);
+			delete address;
+
+			handle = endpoint.handle;
+			endpoint.handle = nullptr;
+		}
+
+		return *this;
 	}
 
 	std::vector<Endpoint> Endpoint::resolve(

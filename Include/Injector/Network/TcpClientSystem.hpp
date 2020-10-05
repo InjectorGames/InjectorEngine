@@ -1,25 +1,30 @@
 #pragma once
 #include "Injector/System.hpp"
 #include "Injector/Network/Socket.hpp"
-#include "Injector/Network/TcpSocketConnect.hpp"
+#include "Injector/Network/SocketConnect.hpp"
 
 namespace Injector
 {
 	class TcpClientSystem : public System
 	{
 	 protected:
-		// TCP client socket
+		// TCP socket
 		Socket tcpSocket;
-		// Is TCP client connected to server
-		bool connected;
+		// Socket connect state
+		SocketConnect socketConnect;
+		// Server response timeout time
+		double timeoutTime;
+		// Last server response time
+		double lastResponseTime;
 	 public:
 		// Creates and binds a new TCP client system
-		explicit TcpClientSystem(SocketFamily family);
+		explicit TcpClientSystem(
+			SocketFamily family,
+			double connectTimeout = 3.0);
 
 		void update() override;
 
-		// Starts async connect to remote endpoint
-		void connect(
-			const Endpoint& endpoint) noexcept;
+		// Starts connection to server
+		void connect(const Endpoint& endpoint);
 	};
 }

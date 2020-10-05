@@ -10,18 +10,18 @@ namespace Injector
 {
 	class Engine final
 	{
-	 public:
-		using tick_t = std::chrono::steady_clock::time_point;
 	 private:
 		static bool engineInitialized;
 		static bool videoInitialized;
 		static bool vrInitialized;
 
+		static bool updateRunning;
 		static bool capUpdateRate;
 		static int targetUpdateRate;
 
-		static bool updateRunning;
-		static tick_t updateStartTick;
+		static std::chrono::steady_clock::
+			time_point updateStartTick;
+		static double updateStartTime;
 		static double updateDeltaTime;
 
 		static GraphicsAPI graphicsApi;
@@ -39,7 +39,9 @@ namespace Injector
 		static int getTargetUpdateRate() noexcept;
 		static void setTargetUpdateRate(int ups = 60) noexcept;
 
-		static tick_t getUpdateStartTick() noexcept;
+		static std::chrono::steady_clock::
+			time_point getUpdateStartTick() noexcept;
+		static double getUpdateStartTime() noexcept;
 		static double getUpdateDeltaTime() noexcept;
 
 		static void initializeEngine();
@@ -61,7 +63,8 @@ namespace Injector
 		static void stopUpdateLoop();
 		static bool getUpdateRunning() noexcept;
 
-		static tick_t getTickNow() noexcept;
+		static std::chrono::steady_clock::
+			time_point getTickNow() noexcept;
 		static double getTimeNow() noexcept;
 
 		static GraphicsAPI getGraphicsApi() noexcept;
