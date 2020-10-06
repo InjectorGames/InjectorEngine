@@ -1,4 +1,6 @@
 #include "Injector/Mathematics/Vector/SizeVector2.hpp"
+
+#include <tuple>
 #include <sstream>
 
 namespace Injector

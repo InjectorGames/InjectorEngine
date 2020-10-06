@@ -1,6 +1,6 @@
 #include "Injector/Mathematics/Quaternion.hpp"
-#include "Injector/Exception/Exception.hpp"
 
+#include <tuple>
 #include <cmath>
 #include <limits>
 

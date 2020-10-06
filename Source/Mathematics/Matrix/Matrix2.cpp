@@ -1,4 +1,6 @@
 #include "Injector/Mathematics/Matrix/Matrix2.hpp"
+
+#include <tuple>
 #include <sstream>
 
 namespace Injector

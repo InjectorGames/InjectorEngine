@@ -1,5 +1,6 @@
 #include <Injector/Mathematics/Vector/Vector3.hpp>
 
+#include <tuple>
 #include <cmath>
 #include <sstream>
 

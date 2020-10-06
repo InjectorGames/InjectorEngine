@@ -1,5 +1,6 @@
 #include "Injector/Mathematics/Vector/IntVector4.hpp"
 
+#include <tuple>
 #include <cmath>
 #include <cstdint>
 #include <sstream>

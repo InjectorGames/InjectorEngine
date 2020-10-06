@@ -1,6 +1,8 @@
 #pragma once
 #include "Injector/Graphics/GpuShaderStage.hpp"
+
 #include <vector>
+#include <cstdint>
 
 namespace Injector
 {
