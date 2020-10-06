@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/ECS/System.hpp"
-#include "Injector/Network/SocketSession.hpp"
+#include "Injector/Network/TcpServerSession.hpp"
 
 namespace Injector
 {
@@ -8,16 +8,17 @@ namespace Injector
 	{
 	 protected:
 		// Server TCP socket
-		Socket tcpSocket;
+		Socket socket;
 		// Maximal session count
 		size_t maxSessionCount;
 		// Accepted socket sessions
-		std::vector<std::shared_ptr<SocketSession>> sessions;
+		std::vector<std::shared_ptr<
+			TcpServerSession>> sessions;
 
 		// Socket accept handle
-		virtual std::shared_ptr<SocketSession> createSession(
-			std::shared_ptr<Socket> socket,
-			Endpoint endpoint) = 0;
+		virtual std::shared_ptr<TcpServerSession> createSession(
+			const std::shared_ptr<Socket>& socket,
+			const Endpoint& endpoint) = 0;
 	 public:
 		// Creates and binds a new TCP server system
 		explicit TcpServerSystem(
@@ -25,6 +26,15 @@ namespace Injector
 			const std::string& port,
 			size_t maxSessionCount = 256);
 
+		// Returns server socket
+		const Socket& getSocket() const noexcept;
+		// Returns server maximal session count
+		size_t getMaxSessionCount() const noexcept;
+		// Returns server sessions
+		const std::vector<std::shared_ptr<
+			TcpServerSession>>& getSessions() const noexcept;
+
+		// Executes on each update cycle
 		void update() override;
 
 		// Starts server listening

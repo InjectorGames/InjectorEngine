@@ -7,7 +7,7 @@ namespace Injector
 		SocketFamily family,
 		const std::string& port,
 		size_t _maxSessionCount) :
-		tcpSocket(family, SocketProtocol::TCP),
+		socket(family, SocketProtocol::TCP),
 		maxSessionCount(_maxSessionCount),
 		sessions()
 	{
@@ -33,27 +33,49 @@ namespace Injector
 				"Unspecified socket family");
 		}
 
-		tcpSocket.setBlocking(false);
-		tcpSocket.bind(localEndpoint);
+		socket.setBlocking(false);
+		socket.bind(localEndpoint);
+	}
+
+	const Socket& TcpServerSystem::getSocket() const noexcept
+	{
+		return socket;
+	}
+	size_t TcpServerSystem::getMaxSessionCount() const noexcept
+	{
+		return maxSessionCount;
+	}
+	const std::vector<std::shared_ptr<
+		TcpServerSession>>& TcpServerSystem::getSessions() const noexcept
+	{
+		return sessions;
 	}
 
 	void TcpServerSystem::update()
 	{
-		auto socket = std::shared_ptr<Socket>();
+		auto remoteSocket = std::shared_ptr<Socket>();
 		auto endpoint = Endpoint();
 
-		if(tcpSocket.accept(socket, endpoint) &&
-			sessions.size() < maxSessionCount)
+		while (socket.accept(remoteSocket, endpoint))
 		{
-			auto session = createSession(
-				std::move(socket),
-				std::move(endpoint));
-			sessions.push_back(session);
+			if(sessions.size() < maxSessionCount)
+			{
+				auto session = createSession(
+					remoteSocket,
+					endpoint);
+				sessions.push_back(session);
+			}
+			else
+			{
+				remoteSocket->shutdown(
+					SocketShutdown::Both);
+				remoteSocket->close();
+			}
 		}
 	}
 
 	void TcpServerSystem::listen()
 	{
-		tcpSocket.listen();
+		socket.listen();
 	}
 }

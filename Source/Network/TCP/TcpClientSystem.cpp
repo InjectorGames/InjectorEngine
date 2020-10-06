@@ -4,11 +4,32 @@
 
 namespace Injector
 {
+	void TcpClientSystem::onConnect(bool result)
+	{
+		if(result)
+		{
+			socketConnect = SocketConnect::Connected;
+			lastResponseTime = Engine::getUpdateStartTime();
+		}
+		else
+		{
+			socketConnect = SocketConnect::Disconnected;
+		}
+	}
+	void TcpClientSystem::onReceive(int count)
+	{
+		lastResponseTime = Engine::getUpdateStartTime();
+	}
+	void TcpClientSystem::onResponseTimeout()
+	{
+		socketConnect = SocketConnect::Disconnected;
+	}
+
 	TcpClientSystem::TcpClientSystem(
 		SocketFamily family,
 		double _timeoutTime,
 		size_t receiveBufferSize) :
-		tcpSocket(family, SocketProtocol::TCP),
+		socket(family, SocketProtocol::TCP),
 		socketConnect(SocketConnect::Disconnected),
 		timeoutTime(_timeoutTime),
 		lastResponseTime(),
@@ -32,40 +53,56 @@ namespace Injector
 				"Unspecified socket family");
 		}
 
-		tcpSocket.setBlocking(false);
-		tcpSocket.bind(localEndpoint);
+		socket.setBlocking(false);
+		socket.bind(localEndpoint);
+	}
+
+	const Socket& TcpClientSystem::getSocket() const noexcept
+	{
+		return socket;
+	}
+	SocketConnect TcpClientSystem::getSocketConnect() const noexcept
+	{
+		return socketConnect;
+	}
+	double TcpClientSystem::getTimeoutTime() const noexcept
+	{
+		return timeoutTime;
+	}
+	double TcpClientSystem::getLastResponseTime() const noexcept
+	{
+		return lastResponseTime;
+	}
+	const std::vector<uint8_t>& TcpClientSystem::getReceiveBuffer() const noexcept
+	{
+		return receiveBuffer;
 	}
 
 	void TcpClientSystem::update()
 	{
 		if(socketConnect == SocketConnect::Connected)
 		{
-			auto count = tcpSocket.receive(receiveBuffer);
+			if(Engine::getUpdateStartTime() - lastResponseTime > timeoutTime)
+			{
+				onResponseTimeout();
+				return;
+			}
 
-			if(count > 0)
-			{
-				lastResponseTime = Engine::getUpdateStartTime();
+			int count;
+
+			while((count = socket.receive(receiveBuffer)) > 0)
 				onReceive(count);
-			}
-			else if(Engine::getUpdateStartTime() - lastResponseTime > timeoutTime)
-			{
-				socketConnect = SocketConnect::Disconnected;
-				onDisconnect();
-			}
 		}
 		else if(socketConnect == SocketConnect::Connecting)
 		{
-			if(tcpSocket.send(nullptr, 0) == 0)
+			if(Engine::getUpdateStartTime() - lastResponseTime > timeoutTime)
 			{
-				socketConnect = SocketConnect::Connected;
-				lastResponseTime = Engine::getUpdateStartTime();
-				onConnect(true);
-			}
-			else if(Engine::getUpdateStartTime() - lastResponseTime > timeoutTime)
-			{
-				socketConnect = SocketConnect::Disconnected;
 				onConnect(false);
+				return;
 			}
+
+			if(socket.send(nullptr, 0) == 0)
+				onConnect(true);
 		}
 	}
 
@@ -87,7 +124,7 @@ namespace Injector
 				"Still in progress");
 		}
 
-		tcpSocket.connect(endpoint);
+		socket.connect(endpoint);
 		socketConnect = SocketConnect::Connecting;
 		lastResponseTime = Engine::getUpdateStartTime();
 	}

@@ -357,6 +357,8 @@ namespace Injector
 			size,
 			0);
 	}
+	
+	// TODO: create send/receive for RequestResponse
 
 	int Socket::receiveFrom(
 		void* buffer,

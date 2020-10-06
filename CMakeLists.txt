@@ -202,6 +202,7 @@ add_library(InjectorEngine STATIC
     Source/Memory/MemoryStream.cpp
 
     Source/Network/TCP/TcpClientSystem.cpp
+    Source/Network/TCP/TcpServerSession.cpp
     Source/Network/TCP/TcpServerSystem.cpp
 
     Source/Network/UDP/UdpClientSystem.cpp
@@ -210,7 +211,6 @@ add_library(InjectorEngine STATIC
     Source/Network/ConsoleSystem.cpp
     Source/Network/Endpoint.cpp
     Source/Network/Socket.cpp
-    Source/Network/SocketSession.cpp
 
     Source/Storage/FileStream.cpp
 
