@@ -1,5 +1,5 @@
 #pragma once
-#include "VkGpuPipeline.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/ColorGpuPipeline.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuShader.hpp"
 

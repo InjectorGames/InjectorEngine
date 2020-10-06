@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/Component.hpp"
+#include "Injector/ECS/Component.hpp"
 #include "Injector/Exception/Exception.hpp"
 
 #include <map>
@@ -7,17 +7,28 @@
 
 namespace Injector
 {
-	class Entity final
+	struct Entity final
 	{
 	 private:
+		// Entity component container
 		std::map<std::type_index, Component*> components;
 	 public:
+		// Creates a new entity
 		Entity() noexcept;
+		// Deleted entity copy constructor
+		Entity(const Entity& entity) = default;
+		// Deleted entity move constructor
+		Entity(Entity&& entity) = default;
+		// Destroys all components and entity
 		~Entity();
 
+		// Destroys all entity components
 		void destroyComponents() noexcept;
+		// Returns entity component count
 		size_t getComponentCount() const noexcept;
 
+		// Returns a new created and added to the entity component
+		// with specified arguments
 		template<class T, class ...Args>
 		T* createComponent(Args... args)
 		{
@@ -35,6 +46,7 @@ namespace Injector
 
 			return component;
 		}
+		// Returns true if component has been created and added to the entity
 		template<class T, class ...Args>
 		bool createComponent(T*& _component, Args... args) noexcept
 		{
@@ -49,6 +61,8 @@ namespace Injector
 			_component = component;
 			return true;
 		}
+		// Returns true if component has been destroyed
+		// and removed from the entity
 		template<class T>
 		bool destroyComponent() noexcept
 		{
@@ -61,22 +75,26 @@ namespace Injector
 			components.erase(iterator);
 			return true;
 		}
+		// Returns true if entity contains specified component
 		template<class T>
 		bool containsComponent() noexcept
 		{
 			return components.find(typeid(T)) != components.end();
 		}
 
+		// Returns specified entity component
 		template<class T>
 		T* getComponent()
 		{
 			return static_cast<T*>(components.at(typeid(T)));
 		}
+		// Returns specified constant entity component
 		template<class T>
 		const T* getComponent() const
 		{
 			return static_cast<const T*>(components.at(typeid(T)));
 		}
+		// Returns true and specified entity component if contains
 		template<class T>
 		bool getComponent(T*& component) noexcept
 		{
@@ -88,6 +106,7 @@ namespace Injector
 			component = static_cast<T*>(iterator->second);
 			return true;
 		}
+		// Returns true and specified constant entity component if contains
 		template<class T>
 		bool getComponent(const T*& component) const noexcept
 		{

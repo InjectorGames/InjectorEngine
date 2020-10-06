@@ -21,13 +21,14 @@ namespace Injector
 			Vector2 textureScale;
 			Vector2 textureOffset;
 
-			UniformBufferObject(
-				const Vector4& _objectColor,
-				const Vector4& _ambientColor,
-				const Vector4& _lightColor,
-				const Vector3& _lightDirection,
-				const Vector2& _textureScale,
-				const Vector2& _textureOffset) :
+			explicit UniformBufferObject(
+				const Vector4& _objectColor = Vector4::one,
+				const Vector4& _ambientColor =  Vector4::one / 2,
+				const Vector4& _lightColor = Vector4::one,
+				const Vector3& _lightDirection =
+					Vector3(1.0f, 2.0f, 3.0f),
+				const Vector2& _textureScale = Vector2::one,
+				const Vector2& _textureOffset = Vector2::zero) :
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
@@ -50,12 +51,7 @@ namespace Injector
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
 			const std::shared_ptr<GlGpuImage>& texture,
-			const Vector4& objectColor = Vector4::one,
-			const Vector4& ambientColor = Vector4::one / 2,
-			const Vector4& lightColor = Vector4::one,
-			const Vector3& lightDirection = Vector3(1.0f, 2.0f, 3.0f),
-			const Vector2& textureScale = Vector2::one,
-			const Vector2& textureOffset = Vector2::zero);
+			const UniformBufferObject& ubo = UniformBufferObject());
 
 		std::shared_ptr<GpuImage> getTexture() const override;
 

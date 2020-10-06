@@ -29,7 +29,7 @@ namespace Injector
 			throw Exception(
 				"TcpClientSystem",
 				"TcpClientSystem",
-				"Unspecified address family");
+				"Unspecified socket family");
 		}
 
 		tcpSocket.setBlocking(false);

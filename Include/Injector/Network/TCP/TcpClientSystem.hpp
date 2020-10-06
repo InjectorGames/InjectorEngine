@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/System.hpp"
+#include "Injector/ECS/System.hpp"
 #include "Injector/Network/Socket.hpp"
 #include "Injector/Network/SocketConnect.hpp"
 
@@ -8,7 +8,7 @@ namespace Injector
 	class TcpClientSystem : public System
 	{
 	 protected:
-		// TCP socket
+		// Client TCP socket
 		Socket tcpSocket;
 		// Socket connect state
 		SocketConnect socketConnect;
@@ -21,20 +21,20 @@ namespace Injector
 
 		// Connection result handle
 		virtual void onConnect(bool result) = 0;
-		// On message receive handle
+		// Message receive handle
 		virtual void onReceive(int count) = 0;
-		// On disconnect handle
+		// Disconnect handle
 		virtual void onDisconnect() = 0;
 	 public:
 		// Creates and binds a new TCP client system
 		explicit TcpClientSystem(
 			SocketFamily family,
 			double timeoutTime = 6.0,
-			size_t receiveBufferSize = 0xFF);
+			size_t receiveBufferSize = 65536);
 
 		void update() override;
 
-		// Starts connection to server
+		// Starts connection to the server
 		void connect(const Endpoint& endpoint);
 	};
 }

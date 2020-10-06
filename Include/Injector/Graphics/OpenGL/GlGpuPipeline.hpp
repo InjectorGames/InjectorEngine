@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/Graphics/Pipeline/GpuPipeline.hpp"
+#include "Injector/Graphics/GpuPipeline.hpp"
 #include "Injector/Mathematics/Vector/Vector4.hpp"
 
 #include "GL/glew.h"
@@ -15,8 +15,10 @@ namespace Injector
 		GLuint program;
 		GLenum drawMode;
 
-		static bool getLinkStatus(GLuint program) noexcept;
-		static std::string getInfoLog(GLuint program) noexcept;
+		static bool getLinkStatus(
+			GLuint program) noexcept;
+		static std::string getInfoLog(
+			GLuint program) noexcept;
 
 		static GLint getUniformLocation(
 			GLuint program,
@@ -64,7 +66,10 @@ namespace Injector
 			const Matrix4& value,
 			GLboolean transpose = GL_FALSE) noexcept;
 	 public:
-		explicit GlGpuPipeline(GLenum drawMode);
+		explicit GlGpuPipeline(
+			GLenum drawMode) noexcept;
+		GlGpuPipeline(
+			GlGpuPipeline&& pipeline) noexcept;
 		~GlGpuPipeline() override;
 
 		GLuint getProgram() const noexcept;
@@ -75,5 +80,15 @@ namespace Injector
 
 		virtual void flush() = 0;
 		virtual void setAttributes() = 0;
+
+		bool operator==(const GlGpuPipeline& pipeline) const noexcept;
+		bool operator!=(const GlGpuPipeline& pipeline) const noexcept;
+
+		GlGpuPipeline& operator=(
+			GlGpuPipeline&& pipeline) noexcept;
+
+		static bool less(
+			const GlGpuPipeline& a,
+			const GlGpuPipeline& b);
 	};
 }

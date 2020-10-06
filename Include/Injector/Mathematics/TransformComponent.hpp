@@ -1,6 +1,6 @@
 #pragma once
-#include "Injector/Component.hpp"
-#include "Injector/Entity.hpp"
+#include "Injector/ECS/Component.hpp"
+#include "Injector/ECS/Entity.hpp"
 #include "Injector/Mathematics/Quaternion.hpp"
 #include "Injector/Mathematics/RotationOrigin.hpp"
 

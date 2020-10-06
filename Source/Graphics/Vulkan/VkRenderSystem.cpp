@@ -1,6 +1,6 @@
 #include "Injector/Graphics/Vulkan/VkRenderSystem.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuMesh.hpp"
-#include "Injector/Graphics/Vulkan/Pipeline/VkGpuPipeline.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuPipeline.hpp"
 
 #include <map>
 

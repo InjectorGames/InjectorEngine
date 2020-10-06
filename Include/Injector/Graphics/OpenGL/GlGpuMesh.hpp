@@ -1,7 +1,7 @@
 #pragma once
 #include "Injector/Graphics/GpuMesh.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuBuffer.hpp"
-#include "Injector/Graphics/OpenGL/Pipeline/GlGpuPipeline.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuPipeline.hpp"
 
 #include <vector>
 #include <memory>

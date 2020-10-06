@@ -7,16 +7,9 @@ namespace Injector
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		const std::shared_ptr<GlGpuImage>& _texture,
-		const Vector4& objectColor,
-		const Vector4& ambientColor,
-		const Vector4& lightColor,
-		const Vector3& lightDirection,
-		const Vector2& textureScale,
-		const Vector2& textureOffset) :
+		const UniformBufferObject& _ubo) :
 		GlGpuPipeline(GL_TRIANGLES),
-		ubo(objectColor, ambientColor, lightColor,
-			lightDirection.getNormalized(),
-			textureScale, textureOffset),
+		ubo(_ubo),
 		texture(_texture)
 	{
 		if (!vertexShader || !fragmentShader || !_texture)

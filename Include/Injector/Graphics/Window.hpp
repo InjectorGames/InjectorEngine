@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/Manager.hpp"
+#include "Injector/ECS/Manager.hpp"
 #include "Injector/Graphics/GpuMesh.hpp"
 #include "Injector/Graphics/GpuImage.hpp"
 #include "Injector/Graphics/GpuShader.hpp"
@@ -9,14 +9,14 @@
 #include "Injector/Graphics/MouseMode.hpp"
 #include "Injector/Graphics/ShaderData.hpp"
 #include "Injector/Graphics/MouseButton.hpp"
+#include "Injector/Graphics/GpuPipeline.hpp"
 #include "Injector/Graphics/ButtonState.hpp"
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/KeyboardButton.hpp"
 #include "Injector/Graphics/GpuFramebuffer.hpp"
-#include "Injector/Graphics/Pipeline/GpuPipeline.hpp"
-#include "Injector/Graphics/Pipeline/SimulatedSkyGpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/ColorGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/SimulatedSkyGpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/TextureDiffuseGpuPipeline.hpp"
 
 #include <string>

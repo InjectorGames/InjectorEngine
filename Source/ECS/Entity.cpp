@@ -1,4 +1,4 @@
-#include "Injector/Entity.hpp"
+#include "Injector/ECS/Entity.hpp"
 
 namespace Injector
 {

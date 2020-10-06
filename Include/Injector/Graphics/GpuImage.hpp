@@ -30,6 +30,8 @@ namespace Injector
 			GpuImageWrap wrapV,
 			GpuImageWrap wrapW,
 			bool useMipmap);
+		GpuImage(GpuImage&& image) = delete;
+		GpuImage(const GpuImage& image) = delete;
 		virtual ~GpuImage() = default;
 
 		GpuImageType getType() const noexcept;

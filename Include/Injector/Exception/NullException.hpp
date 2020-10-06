@@ -6,6 +6,7 @@ namespace Injector
 	class NullException : public Exception
 	{
 	 public:
+		// Creates a new null exception
 		NullException(
 			const std::string& className,
 			const std::string& functionName,

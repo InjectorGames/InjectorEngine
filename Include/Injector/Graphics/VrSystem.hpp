@@ -1,6 +1,6 @@
 #pragma once
-#include "Injector/System.hpp"
-#include "Injector/Entity.hpp"
+#include "Injector/ECS/System.hpp"
+#include "Injector/ECS/Entity.hpp"
 #include "Injector/Graphics/CameraComponent.hpp"
 
 #include <memory>

@@ -1,9 +1,10 @@
-#include "Injector/Graphics/OpenGL/Pipeline/GlGpuPipeline.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuPipeline.hpp"
 #include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
-	bool GlGpuPipeline::getLinkStatus(GLuint program) noexcept
+	bool GlGpuPipeline::getLinkStatus(
+		GLuint program) noexcept
 	{
 		GLint success;
 
@@ -14,7 +15,8 @@ namespace Injector
 
 		return success == GL_TRUE;
 	}
-	std::string GlGpuPipeline::getInfoLog(GLuint program) noexcept
+	std::string GlGpuPipeline::getInfoLog(
+		GLuint program) noexcept
 	{
 		GLint length;
 
@@ -167,10 +169,16 @@ namespace Injector
 	}
 
 	GlGpuPipeline::GlGpuPipeline(
-		GLenum _drawMode) :
+		GLenum _drawMode) noexcept :
 		drawMode(_drawMode)
 	{
 		program = glCreateProgram();
+	}
+	GlGpuPipeline::GlGpuPipeline(
+		GlGpuPipeline&& pipeline) noexcept
+	{
+		program = pipeline.program;
+		pipeline.program = 0;
 	}
 	GlGpuPipeline::~GlGpuPipeline()
 	{
@@ -193,5 +201,35 @@ namespace Injector
 	void GlGpuPipeline::unbind()
 	{
 		glUseProgram(GL_ZERO);
+	}
+
+	bool GlGpuPipeline::operator==(
+		const GlGpuPipeline& pipeline) const noexcept
+	{
+		return program == pipeline.program;
+	}
+	bool GlGpuPipeline::operator!=(
+		const GlGpuPipeline& pipeline) const noexcept
+	{
+		return program != pipeline.program;
+	}
+
+	GlGpuPipeline& GlGpuPipeline::operator=(
+		GlGpuPipeline&& pipeline) noexcept
+	{
+		if(this != &pipeline)
+		{
+			program = pipeline.program;
+			pipeline.program = 0;
+		}
+
+		return *this;
+	}
+
+	bool GlGpuPipeline::less(
+		const GlGpuPipeline& a,
+		const GlGpuPipeline& b)
+	{
+		return a.program < b.program;
 	}
 }

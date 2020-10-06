@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Graphics/GpuFramebuffer.hpp"
-#include "GlGpuImage.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuImage.hpp"
 
 namespace Injector
 {

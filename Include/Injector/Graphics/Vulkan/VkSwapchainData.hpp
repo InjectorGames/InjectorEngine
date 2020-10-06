@@ -1,5 +1,5 @@
 #pragma once
-#include "VmaDefines.hpp"
+#include "Injector/Graphics/Vulkan/VmaDefines.hpp"
 #include "vulkan/vulkan.hpp"
 
 namespace Injector

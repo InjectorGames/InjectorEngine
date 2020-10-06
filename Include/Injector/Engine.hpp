@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Defines.hpp"
-#include "Injector/Manager.hpp"
+#include "Injector/ECS/Manager.hpp"
 #include "Injector/Mathematics/Matrix/Matrix4.hpp"
 #include "Injector/Graphics/GraphicsAPI.hpp"
 

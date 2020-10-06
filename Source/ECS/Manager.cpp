@@ -1,4 +1,4 @@
-#include "Injector/Manager.hpp"
+#include "Injector/ECS/Manager.hpp"
 #include "Injector/Exception/Exception.hpp"
 
 namespace Injector
@@ -43,14 +43,6 @@ namespace Injector
 
 		return entity;
 	}
-	bool Manager::addEntity(
-		const std::shared_ptr<Entity>& entity) noexcept
-	{
-		if (!entity)
-			return false;
-
-		return entities.emplace(entity).second;
-	}
 
 	bool Manager::removeEntity(
 		const std::shared_ptr<Entity>& entity) noexcept
@@ -66,7 +58,7 @@ namespace Injector
 		entities.erase(iterator);
 		return true;
 	}
-	bool Manager::destroySystem(const std::shared_ptr<System>& system) noexcept
+	bool Manager::removeSystem(const std::shared_ptr<System>& system) noexcept
 	{
 		if (!system)
 			return false;
@@ -110,7 +102,7 @@ namespace Injector
 	{
 		entities.clear();
 	}
-	void Manager::destroySystems() noexcept
+	void Manager::removeSystems() noexcept
 	{
 		systems.clear();
 	}

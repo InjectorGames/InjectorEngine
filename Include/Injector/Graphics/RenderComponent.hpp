@@ -1,7 +1,7 @@
 #pragma once
-#include "Injector/Component.hpp"
+#include "Injector/ECS/Component.hpp"
 #include "Injector/Graphics/GpuMesh.hpp"
-#include "Injector/Graphics/Pipeline/GpuPipeline.hpp"
+#include "Injector/Graphics/GpuPipeline.hpp"
 
 #include <memory>
 

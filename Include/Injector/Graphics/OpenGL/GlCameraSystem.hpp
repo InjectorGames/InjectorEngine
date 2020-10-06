@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Graphics/CameraSystem.hpp"
-#include "GlWindow.hpp"
+#include "Injector/Graphics/OpenGL/GlWindow.hpp"
 
 namespace Injector
 {

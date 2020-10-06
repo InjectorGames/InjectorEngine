@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/System.hpp"
+#include "Injector/ECS/System.hpp"
 #include "Injector/Mathematics/RotateComponent.hpp"
 #include "Injector/Mathematics/TransformComponent.hpp"
 #include "Injector/Mathematics/TranslateComponent.hpp"

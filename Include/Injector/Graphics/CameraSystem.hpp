@@ -1,6 +1,6 @@
 #pragma once
-#include "Injector/System.hpp"
-#include "Injector/Entity.hpp"
+#include "Injector/ECS/System.hpp"
+#include "Injector/ECS/Entity.hpp"
 #include "Injector/Graphics/CameraComponent.hpp"
 
 #include <set>
@@ -16,6 +16,10 @@ namespace Injector
 		void updateAspectRatio(float aspectRatio);
 	 public:
 		CameraSystem() noexcept;
+		CameraSystem(
+			const CameraSystem& system) noexcept;
+		CameraSystem(
+			CameraSystem&& system) noexcept;
 
 		size_t getCameraCount() const noexcept;
 
@@ -24,5 +28,10 @@ namespace Injector
 		bool removeCamera(
 			const std::shared_ptr<Entity>& entity) noexcept;
 		void removeCameras() noexcept;
+
+		CameraSystem& operator=(
+			const CameraSystem& system) noexcept;
+		CameraSystem& operator=(
+			CameraSystem&& system) noexcept;
 	};
 }

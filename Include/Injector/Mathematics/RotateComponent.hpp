@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/Component.hpp"
+#include "Injector/ECS/Component.hpp"
 #include "Injector/Mathematics/Quaternion.hpp"
 
 namespace Injector

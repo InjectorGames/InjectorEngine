@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Graphics/RenderSystem.hpp"
-#include "VkWindow.hpp"
+#include "Injector/Graphics/Vulkan/VkWindow.hpp"
 
 namespace Injector
 {

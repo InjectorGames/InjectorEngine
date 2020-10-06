@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/System.hpp"
+#include "Injector/ECS/System.hpp"
 #include "Injector/Graphics/Window.hpp"
 
 namespace Injector

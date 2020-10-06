@@ -6,9 +6,9 @@ namespace Injector
 	GlSimulatedSkyGpuPipeline::GlSimulatedSkyGpuPipeline(
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
-		float height) :
+		const UniformBufferObject& _ubo) :
 		GlGpuPipeline(GL_TRIANGLES),
-		ubo(height)
+		ubo(_ubo)
 	{
 		if (!vertexShader || !fragmentShader)
 		{

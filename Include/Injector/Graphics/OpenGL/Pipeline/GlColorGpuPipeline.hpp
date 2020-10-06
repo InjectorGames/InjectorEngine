@@ -1,5 +1,5 @@
 #pragma once
-#include "GlGpuPipeline.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/ColorGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuShader.hpp"
 

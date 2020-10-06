@@ -10,7 +10,7 @@ namespace Injector
 	// Socket IP address and port number storage
 	struct Endpoint final
 	{
-	 protected:
+	 private:
 		// Endpoint sockaddr_storage pointer
 		void* handle;
 	 public:

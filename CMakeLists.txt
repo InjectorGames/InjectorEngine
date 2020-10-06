@@ -120,6 +120,9 @@ if (INJECTOR_SUPPORT_VIRTUAL_REALITY)
 endif ()
 
 add_library(InjectorEngine STATIC
+    Source/ECS/Entity.cpp
+    Source/ECS/Manager.cpp
+
     Source/Exception/CastException.cpp
     Source/Exception/Exception.cpp
     Source/Exception/NullException.cpp
@@ -128,7 +131,6 @@ add_library(InjectorEngine STATIC
     Source/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlDiffuseGpuPipeline.cpp
-    Source/Graphics/OpenGL/Pipeline/GlGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlTextureDiffuseGpuPipeline.cpp
 
@@ -138,22 +140,23 @@ add_library(InjectorEngine STATIC
     Source/Graphics/OpenGL/GlGpuShader.cpp
     Source/Graphics/OpenGL/GlGpuImage.cpp
     Source/Graphics/OpenGL/GlGpuMesh.cpp
+    Source/Graphics/OpenGL/GlGpuPipeline.cpp
     Source/Graphics/OpenGL/GlGpuShader.cpp
     Source/Graphics/OpenGL/GlRenderSystem.cpp
     Source/Graphics/OpenGL/GlWindow.cpp
 
     Source/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.cpp
     Source/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.cpp
-    Source/Graphics/Vulkan/Pipeline/VkGpuPipeline.cpp
 
     Source/Graphics/Vulkan/VkCameraSystem.cpp
     Source/Graphics/Vulkan/VkGpuBuffer.cpp
     Source/Graphics/Vulkan/VkGpuImage.cpp
     Source/Graphics/Vulkan/VkGpuMesh.cpp
+    Source/Graphics/Vulkan/VkGpuPipeline.cpp
     Source/Graphics/Vulkan/VkGpuShader.cpp
     Source/Graphics/Vulkan/VkRenderSystem.cpp
     Source/Graphics/Vulkan/VkSwapchainData.cpp
-    Source/Graphics/Vulkan/Pipeline/VkWindow.cpp
+    Source/Graphics/Vulkan/VkWindow.cpp
 
     Source/Graphics/CameraComponent.cpp
     Source/Graphics/CameraSystem.cpp
@@ -207,13 +210,12 @@ add_library(InjectorEngine STATIC
     Source/Network/ConsoleSystem.cpp
     Source/Network/Endpoint.cpp
     Source/Network/Socket.cpp
+    Source/Network/SocketSession.cpp
 
     Source/Storage/FileStream.cpp
 
     Source/Compressor.cpp
-    Source/Engine.cpp
-    Source/Entity.cpp
-    Source/Manager.cpp)
+    Source/Engine.cpp)
 target_link_libraries(InjectorEngine PUBLIC
     assimp
     glew_s

@@ -21,6 +21,8 @@ namespace Injector
 			GpuBufferType type,
 			size_t size,
 			bool mappable);
+		GpuBuffer(GpuBuffer&& buffer) = delete;
+		GpuBuffer(const GpuBuffer& buffer) = delete;
 		virtual ~GpuBuffer() = default;
 
 		GpuBufferType getType() const noexcept;

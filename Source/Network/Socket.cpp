@@ -91,10 +91,19 @@ namespace Injector
 
 		handle = socket;
 	}
+	Socket::Socket(Socket&& socket) noexcept
+	{
+		family = socket.family;
+		protocol = socket.protocol;
+		handle = socket.handle;
+		socket.family = SocketFamily::Unspecified;
+		socket.protocol = SocketProtocol::Unspecified;
+		socket.handle = NULL_SOCKET;
+	}
 	Socket::~Socket()
 	{
-		::shutdown(handle, SHUT_RDWR);
-		::close(handle);
+		shutdown(SocketShutdown::Both);
+		close();
 	}
 
 	SocketFamily Socket::getAddressFamily() const noexcept
@@ -283,11 +292,9 @@ namespace Injector
 	}
 
 	bool Socket::accept(
-		Endpoint& endpoint,
-		Socket& socket) noexcept
+		std::shared_ptr<Socket>& socket,
+		Endpoint& endpoint) noexcept
 	{
-		auto newEndpoint = Endpoint();
-
 		auto address = reinterpret_cast<sockaddr*>(
 			endpoint.getHandle());
 		socklen_t length =
@@ -301,12 +308,10 @@ namespace Injector
 		if (result == NULL_SOCKET)
 			return false;
 
-		endpoint = newEndpoint;
-
-		socket = Socket();
-		socket.family = family;
-		socket.protocol = protocol;
-		socket.handle = result;
+		socket = std::make_shared<Socket>();
+		socket->family = family;
+		socket->protocol = protocol;
+		socket->handle = result;
 		return true;
 	}
 	bool Socket::connect(const Endpoint& endpoint) noexcept
@@ -358,10 +363,8 @@ namespace Injector
 		size_t size,
 		Endpoint& endpoint) noexcept
 	{
-		auto newEndpoint = Endpoint();
-
 		auto address = reinterpret_cast<sockaddr*>(
-			newEndpoint.getHandle());
+			endpoint.getHandle());
 		socklen_t length =
 			sizeof(sockaddr_storage);
 
@@ -376,7 +379,6 @@ namespace Injector
 		if(result < 0)
 			return result;
 
-		endpoint = newEndpoint;
 		return result;
 	}
 	int Socket::sendTo(
@@ -396,54 +398,63 @@ namespace Injector
 			sizeof(sockaddr_storage));
 	}
 
-	void Socket::shutdown(SocketShutdown shutdown)
+	bool Socket::shutdown(
+		SocketShutdown shutdown) noexcept
 	{
 		int shutdownType;
 
-		if(shutdown == SocketShutdown::Read)
-		{
+		if(shutdown == SocketShutdown::Receive)
 			shutdownType = SHUT_RD;
-		}
-		else if(shutdown == SocketShutdown::Write)
-		{
+		else if(shutdown == SocketShutdown::Send)
 			shutdownType =  SHUT_WR;
-		}
 		else if(shutdown == SocketShutdown::Both)
-		{
 			shutdownType = SHUT_RDWR;
-		}
 		else
-		{
-			throw Exception(
-				"Socket",
-				"shutdown",
-				"Unsupported shutdown type");
-		}
+			return false;
 
 		auto result = ::shutdown(
 			handle,
 			shutdownType);
 
-		if(result != 0)
-		{
-			throw Exception(
-				"Socket",
-				"shutdown",
-				"Failed to shutdown socket");
-		}
+		return result == 0;
 	}
-	void Socket::close()
+	bool Socket::close() noexcept
 	{
-		auto result = ::close(handle);
+		handle = NULL_SOCKET;
+		return ::close(handle) == 0;
+	}
 
-		if(result != 0)
+	bool Socket::operator==(
+		const Socket& socket) const noexcept
+	{
+		return handle == socket.handle;
+	}
+	bool Socket::operator!=(
+		const Socket& socket) const noexcept
+	{
+		return handle != socket.handle;
+	}
+
+	Socket& Socket::operator=(
+		Socket&& socket) noexcept
+	{
+		if(this != &socket)
 		{
-			throw Exception(
-				"Socket",
-				"close",
-				"Failed to close socket");
+			family = socket.family;
+			protocol = socket.protocol;
+			handle = socket.handle;
+			socket.family = SocketFamily::Unspecified;
+			socket.protocol = SocketProtocol::Unspecified;
+			socket.handle = NULL_SOCKET;
 		}
 
-		handle = NULL_SOCKET;
+		return *this;
+	}
+
+	bool Socket::less(
+		const Socket& a,
+		const Socket& b) noexcept
+	{
+		return a.handle < b.handle;
 	}
 }

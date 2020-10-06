@@ -5,7 +5,7 @@
 
 namespace Injector
 {
-	class Socket
+	class Socket final
 	{
 	 protected:
 		SocketFamily family;
@@ -18,6 +18,10 @@ namespace Injector
 		Socket(
 			SocketFamily family,
 			SocketProtocol protocol);
+		// Moves other socket
+		Socket(Socket&& socket) noexcept;
+		// Deleted copy constructor
+		Socket(const Socket& socket) = delete;
 		// Shutdowns, closes and destroys socket
 		virtual ~Socket();
 
@@ -44,8 +48,8 @@ namespace Injector
 
 		// Returns true if connection has been accepted
 		bool accept(
-			Endpoint& endpoint,
-			Socket& socket) noexcept;
+			std::shared_ptr<Socket>& socket,
+			Endpoint& endpoint) noexcept;
 		// Returns true if connected to remote endpoint
 		bool connect(const Endpoint& endpoint) noexcept;
 
@@ -113,8 +117,22 @@ namespace Injector
 		// Read: shutdowns socket sending
 		// Write: shutdowns socket receiving
 		// Both: shutdowns sending and receiving
-		void shutdown(SocketShutdown shutdown);
+		bool shutdown(
+			SocketShutdown shutdown) noexcept;
 		// Closes socket connection and releases all resources
-		void close();
+		bool close() noexcept;
+
+		// Returns true if sockets is equal
+		bool operator==(const Socket& socket) const noexcept;
+		// Returns true if sockets is not equal
+		bool operator!=(const Socket& socket) const noexcept;
+
+		// Socket move assigment operator
+		Socket& operator=(Socket&& socket) noexcept;
+
+		// Returns true if a < b
+		static bool less(
+			const Socket& a,
+			const Socket& b) noexcept;
 	};
 }
