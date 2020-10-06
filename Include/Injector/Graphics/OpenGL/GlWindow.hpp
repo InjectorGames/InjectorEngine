@@ -1,7 +1,7 @@
 #pragma once
 #include "Injector/Graphics/Window.hpp"
+#include "Injector/Graphics/GlfwDefines.hpp"
 
-#include "GL/glew.h"
 #include "GLFW/glfw3.h"
 
 namespace Injector

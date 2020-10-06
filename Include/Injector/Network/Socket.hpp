@@ -2,6 +2,7 @@
 #include "Injector/Network/Endpoint.hpp"
 #include "Injector/Network/SocketProtocol.hpp"
 #include "Injector/Network/SocketShutdown.hpp"
+#include "Injector/Network/RequestResponse.hpp"
 
 namespace Injector
 {
@@ -47,22 +48,16 @@ namespace Injector
 		void listen();
 
 		// Returns true if connection has been accepted
-		bool accept(
-			std::shared_ptr<Socket>& socket,
-			Endpoint& endpoint) noexcept;
+		bool accept(Socket& socket, Endpoint& endpoint) noexcept;
 		// Returns true if connected to remote endpoint
 		bool connect(const Endpoint& endpoint) noexcept;
 
-		// Receives message from connected endpoint
-		int receive(
-			void* buffer,
-			size_t size) noexcept;
-		// Sends message to connected endpoint
-		int send(
-			const void* buffer,
-			size_t size) noexcept;
+		// Returns receives message byte count
+		int receive(void* buffer, size_t size) noexcept;
+		// Returns sended message byte count
+		int send(const void* buffer, size_t size) noexcept;
 
-		// Receives message from connected endpoint
+		// Returns receives message byte count
 		template<class T = uint8_t>
 		int receive(std::vector<T>& buffer)
 		{
@@ -70,7 +65,7 @@ namespace Injector
 				buffer.data(),
 				buffer.size() * sizeof(T));
 		}
-		// Sends message to connected endpoint
+		// Returns sended message byte count
 		template<class T = uint8_t>
 		int send(const std::vector<T>& buffer)
 		{
@@ -79,18 +74,18 @@ namespace Injector
 				buffer.size() * sizeof(T));
 		}
 
-		// Receives message from specified endpoint
+		// Returns receives message byte count
 		int receiveFrom(
 			void* buffer,
 			size_t size,
 			Endpoint& endpoint) noexcept;
-		// Sends message to specified endpoint
+		// Returns sended message byte count
 		int sendTo(
 			const void* buffer,
 			size_t size,
 			const Endpoint& endpoint) noexcept;
 
-		// Receives message from specified endpoint
+		// Returns receives message byte count
 		template<class T = uint8_t>
 		int receiveFrom(
 			std::vector<T>& buffer,
@@ -101,7 +96,7 @@ namespace Injector
 				buffer.size() * sizeof(T),
 				endpoint);
 		}
-		// Sends message to specified endpoint
+		// Returns sended message byte count
 		template<class T = uint8_t>
 		int sendTo(
 			const std::vector<T>& buffer,
@@ -117,8 +112,7 @@ namespace Injector
 		// Read: shutdowns socket sending
 		// Write: shutdowns socket receiving
 		// Both: shutdowns sending and receiving
-		bool shutdown(
-			SocketShutdown shutdown) noexcept;
+		bool shutdown(SocketShutdown shutdown) noexcept;
 		// Closes socket connection and releases all resources
 		bool close() noexcept;
 

@@ -1,5 +1,6 @@
 #pragma once
-#include "Injector/Memory/MemoryStream.hpp"
+#include <cstdint>
+#include <cstdlib>
 
 namespace Injector
 {
@@ -14,11 +15,9 @@ namespace Injector
 		// Returns request/response data size
 		virtual size_t getDataSize() const = 0;
 
-		// Writes request/response data to the stream
-		virtual void writeData(
-			MemoryStream& stream) const = 0;
-		// Reads request/response data from the stream
-		virtual void readData(
-			MemoryStream& stream) = 0;
+		// Writes request/response data to the buffer
+		virtual void writeData(void* buffer) const = 0;
+		// Reads request/response data from the buffer
+		virtual void readData(const void* buffer) = 0;
 	};
 }

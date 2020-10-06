@@ -13,7 +13,7 @@ namespace Injector
 		// Last socket response time
 		double lastResponseTime;
 		// Session socket
-		std::shared_ptr<Socket> socket;
+		Socket socket;
 		// Socket remote endpoint
 		Endpoint endpoint;
 		// Message receive buffer
@@ -26,8 +26,8 @@ namespace Injector
 	 public:
 		// Creates a new socket session
 		TcpServerSession(
-			const std::shared_ptr<Socket>& socket,
-			const Endpoint& endpoint,
+			Socket socket,
+			Endpoint endpoint,
 			bool alive = true,
 			double timeoutTime = 6.0,
 			size_t receiveBufferSize = 65536);
@@ -41,7 +41,7 @@ namespace Injector
 		// Returns last socket response time
 		double getLastResponseTime() const noexcept;
 		// Returns session TCP socket
-		std::shared_ptr<Socket> getSocket() const noexcept;
+		const Socket& getSocket() const noexcept;
 		// Returns session socket remote endpoint
 		const Endpoint& getEndpoint() const noexcept;
 		// Returns socket message receive buffer

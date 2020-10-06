@@ -21,7 +21,7 @@ void initialize()
 	auto freeCameraSystem = window->createSystem<FreeCameraSystem>(window);
 	auto guiSystem = window->createSystem<GuiSystem>();
 	auto simSkySystem = window->createSystem<SimSkySystem>(window);
-	auto vrSystem = window->createSystem<VrSystem>();
+	//auto vrSystem = window->createSystem<VrSystem>();
 	auto transformSystem = window->createSystem<TransformSystem>();
 	auto cameraSystem = window->createCameraSystem();
 	auto renderSystem = window->createRenderSystem();
@@ -36,8 +36,8 @@ void initialize()
 		0,
 		CameraType::Perspective);
 	transformSystem->addTransform(freeCamera);
-	vrSystem->hmd = freeCamera;
-	//cameraSystem->addCamera(freeCamera);
+	//vrSystem->hmd = freeCamera;
+	cameraSystem->addCamera(freeCamera);
 	renderSystem->addCamera(freeCamera);
 	freeCameraSystem->camera = freeCamera;
 
@@ -67,7 +67,7 @@ void initialize()
 		3,
 		false);
 	auto boxImage = window->createImage(boxImageData->size,
-		GpuImageFormat::RGB8F,
+		GpuImageFormat::RGB8,
 		GpuImageFilter::Nearest,
 		GpuImageFilter::Nearest,
 		GpuImageWrap::Repeat,
@@ -176,8 +176,8 @@ int main()
 		// 	GraphicsAPI::Vulkan);
 		Engine::initializeGraphics(
 			GraphicsAPI::OpenGL);
-		Engine::initializeVirtualReality();
-		Engine::setTargetUpdateRate(90);
+		//Engine::initializeVirtualReality();
+		Engine::setTargetUpdateRate(60);
 		Engine::initializeEngine();
 
 		initialize();

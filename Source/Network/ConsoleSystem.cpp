@@ -45,8 +45,8 @@ namespace Injector
 
 			if(iterator == commandHandles.end())
 			{
-				std::cout << "Unknown console command: " <<
-					command << "\n";
+				std::cout << "Engine: Unknown console command '" <<
+					command << "'\n";
 
 				continue;
 			}

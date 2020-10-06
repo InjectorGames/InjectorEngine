@@ -198,9 +198,6 @@ add_library(InjectorEngine STATIC
     Source/Mathematics/TransformSystem.cpp
     Source/Mathematics/TranslateComponent.cpp
 
-    Source/Memory/ByteSwap.cpp
-    Source/Memory/MemoryStream.cpp
-
     Source/Network/TCP/TcpClientSystem.cpp
     Source/Network/TCP/TcpServerSession.cpp
     Source/Network/TCP/TcpServerSystem.cpp
@@ -214,6 +211,7 @@ add_library(InjectorEngine STATIC
 
     Source/Storage/FileStream.cpp
 
+    Source/ByteSwap.cpp
     Source/Compressor.cpp
     Source/Engine.cpp)
 target_link_libraries(InjectorEngine PUBLIC

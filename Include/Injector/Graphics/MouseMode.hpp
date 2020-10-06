@@ -1,6 +1,5 @@
 #pragma once
-#include "GL/glew.h"
-#include "GLFW/glfw3.h"
+#include "Injector/Graphics/GlfwDefines.hpp"
 
 namespace Injector
 {

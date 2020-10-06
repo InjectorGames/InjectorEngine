@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Graphics/GpuBuffer.hpp"
-#include "GL/glew.h"
+#include "Injector/Graphics/GlfwDefines.hpp"
 
 #include <cstdint>
 

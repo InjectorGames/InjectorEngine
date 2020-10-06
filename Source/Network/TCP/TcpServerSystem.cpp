@@ -3,6 +3,15 @@
 
 namespace Injector
 {
+	std::shared_ptr<TcpServerSession> TcpServerSystem::createSession(
+		Socket socket,
+		Endpoint endpoint)
+	{
+		return std::make_shared<TcpServerSession>(
+			std::move(socket),
+			std::move(endpoint));
+	}
+
 	TcpServerSystem::TcpServerSystem(
 		SocketFamily family,
 		const std::string& port,
@@ -53,7 +62,7 @@ namespace Injector
 
 	void TcpServerSystem::update()
 	{
-		auto remoteSocket = std::shared_ptr<Socket>();
+		auto remoteSocket = Socket();
 		auto endpoint = Endpoint();
 
 		while (socket.accept(remoteSocket, endpoint))
@@ -61,15 +70,29 @@ namespace Injector
 			if(sessions.size() < maxSessionCount)
 			{
 				auto session = createSession(
-					remoteSocket,
-					endpoint);
+					std::move(remoteSocket),
+					std::move(endpoint));
 				sessions.push_back(session);
 			}
 			else
 			{
-				remoteSocket->shutdown(
+				remoteSocket.shutdown(
 					SocketShutdown::Both);
-				remoteSocket->close();
+				remoteSocket.close();
+			}
+		}
+
+		for (size_t i = 0; i < sessions.size(); i++)
+		{
+			if(sessions[i]->isAlive())
+			{
+				sessions[i]->update();
+			}
+			else
+			{
+				sessions.erase(
+					sessions.begin() + i);
+				i--;
 			}
 		}
 	}

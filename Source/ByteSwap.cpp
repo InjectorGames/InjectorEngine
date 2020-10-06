@@ -1,4 +1,4 @@
-#include "Injector/Memory/ByteSwap.hpp"
+#include "Injector/ByteSwap.hpp"
 #include "Injector/Defines.hpp"
 
 #if INJECTOR_SYSTEM_LINUX

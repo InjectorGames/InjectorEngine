@@ -2,6 +2,7 @@
 #include "Injector/Graphics/OpenGL/GlGpuMesh.hpp"
 
 #include <map>
+#include <iostream>
 
 namespace Injector
 {
@@ -110,6 +111,41 @@ namespace Injector
 				renderData.mesh->draw(renderData.pipeline);
 			}
 		}
+
+#ifndef NDEBUG
+		GLenum error;
+
+		while((error = glGetError()) != GL_NO_ERROR)
+		{
+			switch (error)
+			{
+			case GL_INVALID_ENUM:
+				std::cout << "Engine: OpenGL Error: GL_INVALID_ENUM";
+				break;
+			case GL_INVALID_VALUE:
+				std::cout << "Engine: OpenGL Error: GL_INVALID_VALUE";
+				break;
+			case GL_INVALID_OPERATION:
+				std::cout << "Engine: OpenGL Error: GL_INVALID_OPERATION";
+				break;
+			case GL_INVALID_FRAMEBUFFER_OPERATION:
+				std::cout << "Engine: OpenGL Error: GL_INVALID_FRAMEBUFFER_OPERATION";
+				break;
+			case GL_OUT_OF_MEMORY:
+				std::cout << "Engine: OpenGL Error: GL_OUT_OF_MEMORY";
+				break;
+			case GL_STACK_UNDERFLOW:
+				std::cout << "Engine: OpenGL Error: GL_STACK_UNDERFLOW";
+				break;
+			case GL_STACK_OVERFLOW:
+				std::cout << "Engine: OpenGL Error: GL_STACK_OVERFLOW";
+				break;
+			default:
+				std::cout << "Engine: OpenGL Error: Unknown";
+				break;
+			}
+		}
+#endif
 
 		window.swapBuffers();
 	}

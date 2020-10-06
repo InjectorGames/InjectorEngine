@@ -1,5 +1,4 @@
 #include "Injector/Graphics/OpenGL/GlCameraSystem.hpp"
-#include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {

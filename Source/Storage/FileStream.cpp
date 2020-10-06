@@ -1,5 +1,5 @@
 #include "Injector/Storage/FileStream.hpp"
-#include "Injector/Memory/ByteSwap.hpp"
+#include "Injector/ByteSwap.hpp"
 #include "Injector/Exception/Exception.hpp"
 
 namespace Injector

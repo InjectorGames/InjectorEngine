@@ -96,8 +96,6 @@ namespace Injector
 		family = socket.family;
 		protocol = socket.protocol;
 		handle = socket.handle;
-		socket.family = SocketFamily::Unspecified;
-		socket.protocol = SocketProtocol::Unspecified;
 		socket.handle = NULL_SOCKET;
 	}
 	Socket::~Socket()
@@ -292,7 +290,7 @@ namespace Injector
 	}
 
 	bool Socket::accept(
-		std::shared_ptr<Socket>& socket,
+		Socket& socket,
 		Endpoint& endpoint) noexcept
 	{
 		auto address = reinterpret_cast<sockaddr*>(
@@ -308,10 +306,10 @@ namespace Injector
 		if (result == NULL_SOCKET)
 			return false;
 
-		socket = std::make_shared<Socket>();
-		socket->family = family;
-		socket->protocol = protocol;
-		socket->handle = result;
+		socket = Socket();
+		socket.family = family;
+		socket.protocol = protocol;
+		socket.handle = result;
 		return true;
 	}
 	bool Socket::connect(const Endpoint& endpoint) noexcept
@@ -357,8 +355,6 @@ namespace Injector
 			size,
 			0);
 	}
-	
-	// TODO: create send/receive for RequestResponse
 
 	int Socket::receiveFrom(
 		void* buffer,

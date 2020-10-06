@@ -68,7 +68,7 @@ namespace Injector
 		static bool isVirtualRealityInitialized() noexcept;
 
 		static void startUpdateLoop();
-		static void stopUpdateLoop();
+		static void stopUpdateLoop() noexcept;
 		static bool getUpdateRunning() noexcept;
 
 		static std::chrono::steady_clock::

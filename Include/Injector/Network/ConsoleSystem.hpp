@@ -21,11 +21,10 @@ namespace Injector
 
 		void inputHandle();
 	 public:
-		ConsoleSystem(
+		explicit ConsoleSystem(
 			const std::map<std::string, std::function<void(
 				const std::string&)>>& commandHandles) noexcept;
 		~ConsoleSystem() override;
-		ConsoleSystem(const ConsoleSystem&) = delete;
 
 		void update() override;
 	};

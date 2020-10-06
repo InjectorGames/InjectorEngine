@@ -26,7 +26,7 @@ namespace Injector
 				const Vector4& _ambientColor =  Vector4::one / 2,
 				const Vector4& _lightColor = Vector4::one,
 				const Vector3& _lightDirection =
-					Vector3(1.0f, 2.0f, 3.0f),
+					Vector3(1.0f, 2.0f, 3.0f).getNormalized(),
 				const Vector2& _textureScale = Vector2::one,
 				const Vector2& _textureOffset = Vector2::zero) :
 				objectColor(_objectColor),

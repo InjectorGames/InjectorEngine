@@ -480,16 +480,8 @@ namespace Injector
 #endif
 		}
 	}
-	void Engine::stopUpdateLoop()
+	void Engine::stopUpdateLoop() noexcept
 	{
-		if (!updateRunning)
-		{
-			throw Exception(
-				"Engine",
-				"stopUpdateLoop",
-				"Already stopped");
-		}
-
 		updateRunning = false;
 	}
 	bool Engine::getUpdateRunning() noexcept

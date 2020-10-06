@@ -1,8 +1,7 @@
 #pragma once
 #include "Injector/Graphics/GpuImage.hpp"
 #include "Injector/Graphics/ImageData.hpp"
-
-#include "GL/glew.h"
+#include "Injector/Graphics/GlfwDefines.hpp"
 
 namespace Injector
 {

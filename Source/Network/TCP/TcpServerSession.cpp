@@ -9,21 +9,22 @@ namespace Injector
 	}
 	void TcpServerSession::onRequestTimeout()
 	{
-		socket->shutdown(
+		alive = false;
+		socket.shutdown(
 			SocketShutdown::Both);
-		socket->close();
+		socket.close();
 	}
 
 	TcpServerSession::TcpServerSession(
-		const std::shared_ptr<Socket>& _socket,
-		const Endpoint& _endpoint,
+		Socket _socket,
+		Endpoint _endpoint,
 		bool _alive,
 		double _timeoutTime,
 		size_t receiveBufferSize) :
 		alive(_alive),
 		timeoutTime(_timeoutTime),
-		socket(_socket),
-		endpoint(_endpoint),
+		socket(std::move(_socket)),
+		endpoint(std::move(_endpoint)),
 		receiveBuffer(receiveBufferSize)
 	{
 		lastResponseTime = Engine::getUpdateStartTime();
@@ -41,7 +42,7 @@ namespace Injector
 	{
 		return lastResponseTime;
 	}
-	std::shared_ptr<Socket> TcpServerSession::getSocket() const noexcept
+	const Socket& TcpServerSession::getSocket() const noexcept
 	{
 		return socket;
 	}
@@ -64,7 +65,7 @@ namespace Injector
 
 		int count;
 
-		while((count = socket->receive(receiveBuffer)) > 0)
+		while((count = socket.receive(receiveBuffer)) > 0)
 			onReceive(count);
 	}
 }
