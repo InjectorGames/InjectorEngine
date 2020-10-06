@@ -5,6 +5,7 @@
 #include <mutex>
 #include <vector>
 #include <thread>
+#include <functional>
 
 namespace Injector
 {

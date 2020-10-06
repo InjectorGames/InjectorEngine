@@ -2,6 +2,8 @@
 #include "Injector/ECS/System.hpp"
 #include "Injector/Network/TcpServerSession.hpp"
 
+#include <memory>
+
 namespace Injector
 {
 	class TcpServerSystem : public System

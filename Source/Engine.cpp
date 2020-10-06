@@ -7,6 +7,7 @@
 #include <iostream>
 
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+#include <signal.h>
 #elif INJECTOR_SYSTEM_WINDOWS
 // TODO:
 #else
@@ -29,7 +30,7 @@ namespace Injector
 			matrix.m[0][0], matrix.m[1][0], -matrix.m[2][0], 0.0f,
 			matrix.m[0][1], matrix.m[1][1], -matrix.m[2][1], 0.0f,
 				matrix.m[0][2], matrix.m[1][2], -matrix.m[2][2], 0.0f,
-			matrix.m[0][3], matrix.m[1][3], -matrix.m[2][3], 1.0f).getInversed();
+			matrix.m[0][3], matrix.m[1][3], -matrix.m[2][3], 1.0f).getInverted();
 
 		result.m02 = -result.m02;
 		result.m12 = -result.m12;
@@ -115,8 +116,7 @@ namespace Injector
 				"Already initialized");
 		}
 
-		updateStartTick =
-			std::chrono::high_resolution_clock::now();
+		updateStartTick = std::chrono::steady_clock::now();
 		updateStartTime = std::chrono::duration_cast<std::chrono::duration<
 			double>>(updateStartTick.time_since_epoch()).count();
 		updateDeltaTime = 0.0f;
@@ -256,7 +256,8 @@ namespace Injector
 				"Failed to initialize GLFW");
 		}
 
-		if (_graphicsAPI == GraphicsAPI::Vulkan && glfwVulkanSupported() == GLFW_FALSE)
+		if (_graphicsAPI == GraphicsAPI::Vulkan &&
+			glfwVulkanSupported() == GLFW_FALSE)
 		{
 			throw Exception(
 				"Engine",
@@ -387,7 +388,7 @@ namespace Injector
 
 		while (updateRunning)
 		{
-			auto tick = std::chrono::high_resolution_clock::now();
+			auto tick = std::chrono::steady_clock::now();
 			updateDeltaTime = std::chrono::duration_cast<
 				std::chrono::duration<double>>(tick - updateStartTick).count();
 			updateStartTick = tick;
@@ -414,7 +415,7 @@ namespace Injector
 
 			if (capUpdateRate)
 			{
-				tick = std::chrono::high_resolution_clock::now();
+				tick = std::chrono::steady_clock::now();
 				updateDeltaTime = std::chrono::duration_cast<
 					std::chrono::duration<double>>(tick - updateStartTick).count();
 				auto delayTime = (1.0 / targetUpdateRate - updateDeltaTime) * 1000 - 1.0;
@@ -492,12 +493,12 @@ namespace Injector
 	std::chrono::steady_clock::
 		time_point Engine::getTickNow() noexcept
 	{
-		return std::chrono::high_resolution_clock::now();
+		return std::chrono::steady_clock::now();
 	}
 	double Engine::getTimeNow() noexcept
 	{
 		return std::chrono::duration_cast<std::chrono::duration<double>>(
-			std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+			std::chrono::steady_clock::now().time_since_epoch()).count();
 	}
 
 	GraphicsAPI Engine::getGraphicsAPI() noexcept

@@ -2,6 +2,8 @@
 #include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
 
+#include <cstring>
+
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 #include <netdb.h>
 #include <sys/socket.h>
