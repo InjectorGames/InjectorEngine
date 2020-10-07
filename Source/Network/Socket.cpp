@@ -8,9 +8,12 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #define NULL_SOCKET -1
+#define SOCKET_TYPE int
 #elif INJECTOR_SYSTEM_WINDOWS
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #define NULL_SOCKET INVALID_SOCKET
+#define SOCKET_TYPE SOCKET
 #else
 #error Unknown operating system
 #endif
@@ -20,7 +23,7 @@ namespace Injector
 	Socket::Socket() noexcept :
 		family(SocketFamily::Unspecified),
 		protocol(SocketProtocol::Unspecified),
-		handle(NULL_SOCKET)
+		handle(static_cast<int>(NULL_SOCKET))
 	{
 	}
 	Socket::Socket(
@@ -89,14 +92,14 @@ namespace Injector
 				"Failed to create socket");
 		}
 
-		handle = socket;
+		handle = static_cast<int>(socket);
 	}
 	Socket::Socket(Socket&& socket) noexcept
 	{
 		family = socket.family;
 		protocol = socket.protocol;
 		handle = socket.handle;
-		socket.handle = NULL_SOCKET;
+		socket.handle = static_cast<int>(NULL_SOCKET);
 	}
 	Socket::~Socket()
 	{
@@ -119,10 +122,10 @@ namespace Injector
 		socklen_t length = sizeof(bool);
 
 		auto result = ::getsockopt(
-			handle,
+			static_cast<SOCKET_TYPE>(handle),
 			SOL_SOCKET,
 			SO_ACCEPTCONN,
-			&listening,
+			reinterpret_cast<char*>(&listening),
 			&length);
 
 		if(result != 0)
@@ -146,7 +149,7 @@ namespace Injector
 			sizeof(sockaddr_storage);
 
 		auto result = ::getsockname(
-			handle,
+			static_cast<SOCKET_TYPE>(handle),
 			address,
 			&length);
 
@@ -170,7 +173,7 @@ namespace Injector
 			sizeof(sockaddr_storage);
 
 		auto result = ::getpeername(
-			handle,
+			static_cast<SOCKET_TYPE>(handle),
 			address,
 			&length);
 
@@ -223,7 +226,7 @@ namespace Injector
 			1;
 
 		auto result = ioctlsocket(
-			handle,
+			static_cast<SOCKET_TYPE>(handle),
 			FIONBIO,
 			&mode);
 
@@ -262,7 +265,7 @@ namespace Injector
 		}
 
 		auto result = ::bind(
-			handle,
+			static_cast<SOCKET_TYPE>(handle),
 			address,
 			length);
 
@@ -277,7 +280,7 @@ namespace Injector
 	void Socket::listen()
 	{
 		auto result = ::listen(
-			handle,
+			static_cast<SOCKET_TYPE>(handle),
 			SOMAXCONN);
 
 		if(result != 0)
@@ -299,7 +302,7 @@ namespace Injector
 			sizeof(sockaddr_storage);
 
 		auto result = ::accept(
-			handle,
+			static_cast<SOCKET_TYPE>(handle),
 			address,
 			&length);
 
@@ -309,7 +312,7 @@ namespace Injector
 		socket = Socket();
 		socket.family = family;
 		socket.protocol = protocol;
-		socket.handle = result;
+		socket.handle = static_cast<int>(result);
 		return true;
 	}
 	bool Socket::connect(const Endpoint& endpoint) noexcept
@@ -328,7 +331,7 @@ namespace Injector
 			return false;
 
 		auto result = ::connect(
-			handle,
+			static_cast<SOCKET_TYPE>(handle),
 			address,
 			length);
 
@@ -340,8 +343,8 @@ namespace Injector
 		size_t size) noexcept
 	{
 		return ::recv(
-			handle,
-			buffer,
+			static_cast<SOCKET_TYPE>(handle),
+			static_cast<char*>(buffer),
 			size,
 			0);
 	}
@@ -350,8 +353,8 @@ namespace Injector
 		size_t size) noexcept
 	{
 		return ::send(
-			handle,
-			buffer,
+			static_cast<SOCKET_TYPE>(handle),
+			static_cast<const char*>(buffer),
 			size,
 			0);
 	}
@@ -367,8 +370,8 @@ namespace Injector
 			sizeof(sockaddr_storage);
 
 		auto result = ::recvfrom(
-			handle,
-			buffer,
+			static_cast<SOCKET_TYPE>(handle),
+			static_cast<char*>(buffer),
 			size,
 			0,
 			address,
@@ -388,8 +391,8 @@ namespace Injector
 			endpoint.getHandle());
 
 		return ::sendto(
-			handle,
-			buffer,
+			static_cast<SOCKET_TYPE>(handle),
+			static_cast<const char*>(buffer),
 			size,
 			0,
 			address,
@@ -401,6 +404,7 @@ namespace Injector
 	{
 		int shutdownType;
 
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 		if(shutdown == SocketShutdown::Receive)
 			shutdownType = SHUT_RD;
 		else if(shutdown == SocketShutdown::Send)
@@ -409,17 +413,34 @@ namespace Injector
 			shutdownType = SHUT_RDWR;
 		else
 			return false;
+#elif INJECTOR_SYSTEM_WINDOWS
+		if (shutdown == SocketShutdown::Receive)
+			shutdownType = SD_RECEIVE;
+		else if (shutdown == SocketShutdown::Send)
+			shutdownType = SD_SEND;
+		else if (shutdown == SocketShutdown::Both)
+			shutdownType = SD_BOTH;
+		else
+			return false;
+#endif
+
 
 		auto result = ::shutdown(
-			handle,
+			static_cast<SOCKET_TYPE>(handle),
 			shutdownType);
 
 		return result == 0;
 	}
 	bool Socket::close() noexcept
 	{
-		handle = NULL_SOCKET;
+		handle = static_cast<int>(NULL_SOCKET);
+
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 		return ::close(handle) == 0;
+#elif INJECTOR_SYSTEM_WINDOWS
+		return ::closesocket(
+			static_cast<SOCKET_TYPE>(handle)) == 0;
+#endif
 	}
 
 	bool Socket::operator==(
@@ -443,7 +464,7 @@ namespace Injector
 			handle = socket.handle;
 			socket.family = SocketFamily::Unspecified;
 			socket.protocol = SocketProtocol::Unspecified;
-			socket.handle = NULL_SOCKET;
+			socket.handle = static_cast<int>(NULL_SOCKET);
 		}
 
 		return *this;

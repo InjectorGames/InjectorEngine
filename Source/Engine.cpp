@@ -9,7 +9,9 @@
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 #include <signal.h>
 #elif INJECTOR_SYSTEM_WINDOWS
-// TODO:
+#define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
+#pragma comment(lib, "ws2_32.lib")
 #else
 #error Unknown operating system
 #endif
@@ -183,7 +185,19 @@ namespace Injector
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 		signal(SIGPIPE, SIG_IGN);
 #elif INJECTOR_SYSTEM_WINDOWS
-		// WSAStartup();
+		WSADATA wsaData;
+
+		auto result = WSAStartup(
+			MAKEWORD(2, 2),
+			&wsaData);
+
+		if (result != 0)
+		{
+			throw Exception(
+				"Engine",
+				"initializeNetwork",
+				"Failed to startup WSA");
+		}
 #endif
 
 		networkInitialized = true;
@@ -209,7 +223,7 @@ namespace Injector
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 		signal(SIGPIPE, SIG_DFL);
 #elif INJECTOR_SYSTEM_WINDOWS
-		// WSACleanup();
+		WSACleanup();
 #endif
 
 		networkInitialized = false;

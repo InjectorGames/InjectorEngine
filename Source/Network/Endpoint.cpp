@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #elif INJECTOR_SYSTEM_WINDOWS
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #else
 #error Unknown operating system
 #endif
