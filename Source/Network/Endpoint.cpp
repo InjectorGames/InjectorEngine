@@ -102,7 +102,7 @@ namespace Injector
 			sizeof(sockaddr_storage));
 
 		auto socketAddress =
-			reinterpret_cast<sockaddr_in*>(handle);
+			static_cast<sockaddr_in*>(handle);
 
 		socketAddress->sin_family = AF_INET;
 
@@ -135,7 +135,7 @@ namespace Injector
 			sizeof(sockaddr_storage));
 
 		auto socketAddress =
-			reinterpret_cast<sockaddr_in6*>(handle);
+			static_cast<sockaddr_in6*>(handle);
 
 		socketAddress->sin6_family = AF_INET6;
 		socketAddress->sin6_scope_id = scopeID;
@@ -169,7 +169,7 @@ namespace Injector
 		if(handle)
 		{
 			auto address =
-				reinterpret_cast<sockaddr_storage*>(handle);
+				static_cast<sockaddr_storage*>(handle);
 			delete address;
 		}
 	}
@@ -181,7 +181,7 @@ namespace Injector
 	SocketFamily Endpoint::getSocketFamily() const noexcept
 	{
 		auto socketAddress =
-			reinterpret_cast<sockaddr_storage*>(handle);
+			static_cast<sockaddr_storage*>(handle);
 
 		if (socketAddress->ss_family == AF_INET)
 			return SocketFamily::IPv4;
@@ -194,14 +194,14 @@ namespace Injector
 	std::vector<uint8_t> Endpoint::getAddress() const
 	{
 		auto socketAddress =
-			reinterpret_cast<sockaddr_storage*>(handle);
+			static_cast<sockaddr_storage*>(handle);
 
 		if (socketAddress->ss_family == AF_INET)
 		{
 			auto address = std::vector<uint8_t>(sizeof(in_addr));
 
 			auto socketAddress4 =
-				reinterpret_cast<sockaddr_in*>(handle);
+				static_cast<sockaddr_in*>(handle);
 
 			memcpy(
 				address.data(),
@@ -215,7 +215,7 @@ namespace Injector
 			auto address = std::vector<uint8_t>(sizeof(in6_addr));
 
 			auto socketAddress6 =
-				reinterpret_cast<sockaddr_in6*>(handle);
+				static_cast<sockaddr_in6*>(handle);
 
 			memcpy(
 				address.data(),
@@ -235,18 +235,18 @@ namespace Injector
 	uint16_t Endpoint::getPort() const
 	{
 		auto socketAddress =
-			reinterpret_cast<sockaddr_storage*>(handle);
+			static_cast<sockaddr_storage*>(handle);
 
 		if (socketAddress->ss_family == AF_INET)
 		{
 			auto socketAddress4 =
-				reinterpret_cast<sockaddr_in*>(handle);
+				static_cast<sockaddr_in*>(handle);
 			return socketAddress4->sin_port;
 		}
 		else if (socketAddress->ss_family == AF_INET6)
 		{
 			auto socketAddress6 =
-				reinterpret_cast<sockaddr_in6*>(handle);
+				static_cast<sockaddr_in6*>(handle);
 			return socketAddress6->sin6_port;
 		}
 		else
@@ -261,7 +261,7 @@ namespace Injector
 	std::string Endpoint::getAddressString() const
 	{
 		auto socketAddress =
-			reinterpret_cast<sockaddr*>(handle);
+			static_cast<sockaddr*>(handle);
 
 		char addressString[NI_MAXHOST];
 
@@ -290,7 +290,7 @@ namespace Injector
 	std::string Endpoint::getPortString() const
 	{
 		auto socketAddress =
-			reinterpret_cast<sockaddr*>(handle);
+			static_cast<sockaddr*>(handle);
 
 		char portString[NI_MAXSERV];
 
@@ -322,7 +322,7 @@ namespace Injector
 		std::string& port) const
 	{
 		auto socketAddress =
-			reinterpret_cast<sockaddr*>(handle);
+			static_cast<sockaddr*>(handle);
 
 		char addressString[NI_MAXHOST];
 		char portString[NI_MAXSERV];
@@ -355,7 +355,7 @@ namespace Injector
 	uint32_t Endpoint::getScopeID() const
 	{
 		auto socketAddress =
-			reinterpret_cast<sockaddr_in6*>(handle);
+			static_cast<sockaddr_in6*>(handle);
 
 		if (socketAddress->sin6_family != AF_INET6)
 		{
@@ -370,7 +370,7 @@ namespace Injector
 	uint32_t Endpoint::getFlowInfo() const
 	{
 		auto socketAddress =
-			reinterpret_cast<sockaddr_in6*>(handle);
+			static_cast<sockaddr_in6*>(handle);
 
 		if (socketAddress->sin6_family != AF_INET6)
 		{
@@ -389,9 +389,9 @@ namespace Injector
 		const Endpoint& endpoint) const noexcept
 	{
 		auto socketAddress =
-			reinterpret_cast<sockaddr_storage*>(handle);
+			static_cast<sockaddr_storage*>(handle);
 		auto otherSocketAddress =
-			reinterpret_cast<sockaddr_storage*>(endpoint.handle);
+			static_cast<sockaddr_storage*>(endpoint.handle);
 
 		if (socketAddress->ss_family != otherSocketAddress->ss_family)
 			return false;
@@ -399,9 +399,9 @@ namespace Injector
 		if (socketAddress->ss_family == AF_INET)
 		{
 			auto socketAddress4 =
-				reinterpret_cast<sockaddr_in*>(handle);
+				static_cast<sockaddr_in*>(handle);
 			auto otherSocketAddress4 =
-				reinterpret_cast<sockaddr_in*>(endpoint.handle);
+				static_cast<sockaddr_in*>(endpoint.handle);
 
 			return
 				socketAddress4->sin_port ==
@@ -413,9 +413,9 @@ namespace Injector
 		else if (socketAddress->ss_family == AF_INET6)
 		{
 			auto socketAddress6 =
-				reinterpret_cast<sockaddr_in6*>(handle);
+				static_cast<sockaddr_in6*>(handle);
 			auto otherSocketAddress6 =
-				reinterpret_cast<sockaddr_in6*>(endpoint.handle);
+				static_cast<sockaddr_in6*>(endpoint.handle);
 
 			return
 				socketAddress6->sin6_port ==
@@ -458,7 +458,7 @@ namespace Injector
 		if(this != &endpoint)
 		{
 			auto address =
-				reinterpret_cast<sockaddr_storage*>(handle);
+				static_cast<sockaddr_storage*>(handle);
 			delete address;
 
 			handle = endpoint.handle;
@@ -556,7 +556,7 @@ namespace Injector
 		}
 
 		auto socketAddress =
-			reinterpret_cast<sockaddr*>(endpoint.handle);
+			static_cast<sockaddr*>(endpoint.handle);
 
 		char hostString[NI_MAXHOST];
 		char serviceString[NI_MAXSERV];
@@ -590,9 +590,9 @@ namespace Injector
 		const Endpoint& b) noexcept
 	{
 		auto socketAddress =
-			reinterpret_cast<sockaddr_storage*>(a.handle);
+			static_cast<sockaddr_storage*>(a.handle);
 		auto otherSocketAddress =
-			reinterpret_cast<sockaddr_storage*>(b.handle);
+			static_cast<sockaddr_storage*>(b.handle);
 
 		if (socketAddress->ss_family != otherSocketAddress->ss_family)
 			return socketAddress->ss_family < otherSocketAddress->ss_family;
@@ -600,9 +600,9 @@ namespace Injector
 		if (socketAddress->ss_family == AF_INET)
 		{
 			auto socketAddress4 =
-				reinterpret_cast<sockaddr_in*>(a.handle);
+				static_cast<sockaddr_in*>(a.handle);
 			auto otherSocketAddress4 =
-				reinterpret_cast<sockaddr_in*>(b.handle);
+				static_cast<sockaddr_in*>(b.handle);
 
 			if (socketAddress4->sin_port != otherSocketAddress4->sin_port)
 				return socketAddress4->sin_port < otherSocketAddress4->sin_port;
@@ -615,9 +615,9 @@ namespace Injector
 		else if (socketAddress->ss_family == AF_INET6)
 		{
 			auto socketAddress6 =
-				reinterpret_cast<sockaddr_in6*>(a.handle);
+				static_cast<sockaddr_in6*>(a.handle);
 			auto otherSocketAddress6 =
-				reinterpret_cast<sockaddr_in6*>(b.handle);
+				static_cast<sockaddr_in6*>(b.handle);
 
 			if (socketAddress6->sin6_port != otherSocketAddress6->sin6_port)
 				return socketAddress6->sin6_port < otherSocketAddress6->sin6_port;

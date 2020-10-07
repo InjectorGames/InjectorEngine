@@ -54,7 +54,7 @@ namespace Injector
 
 		// Returns receives message byte count
 		int receive(void* buffer, size_t size) noexcept;
-		// Returns sended message byte count
+		// Returns sent message byte count
 		int send(const void* buffer, size_t size) noexcept;
 
 		// Returns receives message byte count
@@ -65,7 +65,7 @@ namespace Injector
 				buffer.data(),
 				buffer.size() * sizeof(T));
 		}
-		// Returns sended message byte count
+		// Returns sent message byte count
 		template<class T = uint8_t>
 		int send(const std::vector<T>& buffer)
 		{
@@ -79,7 +79,7 @@ namespace Injector
 			void* buffer,
 			size_t size,
 			Endpoint& endpoint) noexcept;
-		// Returns sended message byte count
+		// Returns sent message byte count
 		int sendTo(
 			const void* buffer,
 			size_t size,
@@ -96,7 +96,7 @@ namespace Injector
 				buffer.size() * sizeof(T),
 				endpoint);
 		}
-		// Returns sended message byte count
+		// Returns sent message byte count
 		template<class T = uint8_t>
 		int sendTo(
 			const std::vector<T>& buffer,

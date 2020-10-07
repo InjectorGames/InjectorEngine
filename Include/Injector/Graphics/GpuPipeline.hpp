@@ -7,6 +7,8 @@ namespace Injector
 	{
 	 public:
 		GpuPipeline() = default;
+		GpuPipeline(const GpuPipeline& pipeline) = delete;
+		GpuPipeline(GpuPipeline&& pipeline) = delete;
 		virtual ~GpuPipeline() = default;
 
 		virtual void setUniforms(

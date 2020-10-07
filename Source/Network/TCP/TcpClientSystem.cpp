@@ -16,7 +16,7 @@ namespace Injector
 			socketConnect = SocketConnect::Disconnected;
 		}
 	}
-	void TcpClientSystem::onReceive(int count)
+	void TcpClientSystem::onReceive(size_t byteCount)
 	{
 		lastResponseTime = Engine::getUpdateStartTime();
 	}
@@ -27,13 +27,13 @@ namespace Injector
 
 	TcpClientSystem::TcpClientSystem(
 		SocketFamily family,
-		double _timeoutTime,
-		size_t receiveBufferSize) :
+		double _timeoutTime) :
 		socket(family, SocketProtocol::TCP),
 		socketConnect(SocketConnect::Disconnected),
 		timeoutTime(_timeoutTime),
-		lastResponseTime(),
-		receiveBuffer(receiveBufferSize)
+		lastResponseTime(0.0),
+		receiveBuffer(),
+		sendBuffer()
 	{
 		auto localEndpoint = Endpoint();
 
@@ -88,10 +88,10 @@ namespace Injector
 				return;
 			}
 
-			int count;
+			int byteCount;
 
-			while((count = socket.receive(receiveBuffer)) > 0)
-				onReceive(count);
+			while((byteCount = socket.receive(receiveBuffer)) > 0)
+				onReceive(static_cast<size_t>(byteCount));
 		}
 		else if(socketConnect == SocketConnect::Connecting)
 		{

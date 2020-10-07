@@ -143,7 +143,7 @@ namespace Injector
 	{
 		auto endpoint = Endpoint();
 
-		auto address = reinterpret_cast<sockaddr*>(
+		auto address = static_cast<sockaddr*>(
 			endpoint.getHandle());
 		socklen_t length =
 			sizeof(sockaddr_storage);
@@ -167,7 +167,7 @@ namespace Injector
 	{
 		auto endpoint = Endpoint();
 
-		auto address = reinterpret_cast<sockaddr*>(
+		auto address = static_cast<sockaddr*>(
 			endpoint.getHandle());
 		socklen_t length =
 			sizeof(sockaddr_storage);
@@ -242,7 +242,7 @@ namespace Injector
 
 	void Socket::bind(const Endpoint& endpoint)
 	{
-		auto address = reinterpret_cast<const sockaddr*>(
+		auto address = static_cast<const sockaddr*>(
 			endpoint.getHandle());
 		auto family = endpoint.getSocketFamily();
 
@@ -296,7 +296,7 @@ namespace Injector
 		Socket& socket,
 		Endpoint& endpoint) noexcept
 	{
-		auto address = reinterpret_cast<sockaddr*>(
+		auto address = static_cast<sockaddr*>(
 			endpoint.getHandle());
 		socklen_t length =
 			sizeof(sockaddr_storage);
@@ -317,7 +317,7 @@ namespace Injector
 	}
 	bool Socket::connect(const Endpoint& endpoint) noexcept
 	{
-		auto address = reinterpret_cast<const sockaddr*>(
+		auto address = static_cast<const sockaddr*>(
 			endpoint.getHandle());
 		auto family = endpoint.getSocketFamily();
 
@@ -364,7 +364,7 @@ namespace Injector
 		size_t size,
 		Endpoint& endpoint) noexcept
 	{
-		auto address = reinterpret_cast<sockaddr*>(
+		auto address = static_cast<sockaddr*>(
 			endpoint.getHandle());
 		socklen_t length =
 			sizeof(sockaddr_storage);
@@ -387,7 +387,7 @@ namespace Injector
 		size_t size,
 		const Endpoint& endpoint) noexcept
 	{
-		auto address = reinterpret_cast<const sockaddr*>(
+		auto address = static_cast<const sockaddr*>(
 			endpoint.getHandle());
 
 		return ::sendto(
@@ -423,7 +423,6 @@ namespace Injector
 		else
 			return false;
 #endif
-
 
 		auto result = ::shutdown(
 			static_cast<SOCKET_TYPE>(handle),

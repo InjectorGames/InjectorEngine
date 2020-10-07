@@ -18,19 +18,20 @@ namespace Injector
 		double lastResponseTime;
 		// Message receive buffer
 		std::vector<uint8_t> receiveBuffer;
+		// Message send buffer
+		std::vector<uint8_t> sendBuffer;
 
 		// Socket result handle
 		virtual void onConnect(bool result);
 		// Message receive handle
-		virtual void onReceive(int count);
+		virtual void onReceive(size_t byteCount);
 		// Response timeout handle
 		virtual void onResponseTimeout();
 	 public:
 		// Creates and binds a new TCP client system
 		explicit TcpClientSystem(
 			SocketFamily family,
-			double timeoutTime = 6.0,
-			size_t receiveBufferSize = 65536);
+			double timeoutTime = 6.0);
 
 		// Returns client socket
 		const Socket& getSocket() const noexcept;

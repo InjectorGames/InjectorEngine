@@ -3,31 +3,33 @@
 
 namespace Injector
 {
-	void TcpServerSession::onReceive(int count)
+	void TcpServerSession::onReceive(size_t byteCount)
 	{
 		lastResponseTime = Engine::getUpdateStartTime();
 	}
 	void TcpServerSession::onRequestTimeout()
 	{
 		alive = false;
-		socket.shutdown(
-			SocketShutdown::Both);
-		socket.close();
 	}
 
 	TcpServerSession::TcpServerSession(
 		Socket _socket,
-		Endpoint _endpoint,
+		const Endpoint& _endpoint,
 		bool _alive,
-		double _timeoutTime,
-		size_t receiveBufferSize) :
+		double _timeoutTime) :
 		alive(_alive),
 		timeoutTime(_timeoutTime),
 		socket(std::move(_socket)),
-		endpoint(std::move(_endpoint)),
-		receiveBuffer(receiveBufferSize)
+		endpoint(_endpoint),
+		receiveBuffer()
 	{
 		lastResponseTime = Engine::getUpdateStartTime();
+	}
+	TcpServerSession::~TcpServerSession()
+	{
+		socket.shutdown(
+			SocketShutdown::Both);
+		socket.close();
 	}
 
 	bool TcpServerSession::isAlive() const noexcept
@@ -63,9 +65,9 @@ namespace Injector
 			return;
 		}
 
-		int count;
+		int byteCount;
 
-		while((count = socket.receive(receiveBuffer)) > 0)
-			onReceive(count);
+		while((byteCount = socket.receive(receiveBuffer)) > 0)
+			onReceive(static_cast<size_t>(byteCount));
 	}
 }

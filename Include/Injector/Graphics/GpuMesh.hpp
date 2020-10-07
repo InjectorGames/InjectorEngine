@@ -21,6 +21,8 @@ namespace Injector
 			GpuBufferIndex indexType,
 			const std::shared_ptr<GpuBuffer>& vertexBuffer = nullptr,
 			const std::shared_ptr<GpuBuffer>& indexBuffer = nullptr);
+		GpuMesh(GpuMesh&& mesh) = delete;
+		GpuMesh(const GpuMesh& mesh) = delete;
 		virtual ~GpuMesh() = default;
 	};
 }

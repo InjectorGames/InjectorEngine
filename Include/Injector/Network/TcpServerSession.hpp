@@ -18,21 +18,22 @@ namespace Injector
 		Endpoint endpoint;
 		// Message receive buffer
 		std::vector<uint8_t> receiveBuffer;
+		// Message send buffer
+		std::vector<uint8_t> sendBuffer;
 
 		// Message receive handle
-		virtual void onReceive(int count);
+		virtual void onReceive(size_t byteCount);
 		// Request timeout handle
 		virtual void onRequestTimeout();
 	 public:
 		// Creates a new socket session
 		TcpServerSession(
 			Socket socket,
-			Endpoint endpoint,
+			const Endpoint& endpoint,
 			bool alive = true,
-			double timeoutTime = 6.0,
-			size_t receiveBufferSize = 65536);
+			double timeoutTime = 6.0);
 		// Closes and destroys session
-		virtual ~TcpServerSession() = default;
+		virtual ~TcpServerSession();
 
 		// Returns true if session is still alive
 		bool isAlive() const noexcept;

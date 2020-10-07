@@ -63,7 +63,7 @@ namespace Injector
 			const std::shared_ptr<Entity>& entity) const noexcept;
 		// Returns true if manager contains specified system
 		bool containsSystem(
-			const std::shared_ptr<System>& system) noexcept;
+			const std::shared_ptr<System>& system) const noexcept;
 
 		// Removes all manager entities
 		void removeEntities() noexcept;

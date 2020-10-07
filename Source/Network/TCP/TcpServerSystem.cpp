@@ -5,11 +5,11 @@ namespace Injector
 {
 	std::shared_ptr<TcpServerSession> TcpServerSystem::createSession(
 		Socket socket,
-		Endpoint endpoint)
+		const Endpoint& endpoint)
 	{
 		return std::make_shared<TcpServerSession>(
 			std::move(socket),
-			std::move(endpoint));
+			endpoint);
 	}
 
 	TcpServerSystem::TcpServerSystem(
@@ -71,7 +71,7 @@ namespace Injector
 			{
 				auto session = createSession(
 					std::move(remoteSocket),
-					std::move(endpoint));
+					endpoint);
 				sessions.push_back(session);
 			}
 			else

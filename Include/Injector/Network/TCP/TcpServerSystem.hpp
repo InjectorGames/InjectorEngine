@@ -20,7 +20,7 @@ namespace Injector
 		// Socket accept handle
 		virtual std::shared_ptr<TcpServerSession> createSession(
 			Socket socket,
-			Endpoint endpoint);
+			const Endpoint& endpoint);
 	 public:
 		// Creates and binds a new TCP server system
 		explicit TcpServerSystem(

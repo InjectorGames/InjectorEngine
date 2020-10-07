@@ -58,7 +58,8 @@ namespace Injector
 		entities.erase(iterator);
 		return true;
 	}
-	bool Manager::removeSystem(const std::shared_ptr<System>& system) noexcept
+	bool Manager::removeSystem(
+		const std::shared_ptr<System>& system) noexcept
 	{
 		if (!system)
 			return false;
@@ -84,7 +85,7 @@ namespace Injector
 		return entities.find(entity) != entities.end();
 	}
 	bool Manager::containsSystem(
-		const std::shared_ptr<System>& system) noexcept
+		const std::shared_ptr<System>& system) const noexcept
 	{
 		if (system == nullptr)
 			return false;
