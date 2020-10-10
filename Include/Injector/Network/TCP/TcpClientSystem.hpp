@@ -31,7 +31,9 @@ namespace Injector
 		// Creates and binds a new TCP client system
 		explicit TcpClientSystem(
 			SocketFamily family,
-			double timeoutTime = 6.0);
+			double timeoutTime = 6.0,
+			size_t receiveBufferSize = 65536,
+			size_t sendBufferSize = 65536);
 
 		// Returns client socket
 		const Socket& getSocket() const noexcept;

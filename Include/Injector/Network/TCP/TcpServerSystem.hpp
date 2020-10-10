@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/ECS/System.hpp"
-#include "Injector/Network/TcpServerSession.hpp"
+#include "Injector/Network/TCP/TcpServerSession.hpp"
 
 #include <memory>
 

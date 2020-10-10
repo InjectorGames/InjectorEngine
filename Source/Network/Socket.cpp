@@ -240,6 +240,174 @@ namespace Injector
 #endif
 	}
 
+	uint32_t Socket::getReceiveTimeout() const
+	{
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+		timeval timeout;
+		socklen_t size = sizeof(timeval);
+
+		auto result = getsockopt(
+			static_cast<int>(handle),
+			SOL_SOCKET,
+			SO_RCVTIMEO,
+			&timeout,
+			&size);
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"getReceiveTimeout",
+				"Failed to get socket option");
+		}
+
+		return
+			timeout.tv_sec * 1000 +
+			timeout.tv_usec / 1000;
+#elif INJECTOR_SYSTEM_WINDOWS
+		uint32_t timeout;
+
+		auto result = getsockopt(
+			static_cast<int>(handle),
+			SOL_SOCKET,
+			SO_RCVTIMEO,
+			static_cast<char*>(&timeout),
+			sizeof(uint32_t));
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"getReceiveTimeout",
+				"Failed to get socket option");
+		}
+
+		return static_cast<size_t>(timeout);
+#endif
+	}
+	void Socket::setReceiveTimeout(uint32_t milliseconds) const
+	{
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+		timeval timeout;
+		timeout.tv_sec = milliseconds / 1000;
+		timeout.tv_usec = (milliseconds % 1000) * 1000;
+
+		auto result = setsockopt(
+			static_cast<int>(handle),
+			SOL_SOCKET,
+			SO_RCVTIMEO,
+			&timeout,
+			sizeof(timeval));
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"setReceiveTimeout",
+				"Failed to set socket option");
+		}
+#elif INJECTOR_SYSTEM_WINDOWS
+		auto result = setsockopt(
+			static_cast<int>(handle),
+			SOL_SOCKET,
+			SO_RCVTIMEO,
+			static_cast<char*>(&milliseconds),
+			sizeof(uint32_t));
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"setReceiveTimeout",
+				"Failed to set socket option");
+		}
+#endif
+	}
+
+	uint32_t Socket::getSendTimeout() const
+	{
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+		timeval timeout;
+		socklen_t size = sizeof(timeval);
+
+		auto result = getsockopt(
+			static_cast<int>(handle),
+			SOL_SOCKET,
+			SO_SNDTIMEO,
+			&timeout,
+			&size);
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"getReceiveTimeout",
+				"Failed to get socket option");
+		}
+
+		return
+			timeout.tv_sec * 1000 +
+			timeout.tv_usec / 1000;
+#elif INJECTOR_SYSTEM_WINDOWS
+		uint32_t timeout;
+
+		auto result = getsockopt(
+			static_cast<int>(handle),
+			SOL_SOCKET,
+			SO_SNDTIMEO,
+			static_cast<char*>(&timeout),
+			sizeof(uint32_t));
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"getReceiveTimeout",
+				"Failed to get socket option");
+		}
+
+		return static_cast<size_t>(timeout);
+#endif
+	}
+	void Socket::setSendTimeout(uint32_t milliseconds) const
+	{
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+		timeval timeout;
+		timeout.tv_sec = milliseconds / 1000;
+		timeout.tv_usec = (milliseconds % 1000) * 1000;
+
+		auto result = setsockopt(
+			static_cast<int>(handle),
+			SOL_SOCKET,
+			SO_RCVTIMEO,
+			&timeout,
+			sizeof(timeval));
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"setReceiveTimeout",
+				"Failed to set socket option");
+		}
+#elif INJECTOR_SYSTEM_WINDOWS
+		auto result = setsockopt(
+			static_cast<int>(handle),
+			SOL_SOCKET,
+			SO_RCVTIMEO,
+			static_cast<char*>(&milliseconds),
+			sizeof(uint32_t));
+
+		if(result != 0)
+		{
+			throw Exception(
+				"Socket",
+				"setReceiveTimeout",
+				"Failed to set socket option");
+		}
+#endif
+	}
+
 	void Socket::bind(const Endpoint& endpoint)
 	{
 		auto address = static_cast<const sockaddr*>(

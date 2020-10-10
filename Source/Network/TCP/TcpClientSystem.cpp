@@ -27,13 +27,15 @@ namespace Injector
 
 	TcpClientSystem::TcpClientSystem(
 		SocketFamily family,
-		double _timeoutTime) :
+		double _timeoutTime,
+		size_t _receiveBufferSize,
+		size_t _sendBufferSize) :
 		socket(family, SocketProtocol::TCP),
 		socketConnect(SocketConnect::Disconnected),
 		timeoutTime(_timeoutTime),
 		lastResponseTime(0.0),
-		receiveBuffer(),
-		sendBuffer()
+		receiveBuffer(_receiveBufferSize),
+		sendBuffer(_sendBufferSize)
 	{
 		auto localEndpoint = Endpoint();
 

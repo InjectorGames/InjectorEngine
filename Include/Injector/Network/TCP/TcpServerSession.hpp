@@ -31,7 +31,10 @@ namespace Injector
 			Socket socket,
 			const Endpoint& endpoint,
 			bool alive = true,
-			double timeoutTime = 6.0);
+			double timeoutTime = 6.0,
+			size_t receiveBufferSize = 65536,
+			size_t sendBufferSize = 65536);
+
 		// Closes and destroys session
 		virtual ~TcpServerSession();
 

@@ -1,4 +1,4 @@
-#include "Injector/Network/TcpServerSession.hpp"
+#include "Injector/Network/TCP/TcpServerSession.hpp"
 #include "Injector/Engine.hpp"
 
 namespace Injector
@@ -16,12 +16,15 @@ namespace Injector
 		Socket _socket,
 		const Endpoint& _endpoint,
 		bool _alive,
-		double _timeoutTime) :
+		double _timeoutTime,
+		size_t _receiveBufferSize,
+		size_t _sendBufferSize) :
 		alive(_alive),
 		timeoutTime(_timeoutTime),
 		socket(std::move(_socket)),
 		endpoint(_endpoint),
-		receiveBuffer()
+		receiveBuffer(_receiveBufferSize),
+		sendBuffer(_sendBufferSize)
 	{
 		lastResponseTime = Engine::getUpdateStartTime();
 	}

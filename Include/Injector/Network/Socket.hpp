@@ -42,6 +42,16 @@ namespace Injector
 		// Sets socket blocking mode
 		void setBlocking(bool blocking) const;
 
+		// Returns socket receive timeout
+		uint32_t getReceiveTimeout() const;
+		// Sets socket receive timeout
+		void setReceiveTimeout(uint32_t milliseconds) const;
+
+		// Returns socket send timeout
+		uint32_t getSendTimeout() const;
+		// Sets socket send timeout
+		void setSendTimeout(uint32_t ms) const;
+
 		// Assigns socket local endpoint
 		void bind(const Endpoint& endpoint);
 		// Listens for connections on socket
