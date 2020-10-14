@@ -266,13 +266,14 @@ namespace Injector
 			timeout.tv_usec / 1000;
 #elif INJECTOR_SYSTEM_WINDOWS
 		uint32_t timeout;
+		int size = sizeof(uint32_t);
 
 		auto result = getsockopt(
 			static_cast<int>(handle),
 			SOL_SOCKET,
 			SO_RCVTIMEO,
-			static_cast<char*>(&timeout),
-			sizeof(uint32_t));
+			reinterpret_cast<char*>(&timeout),
+			&size);
 
 		if(result != 0)
 		{
@@ -311,7 +312,7 @@ namespace Injector
 			static_cast<int>(handle),
 			SOL_SOCKET,
 			SO_RCVTIMEO,
-			static_cast<char*>(&milliseconds),
+			reinterpret_cast<const char*>(&milliseconds),
 			sizeof(uint32_t));
 
 		if(result != 0)
@@ -350,13 +351,14 @@ namespace Injector
 			timeout.tv_usec / 1000;
 #elif INJECTOR_SYSTEM_WINDOWS
 		uint32_t timeout;
+		int size = sizeof(uint32_t);
 
 		auto result = getsockopt(
 			static_cast<int>(handle),
 			SOL_SOCKET,
 			SO_SNDTIMEO,
-			static_cast<char*>(&timeout),
-			sizeof(uint32_t));
+			reinterpret_cast<char*>(&timeout),
+			&size);
 
 		if(result != 0)
 		{
@@ -395,7 +397,7 @@ namespace Injector
 			static_cast<int>(handle),
 			SOL_SOCKET,
 			SO_RCVTIMEO,
-			static_cast<char*>(&milliseconds),
+			reinterpret_cast<const char*>(&milliseconds),
 			sizeof(uint32_t));
 
 		if(result != 0)
@@ -508,7 +510,7 @@ namespace Injector
 
 	int Socket::receive(
 		void* buffer,
-		size_t size) noexcept
+		int size) noexcept
 	{
 		return ::recv(
 			static_cast<SOCKET_TYPE>(handle),
@@ -518,7 +520,7 @@ namespace Injector
 	}
 	int Socket::send(
 		const void* buffer,
-		size_t size) noexcept
+		int size) noexcept
 	{
 		return ::send(
 			static_cast<SOCKET_TYPE>(handle),
@@ -529,7 +531,7 @@ namespace Injector
 
 	int Socket::receiveFrom(
 		void* buffer,
-		size_t size,
+		int size,
 		Endpoint& endpoint) noexcept
 	{
 		auto address = static_cast<sockaddr*>(
@@ -552,7 +554,7 @@ namespace Injector
 	}
 	int Socket::sendTo(
 		const void* buffer,
-		size_t size,
+		int size,
 		const Endpoint& endpoint) noexcept
 	{
 		auto address = static_cast<const sockaddr*>(
