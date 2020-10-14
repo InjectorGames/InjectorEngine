@@ -25,7 +25,7 @@ namespace Injector
 		const VkDeviceSize offset = 0;
 
 		auto vkVertexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(vertexBuffer);
-		auto vkIndexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(vertexBuffer);
+		auto vkIndexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(indexBuffer);
 
 		if (!vkVertexBuffer || !vkIndexBuffer)
 			return;
