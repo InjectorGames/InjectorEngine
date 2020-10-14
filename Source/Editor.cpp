@@ -9,7 +9,7 @@
 
 using namespace Injector;
 
-void initialize()
+/*void initialize()
 {
 	auto window = Window::create();
 
@@ -166,16 +166,112 @@ void initialize()
 		teapotMesh);
 	transformSystem->addTransform(teapot);
 	freeCameraComponent->renders.emplace(teapot);
+}*/
+
+void initialize()
+{
+	auto window = Window::create();
+
+	auto freeCameraSystem = window->createSystem<FreeCameraSystem>(window);
+	auto transformSystem = window->createSystem<TransformSystem>();
+	auto cameraSystem = window->createCameraSystem();
+	auto renderSystem = window->createRenderSystem();
+
+	auto freeCamera = window->createEntity();
+	freeCamera->createComponent<TransformComponent>(
+		Vector3(0.0f, 0, 0),
+		Quaternion(Vector3::zero),
+		Vector3::one,
+		RotationOrigin::Orbit);
+	auto freeCameraComponent = freeCamera->createComponent<CameraComponent>(
+		0,
+		CameraType::Perspective);
+	transformSystem->addTransform(freeCamera);
+	cameraSystem->addCamera(freeCamera);
+	renderSystem->addCamera(freeCamera);
+	freeCameraSystem->camera = freeCamera;
+
+	auto colorVertexShader = window->createShader(
+		GpuShaderStage::Vertex,
+		window->readShaderData(
+			"Resources/Shaders/Color.vert"));
+	auto colorFragmentShader = window->createShader(
+		GpuShaderStage::Fragment,
+		window->readShaderData(
+			"Resources/Shaders/Color.frag"));
+	auto colorPipeline = window->createColorPipeline(
+		colorVertexShader,
+		colorFragmentShader);
+
+	auto teapotModelData = ModelData::readFromFile(
+		"Resources/Models/UtahTeapot.fbx");
+
+	auto floorMesh = window->createMesh(
+		ModelData::square.getVertex(),
+		false,
+		ModelData::square.indices16,
+		false);
+	auto cubeMesh = window->createMesh(
+		ModelData::cube.getVertex(),
+		false,
+		ModelData::cube.indices16,
+		false);
+	auto teapotMesh = window->createMesh(
+		teapotModelData->getVertex(),
+		false,
+		teapotModelData->indices32,
+		false);
+
+	auto floor = window->createEntity();
+	floor->createComponent<TransformComponent>(
+		Vector3::zero,
+		Quaternion(
+			Vector3(
+				Converter::toRadians(-90.0f),
+				0.0f,
+				0.0f)),
+		Vector3::one * 10);
+	floor->createComponent<RenderComponent>(
+		colorPipeline,
+		floorMesh);
+	transformSystem->addTransform(floor);
+	freeCameraComponent->renders.emplace(floor);
+
+	auto cube = window->createEntity();
+	cube->createComponent<TransformComponent>(
+		Vector3(-4.5f, 0.5f, -4.5f),
+		Quaternion(Vector3::zero),
+		Vector3::one,
+		RotationOrigin::Spin,
+		Matrix4::identity,
+		nullptr);
+	cube->createComponent<RenderComponent>(
+		colorPipeline,
+		cubeMesh);
+	transformSystem->addTransform(cube);
+	freeCameraComponent->renders.emplace(cube);
+
+	auto teapot = window->createEntity();
+	teapot->createComponent<TransformComponent>(
+		Vector3(0.0f, 0.5f, 0.0f),
+		Quaternion(Vector3::zero),
+		Vector3::one / 8.0f,
+		RotationOrigin::Spin,
+		Matrix4::identity,
+		cube);
+	teapot->createComponent<RenderComponent>(
+		colorPipeline,
+		teapotMesh);
+	transformSystem->addTransform(teapot);
+	freeCameraComponent->renders.emplace(teapot);
 }
 
 int main()
 {
 	try
 	{
-		//Engine::initializeGraphics(
-		// 	GraphicsAPI::Vulkan);
 		Engine::initializeGraphics(
-			GraphicsAPI::OpenGL);
+		 	GraphicsAPI::Vulkan);
 		//Engine::initializeVirtualReality();
 		Engine::setTargetUpdateRate(60);
 		Engine::initializeEngine();

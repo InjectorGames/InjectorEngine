@@ -6,18 +6,21 @@
 namespace Injector
 {
 	VkGpuBuffer::VkGpuBuffer(
-		GpuBufferType type,
-		size_t size,
 		VmaAllocator _allocator,
 		vk::BufferUsageFlags usageFlags,
-		VmaMemoryUsage usage) :
+		VmaMemoryUsage usage,
+		GpuBufferType type,
+		size_t size) :
 		GpuBuffer(type, size, isVkMappable(usage)),
 		allocator(_allocator)
 	{
 		VkBufferCreateInfo bufferCreateInfo = {};
 		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		bufferCreateInfo.size = size;
-		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(toVkType(type) | usageFlags);
+		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(
+			toVkType(type) |
+			usageFlags);
+		bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		VmaAllocationCreateInfo allocationCreateInfo = {};
 		allocationCreateInfo.flags = VMA_ALLOCATION_CREATE_WITHIN_BUDGET_BIT;
@@ -49,7 +52,7 @@ namespace Injector
 	{
 		vmaDestroyBuffer(
 			allocator,
-			static_cast<VkBuffer_T*>(buffer),
+			static_cast<VkBuffer>(buffer),
 			allocation);
 	}
 
@@ -325,7 +328,8 @@ namespace Injector
 		vmaUnmapMemory(allocator, allocation);
 	}
 
-	vk::BufferUsageFlagBits VkGpuBuffer::toVkType(GpuBufferType type)
+	vk::BufferUsageFlagBits VkGpuBuffer::toVkType(
+		GpuBufferType type)
 	{
 		switch (type)
 		{
@@ -354,7 +358,8 @@ namespace Injector
 				"Unsupported type");
 		}
 	}
-	bool VkGpuBuffer::isVkMappable(VmaMemoryUsage usage)
+	bool VkGpuBuffer::isVkMappable(
+		VmaMemoryUsage usage)
 	{
 		return
 			usage == VMA_MEMORY_USAGE_CPU_ONLY ||

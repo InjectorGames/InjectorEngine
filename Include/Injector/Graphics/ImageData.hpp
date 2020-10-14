@@ -21,6 +21,7 @@ namespace Injector
 			int componentCount,
 			bool component16,
 			const std::vector<uint8_t>& pixels);
+		// TODO: move/copy constructor
 		virtual ~ImageData() = default;
 
 		bool isValid() const noexcept;

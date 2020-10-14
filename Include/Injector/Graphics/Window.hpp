@@ -67,7 +67,9 @@ namespace Injector
 		void setIcons(const std::vector<std::shared_ptr<ImageData>>& icons);
 		void setMouseMode(MouseMode mode);
 		void setMouseIcon(MouseIcon icon);
-		void setMouseIcon(const std::shared_ptr<ImageData>& icon, const IntVector2& hotspot);
+		void setMouseIcon(
+			const std::shared_ptr<ImageData>& icon,
+			const IntVector2& hotspot);
 		void setResizable(bool resizable);
 		void setDecorated(bool decorated);
 
@@ -153,7 +155,7 @@ namespace Injector
 			GpuImageFilter magFilter,
 			GpuImageWrap wrapU,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data);
+			const std::shared_ptr<ImageData>& data = nullptr);
 		std::shared_ptr<GpuImage> createImage(
 			const IntVector2& size,
 			GpuImageFormat format,
@@ -162,7 +164,7 @@ namespace Injector
 			GpuImageWrap wrapU,
 			GpuImageWrap wrapV,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data);
+			const std::shared_ptr<ImageData>& data = nullptr);
 		std::shared_ptr<GpuImage> createImage(
 			const IntVector3& size,
 			GpuImageFormat format,
@@ -172,7 +174,7 @@ namespace Injector
 			GpuImageWrap wrapV,
 			GpuImageWrap wrapW,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data);
+			const std::shared_ptr<ImageData>& data = nullptr);
 
 		static std::shared_ptr<Window> create(
 			const std::string& title = defaultTitle,

@@ -29,6 +29,7 @@ namespace Injector
 			const std::vector<Vector3>& normals,
 			const std::vector<Vector3>& tangents,
 			const std::vector<Vector3>& bitangents);
+		// TODO: move/copy constructor
 		virtual ~ModelData() = default;
 
 		// TODO: add texture loading,

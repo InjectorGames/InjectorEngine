@@ -194,7 +194,9 @@ namespace Injector
 			static_cast<int>(MouseIcon::Arrow));
 		glfwSetCursor(window, cursor);
 	}
-	void Window::setMouseIcon(const std::shared_ptr<ImageData>& icon, const IntVector2& hotspot)
+	void Window::setMouseIcon(
+		const std::shared_ptr<ImageData>& icon,
+		const IntVector2& hotspot)
 	{
 		glfwSetCursor(window, nullptr);
 		glfwDestroyCursor(cursor);
@@ -412,11 +414,9 @@ namespace Injector
 		}
 		else if (graphicsApi == GraphicsAPI::Vulkan)
 		{
-			/*return Engine::createManager<VkWindow>(
+			return Engine::createManager<VkWindow>(
 				title,
-				size,
-				false);*/
-			return nullptr;
+				size);
 		}
 		else
 		{

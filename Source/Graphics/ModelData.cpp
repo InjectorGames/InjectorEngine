@@ -48,7 +48,7 @@ namespace Injector
 			vertices.data(),
 			vertices.size() * sizeof(Vector3));
 
-		return vertexData;
+		return std::move(vertexData);
 	}
 	std::vector<float> ModelData::getVertexColor() const
 	{
@@ -75,7 +75,7 @@ namespace Injector
 				sizeof(Vector4));
 		}
 
-		return vertexData;
+		return std::move(vertexData);
 	}
 	std::vector<float> ModelData::getVertexTexCoord() const
 	{
@@ -102,7 +102,7 @@ namespace Injector
 				sizeof(Vector2));
 		}
 
-		return vertexData;
+		return std::move(vertexData);
 	}
 	std::vector<float> ModelData::getVertexNormal() const
 	{
@@ -129,7 +129,7 @@ namespace Injector
 				sizeof(Vector3));
 		}
 
-		return vertexData;
+		return std::move(vertexData);
 	}
 	std::vector<float> ModelData::getVertexNormalTexCoord() const
 	{
@@ -161,7 +161,7 @@ namespace Injector
 				sizeof(Vector2));
 		}
 
-		return vertexData;
+		return std::move(vertexData);
 	}
 
 	std::shared_ptr<ModelData> ModelData::readFromFile(

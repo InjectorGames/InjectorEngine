@@ -81,7 +81,11 @@ namespace Injector
 			size.x * size.y * componentCount * 2 :
 			size.x * size.y * componentCount;
 		imageData->pixels = std::vector<uint8_t>(binarySize);
-		memcpy(imageData->pixels.data(), data, binarySize);
+
+		memcpy(
+			imageData->pixels.data(),
+			data,
+			binarySize);
 
 		stbi_image_free(data);
 		return imageData;

@@ -178,11 +178,11 @@ namespace Injector
 		for (size_t i = 0; i < imageCount; i++)
 		{
 			uniformBuffers[i] = std::make_shared<VkGpuBuffer>(
-				GpuBufferType::Uniform,
-				sizeof(UniformBufferObject),
 				allocator,
 				static_cast<vk::BufferUsageFlags>(0),
-				VMA_MEMORY_USAGE_CPU_TO_GPU);
+				VMA_MEMORY_USAGE_CPU_TO_GPU,
+				GpuBufferType::Uniform,
+				sizeof(UniformBufferObject));
 		}
 
 		return uniformBuffers;

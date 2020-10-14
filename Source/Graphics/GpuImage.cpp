@@ -4,7 +4,7 @@ namespace Injector
 {
 	GpuImage::GpuImage(
 		GpuImageType _type,
-		IntVector3 _size,
+		const IntVector3& _size,
 		GpuImageFormat _format,
 		GpuImageFilter _minFilter,
 		GpuImageFilter _magFilter,
@@ -31,6 +31,10 @@ namespace Injector
 	const IntVector3& GpuImage::getSize() const noexcept
 	{
 		return size;
+	}
+	GpuImageFormat GpuImage::getFormat() const noexcept
+	{
+		return format;
 	}
 	GpuImageFilter GpuImage::getMinFilter() const noexcept
 	{

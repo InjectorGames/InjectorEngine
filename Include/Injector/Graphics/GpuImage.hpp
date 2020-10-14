@@ -22,7 +22,7 @@ namespace Injector
 	 public:
 		GpuImage(
 			GpuImageType type,
-			IntVector3 size,
+			const IntVector3& size,
 			GpuImageFormat format,
 			GpuImageFilter minFilter,
 			GpuImageFilter magFilter,

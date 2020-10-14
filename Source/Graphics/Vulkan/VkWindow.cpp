@@ -1,8 +1,9 @@
 #include "Injector/Graphics/Vulkan/VkWindow.hpp"
 #include "Injector/Defines.hpp"
 #include "Injector/Storage/FileStream.hpp"
-#include "Injector/Graphics/Vulkan/VkGpuMesh.hpp"
 #include "Injector/Exception/Exception.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuMesh.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuImage.hpp"
 #include "Injector/Graphics/Vulkan/VkCameraSystem.hpp"
 #include "Injector/Graphics/Vulkan/VkRenderSystem.hpp"
 #include "Injector/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.hpp"
@@ -23,13 +24,13 @@ namespace Injector
 		void* pUserData)
 	{
 		if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
-			std::cout << "VULKAN VERBOSE: " << pCallbackData->pMessage << "\n";
+			std::cout << "Engine Vulkan [VERBOSE]: " << pCallbackData->pMessage << "\n";
 		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-			std::cout << "VULKAN INFO: " << pCallbackData->pMessage << "\n";
+			std::cout << "Engine Vulkan [INFO]: " << pCallbackData->pMessage << "\n";
 		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-			std::cout << "VULKAN WARNING: " << pCallbackData->pMessage << "\n";
+			std::cout << "Engine Vulkan [WARNING]: " << pCallbackData->pMessage << "\n";
 		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-			std::cout << "VULKAN ERROR: " << pCallbackData->pMessage << "\n";
+			std::cout << "Engine Vulkan [ERROR]: " << pCallbackData->pMessage << "\n";
 
 		return VK_FALSE;
 	}
@@ -796,8 +797,7 @@ namespace Injector
 
 	VkWindow::VkWindow(
 		const std::string& title,
-		const IntVector2& size,
-		bool stereo) :
+		const IntVector2& size) :
 		Window(createWindow(title, size))
 	{
 		if(size.x < 1 || size.y < 0)
@@ -992,16 +992,21 @@ namespace Injector
 #endif
 	}
 
-	vk::CommandBuffer VkWindow::getGraphicsCommandBuffer(uint32_t imageIndex) const
+	vk::CommandBuffer VkWindow::getGraphicsCommandBuffer(
+		uint32_t imageIndex) const
 	{
-		return swapchainDatas.at(imageIndex)->graphicsCommandBuffer;
+		return swapchainDatas.at(
+			imageIndex)->graphicsCommandBuffer;
 	}
-	vk::CommandBuffer VkWindow::getPresentCommandBuffer(uint32_t imageIndex) const
+	vk::CommandBuffer VkWindow::getPresentCommandBuffer(
+		uint32_t imageIndex) const
 	{
-		return swapchainDatas.at(imageIndex)->presentCommandBuffer;
+		return swapchainDatas.at(
+			imageIndex)->presentCommandBuffer;
 	}
 
-	void VkWindow::onFramebufferResize(const IntVector2& size)
+	void VkWindow::onFramebufferResize(
+		const IntVector2& size)
 	{
 		device.waitIdle();
 
@@ -1351,38 +1356,38 @@ namespace Injector
 		if (mappable)
 		{
 			buffer = std::make_shared<VkGpuBuffer>(
-				type,
-				size,
 				memoryAllocator,
 				static_cast<vk::BufferUsageFlags>(0),
-				VMA_MEMORY_USAGE_CPU_TO_GPU);
+				VMA_MEMORY_USAGE_CPU_TO_GPU,
+				type,
+				size);
 			buffer->setData(data, size);
 		}
 		else
 		{
 			buffer = std::make_shared<VkGpuBuffer>(
-				type,
-				size,
 				memoryAllocator,
 				vk::BufferUsageFlagBits::eTransferDst,
-				VMA_MEMORY_USAGE_GPU_ONLY);
+				VMA_MEMORY_USAGE_GPU_ONLY,
+				type,
+				size);
 
 			auto stagingBuffer = VkGpuBuffer(
-				type,
-				size,
 				memoryAllocator,
 				vk::BufferUsageFlagBits::eTransferSrc,
-				VMA_MEMORY_USAGE_CPU_ONLY);
+				VMA_MEMORY_USAGE_CPU_ONLY,
+				type,
+				size);
 			stagingBuffer.setData(data, size);
 
 			vk::CommandBuffer commandBuffer;
 
-			auto commandBufferAlocateInfo = vk::CommandBufferAllocateInfo(
+			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo(
 				transferCommandPool,
 				vk::CommandBufferLevel::ePrimary,
 				1);
 			auto result = device.allocateCommandBuffers(
-				&commandBufferAlocateInfo,
+				&commandBufferAllocateInfo,
 				&commandBuffer);
 
 			if (result != vk::Result::eSuccess)
@@ -1445,7 +1450,9 @@ namespace Injector
 	std::shared_ptr<ShaderData> VkWindow::readShaderData(
 		const std::string& filePath)
 	{
-		auto fileStream = FileStream(filePath, std::ios::in | std::ios::binary);
+		auto fileStream = FileStream(
+			filePath + ".spv",
+			std::ios::in | std::ios::binary);
 		auto shaderData = std::make_shared<ShaderData>();
 		shaderData->code = std::vector<uint8_t>(fileStream.getSize());
 		fileStream.read(shaderData->code.data(), fileStream.getSize());
@@ -1455,41 +1462,85 @@ namespace Injector
 		GpuShaderStage stage,
 		const std::shared_ptr<ShaderData>& data)
 	{
+		return std::make_shared<VkGpuShader>(device, stage, data);
+	}
+	std::shared_ptr<GpuImage> VkWindow::createImage(
+		GpuImageType type,
+		const IntVector3& size,
+		GpuImageFormat format,
+		GpuImageFilter minFilter,
+		GpuImageFilter magFilter,
+		GpuImageWrap wrapU,
+		GpuImageWrap wrapV,
+		GpuImageWrap wrapW,
+		bool useMipmap,
+		const std::shared_ptr<ImageData>& data)
+	{
+		auto image = std::make_shared<VkGpuImage>(
+			memoryAllocator,
+			vk::ImageUsageFlagBits::eTransferDst |
+			vk::ImageUsageFlagBits::eSampled,
+			type,
+			size,
+			format);
+
+		if(!data)
+		{
+			// TODO: staging buffer
+		}
+
+		return nullptr;
+	}
+	std::shared_ptr<GpuFramebuffer> VkWindow::createFramebuffer(
+		const std::shared_ptr<GpuImage>& colorImage,
+		const std::shared_ptr<GpuImage>& depthImage,
+		const std::shared_ptr<GpuImage>& stencilImage)
+	{
+		// TODO:
 		return nullptr;
 	}
 
-	/*std::shared_ptr<ColorPipeline> VkWindow::createColorPipeline()
+	std::shared_ptr<ColorGpuPipeline> VkWindow::createColorPipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
-		auto pipeline = std::make_shared<VkColorPipeline>(
-			device, renderPass, surfaceExtent);
+		auto glVertexShader = std::dynamic_pointer_cast<VkGpuShader>(vertexShader);
+		auto glFragmentShader = std::dynamic_pointer_cast<VkGpuShader>(fragmentShader);
 
-		if(!pipelines.emplace(pipeline).second)
-		{
-			throw Exception(
-				"VkWindow",
-				"createColorPipeline",
-				"Failed to add pipeline");
-		}
-
-		return pipeline;
-	}
-	std::shared_ptr<DiffusePipeline> VkWindow::createDiffusePipeline()
-	{
-		auto pipeline = std::make_shared<VkDiffusePipeline>(
+		return std::make_shared<VkColorGpuPipeline>(
 			device,
-			memoryAllocator,
 			renderPass,
-			swapchainDatas.size(),
-			surfaceExtent);
-
-		if (!pipelines.emplace(pipeline).second)
-		{
-			throw Exception(
-				"VkWindow",
-				"createDiffusePipeline",
-				"Failed to add pipeline");
-		}
-
-		return pipeline;
-	}*/
+			surfaceExtent,
+			glVertexShader,
+			glFragmentShader);
+	}
+	std::shared_ptr<ColorGpuPipeline> VkWindow::createColColorPipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
+	{
+		// TODO:
+		return nullptr;
+	}
+	std::shared_ptr<DiffuseGpuPipeline> VkWindow::createDiffusePipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
+	{
+		// TODO:
+		return nullptr;
+	}
+	std::shared_ptr<TextureDiffuseGpuPipeline> VkWindow::createTexDiffusePipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const std::shared_ptr<GpuImage>& texture)
+	{
+		// TODO:
+		return nullptr;
+	}
+	std::shared_ptr<SimulatedSkyGpuPipeline> VkWindow::createSkyPipeline(
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
+	{
+		// TODO:
+		return nullptr;
+	}
 }

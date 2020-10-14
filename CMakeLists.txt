@@ -261,6 +261,7 @@ set(INJECTOR_RESOURCES
     Shaders/Diffuse.vert
     Shaders/TextureDiffuse.frag
     Shaders/TextureDiffuse.vert
+
     Shaders/Color.frag.spv
     Shaders/Color.vert.spv
     Shaders/Diffuse.frag.spv

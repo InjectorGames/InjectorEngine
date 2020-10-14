@@ -14,8 +14,16 @@ namespace Injector
 		GpuImageWrap wrapW,
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& imageData) :
-		GpuImage(type, size, format, minFilter, magFilter,
-			wrapU, wrapV, wrapW, useMipmap),
+		GpuImage(
+			type,
+			size,
+			format,
+			minFilter,
+			magFilter,
+			wrapU,
+			wrapV,
+			wrapW,
+			useMipmap),
 		glType(toGlType(type))
 	{
 		glGenTextures(GL_ONE, &texture);
@@ -245,42 +253,50 @@ namespace Injector
 			return GL_RGBA8UI;
 		case GpuImageFormat::RGBA8I:
 			return GL_RGBA8I;
-		case GpuImageFormat::R16:
-			return GL_R16;
+		case GpuImageFormat::R16F:
+			return GL_R16F;
 		case GpuImageFormat::R16U:
 			return GL_R16UI;
 		case GpuImageFormat::R16I:
 			return GL_R16I;
-		case GpuImageFormat::RG16:
-			return GL_RG16;
+		case GpuImageFormat::RG16F:
+			return GL_RG16F;
 		case GpuImageFormat::RG16U:
 			return GL_RG16UI;
 		case GpuImageFormat::RG16I:
 			return GL_RG16I;
-		case GpuImageFormat::RGB16:
-			return GL_RGB16;
+		case GpuImageFormat::RGB16F:
+			return GL_RGB16F;
 		case GpuImageFormat::RGB16U:
 			return GL_RGB16UI;
 		case GpuImageFormat::RGB16I:
 			return GL_RGB16I;
-		case GpuImageFormat::RGBA16:
-			return GL_RGBA16;
+		case GpuImageFormat::RGBA16F:
+			return GL_RGBA16F;
 		case GpuImageFormat::RGBA16U:
 			return GL_RGBA16UI;
 		case GpuImageFormat::RGBA16I:
 			return GL_RGBA16I;
+		case GpuImageFormat::R32F:
+			return GL_R32F;
 		case GpuImageFormat::R32U:
 			return GL_R32UI;
 		case GpuImageFormat::R32I:
 			return GL_R32I;
+		case GpuImageFormat::RG32F:
+			return GL_RG32F;
 		case GpuImageFormat::RG32U:
 			return GL_RG32UI;
 		case GpuImageFormat::RG32I:
 			return GL_RG32I;
+		case GpuImageFormat::RGB32F:
+			return GL_RGB32F;
 		case GpuImageFormat::RGB32U:
 			return GL_RGB32UI;
 		case GpuImageFormat::RGB32I:
 			return GL_RGB32I;
+		case GpuImageFormat::RGBA32F:
+			return GL_RGBA32F;
 		case GpuImageFormat::RGBA32U:
 			return GL_RGBA32UI;
 		case GpuImageFormat::RGBA32I:

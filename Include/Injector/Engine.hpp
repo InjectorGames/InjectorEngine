@@ -57,9 +57,10 @@ namespace Injector
 		static bool isNetworkInitialized();
 
 		static void glfwErrorCallback(
-			int error, const char* description);
+			int error,
+			const char* description);
 		static void initializeGraphics(
-			GraphicsAPI graphicsApi = GraphicsAPI::OpenGL);
+			GraphicsAPI graphicsAPI = GraphicsAPI::OpenGL);
 		static void terminateGraphics();
 		static bool isGraphicsInitialized() noexcept;
 

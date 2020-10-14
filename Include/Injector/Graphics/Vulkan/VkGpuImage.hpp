@@ -1,24 +1,31 @@
 #pragma once
 #include "Injector/Graphics/GpuImage.hpp"
+#include "Injector/Graphics/ImageData.hpp"
 #include "Injector/Graphics/Vulkan/VmaDefines.hpp"
 
 #include "vulkan/vulkan.hpp"
 
 namespace Injector
 {
-	/*class VkTexture : public Texture
+	class VkGpuImage : public GpuImage
 	{
 	 protected:
 		VmaAllocator allocator;
 		vk::Image image;
 		VmaAllocation allocation;
 	 public:
-		VkTexture(
+		VkGpuImage(
 			VmaAllocator allocator,
-			VkFormat format,
-			VkImageUsageFlags flags,
-			TextureType type,
-			IntVector3 size);
-		~VkTexture() override;
-	};*/
+			vk::ImageUsageFlags usageFlags,
+			GpuImageType type,
+			const IntVector3& size,
+			GpuImageFormat format);
+		~VkGpuImage() override;
+
+		VmaAllocator getAllocator() const noexcept;
+		vk::Image getImage() const noexcept;
+		VmaAllocation getAllocation() const noexcept;
+
+		static vk::Format toVkFormat(GpuImageFormat format);
+	};
 }

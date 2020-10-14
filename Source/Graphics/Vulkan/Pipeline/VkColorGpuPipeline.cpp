@@ -152,17 +152,16 @@ namespace Injector
 				"shader");
 		}
 
-		auto pushConstantRanges = std::vector<vk::PushConstantRange>
-			{
-				vk::PushConstantRange(
-					vk::ShaderStageFlagBits::eVertex,
-					0,
-					sizeof(Matrix4)),
-				vk::PushConstantRange(
-					vk::ShaderStageFlagBits::eFragment,
-					sizeof(Matrix4),
-					sizeof(Vector4)),
-			};
+		auto pushConstantRanges = std::vector<vk::PushConstantRange>{
+			vk::PushConstantRange(
+				vk::ShaderStageFlagBits::eVertex,
+				0,
+				sizeof(Matrix4)),
+			vk::PushConstantRange(
+				vk::ShaderStageFlagBits::eFragment,
+				sizeof(Matrix4),
+				sizeof(Vector4)),
+		};
 
 		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo({},
 			0,
@@ -194,7 +193,6 @@ namespace Injector
 	}
 	VkColorGpuPipeline::~VkColorGpuPipeline()
 	{
-		// TODO: Test if overrided destructor correct
 		device.destroyPipeline(pipeline);
 		device.destroyPipelineLayout(pipelineLayout);
 	}
