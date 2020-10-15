@@ -39,8 +39,8 @@ namespace Injector
 		std::shared_ptr<GpuMesh> createMesh(
 			size_t indexCount,
 			GpuBufferIndex indexType,
-			const std::shared_ptr<GpuBuffer>& vertexBuffer = nullptr,
-			const std::shared_ptr<GpuBuffer>& indexBuffer = nullptr) override;
+			const std::shared_ptr<GpuBuffer>& vertexBuffer,
+			const std::shared_ptr<GpuBuffer>& indexBuffer) override;
 		std::shared_ptr<ShaderData> readShaderData(
 			const std::string& filePath) override;
 		std::shared_ptr<GpuShader> createShader(
@@ -56,11 +56,11 @@ namespace Injector
 			GpuImageWrap wrapV,
 			GpuImageWrap wrapW,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data = nullptr) override;
+			const std::shared_ptr<ImageData>& data) override;
 		std::shared_ptr<GpuFramebuffer> createFramebuffer(
 			const std::shared_ptr<GpuImage>& colorImage,
-			const std::shared_ptr<GpuImage>& depthImage = nullptr,
-			const std::shared_ptr<GpuImage>& stencilImage = nullptr) override;
+			const std::shared_ptr<GpuImage>& depthImage,
+			const std::shared_ptr<GpuImage>& stencilImage) override;
 
 		std::shared_ptr<ColorGpuPipeline> createColorPipeline(
 			const std::shared_ptr<GpuShader>& vertexShader,

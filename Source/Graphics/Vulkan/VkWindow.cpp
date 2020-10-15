@@ -40,9 +40,14 @@ namespace Injector
 		const IntVector2& size)
 	{
 		glfwDefaultWindowHints();
-
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		return glfwCreateWindow(size.x, size.y, title.c_str(), nullptr, nullptr);
+
+		return glfwCreateWindow(
+			size.x,
+			size.y,
+			title.c_str(),
+			nullptr,
+			nullptr);
 	}
 	vk::Instance VkWindow::createInstance(
 		const std::string& appName,
@@ -1507,12 +1512,22 @@ namespace Injector
 		auto glVertexShader = std::dynamic_pointer_cast<VkGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<VkGpuShader>(fragmentShader);
 
-		return std::make_shared<VkColorGpuPipeline>(
+		auto pipeline = std::make_shared<VkColorGpuPipeline>(
 			device,
 			renderPass,
 			surfaceExtent,
 			glVertexShader,
 			glFragmentShader);
+
+		if (!pipelines.emplace(pipeline).second)
+		{
+			throw Exception(
+				"VkWindow",
+				"createColorPipeline",
+				"Failed to emplace");
+		}
+
+		return pipeline;
 	}
 	std::shared_ptr<ColorGpuPipeline> VkWindow::createColColorPipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
