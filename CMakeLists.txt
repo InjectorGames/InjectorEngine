@@ -154,6 +154,7 @@ add_library(InjectorEngine STATIC
     Source/Graphics/Vulkan/VkGpuMesh.cpp
     Source/Graphics/Vulkan/VkGpuPipeline.cpp
     Source/Graphics/Vulkan/VkGpuShader.cpp
+    Source/Graphics/Vulkan/VkGpuSwapchain.cpp
     Source/Graphics/Vulkan/VkRenderSystem.cpp
     Source/Graphics/Vulkan/VkSwapchainData.cpp
     Source/Graphics/Vulkan/VkWindow.cpp

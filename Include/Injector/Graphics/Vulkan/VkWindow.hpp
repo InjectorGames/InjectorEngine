@@ -3,10 +3,7 @@
 
 #include "Injector/Graphics/Window.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuBuffer.hpp"
-#include "Injector/Graphics/Vulkan/VkSwapchainData.hpp"
-#include "Injector/Graphics/Vulkan/VkGpuPipeline.hpp"
-
-#include <set>
+#include "Injector/Graphics/Vulkan/VkGpuSwapchain.hpp"
 
 namespace Injector
 {
@@ -22,21 +19,18 @@ namespace Injector
 		uint32_t presentQueueFamilyIndex;
 		vk::Device device;
 		VmaAllocator memoryAllocator;
-		std::vector<vk::Fence> fences;
-		std::vector<vk::Semaphore> imageAcquiredSemaphores;
-		std::vector<vk::Semaphore> drawCompleteSemaphores;
-		std::vector<vk::Semaphore> imageOwnershipSemaphores;
 		vk::Queue graphicsQueue;
 		vk::Queue presentQueue;
 		vk::CommandPool graphicsCommandPool;
 		vk::CommandPool presentCommandPool;
 		vk::CommandPool transferCommandPool;
-		vk::Extent2D surfaceExtent;
-		vk::SwapchainKHR swapchain;
-		vk::RenderPass renderPass;
-		uint32_t frameIndex;
-		std::vector<std::shared_ptr<VkSwapchainData>> swapchainDatas;
+		VkGpuSwapchain swapchain;
+		std::vector<vk::Fence> fences;
+		std::vector<vk::Semaphore> imageAcquiredSemaphores;
+		std::vector<vk::Semaphore> drawCompleteSemaphores;
+		std::vector<vk::Semaphore> imageOwnershipSemaphores;
 		std::set<std::shared_ptr<VkGpuPipeline>> pipelines;
+		uint32_t frameIndex;
 
 		static VkBool32 VKAPI_CALL debugMessengerCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -71,60 +65,31 @@ namespace Injector
 			vk::Instance instance,
 			vk::PhysicalDevice physicalDevice,
 			vk::Device device);
-		static vk::Fence createFence(
-			vk::Device device,
-			vk::FenceCreateFlags flags);
-		static vk::Semaphore createSemaphore(
-			vk::Device device,
-			vk::SemaphoreCreateFlags flags);
 		static vk::Queue getQueue(
 			vk::Device device,
 			uint32_t queueFamilyIndex,
 			uint32_t queueIndex);
-		static uint32_t getBestSurfaceImageCount(
-			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
-		static vk::SurfaceFormatKHR getBestSurfaceFormat(
-			vk::PhysicalDevice physicalDevice,
-			vk::SurfaceKHR surface);
-		static vk::PresentModeKHR getBestSurfacePresentMode(
-			vk::PhysicalDevice physicalDevice,
-			vk::SurfaceKHR surface);
-		static vk::SurfaceTransformFlagBitsKHR getBestSurfaceTransform(
-			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
-		static vk::CompositeAlphaFlagBitsKHR getBestSurfaceCompositeAlpha(
-			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
-		static vk::Extent2D getBestSurfaceExtent(
-			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
-			IntVector2 surfaceSize);
-		static vk::SwapchainKHR createSwapchain(
-			vk::Device device,
-			vk::SurfaceKHR surface,
-			uint32_t surfaceImageCount,
-			vk::SurfaceFormatKHR surfaceFormat,
-			vk::Extent2D surfaceExtent,
-			vk::SurfaceTransformFlagBitsKHR surfaceTransform,
-			vk::CompositeAlphaFlagBitsKHR surfaceCompositeAlpha,
-			vk::PresentModeKHR surfacePresentMode);
-		static vk::RenderPass createRenderPass(
-			vk::Device device,
-			vk::Format format);
 		static vk::CommandPool createCommandPool(
 			vk::Device device,
-			vk::CommandPoolCreateFlags flags,
+			const vk::CommandPoolCreateFlags& flags,
 			uint32_t queueFamilyIndex);
+		static vk::Fence createFence(
+			vk::Device device,
+			const vk::FenceCreateFlags& flags);
+		static vk::Semaphore createSemaphore(
+			vk::Device device,
+			const vk::SemaphoreCreateFlags& flags);
 	 public:
 		explicit VkWindow(
 			const std::string& title = defaultTitle,
 			const IntVector2& size = defaultSize);
 		~VkWindow() override;
 
-		vk::CommandBuffer getGraphicsCommandBuffer(
-			uint32_t imageIndex) const;
-		vk::CommandBuffer getPresentCommandBuffer(
-			uint32_t imageIndex) const;
-
 		void onFramebufferResize(
 			const IntVector2& size) override;
+
+		vk::CommandBuffer getGraphicsCommandBuffer(
+			uint32_t imageIndex) const;
 
 		uint32_t beginImage();
 		void endImage(uint32_t imageIndex);

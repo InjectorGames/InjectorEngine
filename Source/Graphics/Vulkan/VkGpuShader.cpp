@@ -1,5 +1,5 @@
 #include "Injector/Graphics/Vulkan/VkGpuShader.hpp"
-#include "Injector/Exception/Exception.hpp"
+#include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
@@ -10,6 +10,21 @@ namespace Injector
 		GpuShader(stage),
 		device(_device)
 	{
+		if(!_device)
+		{
+			throw NullException(
+				"VkGpuShader",
+				"VkGpuShader",
+				"device");
+		}
+		if(!data)
+		{
+			throw NullException(
+				"VkGpuShader",
+				"VkGpuShader",
+				"data");
+		}
+
 		auto shaderModuleCreateInfo = vk::ShaderModuleCreateInfo(
 			{},
 			data->code.size(),

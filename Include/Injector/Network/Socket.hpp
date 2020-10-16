@@ -127,12 +127,15 @@ namespace Injector
 		bool close() noexcept;
 
 		// Returns true if sockets is equal
-		bool operator==(const Socket& socket) const noexcept;
+		bool operator==(
+			const Socket& socket) const noexcept;
 		// Returns true if sockets is not equal
-		bool operator!=(const Socket& socket) const noexcept;
+		bool operator!=(
+			const Socket& socket) const noexcept;
 
 		// Socket move assigment operator
-		Socket& operator=(Socket&& socket) noexcept;
+		Socket& operator=(
+			Socket&& socket) noexcept;
 
 		// Returns true if a < b
 		static bool less(

@@ -23,7 +23,9 @@ namespace Injector
 			vk::CommandPool graphicsCommandPool,
 			vk::CommandPool presentCommandPool,
 			vk::Format surfaceFormat,
-			vk::Extent2D surfaceExtent);
+			const vk::Extent2D& surfaceExtent);
+		VkSwapchainData(const VkSwapchainData& data) = delete;
+		VkSwapchainData(VkSwapchainData&& data) = delete;
 		virtual ~VkSwapchainData();
 	};
 }

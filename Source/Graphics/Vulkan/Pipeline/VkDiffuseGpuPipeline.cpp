@@ -339,7 +339,7 @@ namespace Injector
 		VmaAllocator allocator,
 		vk::RenderPass renderPass,
 		uint32_t imageCount,
-		const vk::Extent2D& surfaceExtent)
+		const vk::Extent2D& extent)
 	{
 		device.destroyDescriptorPool(descriptorPool);
 		device.destroyPipeline(pipeline);
@@ -349,7 +349,7 @@ namespace Injector
 			pipelineCache,
 			pipelineLayout,
 			renderPass,
-			surfaceExtent,
+			extent,
 			vertexShader,
 			fragmentShader);
 		descriptorPool = createDescriptorPool(

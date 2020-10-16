@@ -1,5 +1,5 @@
 #include "Injector/Graphics/Vulkan/VkSwapchainData.hpp"
-#include "Injector/Exception/Exception.hpp"
+#include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
@@ -10,12 +10,48 @@ namespace Injector
 		vk::CommandPool _graphicsCommandPool,
 		vk::CommandPool _presentCommandPool,
 		vk::Format surfaceFormat,
-		vk::Extent2D surfaceExtent) :
+		const vk::Extent2D& surfaceExtent) :
 		device(_device),
 		image(_image),
 		graphicsCommandPool(_graphicsCommandPool),
 		presentCommandPool(_presentCommandPool)
 	{
+		if(!_device)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"device");
+		}
+		if(!_image)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"image");
+		}
+		if(!renderPass)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"renderPass");
+		}
+		if(!_graphicsCommandPool)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"graphicsCommandPool");
+		}
+		if(!_presentCommandPool)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"presentCommandPool");
+		}
+
 		auto imageViewCreateInfo = vk::ImageViewCreateInfo({},
 			_image,
 			vk::ImageViewType::e2D,

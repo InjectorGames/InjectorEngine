@@ -1,5 +1,5 @@
 #include "Injector/Graphics/Vulkan/VkGpuImage.hpp"
-#include "Injector/Exception/Exception.hpp"
+#include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
@@ -13,14 +13,22 @@ namespace Injector
 			type,
 			size,
 			format,
-			{ },
 			{},
-			{ },
-			{ },
-			{ },
-			{ }),
+			{},
+			{},
+			{},
+			{},
+			{}),
 		allocator(_allocator)
 	{
+		if(!_allocator)
+		{
+			throw NullException(
+				"VkGpuBuffer",
+				"VkGpuBuffer",
+				"allocator");
+		}
+
 		VkImageCreateInfo imageCreateInfo = {};
 		imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageCreateInfo.flags = {};

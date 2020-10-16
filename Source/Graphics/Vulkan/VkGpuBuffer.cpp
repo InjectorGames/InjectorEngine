@@ -14,6 +14,14 @@ namespace Injector
 		GpuBuffer(type, size, isVkMappable(usage)),
 		allocator(_allocator)
 	{
+		if(!_allocator)
+		{
+			throw NullException(
+				"VkGpuBuffer",
+				"VkGpuBuffer",
+				"allocator");
+		}
+
 		VkBufferCreateInfo bufferCreateInfo = {};
 		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		bufferCreateInfo.size = size;

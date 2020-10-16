@@ -13,7 +13,8 @@ namespace Injector
 		vk::PipelineCache pipelineCache;
 		vk::CommandBuffer bindedCommandBuffer;
 	 public:
-		explicit VkGpuPipeline(vk::Device device);
+		explicit VkGpuPipeline(
+			vk::Device device);
 		~VkGpuPipeline() override;
 
 		vk::Device getDevice();
@@ -27,7 +28,7 @@ namespace Injector
 			VmaAllocator allocator,
 			vk::RenderPass renderPass,
 			uint32_t imageCount,
-			const vk::Extent2D& surfaceExtent) = 0;
+			const vk::Extent2D& extent) = 0;
 		virtual void flush(
 			size_t imageIndex) = 0;
 	};

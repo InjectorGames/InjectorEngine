@@ -16,7 +16,7 @@ namespace Injector
 			GpuBufferType type,
 			size_t size,
 			GLenum usage,
-			const void* data = 0);
+			const void* data = nullptr);
 		~GlGpuBuffer() override;
 
 		GLuint getBuffer() const noexcept;

@@ -84,7 +84,7 @@ namespace Injector
 			VmaAllocator allocator,
 			vk::RenderPass renderPass,
 			uint32_t imageCount,
-			const vk::Extent2D& surfaceExtent) override;
+			const vk::Extent2D& extent) override;
 		void flush(
 			size_t imageIndex) override;
 		void bind(

@@ -1,5 +1,5 @@
 #include "Injector/Graphics/Vulkan/VkGpuPipeline.hpp"
-#include "Injector/Exception/Exception.hpp"
+#include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
@@ -8,6 +8,14 @@ namespace Injector
 		device(_device),
 		bindedCommandBuffer()
 	{
+		if(!_device)
+		{
+			throw NullException(
+				"VkGpuPipeline",
+				"VkGpuPipeline",
+				"device");
+		}
+
 		auto pipelineCacheCreateInfo = vk::PipelineCacheCreateInfo();
 
 		auto result = _device.createPipelineCache(
