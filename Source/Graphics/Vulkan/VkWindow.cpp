@@ -108,13 +108,11 @@ namespace Injector
 				"Failed to get instance extensions");
 		}
 
-		auto instanceExtensions = std::vector<const char*>();
+		auto instanceExtensions =
+			std::vector<const char*>(extensionCount);
 
 		for (size_t i = 0; i < extensionCount; i++)
-		{
-			instanceExtensions.push_back(
-				glfwInstanceExtensions[i]);
-		}
+			instanceExtensions[i] = glfwInstanceExtensions[i];
 
 #ifndef NDEBUG
 		instanceExtensions.push_back(
@@ -228,15 +226,6 @@ namespace Injector
 		vk::Instance instance)
 	{
 		auto physicalDevices = instance.enumeratePhysicalDevices();
-
-		if (physicalDevices.size() == 0)
-		{
-			throw Exception(
-				"VkWindow",
-				"getBestPhysicalDevice",
-				"Failed to get physical devices");
-		}
-
 		auto targetPhysicalDevices = std::multimap<int, vk::PhysicalDevice>();
 
 		for (auto& device : physicalDevices)
@@ -255,6 +244,14 @@ namespace Injector
 
 			targetPhysicalDevices.emplace(score, device);
 			// TODO: add other tests
+		}
+
+		if (targetPhysicalDevices.empty())
+		{
+			throw Exception(
+				"VkWindow",
+				"getBestPhysicalDevice",
+				"Failed to find best physical devices");
 		}
 
 		return targetPhysicalDevices.rbegin()->second;
@@ -526,7 +523,9 @@ namespace Injector
 	VkWindow::VkWindow(
 		const std::string& title,
 		const IntVector2& size) :
-		Window(createWindow(title, size))
+		Window(createWindow(title, size)),
+		graphicsQueueFamilyIndex(UINT32_MAX),
+		presentQueueFamilyIndex(UINT32_MAX)
 	{
 		if(size.x < 1 || size.y < 1)
 		{
@@ -749,15 +748,24 @@ namespace Injector
 
 	uint32_t VkWindow::beginImage()
 	{
-		device.waitForFences(
+		auto result = device.waitForFences(
 			1,
 			&fences[frameIndex],
 			true,
 			UINT64_MAX);
+
+		if(result != vk::Result::eSuccess &&
+			result != vk::Result::eTimeout)
+		{
+			throw Exception(
+				"VkWindow",
+				"beginImage",
+				"Failed to wait for fence");
+		}
+
 		device.resetFences(
 			{ fences[frameIndex] });
 
-		vk::Result result;
 		uint32_t imageIndex;
 
 		do
@@ -778,8 +786,11 @@ namespace Injector
 			}
 			else if (result == vk::Result::eErrorSurfaceLostKHR)
 			{
-				instance.destroySurfaceKHR(surface);
-				surface = createSurface(instance, window);
+				instance.destroySurfaceKHR(
+					surface);
+				surface = createSurface(
+					instance,
+					window);
 
 				auto size = getFramebufferSize();
 				onFramebufferResize(size);
@@ -1048,7 +1059,9 @@ namespace Injector
 				VMA_MEMORY_USAGE_CPU_TO_GPU,
 				type,
 				size);
-			buffer->setData(data, size);
+			buffer->setData(
+				data,
+				size);
 		}
 		else
 		{
@@ -1061,11 +1074,13 @@ namespace Injector
 
 			auto stagingBuffer = VkGpuBuffer(
 				memoryAllocator,
-				vk::BufferUsageFlagBits::eTransferSrc,
+				static_cast<vk::BufferUsageFlags>(0),
 				VMA_MEMORY_USAGE_CPU_ONLY,
-				type,
+				GpuBufferType::TransferSource,
 				size);
-			stagingBuffer.setData(data, size);
+			stagingBuffer.setData(
+				data,
+				size);
 
 			vk::CommandBuffer commandBuffer;
 
@@ -1107,10 +1122,18 @@ namespace Injector
 				nullptr,
 				1,
 				&commandBuffer);
-			graphicsQueue.submit(
+			result = graphicsQueue.submit(
 				1,
 				&submitInfo,
 				nullptr);
+
+			if(result != vk::Result::eSuccess)
+			{
+				throw Exception(
+					"VkWindow",
+					"createBuffer",
+					"Failed to submit graphics queue");
+			}
 
 			graphicsQueue.waitIdle();
 
@@ -1140,9 +1163,14 @@ namespace Injector
 		auto fileStream = FileStream(
 			filePath + ".spv",
 			std::ios::in | std::ios::binary);
+
 		auto shaderData = std::make_shared<ShaderData>();
 		shaderData->code = std::vector<uint8_t>(fileStream.getSize());
-		fileStream.read(shaderData->code.data(), fileStream.getSize());
+
+		fileStream.read(
+			shaderData->code.data(),
+			fileStream.getSize());
+
 		return shaderData;
 	}
 	std::shared_ptr<GpuShader> VkWindow::createShader(
@@ -1173,7 +1201,118 @@ namespace Injector
 
 		if(!data)
 		{
-			// TODO: staging buffer
+			auto stagingBufferSize =
+				data->size.x * data->size.y * data->componentCount;
+			auto stagingBuffer = VkGpuBuffer(
+				memoryAllocator,
+				static_cast<vk::BufferUsageFlags>(0),
+				VMA_MEMORY_USAGE_CPU_ONLY,
+				GpuBufferType::TransferSource,
+				stagingBufferSize);
+			stagingBuffer.setData(
+				data->pixels.data(),
+				stagingBufferSize);
+
+			vk::CommandBuffer commandBuffer;
+
+			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo(
+				transferCommandPool,
+				vk::CommandBufferLevel::ePrimary,
+				1);
+			auto result = device.allocateCommandBuffers(
+				&commandBufferAllocateInfo,
+				&commandBuffer);
+
+			if (result != vk::Result::eSuccess)
+			{
+				throw Exception(
+					"VkWindow",
+					"createImage",
+					"Failed to allocate command buffer");
+			}
+
+			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
+				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+			commandBuffer.begin(commandBufferBeginInfo);
+
+			vk::Extent3D imageExtent;
+
+			if(type == GpuImageType::Image1D)
+			{
+				imageExtent = vk::Extent3D(
+					size.x,
+					1,
+					1);
+			}
+			else if(type == GpuImageType::Image2D)
+			{
+				imageExtent = vk::Extent3D(
+					size.x,
+					size.y,
+					1);
+			}
+			else if(type == GpuImageType::Image3D)
+			{
+				imageExtent = vk::Extent3D(
+					size.x,
+					size.y,
+					size.z);
+			}
+			else
+			{
+				throw Exception(
+					"VkWindow",
+					"createImage",
+					"Unsupported image type");
+			}
+
+			auto bufferImageCopy = vk::BufferImageCopy(
+				0,
+				0,
+				0,
+				vk::ImageSubresourceLayers(
+					vk::ImageAspectFlagBits::eColor,
+					0,
+					0,
+					1),
+				vk::Offset3D(0, 0, 0),
+				imageExtent);
+			commandBuffer.copyBufferToImage(
+				stagingBuffer.getBuffer(),
+				image->getImage(),
+				vk::ImageLayout::eTransferDstOptimal,
+				1,
+				&bufferImageCopy);
+
+			// TODO: transfer
+
+			commandBuffer.end();
+
+			auto submitInfo = vk::SubmitInfo(
+				0,
+				nullptr,
+				nullptr,
+				1,
+				&commandBuffer);
+			result = graphicsQueue.submit(
+				1,
+				&submitInfo,
+				nullptr);
+
+			if(result != vk::Result::eSuccess)
+			{
+				throw Exception(
+					"VkWindow",
+					"createImage",
+					"Failed to submit graphics queue");
+			}
+
+			graphicsQueue.waitIdle();
+
+			device.freeCommandBuffers(
+				transferCommandPool,
+				1,
+				&commandBuffer);
 		}
 
 		return nullptr;
@@ -1225,7 +1364,7 @@ namespace Injector
 		// TODO:
 		return nullptr;
 	}
-	std::shared_ptr<TextureDiffuseGpuPipeline> VkWindow::createTexDiffusePipeline(
+	std::shared_ptr<ImageDiffuseGpuPipeline> VkWindow::createTexDiffusePipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
 		const std::shared_ptr<GpuImage>& texture)

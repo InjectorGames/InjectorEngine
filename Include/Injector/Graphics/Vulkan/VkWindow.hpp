@@ -140,7 +140,7 @@ namespace Injector
 		std::shared_ptr<DiffuseGpuPipeline> createDiffusePipeline(
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader) override;
-		std::shared_ptr<TextureDiffuseGpuPipeline> createTexDiffusePipeline(
+		std::shared_ptr<ImageDiffuseGpuPipeline> createTexDiffusePipeline(
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
 			const std::shared_ptr<GpuImage>& texture) override;

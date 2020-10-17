@@ -52,7 +52,8 @@ namespace Injector
 				"presentCommandPool");
 		}
 
-		auto imageViewCreateInfo = vk::ImageViewCreateInfo({},
+		auto imageViewCreateInfo = vk::ImageViewCreateInfo(
+			{},
 			_image,
 			vk::ImageViewType::e2D,
 			surfaceFormat,
@@ -81,7 +82,8 @@ namespace Injector
 				"Failed to create image view");
 		}
 
-		auto framebufferCreateInfo = vk::FramebufferCreateInfo({},
+		auto framebufferCreateInfo = vk::FramebufferCreateInfo(
+			{},
 			renderPass,
 			1,
 			&imageView,

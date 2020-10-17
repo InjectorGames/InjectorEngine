@@ -341,6 +341,10 @@ namespace Injector
 	{
 		switch (type)
 		{
+		case GpuBufferType::TransferSource:
+			return vk::BufferUsageFlagBits::eTransferSrc;
+		case GpuBufferType::TransferDestination:
+			return vk::BufferUsageFlagBits::eTransferDst;
 		case GpuBufferType::UniformTexel:
 			return vk::BufferUsageFlagBits::eUniformTexelBuffer;
 		case GpuBufferType::StorageTexel:

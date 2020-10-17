@@ -13,12 +13,14 @@ namespace Injector
 		const std::shared_ptr<VkGpuShader>& fragmentShader)
 	{
 		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>{
-			vk::PipelineShaderStageCreateInfo({},
+			vk::PipelineShaderStageCreateInfo(
+				{},
 				vk::ShaderStageFlagBits::eVertex,
 				vertexShader->getShaderModule(),
 				"main",
 				nullptr),
-			vk::PipelineShaderStageCreateInfo({},
+			vk::PipelineShaderStageCreateInfo(
+				{},
 				vk::ShaderStageFlagBits::eFragment,
 				fragmentShader->getShaderModule(),
 				"main",
@@ -35,13 +37,15 @@ namespace Injector
 			vk::Format::eR32G32B32Sfloat,
 			0);
 
-		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo({},
+		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo(
+			{},
 			1,
 			&vertexInputBindingDescription,
 			1,
 			&vertexInputAttributeDescription);
 
-		auto pipelineInputAssemblyStateCreateInfo = vk::PipelineInputAssemblyStateCreateInfo({},
+		auto pipelineInputAssemblyStateCreateInfo = vk::PipelineInputAssemblyStateCreateInfo(
+			{},
 			vk::PrimitiveTopology::eTriangleList,
 			false);
 
@@ -55,13 +59,15 @@ namespace Injector
 		auto scissor = vk::Rect2D(
 			vk::Offset2D(0, 0),
 			surfaceExtent);
-		auto pipelineViewportStateCreateInfo = vk::PipelineViewportStateCreateInfo({},
+		auto pipelineViewportStateCreateInfo = vk::PipelineViewportStateCreateInfo(
+			{},
 			1,
 			&viewport,
 			1,
 			&scissor);
 
-		auto pipelineRasterizationStateCreateInfo = vk::PipelineRasterizationStateCreateInfo({},
+		auto pipelineRasterizationStateCreateInfo = vk::PipelineRasterizationStateCreateInfo(
+			{},
 			false,
 			false,
 			vk::PolygonMode::eFill,
@@ -73,7 +79,8 @@ namespace Injector
 			0.0f,
 			1.0f);
 
-		auto pipelineMultisampleStateCreateInfo = vk::PipelineMultisampleStateCreateInfo({},
+		auto pipelineMultisampleStateCreateInfo = vk::PipelineMultisampleStateCreateInfo(
+			{},
 			vk::SampleCountFlagBits::e1,
 			false,
 			{},
@@ -94,13 +101,15 @@ namespace Injector
 			vk::ColorComponentFlagBits::eB |
 			vk::ColorComponentFlagBits::eA);
 
-		auto pipelineColorBlendStateCreateInfo = vk::PipelineColorBlendStateCreateInfo({},
+		auto pipelineColorBlendStateCreateInfo = vk::PipelineColorBlendStateCreateInfo(
+			{},
 			false,
 			{},
 			1,
 			&pipelineColorBlendAttachmentStateCreateInfo);
 
-		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo({},
+		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo(
+			{},
 			static_cast<uint32_t>(pipelineShaderStageCreateInfos.size()),
 			pipelineShaderStageCreateInfos.data(),
 			&pipelineVertexInputStateCreateInfo,
@@ -119,7 +128,8 @@ namespace Injector
 			-1);
 
 		auto resultValue = device.createGraphicsPipeline(
-			pipelineCache, graphicsPipelineCreateInfo);
+			pipelineCache,
+			graphicsPipelineCreateInfo);
 
 		if (resultValue.result != vk::Result::eSuccess)
 		{
@@ -144,12 +154,26 @@ namespace Injector
 		fragmentShader(_fragmentShader),
 		color(_color)
 	{
-		if (!_vertexShader || !_fragmentShader)
+		if(!renderPass)
 		{
 			throw NullException(
 				"VkColorGpuPipeline",
 				"VkColorGpuPipeline",
-				"shader");
+				"renderPass");
+		}
+		if (!_vertexShader)
+		{
+			throw NullException(
+				"VkColorGpuPipeline",
+				"VkColorGpuPipeline",
+				"vertexShader");
+		}
+		if (!_fragmentShader)
+		{
+			throw NullException(
+				"VkColorGpuPipeline",
+				"VkColorGpuPipeline",
+				"fragmentShader");
 		}
 
 		auto pushConstantRanges = std::vector<vk::PushConstantRange>{
@@ -163,7 +187,8 @@ namespace Injector
 				sizeof(Vector4)),
 		};
 
-		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo({},
+		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo(
+			{},
 			0,
 			nullptr,
 			static_cast<uint32_t>(pushConstantRanges.size()),

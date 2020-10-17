@@ -17,7 +17,7 @@
 #include "Injector/Graphics/GpuFramebuffer.hpp"
 #include "Injector/Graphics/Pipeline/ColorGpuPipeline.hpp"
 #include "Injector/Graphics/Pipeline/SimulatedSkyGpuPipeline.hpp"
-#include "Injector/Graphics/Pipeline/TextureDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/ImageDiffuseGpuPipeline.hpp"
 
 #include <string>
 #include <cstdint>
@@ -129,7 +129,7 @@ namespace Injector
 		virtual std::shared_ptr<DiffuseGpuPipeline> createDiffusePipeline(
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader) = 0;
-		virtual std::shared_ptr<TextureDiffuseGpuPipeline> createTexDiffusePipeline(
+		virtual std::shared_ptr<ImageDiffuseGpuPipeline> createTexDiffusePipeline(
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
 			const std::shared_ptr<GpuImage>& texture) = 0;

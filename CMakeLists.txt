@@ -132,7 +132,7 @@ add_library(InjectorEngine STATIC
     Source/Graphics/OpenGL/Pipeline/GlColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlDiffuseGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.cpp
-    Source/Graphics/OpenGL/Pipeline/GlTextureDiffuseGpuPipeline.cpp
+        Source/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.cpp
 
     Source/Graphics/OpenGL/GlCameraSystem.cpp
     Source/Graphics/OpenGL/GlGpuBuffer.cpp
@@ -260,8 +260,8 @@ set(INJECTOR_RESOURCES
     Shaders/SimulatedSky.frag
     Shaders/Diffuse.frag
     Shaders/Diffuse.vert
-    Shaders/TextureDiffuse.frag
-    Shaders/TextureDiffuse.vert
+    Shaders/ImageDiffuse.frag
+    Shaders/ImageDiffuse.vert
 
     Shaders/Color.frag.spv
     Shaders/Color.vert.spv

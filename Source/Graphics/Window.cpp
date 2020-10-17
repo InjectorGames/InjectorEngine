@@ -328,7 +328,7 @@ namespace Injector
 	{
 		return createImage(
 			GpuImageType::Image1D,
-			IntVector3(size, 0, 0),
+			IntVector3(size, 1, 1),
 			format,
 			minFilter,
 			magFilter,
@@ -350,7 +350,7 @@ namespace Injector
 	{
 		return createImage(
 			GpuImageType::Image2D,
-			IntVector3(size, 0),
+			IntVector3(size, 1),
 			format,
 			minFilter,
 			magFilter,

@@ -140,7 +140,8 @@ namespace Injector
 	{
 		vk::SwapchainKHR swapchain;
 
-		auto swapchainCreateInfo = vk::SwapchainCreateInfoKHR({},
+		auto swapchainCreateInfo = vk::SwapchainCreateInfoKHR(
+			{},
 			surface,
 			imageCount,
 			surfaceFormat.format,
@@ -178,7 +179,8 @@ namespace Injector
 	{
 		vk::RenderPass renderPass;
 
-		auto colorAttachmentDescription = vk::AttachmentDescription({},
+		auto colorAttachmentDescription = vk::AttachmentDescription(
+			{},
 			format,
 			vk::SampleCountFlagBits::e1,
 			vk::AttachmentLoadOp::eClear,
@@ -192,7 +194,8 @@ namespace Injector
 			0,
 			vk::ImageLayout::eColorAttachmentOptimal);
 
-		auto subpassDescription = vk::SubpassDescription({},
+		auto subpassDescription = vk::SubpassDescription(
+			{},
 			vk::PipelineBindPoint::eGraphics,
 			0,
 			nullptr,
@@ -208,7 +211,8 @@ namespace Injector
 			vk::AccessFlagBits::eColorAttachmentWrite,
 			{});
 
-		auto renderPassCreateInfo = vk::RenderPassCreateInfo({},
+		auto renderPassCreateInfo = vk::RenderPassCreateInfo(
+			{},
 			1,
 			&colorAttachmentDescription,
 			1,

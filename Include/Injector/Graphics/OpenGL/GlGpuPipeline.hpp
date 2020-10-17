@@ -67,8 +67,6 @@ namespace Injector
 	 public:
 		explicit GlGpuPipeline(
 			GLenum drawMode) noexcept;
-		GlGpuPipeline(
-			GlGpuPipeline&& pipeline) noexcept;
 		~GlGpuPipeline() override;
 
 		GLuint getProgram() const noexcept;

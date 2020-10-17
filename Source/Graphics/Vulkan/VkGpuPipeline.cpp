@@ -16,7 +16,8 @@ namespace Injector
 				"device");
 		}
 
-		auto pipelineCacheCreateInfo = vk::PipelineCacheCreateInfo();
+		auto pipelineCacheCreateInfo =
+			vk::PipelineCacheCreateInfo();
 
 		auto result = _device.createPipelineCache(
 			&pipelineCacheCreateInfo,

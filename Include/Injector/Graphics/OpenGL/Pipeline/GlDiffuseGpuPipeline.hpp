@@ -21,7 +21,7 @@ namespace Injector
 
 			explicit UniformBufferObject(
 				const Vector4& _objectColor = Vector4::one,
-				const Vector4& _ambientColor = Vector4::one / 2,
+				const Vector4& _ambientColor = Vector4::one / 2.0f,
 				const Vector4& _lightColor = Vector4::one,
 				const Vector3& _lightDirection =
 					Vector3(1.0f, 2.0f, 3.0f).getNormalized()) :

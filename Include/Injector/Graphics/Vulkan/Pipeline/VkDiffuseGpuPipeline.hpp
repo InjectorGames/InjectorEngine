@@ -22,10 +22,11 @@ namespace Injector
 			alignas(16) Vector3 lightDirection;
 
 			UniformBufferObject(
-				const Vector4& _objectColor,
-				const Vector4& _ambientColor,
-				const Vector4& _lightColor,
-				const Vector3& _lightDirection) :
+				const Vector4& _objectColor = Vector4::one,
+				const Vector4& _ambientColor = Vector4::one / 2.0f,
+				const Vector4& _lightColor = Vector4::one,
+				const Vector3& _lightDirection =
+					Vector3(1.0f, 2.0f, 3.0f).getNormalized()) :
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
@@ -74,10 +75,7 @@ namespace Injector
 			const vk::Extent2D& surfaceExtent,
 			const std::shared_ptr<VkGpuShader>& vertexShader,
 			const std::shared_ptr<VkGpuShader>& fragmentShader,
-			const Vector4& objectColor = Vector4::one,
-			const Vector4& ambientColor = Vector4::one / 4.0f,
-			const Vector4& lightColor = Vector4::one,
-			const Vector3& lightDirection = Vector3(1.0f, 2.0f, 3.0f));
+			const UniformBufferObject& ubo = UniformBufferObject());
 		~VkDiffuseGpuPipeline() override;
 
 		void recreate(

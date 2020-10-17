@@ -1,14 +1,14 @@
 #pragma once
 #include "Injector/Graphics/OpenGL/Pipeline/GlDiffuseGpuPipeline.hpp"
-#include "Injector/Graphics/Pipeline/TextureDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/ImageDiffuseGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuImage.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuShader.hpp"
 
 namespace Injector
 {
-	class GlTextureDiffuseGpuPipeline :
+	class GlImageDiffuseGpuPipeline :
 		public GlGpuPipeline,
-		public TextureDiffuseGpuPipeline
+		public ImageDiffuseGpuPipeline
 	{
 	 public:
 		struct UniformBufferObject
@@ -18,42 +18,42 @@ namespace Injector
 			Vector4 lightColor;
 			Vector3 lightDirection;
 			float alignment;
-			Vector2 textureScale;
-			Vector2 textureOffset;
+			Vector2 imageScale;
+			Vector2 imageOffset;
 
 			explicit UniformBufferObject(
 				const Vector4& _objectColor = Vector4::one,
-				const Vector4& _ambientColor =  Vector4::one / 2,
+				const Vector4& _ambientColor =  Vector4::one / 2.0f,
 				const Vector4& _lightColor = Vector4::one,
 				const Vector3& _lightDirection =
 					Vector3(1.0f, 2.0f, 3.0f).getNormalized(),
-				const Vector2& _textureScale = Vector2::one,
-				const Vector2& _textureOffset = Vector2::zero) :
+				const Vector2& _imageScale = Vector2::one,
+				const Vector2& _imageOffset = Vector2::zero) :
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
 				lightDirection(_lightDirection),
 				alignment(),
-				textureScale(_textureScale),
-				textureOffset(_textureOffset)
+				imageScale(_imageScale),
+				imageOffset(_imageOffset)
 			{
 			}
 		};
 	 protected:
 		GLint mvpLocation;
 		GLint normalLocation;
-		GLint textureLocation;
+		GLint imageLocation;
 		std::shared_ptr<GlGpuBuffer> uniformBuffer;
-		std::shared_ptr<GlGpuImage> texture;
+		std::shared_ptr<GlGpuImage> image;
 		UniformBufferObject ubo;
 	 public:
-		GlTextureDiffuseGpuPipeline(
+		GlImageDiffuseGpuPipeline(
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
-			const std::shared_ptr<GlGpuImage>& texture,
+			const std::shared_ptr<GlGpuImage>& image,
 			const UniformBufferObject& ubo = UniformBufferObject());
 
-		std::shared_ptr<GpuImage> getTexture() const override;
+		std::shared_ptr<GpuImage> getImage() const override;
 
 		const Vector4& getObjectColor() const override;
 		void setObjectColor(const Vector4& color) override;
@@ -67,10 +67,10 @@ namespace Injector
 		const Vector3& getLightDirection() const override;
 		void setLightDirection(const Vector3& direction) override;
 
-		const Vector2& getTextureScale() const override;
+		const Vector2& getImageScale() const override;
 		void setTextureScale(const Vector2& scale) override;
 
-		const Vector2& getTextureOffset() const override;
+		const Vector2& getImageOffset() const override;
 		void setTextureOffset(const Vector2& offset) override;
 
 		void bind() override;

@@ -10,19 +10,36 @@ namespace Injector
 		GlGpuPipeline(GL_TRIANGLES),
 		ubo(_ubo)
 	{
-		if (!vertexShader || !fragmentShader)
+		if (!vertexShader)
 		{
 			throw NullException(
 				"GlSimulatedSkyGpuPipeline",
 				"GlSimulatedSkyGpuPipeline",
-				"shader");
+				"vertexShader");
+		}
+		if (!fragmentShader)
+		{
+			throw NullException(
+				"GlSimulatedSkyGpuPipeline",
+				"GlSimulatedSkyGpuPipeline",
+				"fragmentShader");
 		}
 
-		glAttachShader(program, vertexShader->getShader());
-		glAttachShader(program, fragmentShader->getShader());
+		glAttachShader(
+			program,
+			vertexShader->getShader());
+		glAttachShader(
+			program,
+			fragmentShader->getShader());
+
 		glLinkProgram(program);
-		glDetachShader(program, vertexShader->getShader());
-		glDetachShader(program, fragmentShader->getShader());
+
+		glDetachShader(
+			program,
+			vertexShader->getShader());
+		glDetachShader(
+			program,
+			fragmentShader->getShader());
 
 		if (!getLinkStatus(program))
 		{
@@ -36,8 +53,12 @@ namespace Injector
 		}
 
 		auto uniformBlockIndex = getUniformBlockIndex(
-			program, "FragmentBufferObject");
-		glUniformBlockBinding(program, uniformBlockIndex, 0);
+			program,
+			"FragmentBufferObject");
+		glUniformBlockBinding(
+			program,
+			uniformBlockIndex,
+			0);
 
 		uniformBuffer = std::make_shared<GlGpuBuffer>(
 			GpuBufferType::Uniform,
@@ -65,19 +86,28 @@ namespace Injector
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);
 
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0,
+		glBindBufferBase(
+			GL_UNIFORM_BUFFER,
+			0,
 			uniformBuffer->getBuffer());
 	}
 	void GlSimulatedSkyGpuPipeline::flush()
 	{
-		uniformBuffer->setData(&ubo, sizeof(UniformBufferObject));
+		uniformBuffer->setData(
+			&ubo,
+			sizeof(UniformBufferObject));
 	}
 	void GlSimulatedSkyGpuPipeline::setAttributes()
 	{
 		glEnableVertexAttribArray(0);
 
-		setVertexAttributePointer(0, 3, GL_FLOAT, GL_FALSE,
-			sizeof(Vector3), 0);
+		setVertexAttributePointer(
+			0,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vector3),
+			0);
 	}
 
 	void GlSimulatedSkyGpuPipeline::setUniforms(

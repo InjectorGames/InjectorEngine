@@ -4,6 +4,8 @@ namespace Injector
 {
 	enum class GpuBufferType
 	{
+		TransferSource,
+		TransferDestination,
 		UniformTexel,
 		StorageTexel,
 		Uniform,

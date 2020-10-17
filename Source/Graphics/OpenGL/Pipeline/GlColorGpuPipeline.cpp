@@ -10,19 +10,36 @@ namespace Injector
 		GlGpuPipeline(GL_TRIANGLES),
 		color(_color)
 	{
-		if (!vertexShader || !fragmentShader)
+		if (!vertexShader)
 		{
 			throw NullException(
 				"GlColorGpuPipeline",
 				"GlColorGpuPipeline",
-				"shader");
+				"vertexShader");
+		}
+		if (!fragmentShader)
+		{
+			throw NullException(
+				"GlColorGpuPipeline",
+				"GlColorGpuPipeline",
+				"fragmentShader");
 		}
 
-		glAttachShader(program, vertexShader->getShader());
-		glAttachShader(program, fragmentShader->getShader());
+		glAttachShader(
+			program,
+			vertexShader->getShader());
+		glAttachShader(
+			program,
+			fragmentShader->getShader());
+
 		glLinkProgram(program);
-		glDetachShader(program, vertexShader->getShader());
-		glDetachShader(program, fragmentShader->getShader());
+
+		glDetachShader(
+			program,
+			vertexShader->getShader());
+		glDetachShader(
+			program,
+			fragmentShader->getShader());
 
 		if (!getLinkStatus(program))
 		{
@@ -35,8 +52,12 @@ namespace Injector
 				"Failed to link program, " + log);
 		}
 
-		mvpLocation = getUniformLocation(program, "u_MVP");
-		colorLocation = getUniformLocation(program, "u_Color");
+		mvpLocation = getUniformLocation(
+			program,
+			"u_MVP");
+		colorLocation = getUniformLocation(
+			program,
+			"u_Color");
 	}
 
 	const Vector4& GlColorGpuPipeline::getColor() const
@@ -83,6 +104,8 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-		setUniform(mvpLocation, mvp);
+		setUniform(
+			mvpLocation,
+			mvp);
 	}
 }

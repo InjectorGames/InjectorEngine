@@ -8,7 +8,7 @@
 #include "Injector/Graphics/OpenGL/GlGpuFramebuffer.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.hpp"
-#include "Injector/Graphics/OpenGL/Pipeline/GlTextureDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.hpp"
 
 namespace Injector
 {
@@ -221,7 +221,7 @@ namespace Injector
 			glVertexShader,
 			glFragmentShader);
 	}
-	std::shared_ptr<TextureDiffuseGpuPipeline> GlWindow::createTexDiffusePipeline(
+	std::shared_ptr<ImageDiffuseGpuPipeline> GlWindow::createTexDiffusePipeline(
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
 		const std::shared_ptr<GpuImage>& texture)
@@ -230,7 +230,7 @@ namespace Injector
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 		auto glTexture = std::dynamic_pointer_cast<GlGpuImage>(texture);
 
-		return std::make_shared<GlTextureDiffuseGpuPipeline>(
+		return std::make_shared<GlImageDiffuseGpuPipeline>(
 			glVertexShader,
 			glFragmentShader,
 			glTexture);

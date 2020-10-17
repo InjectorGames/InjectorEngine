@@ -174,12 +174,6 @@ namespace Injector
 	{
 		program = glCreateProgram();
 	}
-	GlGpuPipeline::GlGpuPipeline(
-		GlGpuPipeline&& pipeline) noexcept
-	{
-		program = pipeline.program;
-		pipeline.program = 0;
-	}
 	GlGpuPipeline::~GlGpuPipeline()
 	{
 		glDeleteProgram(program);

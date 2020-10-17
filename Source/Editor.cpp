@@ -54,19 +54,20 @@ using namespace Injector;
 	cameraSystem->addCamera(guiCamera);
 	renderSystem->addCamera(guiCamera);
 
-	auto texDiffuseVertexShader = window->createShader(
+	auto imageDiffuseVertexShader = window->createShader(
 		GpuShaderStage::Vertex,
 		window->readShaderData(
-			"Resources/Shaders/TextureDiffuse.vert"));
-	auto texDiffuseFragmentShader = window->createShader(
+			"Resources/Shaders/ImageDiffuse.vert"));
+	auto imageDiffuseFragmentShader = window->createShader(
 		GpuShaderStage::Fragment,
 		window->readShaderData(
-			"Resources/Shaders/TextureDiffuse.frag"));
+			"Resources/Shaders/ImageDiffuse.frag"));
 	auto boxImageData = ImageData::readFromFile(
 		"Resources/Images/GrayBox.png",
 		3,
 		false);
-	auto boxImage = window->createImage(boxImageData->size,
+	auto boxImage = window->createImage(
+ 		boxImageData->size,
 		GpuImageFormat::RGB8,
 		GpuImageFilter::Nearest,
 		GpuImageFilter::Nearest,
@@ -264,6 +265,21 @@ void initialize()
 		teapotMesh);
 	transformSystem->addTransform(teapot);
 	freeCameraComponent->renders.emplace(teapot);
+
+	// TODO: testing
+	auto boxImageData = ImageData::readFromFile(
+		"Resources/Images/GrayBox.png",
+		3,
+		false);
+	auto boxImage = window->createImage(
+		boxImageData->size,
+		GpuImageFormat::RGB8,
+		GpuImageFilter::Nearest,
+		GpuImageFilter::Nearest,
+		GpuImageWrap::Repeat,
+		GpuImageWrap::Repeat,
+		true,
+		boxImageData);
 }
 
 int main()
