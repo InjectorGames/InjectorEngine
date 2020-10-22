@@ -67,16 +67,18 @@ void initialize()
 		4,
 		false);
 	auto boxImage = window->createImage(
- 		boxImageData->size,
 		GpuImageFormat::RGBA8,
-		GpuImageFilter::Nearest,
-		GpuImageFilter::Nearest,
-		GpuImageWrap::Repeat,
-		GpuImageWrap::Repeat,
+ 		boxImageData->size,
 		true,
 		boxImageData);
 	auto imageDiffusePipeline = window->createImageDiffusePipeline(
-		PrimitiveTopology::TriangleList,
+		GpuDrawMode::TriangleList,
+		GpuImageFilter::Nearest,
+		GpuImageFilter::Nearest,
+		GpuImageFilter::Linear,
+		GpuImageWrap::Repeat,
+		GpuImageWrap::Repeat,
+		GpuImageWrap::Repeat,
 		imageDiffuseVertexShader,
 		imageDiffuseFragmentShader,
 		boxImage);

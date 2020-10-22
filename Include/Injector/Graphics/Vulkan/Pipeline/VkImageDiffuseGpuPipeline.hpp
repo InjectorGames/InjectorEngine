@@ -25,13 +25,12 @@ namespace Injector
 			Vector2 imageOffset;
 
 			explicit UniformBufferObject(
-				const Vector4& _objectColor = Vector4::one,
-				const Vector4& _ambientColor = Vector4::one / 2.0f,
-				const Vector4& _lightColor = Vector4::one,
-				const Vector3& _lightDirection =
-				Vector3(1.0f, 2.0f, 3.0f).getNormalized(),
-				const Vector2& _imageScale = Vector2::one,
-				const Vector2& _imageOffset = Vector2::zero) :
+				const Vector4& _objectColor,
+				const Vector4& _ambientColor,
+				const Vector4& _lightColor,
+				const Vector3& _lightDirection,
+				const Vector2& _imageScale,
+				const Vector2& _imageOffset) :
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
@@ -48,11 +47,20 @@ namespace Injector
 		vk::DescriptorPool descriptorPool;
 		vk::ImageView imageView;
 		vk::Sampler imageSampler;
+
 		std::shared_ptr<VkGpuShader> vertexShader;
 		std::shared_ptr<VkGpuShader> fragmentShader;
 		std::shared_ptr<VkGpuImage> image;
+
 		std::vector<std::shared_ptr<VkGpuBuffer>> uniformBuffers;
 		std::vector<vk::DescriptorSet> descriptorSets;
+
+		GpuImageFilter imageMinFilter;
+		GpuImageFilter imageMagFilter;
+		GpuImageFilter mipmapFilter;
+		GpuImageWrap imageWrapU;
+		GpuImageWrap imageWrapV;
+		GpuImageWrap imageWrapW;
 
 		UniformBufferObject ubo;
 
@@ -76,7 +84,14 @@ namespace Injector
 		static vk::ImageView createImageView(
 			vk::Device,
 			vk::Image);
-		static vk::Sampler createImageSampler();
+		static vk::Sampler createImageSampler(
+			vk::Device device,
+			vk::Filter magFilter,
+			vk::Filter minFilter,
+			vk::SamplerMipmapMode mipmapMode,
+			vk::SamplerAddressMode addressModeU,
+			vk::SamplerAddressMode addressModeV,
+			vk::SamplerAddressMode addressModeW);
 		static std::vector<std::shared_ptr<VkGpuBuffer>> createUniformBuffers(
 			VmaAllocator allocator,
 			uint32_t imageCount);
@@ -84,6 +99,8 @@ namespace Injector
 			vk::Device device,
 			vk::DescriptorPool descriptorPool,
 			vk::DescriptorSetLayout descriptorSetLayout,
+			vk::ImageView imageView,
+			vk::Sampler sampler,
 			size_t imageCount,
 			const std::vector<std::shared_ptr<VkGpuBuffer>>& uniformBuffers);
 	 public:
@@ -93,29 +110,28 @@ namespace Injector
 			vk::RenderPass renderPass,
 			uint32_t imageCount,
 			const vk::Extent2D& surfaceExtent,
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
+			GpuImageFilter imageMinFilter,
+			GpuImageFilter imageMagFilter,
+			GpuImageFilter mipmapFilter,
+			GpuImageWrap imageWrapU,
+			GpuImageWrap imageWrapV,
+			GpuImageWrap imageWrapW,
 			const std::shared_ptr<VkGpuShader>& vertexShader,
 			const std::shared_ptr<VkGpuShader>& fragmentShader,
 			const std::shared_ptr<VkGpuImage>& image,
-			const UniformBufferObject& ubo = UniformBufferObject());
+			const UniformBufferObject& ubo);
 		~VkImageDiffuseGpuPipeline() override;
 
-		void recreate(
-			VmaAllocator allocator,
-			vk::RenderPass renderPass,
-			uint32_t imageCount,
-			const vk::Extent2D& extent) override;
-		void flush(
-			size_t imageIndex) override;
-		void bind(
-			vk::CommandBuffer commandBuffer,
-			size_t imageIndex) override;
-		void setUniforms(
-			const Matrix4& model,
-			const Matrix4& view,
-			const Matrix4& proj,
-			const Matrix4& viewProj,
-			const Matrix4& mvp) override;
+		GpuImageFilter getImageMinFilter() const override;
+		GpuImageFilter getImageMagFilter() const override;
+		GpuImageFilter getMipmapFilter() const override;
+
+		GpuImageWrap getImageWrapU() const override;
+		GpuImageWrap getImageWrapV() const override;
+		GpuImageWrap getImageWrapW() const override;
+
+		std::shared_ptr<GpuImage> getImage() const override;
 
 		const Vector4& getObjectColor() const override;
 		void setObjectColor(const Vector4& color) override;
@@ -134,5 +150,22 @@ namespace Injector
 
 		const Vector2& getImageOffset() const override;
 		void setImageOffset(const Vector2& offset) override;
+
+		void recreate(
+			VmaAllocator allocator,
+			vk::RenderPass renderPass,
+			uint32_t imageCount,
+			const vk::Extent2D& extent) override;
+		void flush(
+			size_t imageIndex) override;
+		void bind(
+			vk::CommandBuffer commandBuffer,
+			size_t imageIndex) override;
+		void setUniforms(
+			const Matrix4& model,
+			const Matrix4& view,
+			const Matrix4& proj,
+			const Matrix4& viewProj,
+			const Matrix4& mvp) override;
 	};
 }

@@ -20,11 +20,10 @@ namespace Injector
 			float alignment;
 
 			explicit UniformBufferObject(
-				const Vector4& _objectColor = Vector4::one,
-				const Vector4& _ambientColor = Vector4::one / 2.0f,
-				const Vector4& _lightColor = Vector4::one,
-				const Vector3& _lightDirection =
-					Vector3(1.0f, 2.0f, 3.0f).getNormalized()) :
+				const Vector4& _objectColor,
+				const Vector4& _ambientColor,
+				const Vector4& _lightColor,
+				const Vector3& _lightDirection) :
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
@@ -36,14 +35,16 @@ namespace Injector
 	 protected:
 		GLint mvpLocation;
 		GLint normalLocation;
+
 		std::shared_ptr<GlGpuBuffer> uniformBuffer;
+
 		UniformBufferObject ubo;
 	 public:
 		GlDiffuseGpuPipeline(
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
-			const UniformBufferObject& ubo = UniformBufferObject());
+			const UniformBufferObject& ubo);
 
 		const Vector4& getObjectColor() const override;
 		void setObjectColor(const Vector4& objectColor) override;

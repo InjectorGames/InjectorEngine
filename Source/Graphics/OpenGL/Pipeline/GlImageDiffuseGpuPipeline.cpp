@@ -1,15 +1,29 @@
 #include "Injector/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.hpp"
 #include "Injector/Exception/NullException.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuImageWrap.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuImageFilter.hpp"
 
 namespace Injector
 {
 	GlImageDiffuseGpuPipeline::GlImageDiffuseGpuPipeline(
-		PrimitiveTopology primitiveTopology,
+		GpuDrawMode drawMode,
+		GpuImageFilter _imageMinFilter,
+		GpuImageFilter _imageMagFilter,
+		GpuImageFilter _mipmapFilter,
+		GpuImageWrap _imageWrapU,
+		GpuImageWrap _imageWrapV,
+		GpuImageWrap _imageWrapW,
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		const std::shared_ptr<GlGpuImage>& _image,
 		const UniformBufferObject& _ubo) :
-		GlGpuPipeline(primitiveTopology),
+		GlGpuPipeline(drawMode),
+		imageMinFilter(_imageMinFilter),
+		imageMagFilter(_imageMagFilter),
+		mipmapFilter(_mipmapFilter),
+		imageWrapU(_imageWrapU),
+		imageWrapV(_imageWrapV),
+		imageWrapW(_imageWrapW),
 		ubo(_ubo),
 		image(_image)
 	{
@@ -34,6 +48,19 @@ namespace Injector
 				"GlImageDiffuseGpuPipeline",
 				"image");
 		}
+
+		glImageMinFilter = toGlGpuImageFilter(
+			_imageMinFilter,
+			_image->isUseMipmap(),
+			_mipmapFilter);
+		glImageMagFilter = toGlGpuImageFilter(
+			_imageMagFilter,
+			false,
+			_mipmapFilter);
+
+		glImageWrapU = toGlGpuImageWrap(_imageWrapU);
+		glImageWrapV = toGlGpuImageWrap(_imageWrapV);
+		glImageWrapW = toGlGpuImageWrap(_imageWrapW);
 
 		glAttachShader(
 			program,
@@ -83,12 +110,38 @@ namespace Injector
 			GL_DYNAMIC_DRAW,
 			nullptr);
 
-		auto imageLocation = getUniformLocation(
+		imageLocation = getUniformLocation(
 			program,
 			"u_Image");
 
 		GlGpuPipeline::bind();
 		glUniform1i(imageLocation, 0);
+	}
+
+	GpuImageFilter GlImageDiffuseGpuPipeline::getImageMinFilter() const
+	{
+		return imageMinFilter;
+	}
+	GpuImageFilter GlImageDiffuseGpuPipeline::getImageMagFilter() const
+	{
+		return imageMagFilter;
+	}
+	GpuImageFilter GlImageDiffuseGpuPipeline::getMipmapFilter() const
+	{
+		return mipmapFilter;
+	}
+
+	GpuImageWrap GlImageDiffuseGpuPipeline::getImageWrapU() const
+	{
+		return imageWrapU;
+	}
+	GpuImageWrap GlImageDiffuseGpuPipeline::getImageWrapV() const
+	{
+		return imageWrapV;
+	}
+	GpuImageWrap GlImageDiffuseGpuPipeline::getImageWrapW() const
+	{
+		return imageWrapW;
 	}
 
 	std::shared_ptr<GpuImage> GlImageDiffuseGpuPipeline::getImage() const
@@ -162,6 +215,30 @@ namespace Injector
 
 		glActiveTexture(GL_TEXTURE0);
 		image->bind();
+
+		auto imageType = image->getGlType();
+
+		glTexParameteri(
+			imageType,
+			GL_TEXTURE_MIN_FILTER,
+			glImageMinFilter);
+		glTexParameteri(
+			imageType,
+			GL_TEXTURE_MAG_FILTER,
+			glImageMagFilter);
+
+		glTexParameteri(
+			imageType,
+			GL_TEXTURE_WRAP_S,
+			glImageWrapU);
+		glTexParameteri(
+			imageType,
+			GL_TEXTURE_WRAP_T,
+			glImageWrapV);
+		glTexParameteri(
+			imageType,
+			GL_TEXTURE_WRAP_R,
+			glImageWrapW);
 
 		glBindBufferBase(
 			GL_UNIFORM_BUFFER,

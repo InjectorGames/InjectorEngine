@@ -4,11 +4,11 @@
 namespace Injector
 {
 	GlSimulatedSkyGpuPipeline::GlSimulatedSkyGpuPipeline(
-		PrimitiveTopology primitiveTopology,
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		const UniformBufferObject& _ubo) :
-		GlGpuPipeline(primitiveTopology),
+		GlGpuPipeline(drawMode),
 		ubo(_ubo)
 	{
 		if (!vertexShader)

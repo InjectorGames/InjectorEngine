@@ -22,11 +22,10 @@ namespace Injector
 			alignas(16) Vector3 lightDirection;
 
 			explicit UniformBufferObject(
-				const Vector4& _objectColor = Vector4::one,
-				const Vector4& _ambientColor = Vector4::one / 2.0f,
-				const Vector4& _lightColor = Vector4::one,
-				const Vector3& _lightDirection =
-					Vector3(1.0f, 2.0f, 3.0f).getNormalized()) :
+				const Vector4& _objectColor,
+				const Vector4& _ambientColor,
+				const Vector4& _lightColor,
+				const Vector3& _lightDirection) :
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
@@ -39,8 +38,10 @@ namespace Injector
 		vk::PipelineLayout pipelineLayout;
 		vk::Pipeline pipeline;
 		vk::DescriptorPool descriptorPool;
+
 		std::shared_ptr<VkGpuShader> vertexShader;
 		std::shared_ptr<VkGpuShader> fragmentShader;
+
 		std::vector<std::shared_ptr<VkGpuBuffer>> uniformBuffers;
 		std::vector<vk::DescriptorSet> descriptorSets;
 
@@ -79,11 +80,23 @@ namespace Injector
 			vk::RenderPass renderPass,
 			uint32_t imageCount,
 			const vk::Extent2D& surfaceExtent,
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
 			const std::shared_ptr<VkGpuShader>& vertexShader,
 			const std::shared_ptr<VkGpuShader>& fragmentShader,
-			const UniformBufferObject& ubo = UniformBufferObject());
+			const UniformBufferObject& ubo);
 		~VkDiffuseGpuPipeline() override;
+
+		const Vector4& getObjectColor() const override;
+		void setObjectColor(const Vector4& color) override;
+
+		const Vector4& getAmbientColor() const override;
+		void setAmbientColor(const Vector4& color) override;
+
+		const Vector4& getLightColor() const override;
+		void setLightColor(const Vector4& color) override;
+
+		const Vector3& getLightDirection() const override;
+		void setLightDirection(const Vector3& direction) override;
 
 		void recreate(
 			VmaAllocator allocator,
@@ -101,17 +114,5 @@ namespace Injector
 			const Matrix4& proj,
 			const Matrix4& viewProj,
 			const Matrix4& mvp) override;
-
-		const Vector4& getObjectColor() const override;
-		void setObjectColor(const Vector4& color) override;
-
-		const Vector4& getAmbientColor() const override;
-		void setAmbientColor(const Vector4& color) override;
-
-		const Vector4& getLightColor() const override;
-		void setLightColor(const Vector4& color) override;
-
-		const Vector3& getLightDirection() const override;
-		void setLightDirection(const Vector3& direction) override;
 	};
 }

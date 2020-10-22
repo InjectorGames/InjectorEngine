@@ -12,6 +12,7 @@ namespace Injector
 	 protected:
 		vk::PipelineLayout pipelineLayout;
 		vk::Pipeline pipeline;
+
 		std::shared_ptr<VkGpuShader> vertexShader;
 		std::shared_ptr<VkGpuShader> fragmentShader;
 
@@ -33,10 +34,10 @@ namespace Injector
 			vk::Device device,
 			vk::RenderPass renderPass,
 			const vk::Extent2D& surfaceExtent,
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
 			const std::shared_ptr<VkGpuShader>& vertexShader,
 			const std::shared_ptr<VkGpuShader>& fragmentShader,
-			const Vector4& color = Vector4::one);
+			const Vector4& color);
 		~VkColorGpuPipeline() override;
 
 		const Vector4& getColor() const override;

@@ -3,12 +3,12 @@
 namespace Injector
 {
 	GlColorColorGpuPipeline::GlColorColorGpuPipeline(
-		PrimitiveTopology primitiveTopology,
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		const Vector4& color) :
 		GlColorGpuPipeline(
-			primitiveTopology,
+			drawMode,
 			vertexShader,
 			fragmentShader,
 			color)

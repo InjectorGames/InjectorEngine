@@ -8,6 +8,7 @@
 #include "Injector/Graphics/Vulkan/VkRenderSystem.hpp"
 #include "Injector/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.hpp"
 #include "Injector/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Vulkan/Pipeline/VkImageDiffuseGpuPipeline.hpp"
 
 #include <map>
 #include <vector>
@@ -1185,72 +1186,18 @@ namespace Injector
 	}
 	std::shared_ptr<GpuImage> VkWindow::createImage(
 		GpuImageType type,
-		const IntVector3& size,
 		GpuImageFormat format,
-		GpuImageFilter minFilter,
-		GpuImageFilter magFilter,
-		GpuImageWrap wrapU,
-		GpuImageWrap wrapV,
-		GpuImageWrap wrapW,
+		const IntVector3& size,
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
-		/*void Demo::set_image_layout(vk::Image image, vk::ImageAspectFlags aspectMask, vk::ImageLayout oldLayout, vk::ImageLayout newLayout,
-			vk::AccessFlags srcAccessMask, vk::PipelineStageFlags src_stages, vk::PipelineStageFlags dest_stages) {
-			assert(cmd);
-
-			auto DstAccessMask = [](vk::ImageLayout const &layout) {
-			  vk::AccessFlags flags;
-
-			  switch (layout) {
-			  case vk::ImageLayout::eTransferDstOptimal:
-				  // Make sure anything that was copying from this image has
-				  // completed
-				  flags = vk::AccessFlagBits::eTransferWrite;
-				  break;
-			  case vk::ImageLayout::eColorAttachmentOptimal:
-				  flags = vk::AccessFlagBits::eColorAttachmentWrite;
-				  break;
-			  case vk::ImageLayout::eDepthStencilAttachmentOptimal:
-				  flags = vk::AccessFlagBits::eDepthStencilAttachmentWrite;
-				  break;
-			  case vk::ImageLayout::eShaderReadOnlyOptimal:
-				  // Make sure any Copy or CPU writes to image are flushed
-				  flags = vk::AccessFlagBits::eShaderRead | vk::AccessFlagBits::eInputAttachmentRead;
-				  break;
-			  case vk::ImageLayout::eTransferSrcOptimal:
-				  flags = vk::AccessFlagBits::eTransferRead;
-				  break;
-			  case vk::ImageLayout::ePresentSrcKHR:
-				  flags = vk::AccessFlagBits::eMemoryRead;
-				  break;
-			  default:
-				  break;
-			  }
-
-			  return flags;
-			};
-
-			auto const barrier = vk::ImageMemoryBarrier()
-				.setSrcAccessMask(srcAccessMask)
-				.setDstAccessMask(DstAccessMask(newLayout))
-				.setOldLayout(oldLayout)
-				.setNewLayout(newLayout)
-				.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
-				.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
-				.setImage(image)
-				.setSubresourceRange(vk::ImageSubresourceRange(aspectMask, 0, 1, 0, 1));
-
-			cmd.pipelineBarrier(src_stages, dest_stages, vk::DependencyFlagBits(), 0, nullptr, 0, nullptr, 1, &barrier);
-		}*/
-
 		auto image = std::make_shared<VkGpuImage>(
 			memoryAllocator,
 			vk::ImageUsageFlagBits::eTransferDst |
 			vk::ImageUsageFlagBits::eSampled,
 			type,
-			size,
-			format);
+			format,
+			size);
 
 		if(!data)
 		{
@@ -1393,7 +1340,7 @@ namespace Injector
 				&commandBuffer);
 		}
 
-		return nullptr;
+		return image;
 	}
 	std::shared_ptr<GpuFramebuffer> VkWindow::createFramebuffer(
 		const std::shared_ptr<GpuImage>& colorImage,
@@ -1405,7 +1352,7 @@ namespace Injector
 	}
 
 	std::shared_ptr<GpuPipeline> VkWindow::createColorPipeline(
-		PrimitiveTopology primitiveTopology,
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
 		const Vector4& color)
@@ -1417,7 +1364,7 @@ namespace Injector
 			device,
 			swapchain.getRenderPass(),
 			swapchain.getExtent(),
-			primitiveTopology,
+			drawMode,
 			vkVertexShader,
 			vkFragmentShader,
 			color);
@@ -1433,32 +1380,109 @@ namespace Injector
 		return pipeline;
 	}
 	std::shared_ptr<GpuPipeline> VkWindow::createColorColorPipeline(
-		PrimitiveTopology primitiveTopology,
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const Vector4& color)
 	{
 		// TODO:
 		return nullptr;
 	}
 	std::shared_ptr<GpuPipeline> VkWindow::createDiffusePipeline(
-		PrimitiveTopology primitiveTopology,
-		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
-	{
-		// TODO:
-		return nullptr;
-	}
-	std::shared_ptr<GpuPipeline> VkWindow::createImageDiffusePipeline(
-		PrimitiveTopology primitiveTopology,
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
-		const std::shared_ptr<GpuImage>& image)
+		const Vector4& objectColor,
+		const Vector4& ambientColor,
+		const Vector4& lightColor,
+		const Vector3& lightDirection)
 	{
-		// TODO:
-		return nullptr;
+		auto vkVertexShader = std::dynamic_pointer_cast<VkGpuShader>(vertexShader);
+		auto vkFragmentShader = std::dynamic_pointer_cast<VkGpuShader>(fragmentShader);
+
+		auto pipeline = std::make_shared<VkDiffuseGpuPipeline>(
+			device,
+			memoryAllocator,
+			swapchain.getRenderPass(),
+			swapchain.getDatas().size(),
+			swapchain.getExtent(),
+			drawMode,
+			vkVertexShader,
+			vkFragmentShader,
+			VkDiffuseGpuPipeline::UniformBufferObject(
+				objectColor,
+				ambientColor,
+				lightColor,
+				lightDirection));
+
+		if (!pipelines.emplace(pipeline).second)
+		{
+			throw Exception(
+				"VkWindow",
+				"createDiffusePipeline",
+				"Failed to emplace");
+		}
+
+		return pipeline;
+	}
+	std::shared_ptr<GpuPipeline> VkWindow::createImageDiffusePipeline(
+		GpuDrawMode drawMode,
+		GpuImageFilter imageMinFilter,
+		GpuImageFilter imageMagFilter,
+		GpuImageFilter mipmapFilter,
+		GpuImageWrap imageWrapU,
+		GpuImageWrap imageWrapV,
+		GpuImageWrap imageWrapW,
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const std::shared_ptr<GpuImage>& image,
+		const Vector4& objectColor,
+		const Vector4& ambientColor,
+		const Vector4& lightColor,
+		const Vector3& lightDirection,
+		const Vector2& imageScale,
+		const Vector2& imageOffset)
+	{
+		auto vkVertexShader = std::dynamic_pointer_cast<VkGpuShader>(vertexShader);
+		auto vkFragmentShader = std::dynamic_pointer_cast<VkGpuShader>(fragmentShader);
+		auto vkImage = std::dynamic_pointer_cast<VkGpuImage>(image);
+
+		auto pipeline = std::make_shared<VkImageDiffuseGpuPipeline>(
+			device,
+			memoryAllocator,
+			swapchain.getRenderPass(),
+			swapchain.getDatas().size(),
+			swapchain.getExtent(),
+			drawMode,
+			imageMinFilter,
+			imageMagFilter,
+			mipmapFilter,
+			imageWrapU,
+			imageWrapV,
+			imageWrapW,
+			vkVertexShader,
+			vkFragmentShader,
+			vkImage,
+			VkImageDiffuseGpuPipeline::UniformBufferObject(
+				objectColor,
+				ambientColor,
+				lightColor,
+				lightDirection,
+				imageScale,
+				imageOffset));
+
+		if (!pipelines.emplace(pipeline).second)
+		{
+			throw Exception(
+				"VkWindow",
+				"createImageDiffusePipeline",
+				"Failed to emplace");
+		}
+
+		return pipeline;
 	}
 	std::shared_ptr<GpuPipeline> VkWindow::createSkyPipeline(
-		PrimitiveTopology primitiveTopology,
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{

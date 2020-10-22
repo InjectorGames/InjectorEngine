@@ -2,7 +2,7 @@
 
 namespace Injector
 {
-	enum class PrimitiveTopology
+	enum class GpuDrawMode
 	{
 		PointList,
 		LineList,

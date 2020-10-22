@@ -21,14 +21,12 @@ namespace Injector
 			VmaAllocator allocator,
 			vk::ImageUsageFlags usageFlags,
 			GpuImageType type,
-			const IntVector3& size,
-			GpuImageFormat format);
+			GpuImageFormat format,
+			const IntVector3& size);
 		~VkGpuImage() override;
 
 		VmaAllocator getAllocator() const noexcept;
 		vk::Image getImage() const noexcept;
 		VmaAllocation getAllocation() const noexcept;
-
-		static vk::Format toVkFormat(GpuImageFormat format);
 	};
 }

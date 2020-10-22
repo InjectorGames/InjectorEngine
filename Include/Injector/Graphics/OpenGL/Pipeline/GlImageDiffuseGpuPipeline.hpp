@@ -22,13 +22,12 @@ namespace Injector
 			Vector2 imageOffset;
 
 			explicit UniformBufferObject(
-				const Vector4& _objectColor = Vector4::one,
-				const Vector4& _ambientColor =  Vector4::one / 2.0f,
-				const Vector4& _lightColor = Vector4::one,
-				const Vector3& _lightDirection =
-					Vector3(1.0f, 2.0f, 3.0f).getNormalized(),
-				const Vector2& _imageScale = Vector2::one,
-				const Vector2& _imageOffset = Vector2::zero) :
+				const Vector4& _objectColor,
+				const Vector4& _ambientColor,
+				const Vector4& _lightColor,
+				const Vector3& _lightDirection,
+				const Vector2& _imageScale,
+				const Vector2& _imageOffset) :
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
@@ -43,16 +42,45 @@ namespace Injector
 		GLint mvpLocation;
 		GLint normalLocation;
 		GLint imageLocation;
+
+		GLint glImageMinFilter;
+		GLint glImageMagFilter;
+		GLint glImageWrapU;
+		GLint glImageWrapV;
+		GLint glImageWrapW;
+
+		GpuImageFilter imageMinFilter;
+		GpuImageFilter imageMagFilter;
+		GpuImageFilter mipmapFilter;
+		GpuImageWrap imageWrapU;
+		GpuImageWrap imageWrapV;
+		GpuImageWrap imageWrapW;
+
 		std::shared_ptr<GlGpuBuffer> uniformBuffer;
 		std::shared_ptr<GlGpuImage> image;
+
 		UniformBufferObject ubo;
 	 public:
 		GlImageDiffuseGpuPipeline(
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
+			GpuImageFilter imageMinFilter,
+			GpuImageFilter imageMagFilter,
+			GpuImageFilter mipmapFilter,
+			GpuImageWrap imageWrapU,
+			GpuImageWrap imageWrapV,
+			GpuImageWrap imageWrapW,
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
 			const std::shared_ptr<GlGpuImage>& image,
-			const UniformBufferObject& ubo = UniformBufferObject());
+			const UniformBufferObject& ubo);
+
+		GpuImageFilter getImageMinFilter() const override;
+		GpuImageFilter getImageMagFilter() const override;
+		GpuImageFilter getMipmapFilter() const override;
+
+		GpuImageWrap getImageWrapU() const override;
+		GpuImageWrap getImageWrapV() const override;
+		GpuImageWrap getImageWrapW() const override;
 
 		std::shared_ptr<GpuImage> getImage() const override;
 

@@ -273,28 +273,6 @@ namespace Injector
 	std::shared_ptr<GpuMesh> Window::createMesh(
 		const std::vector<float>& vertices,
 		bool mappableVertices,
-		const std::vector<uint16_t>& indices,
-		bool mappableIndices)
-	{
-		auto vertexBuffer = createBuffer(
-			vertices.size() * sizeof(float),
-			GpuBufferType::Vertex,
-			mappableVertices,
-			vertices.data());
-		auto indexBuffer = createBuffer(
-			indices.size() * sizeof(uint16_t),
-			GpuBufferType::Index,
-			mappableIndices,
-			indices.data());
-
-		return createMesh(
-			indices.size(),
-			vertexBuffer,
-			indexBuffer);
-	}
-	std::shared_ptr<GpuMesh> Window::createMesh(
-		const std::vector<float>& vertices,
-		bool mappableVertices,
 		const std::vector<uint32_t>& indices,
 		bool mappableIndices)
 	{
@@ -316,70 +294,110 @@ namespace Injector
 	}
 
 	std::shared_ptr<GpuImage> Window::createImage(
-		int size,
 		GpuImageFormat format,
-		GpuImageFilter minFilter,
-		GpuImageFilter magFilter,
-		GpuImageWrap wrapU,
+		int size,
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
 		return createImage(
 			GpuImageType::Image1D,
-			IntVector3(size, 1, 1),
 			format,
-			minFilter,
-			magFilter,
-			wrapU,
-			GpuImageWrap::Repeat,
-			GpuImageWrap::Repeat,
+			IntVector3(size, 1, 1),
 			useMipmap,
 			data);
 	}
 	std::shared_ptr<GpuImage> Window::createImage(
-		const IntVector2& size,
 		GpuImageFormat format,
-		GpuImageFilter minFilter,
-		GpuImageFilter magFilter,
-		GpuImageWrap wrapU,
-		GpuImageWrap wrapV,
+		const IntVector2& size,
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
 		return createImage(
 			GpuImageType::Image2D,
-			IntVector3(size, 1),
 			format,
-			minFilter,
-			magFilter,
-			wrapU,
-			wrapV,
-			GpuImageWrap::Repeat,
+			IntVector3(size, 1),
 			useMipmap,
 			data);
 	}
 	std::shared_ptr<GpuImage> Window::createImage(
-		const IntVector3& size,
 		GpuImageFormat format,
-		GpuImageFilter minFilter,
-		GpuImageFilter magFilter,
-		GpuImageWrap wrapU,
-		GpuImageWrap wrapV,
-		GpuImageWrap wrapW,
+		const IntVector3& size,
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
 		return createImage(
 			GpuImageType::Image3D,
-			size,
 			format,
-			minFilter,
-			magFilter,
-			wrapU,
-			wrapV,
-			wrapW,
+			size,
 			useMipmap,
 			data);
+	}
+
+	std::shared_ptr<GpuPipeline> Window::createColorPipeline(
+		GpuDrawMode drawMode,
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
+	{
+		return createColorPipeline(
+			drawMode,
+			vertexShader,
+			fragmentShader,
+			Vector4::one);
+	}
+	std::shared_ptr<GpuPipeline> Window::createColorColorPipeline(
+		GpuDrawMode drawMode,
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
+	{
+		return createColorColorPipeline(
+			drawMode,
+			vertexShader,
+			fragmentShader,
+			Vector4::one);
+	}
+	std::shared_ptr<GpuPipeline> Window::createDiffusePipeline(
+		GpuDrawMode drawMode,
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader)
+	{
+		return createDiffusePipeline(
+			drawMode,
+			vertexShader,
+			fragmentShader,
+			Vector4::one,
+			Vector4::one / 2.0f,
+			Vector4::one,
+			Vector3(1.0f, 2.0f, 3.0f).getNormalized());
+	}
+	std::shared_ptr<GpuPipeline> Window::createImageDiffusePipeline(
+		GpuDrawMode drawMode,
+		GpuImageFilter imageMinFilter,
+		GpuImageFilter imageMagFilter,
+		GpuImageFilter mipmapFilter,
+		GpuImageWrap imageWrapU,
+		GpuImageWrap imageWrapV,
+		GpuImageWrap imageWrapW,
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const std::shared_ptr<GpuImage>& image)
+	{
+		return createImageDiffusePipeline(
+			drawMode,
+			imageMinFilter,
+			imageMagFilter,
+			mipmapFilter,
+			imageWrapU,
+			imageWrapV,
+			imageWrapW,
+			vertexShader,
+			fragmentShader,
+			image,
+			Vector4::one,
+			Vector4::one / 2.0f,
+			Vector4::one,
+			Vector3(1.0f, 2.0f, 3.0f).getNormalized(),
+			Vector2::one,
+			Vector2::zero);
 	}
 
 	std::shared_ptr<Window> Window::create(

@@ -4,22 +4,12 @@ namespace Injector
 {
 	GpuImage::GpuImage(
 		GpuImageType _type,
-		const IntVector3& _size,
 		GpuImageFormat _format,
-		GpuImageFilter _minFilter,
-		GpuImageFilter _magFilter,
-		GpuImageWrap _wrapU,
-		GpuImageWrap _wrapV,
-		GpuImageWrap _wrapW,
+		const IntVector3& _size,
 		bool _useMipmap) :
 		type(_type),
-		size(_size),
 		format(_format),
-		minFilter(_minFilter),
-		magFilter(_magFilter),
-		wrapU(_wrapU),
-		wrapV(_wrapV),
-		wrapW(_wrapW),
+		size(_size),
 		useMipmap(_useMipmap)
 	{
 	}
@@ -28,33 +18,13 @@ namespace Injector
 	{
 		return type;
 	}
-	const IntVector3& GpuImage::getSize() const noexcept
-	{
-		return size;
-	}
 	GpuImageFormat GpuImage::getFormat() const noexcept
 	{
 		return format;
 	}
-	GpuImageFilter GpuImage::getMinFilter() const noexcept
+	const IntVector3& GpuImage::getSize() const noexcept
 	{
-		return minFilter;
-	}
-	GpuImageFilter GpuImage::getMagFilter() const noexcept
-	{
-		return magFilter;
-	}
-	GpuImageWrap GpuImage::getWrapU() const noexcept
-	{
-		return wrapU;
-	}
-	GpuImageWrap GpuImage::getWrapV() const noexcept
-	{
-		return wrapV;
-	}
-	GpuImageWrap GpuImage::getWrapW() const noexcept
-	{
-		return wrapW;
+		return size;
 	}
 	bool GpuImage::isUseMipmap() const noexcept
 	{

@@ -3,13 +3,13 @@
 namespace Injector
 {
 	GpuPipeline::GpuPipeline(
-		PrimitiveTopology _primitiveTopology) :
-		primitiveTopology(_primitiveTopology)
+		GpuDrawMode _drawMode) :
+		drawMode(_drawMode)
 	{
 	}
 
-	PrimitiveTopology GpuPipeline::getPrimitiveTopology() const noexcept
+	GpuDrawMode GpuPipeline::getDrawMode() const noexcept
 	{
-		return primitiveTopology;
+		return drawMode;
 	}
 }

@@ -1,5 +1,6 @@
 #include "Injector/Graphics/OpenGL/GlGpuPipeline.hpp"
 #include "Injector/Exception/Exception.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuDrawMode.hpp"
 
 namespace Injector
 {
@@ -169,9 +170,9 @@ namespace Injector
 	}
 
 	GlGpuPipeline::GlGpuPipeline(
-		PrimitiveTopology primitiveTopology) noexcept :
-		GpuPipeline(primitiveTopology),
-		glPrimitiveTopology(toGlPrimitiveTopology(primitiveTopology))
+		GpuDrawMode drawMode) noexcept :
+		GpuPipeline(drawMode),
+		glDrawMode(toGlGpuDrawMode(drawMode))
 	{
 		program = glCreateProgram();
 	}
@@ -184,9 +185,9 @@ namespace Injector
 	{
 		return program;
 	}
-	GLenum GlGpuPipeline::getGlPrimitiveTopology() const noexcept
+	GLenum GlGpuPipeline::getGlDrawMode() const noexcept
 	{
-		return glPrimitiveTopology;
+		return glDrawMode;
 	}
 
 	void GlGpuPipeline::bind()
@@ -207,29 +208,6 @@ namespace Injector
 		const GlGpuPipeline& pipeline) const noexcept
 	{
 		return program != pipeline.program;
-	}
-
-	GLenum GlGpuPipeline::toGlPrimitiveTopology(
-		PrimitiveTopology primitiveTopology)
-	{
-		switch(primitiveTopology)
-		{
-		case PrimitiveTopology::PointList:
-			return GL_POINTS;
-		case PrimitiveTopology::LineList:
-			return GL_LINES;
-		case PrimitiveTopology::LineStrip:
-			return GL_LINE_STRIP;
-		case PrimitiveTopology::TriangleList:
-			return GL_TRIANGLES;
-		case PrimitiveTopology::TriangleStrip:
-			return GL_TRIANGLE_STRIP;
-		default:
-			throw Exception(
-				"GlGpuPipeline",
-				"toGlPrimitiveTopology",
-				"Unsupported primitive topology");
-		}
 	}
 
 	bool GlGpuPipeline::less(

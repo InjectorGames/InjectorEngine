@@ -1,5 +1,6 @@
 #include "Injector/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.hpp"
 #include "Injector/Exception/NullException.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuDrawMode.hpp"
 
 namespace Injector
 {
@@ -51,7 +52,8 @@ namespace Injector
 		const std::shared_ptr<VkGpuShader>& vertexShader,
 		const std::shared_ptr<VkGpuShader>& fragmentShader)
 	{
-		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>{
+		vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] =
+		{
 			vk::PipelineShaderStageCreateInfo(
 				vk::PipelineShaderStageCreateFlags(),
 				vk::ShaderStageFlagBits::eVertex,
@@ -149,8 +151,8 @@ namespace Injector
 
 		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo(
 			vk::PipelineCreateFlags(),
-			static_cast<uint32_t>(pipelineShaderStageCreateInfos.size()),
-			pipelineShaderStageCreateInfos.data(),
+			2,
+			pipelineShaderStageCreateInfos,
 			&pipelineVertexInputStateCreateInfo,
 			&pipelineInputAssemblyStateCreateInfo,
 			nullptr,
@@ -185,11 +187,11 @@ namespace Injector
 		vk::Device device,
 		vk::RenderPass renderPass,
 		const vk::Extent2D& surfaceExtent,
-		PrimitiveTopology primitiveTopology,
+		GpuDrawMode drawMode,
 		const std::shared_ptr<VkGpuShader>& _vertexShader,
 		const std::shared_ptr<VkGpuShader>& _fragmentShader,
 		const Vector4& _color) :
-		VkGpuPipeline(device, primitiveTopology),
+		VkGpuPipeline(device, drawMode),
 		vertexShader(_vertexShader),
 		fragmentShader(_fragmentShader),
 		color(_color)
@@ -224,7 +226,7 @@ namespace Injector
 			pipelineLayout,
 			renderPass,
 			surfaceExtent,
-			toVkPrimitiveTopology(primitiveTopology),
+			toVkGpuDrawMode(drawMode),
 			_vertexShader,
 			_fragmentShader);
 	}
@@ -260,7 +262,7 @@ namespace Injector
 			pipelineLayout,
 			renderPass,
 			surfaceExtent,
-			toVkPrimitiveTopology(primitiveTopology),
+			toVkGpuDrawMode(drawMode),
 			vertexShader,
 			fragmentShader);
 	}

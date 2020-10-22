@@ -91,7 +91,7 @@ namespace Injector
 		pipeline->setAttributes();
 
 		glDrawElements(
-			pipeline->getGlPrimitiveTopology(),
+			pipeline->getGlDrawMode(),
 			static_cast<GLsizei>(indexCount),
 			GL_UNSIGNED_INT,
 			nullptr);

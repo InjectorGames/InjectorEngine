@@ -1,5 +1,6 @@
 #include "Injector/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.hpp"
 #include "Injector/Exception/NullException.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuDrawMode.hpp"
 
 namespace Injector
 {
@@ -77,7 +78,8 @@ namespace Injector
 		const std::shared_ptr<VkGpuShader>& vertexShader,
 		const std::shared_ptr<VkGpuShader>& fragmentShader)
 	{
-		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>{
+		vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] =
+		{
 			vk::PipelineShaderStageCreateInfo(
 				vk::PipelineShaderStageCreateFlags(),
 				vk::ShaderStageFlagBits::eVertex,
@@ -97,7 +99,8 @@ namespace Injector
 			sizeof(Vector3) * 2,
 			vk::VertexInputRate::eVertex);
 
-		auto vertexInputAttributeDescriptions = std::vector<vk::VertexInputAttributeDescription>{
+		vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[2] =
+		{
 			vk::VertexInputAttributeDescription(
 				0,
 				0,
@@ -114,8 +117,8 @@ namespace Injector
 			vk::PipelineVertexInputStateCreateFlags(),
 			1,
 			&vertexInputBindingDescription,
-			static_cast<uint32_t>(vertexInputAttributeDescriptions.size()),
-			vertexInputAttributeDescriptions.data());
+			2,
+			vertexInputAttributeDescriptions);
 
 		auto pipelineInputAssemblyStateCreateInfo = vk::PipelineInputAssemblyStateCreateInfo(
 			vk::PipelineInputAssemblyStateCreateFlags(),
@@ -183,8 +186,8 @@ namespace Injector
 
 		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo(
 			vk::PipelineCreateFlags(),
-			static_cast<uint32_t>(pipelineShaderStageCreateInfos.size()),
-			pipelineShaderStageCreateInfos.data(),
+			2,
+			pipelineShaderStageCreateInfos,
 			&pipelineVertexInputStateCreateInfo,
 			&pipelineInputAssemblyStateCreateInfo,
 			nullptr,
@@ -296,7 +299,7 @@ namespace Injector
 			auto descriptorBufferInfo = vk::DescriptorBufferInfo(
 				uniformBuffers[i]->getBuffer(),
 				0,
-				sizeof(Vector4) * 3 + sizeof(Vector3));
+				sizeof(UniformBufferObject));
 			auto writeDescriptorSet = vk::WriteDescriptorSet(
 				descriptorSets[i],
 				0,
@@ -323,11 +326,11 @@ namespace Injector
 		vk::RenderPass renderPass,
 		uint32_t imageCount,
 		const vk::Extent2D& surfaceExtent,
-		PrimitiveTopology primitiveTopology,
+		GpuDrawMode drawMode,
 		const std::shared_ptr<VkGpuShader>& _vertexShader,
 		const std::shared_ptr<VkGpuShader>& _fragmentShader,
 		const UniformBufferObject& _ubo) :
-		VkGpuPipeline(device, primitiveTopology),
+		VkGpuPipeline(device, drawMode),
 		vertexShader(_vertexShader),
 		fragmentShader(_fragmentShader),
 		ubo(_ubo)
@@ -372,7 +375,7 @@ namespace Injector
 			pipelineLayout,
 			renderPass,
 			surfaceExtent,
-			toVkPrimitiveTopology(primitiveTopology),
+			toVkGpuDrawMode(drawMode),
 			_vertexShader,
 			_fragmentShader);
 		descriptorPool = createDescriptorPool(
@@ -400,6 +403,42 @@ namespace Injector
 			descriptorSetLayout);
 	}
 
+	const Vector4& VkDiffuseGpuPipeline::getObjectColor() const
+	{
+		return ubo.objectColor;
+	}
+	void VkDiffuseGpuPipeline::setObjectColor(const Vector4& color)
+	{
+		ubo.objectColor = Vector4(color);
+	}
+
+	const Vector4& VkDiffuseGpuPipeline::getAmbientColor() const
+	{
+		return ubo.ambientColor;
+	}
+	void VkDiffuseGpuPipeline::setAmbientColor(const Vector4& color)
+	{
+		ubo.ambientColor = Vector4(color);
+	}
+
+	const Vector4& VkDiffuseGpuPipeline::getLightColor() const
+	{
+		return ubo.lightColor;
+	}
+	void VkDiffuseGpuPipeline::setLightColor(const Vector4& color)
+	{
+		ubo.lightColor = Vector4(color);
+	}
+
+	const Vector3& VkDiffuseGpuPipeline::getLightDirection() const
+	{
+		return ubo.lightDirection;
+	}
+	void VkDiffuseGpuPipeline::setLightDirection(const Vector3& direction)
+	{
+		ubo.lightDirection = Vector3(direction.getNormalized());
+	}
+
 	void VkDiffuseGpuPipeline::recreate(
 		VmaAllocator allocator,
 		vk::RenderPass renderPass,
@@ -417,7 +456,7 @@ namespace Injector
 			pipelineLayout,
 			renderPass,
 			extent,
-			toVkPrimitiveTopology(primitiveTopology),
+			toVkGpuDrawMode(drawMode),
 			vertexShader,
 			fragmentShader);
 		descriptorPool = createDescriptorPool(
@@ -481,41 +520,5 @@ namespace Injector
 			sizeof(Matrix4),
 			sizeof(Matrix3),
 			&normal);
-	}
-
-	const Vector4& VkDiffuseGpuPipeline::getObjectColor() const
-	{
-		return ubo.objectColor;
-	}
-	void VkDiffuseGpuPipeline::setObjectColor(const Vector4& color)
-	{
-		ubo.objectColor = Vector4(color);
-	}
-
-	const Vector4& VkDiffuseGpuPipeline::getAmbientColor() const
-	{
-		return ubo.ambientColor;
-	}
-	void VkDiffuseGpuPipeline::setAmbientColor(const Vector4& color)
-	{
-		ubo.ambientColor = Vector4(color);
-	}
-
-	const Vector4& VkDiffuseGpuPipeline::getLightColor() const
-	{
-		return ubo.lightColor;
-	}
-	void VkDiffuseGpuPipeline::setLightColor(const Vector4& color)
-	{
-		ubo.lightColor = Vector4(color);
-	}
-
-	const Vector3& VkDiffuseGpuPipeline::getLightDirection() const
-	{
-		return ubo.lightDirection;
-	}
-	void VkDiffuseGpuPipeline::setLightDirection(const Vector3& direction)
-	{
-		ubo.lightDirection = Vector3(direction.getNormalized());
 	}
 }

@@ -12,6 +12,9 @@ namespace Injector
 		VmaAllocator allocator;
 		vk::Buffer buffer;
 		VmaAllocation allocation;
+
+		static bool isVkMappable(
+			VmaMemoryUsage usage);
 	 public:
 		VkGpuBuffer(
 			VmaAllocator allocator,
@@ -48,10 +51,5 @@ namespace Injector
 			const void* data,
 			size_t size,
 			size_t offset) override;
-
-		static vk::BufferUsageFlagBits toVkType(
-			GpuBufferType type);
-		static bool isVkMappable(
-			VmaMemoryUsage usage);
 	};
 }

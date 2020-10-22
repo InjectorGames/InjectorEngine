@@ -47,13 +47,8 @@ namespace Injector
 			const std::shared_ptr<ShaderData>& data) override;
 		std::shared_ptr<GpuImage> createImage(
 			GpuImageType type,
-			const IntVector3& size,
 			GpuImageFormat format,
-			GpuImageFilter minFilter,
-			GpuImageFilter magFilter,
-			GpuImageWrap wrapU,
-			GpuImageWrap wrapV,
-			GpuImageWrap wrapW,
+			const IntVector3& size,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data) override;
 		std::shared_ptr<GpuFramebuffer> createFramebuffer(
@@ -62,25 +57,42 @@ namespace Injector
 			const std::shared_ptr<GpuImage>& stencilImage) override;
 
 		std::shared_ptr<GpuPipeline> createColorPipeline(
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
 			const Vector4& color) override;
 		std::shared_ptr<GpuPipeline> createColorColorPipeline(
-			PrimitiveTopology primitiveTopology,
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) override;
-		std::shared_ptr<GpuPipeline> createDiffusePipeline(
-			PrimitiveTopology primitiveTopology,
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) override;
-		std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const std::shared_ptr<GpuImage>& image) override;
+			const Vector4& color) override;
+		std::shared_ptr<GpuPipeline> createDiffusePipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const Vector4& objectColor,
+			const Vector4& ambientColor,
+			const Vector4& lightColor,
+			const Vector3& lightDirection) override;
+		std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
+			GpuDrawMode drawMode,
+			GpuImageFilter imageMinFilter,
+			GpuImageFilter imageMagFilter,
+			GpuImageFilter mipmapFilter,
+			GpuImageWrap imageWrapU,
+			GpuImageWrap imageWrapV,
+			GpuImageWrap imageWrapW,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const std::shared_ptr<GpuImage>& image,
+			const Vector4& objectColor,
+			const Vector4& ambientColor,
+			const Vector4& lightColor,
+			const Vector3& lightDirection,
+			const Vector2& imageScale,
+			const Vector2& imageOffset) override;
 		std::shared_ptr<GpuPipeline> createSkyPipeline(
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader) override;
 	};

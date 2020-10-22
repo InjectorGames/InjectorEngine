@@ -1,5 +1,8 @@
 #include "Injector/Graphics/Vulkan/Pipeline/VkImageDiffuseGpuPipeline.hpp"
 #include "Injector/Exception/NullException.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuDrawMode.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuImageWrap.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuImageFilter.hpp"
 
 namespace Injector
 {
@@ -8,16 +11,26 @@ namespace Injector
 	{
 		vk::DescriptorSetLayout descriptorSetLayout;
 
-		auto descriptorSetLayoutBinding = vk::DescriptorSetLayoutBinding(
-			0,
-			vk::DescriptorType::eUniformBuffer,
-			1,
-			vk::ShaderStageFlagBits::eFragment,
-			nullptr);
+		vk::DescriptorSetLayoutBinding descriptorSetLayoutBindings[2] =
+		{
+			vk::DescriptorSetLayoutBinding(
+				0,
+				vk::DescriptorType::eUniformBuffer,
+				1,
+				vk::ShaderStageFlagBits::eFragment,
+				nullptr),
+			vk::DescriptorSetLayoutBinding(
+				1,
+				vk::DescriptorType::eCombinedImageSampler,
+				1,
+				vk::ShaderStageFlagBits::eFragment,
+				nullptr),
+		};
+
 		auto descriptorSetLayoutCreateInfo = vk::DescriptorSetLayoutCreateInfo(
 			vk::DescriptorSetLayoutCreateFlags(),
-			1,
-			&descriptorSetLayoutBinding);
+			2,
+			descriptorSetLayoutBindings);
 
 		auto result = device.createDescriptorSetLayout(
 			&descriptorSetLayoutCreateInfo,
@@ -77,7 +90,8 @@ namespace Injector
 		const std::shared_ptr<VkGpuShader>& vertexShader,
 		const std::shared_ptr<VkGpuShader>& fragmentShader)
 	{
-		auto pipelineShaderStageCreateInfos = std::vector<vk::PipelineShaderStageCreateInfo>{
+		vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] =
+		{
 			vk::PipelineShaderStageCreateInfo(
 				vk::PipelineShaderStageCreateFlags(),
 				vk::ShaderStageFlagBits::eVertex,
@@ -97,7 +111,8 @@ namespace Injector
 			sizeof(Vector3) * 2,
 			vk::VertexInputRate::eVertex);
 
-		auto vertexInputAttributeDescriptions = std::vector<vk::VertexInputAttributeDescription>{
+		vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[3] =
+		{
 			vk::VertexInputAttributeDescription(
 				0,
 				0,
@@ -108,14 +123,19 @@ namespace Injector
 				0,
 				vk::Format::eR32G32B32Sfloat,
 				sizeof(Vector3)),
+			vk::VertexInputAttributeDescription(
+				2,
+				0,
+				vk::Format::eR32G32Sfloat,
+				sizeof(Vector3) * 2),
 		};
 
 		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo(
 			vk::PipelineVertexInputStateCreateFlags(),
 			1,
 			&vertexInputBindingDescription,
-			static_cast<uint32_t>(vertexInputAttributeDescriptions.size()),
-			vertexInputAttributeDescriptions.data());
+			3,
+			vertexInputAttributeDescriptions);
 
 		auto pipelineInputAssemblyStateCreateInfo = vk::PipelineInputAssemblyStateCreateInfo(
 			vk::PipelineInputAssemblyStateCreateFlags(),
@@ -183,8 +203,8 @@ namespace Injector
 
 		auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo(
 			vk::PipelineCreateFlags(),
-			static_cast<uint32_t>(pipelineShaderStageCreateInfos.size()),
-			pipelineShaderStageCreateInfos.data(),
+			2,
+			pipelineShaderStageCreateInfos,
 			&pipelineVertexInputStateCreateInfo,
 			&pipelineInputAssemblyStateCreateInfo,
 			nullptr,
@@ -220,14 +240,21 @@ namespace Injector
 	{
 		vk::DescriptorPool descriptorPool;
 
-		auto descriptorPoolSize = vk::DescriptorPoolSize(
-			vk::DescriptorType::eUniformBuffer,
-			imageCount);
+		vk::DescriptorPoolSize descriptorPoolSizes[2] =
+		{
+			vk::DescriptorPoolSize(
+				vk::DescriptorType::eUniformBuffer,
+				imageCount),
+			vk::DescriptorPoolSize(
+				vk::DescriptorType::eCombinedImageSampler,
+				imageCount),
+		};
+
 		auto descriptorPoolCreateInfo = vk::DescriptorPoolCreateInfo(
 			vk::DescriptorPoolCreateFlags(),
 			imageCount,
-			1,
-			&descriptorPoolSize);
+			2,
+			descriptorPoolSizes);
 
 		auto result = device.createDescriptorPool(
 			&descriptorPoolCreateInfo,
@@ -279,17 +306,48 @@ namespace Injector
 		return imageView;
 	}
 	vk::Sampler VkImageDiffuseGpuPipeline::createImageSampler(
-		vk::Device,
+		vk::Device device,
 		vk::Filter magFilter,
 		vk::Filter minFilter,
-		)
+		vk::SamplerMipmapMode mipmapMode,
+		vk::SamplerAddressMode addressModeU,
+		vk::SamplerAddressMode addressModeV,
+		vk::SamplerAddressMode addressModeW)
 	{
 		vk::Sampler sampler;
 
 		auto samplerCreateInfo = vk::SamplerCreateInfo(
 			vk::SamplerCreateFlags(),
+			magFilter,
+			minFilter,
+			mipmapMode,
+			addressModeU,
+			addressModeV,
+			addressModeW,
+			0.0f,
+			VK_FALSE,
+			0.0f,
+			VK_FALSE,
+			vk::CompareOp::eNever,
+			0.0f,
+			0.0f,
+			vk::BorderColor::eFloatOpaqueBlack,
+			VK_FALSE);
 
-			);
+		auto result = device.createSampler(
+			&samplerCreateInfo,
+			nullptr,
+			&sampler);
+
+		if(result != vk::Result::eSuccess)
+		{
+			throw Exception(
+				"VkImageDiffuseGpuPipeline",
+				"createImageSampler",
+				"Failed to create sampler");
+		}
+
+		return sampler;
 	}
 	std::vector<std::shared_ptr<VkGpuBuffer>> VkImageDiffuseGpuPipeline::createUniformBuffers(
 		VmaAllocator allocator,
@@ -313,6 +371,8 @@ namespace Injector
 		vk::Device device,
 		vk::DescriptorPool descriptorPool,
 		vk::DescriptorSetLayout descriptorSetLayout,
+		vk::ImageView imageView,
+		vk::Sampler sampler,
 		size_t imageCount,
 		const std::vector<std::shared_ptr<VkGpuBuffer>>& uniformBuffers)
 	{
@@ -343,20 +403,38 @@ namespace Injector
 			auto descriptorBufferInfo = vk::DescriptorBufferInfo(
 				uniformBuffers[i]->getBuffer(),
 				0,
-				sizeof(Vector4) * 3 + sizeof(Vector3));
-			auto writeDescriptorSet = vk::WriteDescriptorSet(
-				descriptorSets[i],
-				0,
-				0,
-				1,
-				vk::DescriptorType::eUniformBuffer,
-				nullptr,
-				&descriptorBufferInfo,
-				nullptr);
+				sizeof(UniformBufferObject));
+			auto descriptorImageInfo = vk::DescriptorImageInfo(
+				sampler,
+				imageView,
+				vk::ImageLayout::eShaderReadOnlyOptimal);
+
+
+			vk::WriteDescriptorSet writeDescriptorSets[2] =
+			{
+				vk::WriteDescriptorSet(
+					descriptorSets[i],
+					0,
+					0,
+					1,
+					vk::DescriptorType::eUniformBuffer,
+					nullptr,
+					&descriptorBufferInfo,
+					nullptr),
+				vk::WriteDescriptorSet(
+					descriptorSets[i],
+					1,
+					0,
+					1,
+					vk::DescriptorType::eCombinedImageSampler,
+					&descriptorImageInfo,
+					nullptr,
+					nullptr),
+			};
 
 			device.updateDescriptorSets(
-				1,
-				&writeDescriptorSet,
+				2,
+				writeDescriptorSets,
 				0,
 				nullptr);
 		}
@@ -370,12 +448,24 @@ namespace Injector
 		vk::RenderPass renderPass,
 		uint32_t imageCount,
 		const vk::Extent2D& surfaceExtent,
-		PrimitiveTopology primitiveTopology,
+		GpuDrawMode drawMode,
+		GpuImageFilter _imageMinFilter,
+		GpuImageFilter _imageMagFilter,
+		GpuImageFilter _mipmapFilter,
+		GpuImageWrap _imageWrapU,
+		GpuImageWrap _imageWrapV,
+		GpuImageWrap _imageWrapW,
 		const std::shared_ptr<VkGpuShader>& _vertexShader,
 		const std::shared_ptr<VkGpuShader>& _fragmentShader,
 		const std::shared_ptr<VkGpuImage>& _image,
 		const UniformBufferObject& _ubo) :
-		VkGpuPipeline(device, primitiveTopology),
+		VkGpuPipeline(device, drawMode),
+		imageMinFilter(_imageMinFilter),
+		imageMagFilter(_imageMagFilter),
+		mipmapFilter(_mipmapFilter),
+		imageWrapU(_imageWrapU),
+		imageWrapV(_imageWrapV),
+		imageWrapW(_imageWrapW),
 		vertexShader(_vertexShader),
 		fragmentShader(_fragmentShader),
 		image(_image),
@@ -428,7 +518,7 @@ namespace Injector
 			pipelineLayout,
 			renderPass,
 			surfaceExtent,
-			toVkPrimitiveTopology(primitiveTopology),
+			toVkGpuDrawMode(drawMode),
 			_vertexShader,
 			_fragmentShader);
 		descriptorPool = createDescriptorPool(
@@ -437,6 +527,14 @@ namespace Injector
 		imageView = createImageView(
 			device,
 			_image->getImage());
+		imageSampler = createImageSampler(
+			device,
+			toVkGpuImageFilter(_imageMinFilter),
+			toVkGpuImageFilter(_imageMagFilter),
+			toVkGpuMipmapFilter(_mipmapFilter),
+			toVkGpuImageWrap(_imageWrapU),
+			toVkGpuImageWrap(_imageWrapV),
+			toVkGpuImageWrap(_imageWrapW));
 		uniformBuffers = createUniformBuffers(
 			allocator,
 			imageCount);
@@ -444,6 +542,8 @@ namespace Injector
 			device,
 			descriptorPool,
 			descriptorSetLayout,
+			imageView,
+			imageSampler,
 			imageCount,
 			uniformBuffers);
 	}
@@ -463,90 +563,35 @@ namespace Injector
 			descriptorSetLayout);
 	}
 
-	void VkImageDiffuseGpuPipeline::recreate(
-		VmaAllocator allocator,
-		vk::RenderPass renderPass,
-		uint32_t imageCount,
-		const vk::Extent2D& extent)
+	GpuImageFilter VkImageDiffuseGpuPipeline::getImageMinFilter() const
 	{
-		device.destroyDescriptorPool(
-			descriptorPool);
-		device.destroyPipeline(
-			pipeline);
-
-		pipeline = createPipeline(
-			device,
-			pipelineCache,
-			pipelineLayout,
-			renderPass,
-			extent,
-			toVkPrimitiveTopology(primitiveTopology),
-			vertexShader,
-			fragmentShader);
-		descriptorPool = createDescriptorPool(
-			device,
-			imageCount);
-		imageView = createImageView(
-			device,
-			image->getImage());
-		uniformBuffers = createUniformBuffers(
-			allocator,
-			imageCount);
-		descriptorSets = createDescriptorSets(
-			device,
-			descriptorPool,
-			descriptorSetLayout,
-			imageCount,
-			uniformBuffers);
+		return imageMinFilter;
 	}
-	void VkImageDiffuseGpuPipeline::flush(
-		size_t imageIndex)
+	GpuImageFilter VkImageDiffuseGpuPipeline::getImageMagFilter() const
 	{
-		auto uniformBuffer = uniformBuffers[imageIndex];
-		auto mappedData = uniformBuffer->map(GpuBufferAccess::WriteOnly);
-		memcpy(mappedData, &ubo, sizeof(UniformBufferObject));
-		uniformBuffer->unmap();
+		return imageMagFilter;
 	}
-	void VkImageDiffuseGpuPipeline::bind(
-		vk::CommandBuffer commandBuffer,
-		size_t imageIndex)
+	GpuImageFilter VkImageDiffuseGpuPipeline::getMipmapFilter() const
 	{
-		VkGpuPipeline::bind(commandBuffer, imageIndex);
-
-		commandBuffer.bindPipeline(
-			vk::PipelineBindPoint::eGraphics,
-			pipeline);
-		commandBuffer.bindDescriptorSets(
-			vk::PipelineBindPoint::eGraphics,
-			pipelineLayout,
-			0,
-			1,
-			&descriptorSets[imageIndex],
-			0,
-			nullptr);
+		return mipmapFilter;
 	}
 
-	void VkImageDiffuseGpuPipeline::setUniforms(
-		const Matrix4& model,
-		const Matrix4& view,
-		const Matrix4& proj,
-		const Matrix4& viewProj,
-		const Matrix4& mvp)
+	GpuImageWrap VkImageDiffuseGpuPipeline::getImageWrapU() const
 	{
-		auto normal = model.getInverted().getInverted().getMatrix3();
+		return imageWrapU;
+	}
+	GpuImageWrap VkImageDiffuseGpuPipeline::getImageWrapV() const
+	{
+		return imageWrapV;
+	}
+	GpuImageWrap VkImageDiffuseGpuPipeline::getImageWrapW() const
+	{
+		return imageWrapW;
+	}
 
-		bindedCommandBuffer.pushConstants(
-			pipelineLayout,
-			vk::ShaderStageFlagBits::eVertex,
-			0,
-			sizeof(Matrix4),
-			&mvp);
-		bindedCommandBuffer.pushConstants(
-			pipelineLayout,
-			vk::ShaderStageFlagBits::eVertex,
-			sizeof(Matrix4),
-			sizeof(Matrix3),
-			&normal);
+	std::shared_ptr<GpuImage> VkImageDiffuseGpuPipeline::getImage() const
+	{
+		return image;
 	}
 
 	const Vector4& VkImageDiffuseGpuPipeline::getObjectColor() const
@@ -601,5 +646,93 @@ namespace Injector
 	void VkImageDiffuseGpuPipeline::setImageOffset(const Vector2& offset)
 	{
 		ubo.imageOffset = Vector2(offset);
+	}
+
+	void VkImageDiffuseGpuPipeline::recreate(
+		VmaAllocator allocator,
+		vk::RenderPass renderPass,
+		uint32_t imageCount,
+		const vk::Extent2D& extent)
+	{
+		device.destroyDescriptorPool(
+			descriptorPool);
+		device.destroyPipeline(
+			pipeline);
+
+		pipeline = createPipeline(
+			device,
+			pipelineCache,
+			pipelineLayout,
+			renderPass,
+			extent,
+			toVkGpuDrawMode(drawMode),
+			vertexShader,
+			fragmentShader);
+		descriptorPool = createDescriptorPool(
+			device,
+			imageCount);
+		imageView = createImageView(
+			device,
+			image->getImage());
+		uniformBuffers = createUniformBuffers(
+			allocator,
+			imageCount);
+		descriptorSets = createDescriptorSets(
+			device,
+			descriptorPool,
+			descriptorSetLayout,
+			imageView,
+			imageSampler,
+			imageCount,
+			uniformBuffers);
+	}
+	void VkImageDiffuseGpuPipeline::flush(
+		size_t imageIndex)
+	{
+		auto uniformBuffer = uniformBuffers[imageIndex];
+		auto mappedData = uniformBuffer->map(GpuBufferAccess::WriteOnly);
+		memcpy(mappedData, &ubo, sizeof(UniformBufferObject));
+		uniformBuffer->unmap();
+	}
+	void VkImageDiffuseGpuPipeline::bind(
+		vk::CommandBuffer commandBuffer,
+		size_t imageIndex)
+	{
+		VkGpuPipeline::bind(commandBuffer, imageIndex);
+
+		commandBuffer.bindPipeline(
+			vk::PipelineBindPoint::eGraphics,
+			pipeline);
+		commandBuffer.bindDescriptorSets(
+			vk::PipelineBindPoint::eGraphics,
+			pipelineLayout,
+			0,
+			1,
+			&descriptorSets[imageIndex],
+			0,
+			nullptr);
+	}
+
+	void VkImageDiffuseGpuPipeline::setUniforms(
+		const Matrix4& model,
+		const Matrix4& view,
+		const Matrix4& proj,
+		const Matrix4& viewProj,
+		const Matrix4& mvp)
+	{
+		auto normal = model.getInverted().getInverted().getMatrix3();
+
+		bindedCommandBuffer.pushConstants(
+			pipelineLayout,
+			vk::ShaderStageFlagBits::eVertex,
+			0,
+			sizeof(Matrix4),
+			&mvp);
+		bindedCommandBuffer.pushConstants(
+			pipelineLayout,
+			vk::ShaderStageFlagBits::eVertex,
+			sizeof(Matrix4),
+			sizeof(Matrix3),
+			&normal);
 	}
 }

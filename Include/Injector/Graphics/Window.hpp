@@ -13,6 +13,8 @@
 #include "Injector/Graphics/ButtonState.hpp"
 #include "Injector/Graphics/RenderSystem.hpp"
 #include "Injector/Graphics/CameraSystem.hpp"
+#include "Injector/Graphics/GpuImageWrap.hpp"
+#include "Injector/Graphics/GpuImageFilter.hpp"
 #include "Injector/Graphics/KeyboardButton.hpp"
 #include "Injector/Graphics/GpuFramebuffer.hpp"
 
@@ -102,13 +104,8 @@ namespace Injector
 			const std::shared_ptr<ShaderData>& data) = 0;
 		virtual std::shared_ptr<GpuImage> createImage(
 			GpuImageType type,
-			const IntVector3& size,
 			GpuImageFormat format,
-			GpuImageFilter minFilter,
-			GpuImageFilter magFilter,
-			GpuImageWrap wrapU,
-			GpuImageWrap wrapV,
-			GpuImageWrap wrapW,
+			const IntVector3& size,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data) = 0;
 		virtual std::shared_ptr<GpuFramebuffer> createFramebuffer(
@@ -117,33 +114,45 @@ namespace Injector
 			const std::shared_ptr<GpuImage>& stencilImage) = 0;
 
 		virtual std::shared_ptr<GpuPipeline> createColorPipeline(
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
 			const Vector4& color) = 0;
 		virtual std::shared_ptr<GpuPipeline> createColorColorPipeline(
-			PrimitiveTopology primitiveTopology,
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) = 0;
-		virtual std::shared_ptr<GpuPipeline> createDiffusePipeline(
-			PrimitiveTopology primitiveTopology,
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) = 0;
-		virtual std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const std::shared_ptr<GpuImage>& image) = 0;
+			const Vector4& color) = 0;
+		virtual std::shared_ptr<GpuPipeline> createDiffusePipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const Vector4& objectColor,
+			const Vector4& ambientColor,
+			const Vector4& lightColor,
+			const Vector3& lightDirection) = 0;
+		virtual std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
+			GpuDrawMode drawMode,
+			GpuImageFilter imageMinFilter,
+			GpuImageFilter imageMagFilter,
+			GpuImageFilter mipmapFilter,
+			GpuImageWrap imageWrapU,
+			GpuImageWrap imageWrapV,
+			GpuImageWrap imageWrapW,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const std::shared_ptr<GpuImage>& image,
+			const Vector4& objectColor,
+			const Vector4& ambientColor,
+			const Vector4& lightColor,
+			const Vector3& lightDirection,
+			const Vector2& imageScale,
+			const Vector2& imageOffset) = 0;
 		virtual std::shared_ptr<GpuPipeline> createSkyPipeline(
-			PrimitiveTopology primitiveTopology,
+			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader) = 0;
 
-		std::shared_ptr<GpuMesh> createMesh(
-			const std::vector<float>& vertices,
-			bool mappableVertices,
-			const std::vector<uint16_t>& indices,
-			bool mappableIndices);
 		std::shared_ptr<GpuMesh> createMesh(
 			const std::vector<float>& vertices,
 			bool mappableVertices,
@@ -151,32 +160,44 @@ namespace Injector
 			bool mappableIndices);
 
 		std::shared_ptr<GpuImage> createImage(
+			GpuImageFormat format,
 			int size,
-			GpuImageFormat format,
-			GpuImageFilter minFilter,
-			GpuImageFilter magFilter,
-			GpuImageWrap wrapU,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data = nullptr);
 		std::shared_ptr<GpuImage> createImage(
+			GpuImageFormat format,
 			const IntVector2& size,
-			GpuImageFormat format,
-			GpuImageFilter minFilter,
-			GpuImageFilter magFilter,
-			GpuImageWrap wrapU,
-			GpuImageWrap wrapV,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data = nullptr);
 		std::shared_ptr<GpuImage> createImage(
-			const IntVector3& size,
 			GpuImageFormat format,
-			GpuImageFilter minFilter,
-			GpuImageFilter magFilter,
-			GpuImageWrap wrapU,
-			GpuImageWrap wrapV,
-			GpuImageWrap wrapW,
+			const IntVector3& size,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data = nullptr);
+
+		std::shared_ptr<GpuPipeline> createColorPipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader);
+		std::shared_ptr<GpuPipeline> createColorColorPipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader);
+		std::shared_ptr<GpuPipeline> createDiffusePipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader);
+		std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
+			GpuDrawMode drawMode,
+			GpuImageFilter imageMinFilter,
+			GpuImageFilter imageMagFilter,
+			GpuImageFilter mipmapFilter,
+			GpuImageWrap imageWrapU,
+			GpuImageWrap imageWrapV,
+			GpuImageWrap imageWrapW,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const std::shared_ptr<GpuImage>& image);
 
 		static std::shared_ptr<Window> create(
 			const std::string& title = defaultTitle,

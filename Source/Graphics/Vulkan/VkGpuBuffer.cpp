@@ -2,9 +2,19 @@
 #include "Injector/Graphics/Vulkan/VkGpuBuffer.hpp"
 #include "Injector/Exception/NullException.hpp"
 #include "Injector/Exception/OutOfRangeException.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuBufferType.hpp"
 
 namespace Injector
 {
+	bool VkGpuBuffer::isVkMappable(
+		VmaMemoryUsage usage)
+	{
+		return
+			usage == VMA_MEMORY_USAGE_CPU_ONLY ||
+			usage == VMA_MEMORY_USAGE_CPU_TO_GPU ||
+			usage == VMA_MEMORY_USAGE_GPU_TO_CPU;
+	}
+
 	VkGpuBuffer::VkGpuBuffer(
 		VmaAllocator _allocator,
 		vk::BufferUsageFlags usageFlags,
@@ -27,7 +37,7 @@ namespace Injector
 		bufferCreateInfo.flags = 0;
 		bufferCreateInfo.size = size;
 		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(
-			toVkType(type) |
+			toVkGpuBufferType(type) |
 			usageFlags);
 		bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		bufferCreateInfo.queueFamilyIndexCount = 0;
@@ -341,48 +351,5 @@ namespace Injector
 
 		flush(_size, offset);
 		vmaUnmapMemory(allocator, allocation);
-	}
-
-	vk::BufferUsageFlagBits VkGpuBuffer::toVkType(
-		GpuBufferType type)
-	{
-		switch (type)
-		{
-		case GpuBufferType::TransferSource:
-			return vk::BufferUsageFlagBits::eTransferSrc;
-		case GpuBufferType::TransferDestination:
-			return vk::BufferUsageFlagBits::eTransferDst;
-		case GpuBufferType::UniformTexel:
-			return vk::BufferUsageFlagBits::eUniformTexelBuffer;
-		case GpuBufferType::StorageTexel:
-			return vk::BufferUsageFlagBits::eStorageTexelBuffer;
-		case GpuBufferType::Uniform:
-			return vk::BufferUsageFlagBits::eUniformBuffer;
-		case GpuBufferType::Storage:
-			return vk::BufferUsageFlagBits::eStorageBuffer;
-		case GpuBufferType::Index:
-			return vk::BufferUsageFlagBits::eIndexBuffer;
-		case GpuBufferType::Vertex:
-			return vk::BufferUsageFlagBits::eVertexBuffer;
-		case GpuBufferType::Indirect:
-			return vk::BufferUsageFlagBits::eIndirectBuffer;
-		case GpuBufferType::TransformFeedback:
-			return vk::BufferUsageFlagBits::eTransformFeedbackBufferEXT;
-		case GpuBufferType::TransformFeedbackCounter:
-			return vk::BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT;
-		default:
-			throw Exception(
-				"VkGpuBuffer",
-				"toVkType",
-				"Unsupported type");
-		}
-	}
-	bool VkGpuBuffer::isVkMappable(
-		VmaMemoryUsage usage)
-	{
-		return
-			usage == VMA_MEMORY_USAGE_CPU_ONLY ||
-			usage == VMA_MEMORY_USAGE_CPU_TO_GPU ||
-			usage == VMA_MEMORY_USAGE_GPU_TO_CPU;
 	}
 }

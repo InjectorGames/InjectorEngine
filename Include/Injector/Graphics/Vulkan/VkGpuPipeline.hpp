@@ -15,7 +15,7 @@ namespace Injector
 	 public:
 		explicit VkGpuPipeline(
 			vk::Device device,
-			PrimitiveTopology primitiveTopology);
+			GpuDrawMode drawMode);
 		~VkGpuPipeline() override;
 
 		vk::Device getDevice();
@@ -32,8 +32,5 @@ namespace Injector
 			const vk::Extent2D& extent) = 0;
 		virtual void flush(
 			size_t imageIndex) = 0;
-
-		static vk::PrimitiveTopology toVkPrimitiveTopology(
-			PrimitiveTopology primitiveTopology);
 	};
 }

@@ -1,5 +1,6 @@
 #include "Injector/Graphics/OpenGL/GlGpuShader.hpp"
 #include "Injector/Exception/NullException.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuShaderStage.hpp"
 
 #include <vector>
 
@@ -57,7 +58,7 @@ namespace Injector
 				"data");
 		}
 
-		glStage = toGlStage(stage);
+		glStage = toGlGpuShaderStage(stage);
 		shader = glCreateShader(glStage);
 
 		auto sources = std::vector<const char*>();
@@ -105,25 +106,5 @@ namespace Injector
 	GLuint GlGpuShader::getGlStage() const noexcept
 	{
 		return glStage;
-	}
-
-	GLenum GlGpuShader::toGlStage(GpuShaderStage stage)
-	{
-		switch (stage)
-		{
-		case GpuShaderStage::Vertex:
-			return GL_VERTEX_SHADER;
-		case GpuShaderStage::Geometry:
-			return GL_GEOMETRY_SHADER;
-		case GpuShaderStage::Fragment:
-			return GL_FRAGMENT_SHADER;
-		case GpuShaderStage::Compute:
-			return GL_COMPUTE_SHADER;
-		default:
-			throw Exception(
-				"GlGpuShader",
-				"toGlStage",
-				"Unsupported stage");
-		}
 	}
 }
