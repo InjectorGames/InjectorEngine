@@ -26,7 +26,7 @@ namespace Injector
 		}
 
 		auto shaderModuleCreateInfo = vk::ShaderModuleCreateInfo(
-			{},
+			vk::ShaderModuleCreateFlags(),
 			data->code.size(),
 			reinterpret_cast<const uint32_t*>(data->code.data()));
 		auto result = device.createShaderModule(
@@ -44,7 +44,8 @@ namespace Injector
 	}
 	VkGpuShader::~VkGpuShader()
 	{
-		device.destroyShaderModule(shaderModule);
+		device.destroyShaderModule(
+			shaderModule);
 	}
 
 	vk::Device VkGpuShader::getDevice() const noexcept

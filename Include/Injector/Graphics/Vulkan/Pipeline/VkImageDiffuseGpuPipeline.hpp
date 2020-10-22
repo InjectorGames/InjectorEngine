@@ -1,6 +1,7 @@
 #pragma once
 #include "Injector/Graphics/Vulkan/VkGpuPipeline.hpp"
-#include "Injector/Graphics/Pipeline/DiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Pipeline/ImageDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuImage.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuShader.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuBuffer.hpp"
 
@@ -9,9 +10,9 @@
 
 namespace Injector
 {
-	class VkDiffuseGpuPipeline :
+	class VkImageDiffuseGpuPipeline :
 		public VkGpuPipeline,
-		public DiffuseGpuPipeline
+		public ImageDiffuseGpuPipeline
 	{
 	 public:
 		struct UniformBufferObject
@@ -20,17 +21,23 @@ namespace Injector
 			Vector4 ambientColor;
 			Vector4 lightColor;
 			alignas(16) Vector3 lightDirection;
+			Vector2 imageScale;
+			Vector2 imageOffset;
 
 			explicit UniformBufferObject(
 				const Vector4& _objectColor = Vector4::one,
 				const Vector4& _ambientColor = Vector4::one / 2.0f,
 				const Vector4& _lightColor = Vector4::one,
 				const Vector3& _lightDirection =
-					Vector3(1.0f, 2.0f, 3.0f).getNormalized()) :
+				Vector3(1.0f, 2.0f, 3.0f).getNormalized(),
+				const Vector2& _imageScale = Vector2::one,
+				const Vector2& _imageOffset = Vector2::zero) :
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
-				lightDirection(_lightDirection)
+				lightDirection(_lightDirection),
+				imageScale(_imageScale),
+				imageOffset(_imageOffset)
 			{
 			}
 		};
@@ -39,8 +46,11 @@ namespace Injector
 		vk::PipelineLayout pipelineLayout;
 		vk::Pipeline pipeline;
 		vk::DescriptorPool descriptorPool;
+		vk::ImageView imageView;
+		vk::Sampler imageSampler;
 		std::shared_ptr<VkGpuShader> vertexShader;
 		std::shared_ptr<VkGpuShader> fragmentShader;
+		std::shared_ptr<VkGpuImage> image;
 		std::vector<std::shared_ptr<VkGpuBuffer>> uniformBuffers;
 		std::vector<vk::DescriptorSet> descriptorSets;
 
@@ -63,6 +73,10 @@ namespace Injector
 		static vk::DescriptorPool createDescriptorPool(
 			vk::Device device,
 			uint32_t imageCount);
+		static vk::ImageView createImageView(
+			vk::Device,
+			vk::Image);
+		static vk::Sampler createImageSampler();
 		static std::vector<std::shared_ptr<VkGpuBuffer>> createUniformBuffers(
 			VmaAllocator allocator,
 			uint32_t imageCount);
@@ -73,7 +87,7 @@ namespace Injector
 			size_t imageCount,
 			const std::vector<std::shared_ptr<VkGpuBuffer>>& uniformBuffers);
 	 public:
-		VkDiffuseGpuPipeline(
+		VkImageDiffuseGpuPipeline(
 			vk::Device device,
 			VmaAllocator allocator,
 			vk::RenderPass renderPass,
@@ -82,8 +96,9 @@ namespace Injector
 			PrimitiveTopology primitiveTopology,
 			const std::shared_ptr<VkGpuShader>& vertexShader,
 			const std::shared_ptr<VkGpuShader>& fragmentShader,
+			const std::shared_ptr<VkGpuImage>& image,
 			const UniformBufferObject& ubo = UniformBufferObject());
-		~VkDiffuseGpuPipeline() override;
+		~VkImageDiffuseGpuPipeline() override;
 
 		void recreate(
 			VmaAllocator allocator,
@@ -113,5 +128,11 @@ namespace Injector
 
 		const Vector3& getLightDirection() const override;
 		void setLightDirection(const Vector3& direction) override;
+
+		const Vector2& getImageScale() const override;
+		void setImageScale(const Vector2& scale) override;
+
+		const Vector2& getImageOffset() const override;
+		void setImageOffset(const Vector2& offset) override;
 	};
 }

@@ -40,6 +40,7 @@ namespace Injector
 		UniformBufferObject ubo;
 	 public:
 		GlDiffuseGpuPipeline(
+			PrimitiveTopology primitiveTopology,
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
 			const UniformBufferObject& ubo = UniformBufferObject());

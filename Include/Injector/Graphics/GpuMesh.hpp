@@ -1,6 +1,5 @@
 #pragma once
 #include "Injector/Graphics/GpuBuffer.hpp"
-#include "Injector/Graphics/GpuBufferIndex.hpp"
 
 #include <vector>
 #include <memory>
@@ -12,17 +11,16 @@ namespace Injector
 	{
 	 public:
 		size_t indexCount;
-		GpuBufferIndex indexType;
-		std::shared_ptr<GpuBuffer> vertexBuffer;
-		std::shared_ptr<GpuBuffer> indexBuffer;
 
-		GpuMesh(
-			size_t indexCount,
-			GpuBufferIndex indexType,
-			const std::shared_ptr<GpuBuffer>& vertexBuffer = nullptr,
-			const std::shared_ptr<GpuBuffer>& indexBuffer = nullptr);
+		explicit GpuMesh(size_t indexCount);
 		GpuMesh(GpuMesh&& mesh) = delete;
 		GpuMesh(const GpuMesh& mesh) = delete;
 		virtual ~GpuMesh() = default;
+
+		virtual std::shared_ptr<GpuBuffer> getVertexBuffer() const = 0;
+		virtual void setVertexBuffer(const std::shared_ptr<GpuBuffer>& buffer) = 0;
+
+		virtual std::shared_ptr<GpuBuffer> getIndexBuffer() const = 0;
+		virtual void setIndexBuffer(const std::shared_ptr<GpuBuffer>& buffer) = 0;
 	};
 }

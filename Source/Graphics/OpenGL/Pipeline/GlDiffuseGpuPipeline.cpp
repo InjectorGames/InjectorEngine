@@ -4,10 +4,11 @@
 namespace Injector
 {
 	GlDiffuseGpuPipeline::GlDiffuseGpuPipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		const UniformBufferObject& _ubo) :
-		GlGpuPipeline(GL_TRIANGLES),
+		GlGpuPipeline(primitiveTopology),
 		ubo(_ubo)
 	{
 		if (!vertexShader)

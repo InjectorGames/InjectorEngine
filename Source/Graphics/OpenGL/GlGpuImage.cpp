@@ -5,7 +5,7 @@ namespace Injector
 {
 	GlGpuImage::GlGpuImage(
 		GpuImageType type,
-		IntVector3 size,
+		const IntVector3& size,
 		GpuImageFormat format,
 		GpuImageFilter minFilter,
 		GpuImageFilter magFilter,
@@ -26,6 +26,14 @@ namespace Injector
 			useMipmap),
 		glType(toGlType(type))
 	{
+		if(size.x < 1 || size.y < 1 || size.z < 1)
+		{
+			throw Exception(
+				"GlGpuBuffer",
+				"GlGpuBuffer",
+				"Size x/y/z is less than one");
+		}
+
 		glGenTextures(GL_ONE, &texture);
 		glBindTexture(glType, texture);
 

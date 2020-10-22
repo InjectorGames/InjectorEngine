@@ -4,11 +4,12 @@
 namespace Injector
 {
 	GlImageDiffuseGpuPipeline::GlImageDiffuseGpuPipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		const std::shared_ptr<GlGpuImage>& _image,
 		const UniformBufferObject& _ubo) :
-		GlGpuPipeline(GL_TRIANGLES),
+		GlGpuPipeline(primitiveTopology),
 		ubo(_ubo),
 		image(_image)
 	{
@@ -135,7 +136,7 @@ namespace Injector
 	{
 		return ubo.imageScale;
 	}
-	void GlImageDiffuseGpuPipeline::setTextureScale(const Vector2& scale)
+	void GlImageDiffuseGpuPipeline::setImageScale(const Vector2& scale)
 	{
 		ubo.imageScale = Vector2(scale);
 	}
@@ -144,7 +145,7 @@ namespace Injector
 	{
 		return ubo.imageOffset;
 	}
-	void GlImageDiffuseGpuPipeline::setTextureOffset(const Vector2& offset)
+	void GlImageDiffuseGpuPipeline::setImageOffset(const Vector2& offset)
 	{
 		ubo.imageOffset = Vector2(offset);
 	}

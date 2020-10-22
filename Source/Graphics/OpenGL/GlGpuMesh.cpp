@@ -5,20 +5,66 @@ namespace Injector
 {
 	GlGpuMesh::GlGpuMesh(
 		size_t indexCount,
-		GpuBufferIndex indexType,
-		const std::shared_ptr<GpuBuffer>& vertexBuffer,
-		const std::shared_ptr<GpuBuffer>& indexBuffer) :
-		GpuMesh(
-			indexCount,
-			indexType,
-			vertexBuffer,
-			indexBuffer)
+		const std::shared_ptr<GlGpuBuffer>& _vertexBuffer,
+		const std::shared_ptr<GlGpuBuffer>& _indexBuffer) :
+		GpuMesh(indexCount),
+		vertexBuffer(_vertexBuffer),
+		indexBuffer(_indexBuffer)
 	{
+		if(_vertexBuffer && _vertexBuffer->getType() != GpuBufferType::Vertex)
+		{
+			throw Exception(
+				"GlGpuMesh",
+				"GlGpuMesh",
+				"Buffer has not vertex type");
+		}
+		if(_indexBuffer && _indexBuffer->getType() != GpuBufferType::Index)
+		{
+			throw Exception(
+				"GlGpuMesh",
+				"GlGpuMesh",
+				"Buffer has not index type");
+		}
+
 		glGenVertexArrays(GL_ONE, &vertexArray);
 	}
 	GlGpuMesh::~GlGpuMesh()
 	{
 		glDeleteVertexArrays(GL_ONE, &vertexArray);
+	}
+
+	std::shared_ptr<GpuBuffer> GlGpuMesh::getVertexBuffer() const
+	{
+		return vertexBuffer;
+	}
+	void GlGpuMesh::setVertexBuffer(const std::shared_ptr<GpuBuffer>& buffer)
+	{
+		if(buffer && buffer->getType() != GpuBufferType::Vertex)
+		{
+			throw Exception(
+				"GlGpuMesh",
+				"setVertexBuffer",
+				"Buffer has not vertex type");
+		}
+
+		vertexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(buffer);
+	}
+
+	std::shared_ptr<GpuBuffer> GlGpuMesh::getIndexBuffer() const
+	{
+		return indexBuffer;
+	}
+	void GlGpuMesh::setIndexBuffer(const std::shared_ptr<GpuBuffer>& buffer)
+	{
+		if(buffer && buffer->getType() != GpuBufferType::Index)
+		{
+			throw Exception(
+				"GlGpuMesh",
+				"setIndexBuffer",
+				"Buffer has not index type");
+		}
+
+		indexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(buffer);
 	}
 
 	GLuint GlGpuMesh::getVertexArray() const noexcept
@@ -36,28 +82,22 @@ namespace Injector
 				"pipeline");
 		}
 
-		auto glVertexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(vertexBuffer);
-		auto glIndexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(indexBuffer);
-
-		if (!glVertexBuffer || !glIndexBuffer)
+		if (!vertexBuffer || !indexBuffer)
 			return;
 
 		glBindVertexArray(vertexArray);
-		glVertexBuffer->bind();
-		glIndexBuffer->bind();
+		vertexBuffer->bind();
+		indexBuffer->bind();
 		pipeline->setAttributes();
 
-		auto index = (indexType == GpuBufferIndex::UnsignedShort) ?
-			GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
-
 		glDrawElements(
-			pipeline->getDrawMode(),
+			pipeline->getGlPrimitiveTopology(),
 			static_cast<GLsizei>(indexCount),
-			index,
+			GL_UNSIGNED_INT,
 			nullptr);
 
 		glBindVertexArray(GL_ZERO);
-		glVertexBuffer->unbind();
-		glIndexBuffer->unbind();
+		vertexBuffer->unbind();
+		indexBuffer->unbind();
 	}
 }

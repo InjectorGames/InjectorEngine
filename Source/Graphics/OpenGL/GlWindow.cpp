@@ -68,7 +68,12 @@ namespace Injector
 		glfwMakeContextCurrent(window);
 
 		if (glewInit() != GLEW_OK)
-			throw Exception("GlWindow", "GlWindow", "Failed to initialize GLEW");
+		{
+			throw Exception(
+				"GlWindow",
+				"GlWindow",
+				"Failed to initialize GLEW");
+		}
 
 		glfwSwapInterval(0);
 	}
@@ -113,7 +118,8 @@ namespace Injector
 		const void* data)
 	{
 		auto usage = mappable ?
-				GL_DYNAMIC_DRAW : GL_STATIC_DRAW;
+			GL_DYNAMIC_DRAW :
+			GL_STATIC_DRAW;
 
 		return std::make_shared<GlGpuBuffer>(
 			type,
@@ -123,15 +129,16 @@ namespace Injector
 	}
 	std::shared_ptr<GpuMesh> GlWindow::createMesh(
 		size_t indexCount,
-		GpuBufferIndex indexType,
 		const std::shared_ptr<GpuBuffer>& vertexBuffer,
 		const std::shared_ptr<GpuBuffer>& indexBuffer)
 	{
+		auto glVertexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(vertexBuffer);
+		auto glIndexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(indexBuffer);
+
 		return std::make_shared<GlGpuMesh>(
 			indexCount,
-			indexType,
-			vertexBuffer,
-			indexBuffer);
+			glVertexBuffer,
+			glIndexBuffer);
 	}
 	std::shared_ptr<ShaderData> GlWindow::readShaderData(
 		const std::string& filePath)
@@ -188,18 +195,23 @@ namespace Injector
 			glStencilImage);
 	}
 
-	std::shared_ptr<ColorGpuPipeline> GlWindow::createColorPipeline(
+	std::shared_ptr<GpuPipeline> GlWindow::createColorPipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const Vector4& color)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
 		return std::make_shared<GlColorGpuPipeline>(
+			primitiveTopology,
 			glVertexShader,
-			glFragmentShader);
+			glFragmentShader,
+			color);
 	}
-	std::shared_ptr<ColorGpuPipeline> GlWindow::createColColorPipeline(
+	std::shared_ptr<GpuPipeline> GlWindow::createColorColorPipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
@@ -207,10 +219,12 @@ namespace Injector
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
 		return std::make_shared<GlColorColorGpuPipeline>(
+			primitiveTopology,
 			glVertexShader,
 			glFragmentShader);
 	}
-	std::shared_ptr<DiffuseGpuPipeline> GlWindow::createDiffusePipeline(
+	std::shared_ptr<GpuPipeline> GlWindow::createDiffusePipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
@@ -218,24 +232,28 @@ namespace Injector
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
 		return std::make_shared<GlDiffuseGpuPipeline>(
+			primitiveTopology,
 			glVertexShader,
 			glFragmentShader);
 	}
-	std::shared_ptr<ImageDiffuseGpuPipeline> GlWindow::createTexDiffusePipeline(
+	std::shared_ptr<GpuPipeline> GlWindow::createImageDiffusePipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
-		const std::shared_ptr<GpuImage>& texture)
+		const std::shared_ptr<GpuImage>& image)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
-		auto glTexture = std::dynamic_pointer_cast<GlGpuImage>(texture);
+		auto glImage = std::dynamic_pointer_cast<GlGpuImage>(image);
 
 		return std::make_shared<GlImageDiffuseGpuPipeline>(
+			primitiveTopology,
 			glVertexShader,
 			glFragmentShader,
-			glTexture);
+			glImage);
 	}
-	std::shared_ptr<SimulatedSkyGpuPipeline> GlWindow::createSkyPipeline(
+	std::shared_ptr<GpuPipeline> GlWindow::createSkyPipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
@@ -243,6 +261,7 @@ namespace Injector
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
 		return std::make_shared<GlSimulatedSkyGpuPipeline>(
+			primitiveTopology,
 			glVertexShader,
 			glFragmentShader);
 	}

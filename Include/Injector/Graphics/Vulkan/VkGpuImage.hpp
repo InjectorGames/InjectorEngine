@@ -14,6 +14,9 @@ namespace Injector
 		vk::Image image;
 		VmaAllocation allocation;
 	 public:
+		// TODO: handle not supported formats on platforms
+		// VkGetPhysicalDeviceImageFormatProperties
+		// https://stackoverflow.com/questions/38396578/vulkan-vkcreateimage-with-3-components
 		VkGpuImage(
 			VmaAllocator allocator,
 			vk::ImageUsageFlags usageFlags,

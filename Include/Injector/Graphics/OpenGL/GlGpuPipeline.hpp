@@ -12,7 +12,7 @@ namespace Injector
 	{
 	 protected:
 		GLuint program;
-		GLenum drawMode;
+		GLenum glPrimitiveTopology;
 
 		static bool getLinkStatus(
 			GLuint program) noexcept;
@@ -66,11 +66,11 @@ namespace Injector
 			GLboolean transpose = GL_FALSE) noexcept;
 	 public:
 		explicit GlGpuPipeline(
-			GLenum drawMode) noexcept;
+			PrimitiveTopology primitiveTopology) noexcept;
 		~GlGpuPipeline() override;
 
 		GLuint getProgram() const noexcept;
-		GLenum getDrawMode() const noexcept;
+		GLenum getGlPrimitiveTopology() const noexcept;
 
 		virtual void bind();
 		virtual void unbind();
@@ -81,8 +81,8 @@ namespace Injector
 		bool operator==(const GlGpuPipeline& pipeline) const noexcept;
 		bool operator!=(const GlGpuPipeline& pipeline) const noexcept;
 
-		GlGpuPipeline& operator=(
-			GlGpuPipeline&& pipeline) noexcept;
+		static GLenum toGlPrimitiveTopology(
+			PrimitiveTopology primitiveTopology);
 
 		static bool less(
 			const GlGpuPipeline& a,

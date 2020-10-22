@@ -21,6 +21,13 @@ namespace Injector
 			{}),
 		allocator(_allocator)
 	{
+		if(size.x < 1 || size.y < 1 || size.z < 1)
+		{
+			throw Exception(
+				"VkGpuBuffer",
+				"VkGpuBuffer",
+				"Size x/y/z is less than one");
+		}
 		if(!_allocator)
 		{
 			throw NullException(
@@ -31,8 +38,13 @@ namespace Injector
 
 		VkImageCreateInfo imageCreateInfo = {};
 		imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-		imageCreateInfo.flags = {};
+		imageCreateInfo.flags = 0;
 		imageCreateInfo.format = static_cast<VkFormat>(toVkFormat(format));
+		imageCreateInfo.extent = {
+			static_cast<uint32_t>(size.x),
+			static_cast<uint32_t>(size.y),
+			static_cast<uint32_t>(size.z),
+		};
 		imageCreateInfo.mipLevels = 1;
 		imageCreateInfo.arrayLayers = 1;
 		imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -44,32 +56,14 @@ namespace Injector
 		if(type == GpuImageType::Image1D)
 		{
 			imageCreateInfo.imageType = VK_IMAGE_TYPE_1D;
-
-			imageCreateInfo.extent = {
-				static_cast<uint32_t>(size.x),
-				static_cast<uint32_t>(1),
-				static_cast<uint32_t>(1),
-			};
 		}
 		else if(type == GpuImageType::Image2D)
 		{
 			imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
-
-			imageCreateInfo.extent = {
-				static_cast<uint32_t>(size.x),
-				static_cast<uint32_t>(size.y),
-				static_cast<uint32_t>(1),
-			};
 		}
 		else if(type == GpuImageType::Image3D)
 		{
 			imageCreateInfo.imageType = VK_IMAGE_TYPE_3D;
-
-			imageCreateInfo.extent = {
-				static_cast<uint32_t>(size.x),
-				static_cast<uint32_t>(size.y),
-				static_cast<uint32_t>(size.z),
-			};
 		}
 		else
 		{

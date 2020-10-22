@@ -48,6 +48,7 @@ namespace Injector
 		UniformBufferObject ubo;
 	 public:
 		GlImageDiffuseGpuPipeline(
+			PrimitiveTopology primitiveTopology,
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
 			const std::shared_ptr<GlGpuImage>& image,
@@ -68,10 +69,10 @@ namespace Injector
 		void setLightDirection(const Vector3& direction) override;
 
 		const Vector2& getImageScale() const override;
-		void setTextureScale(const Vector2& scale) override;
+		void setImageScale(const Vector2& scale) override;
 
 		const Vector2& getImageOffset() const override;
-		void setTextureOffset(const Vector2& offset) override;
+		void setImageOffset(const Vector2& offset) override;
 
 		void bind() override;
 		void flush() override;

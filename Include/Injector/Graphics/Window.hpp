@@ -15,9 +15,6 @@
 #include "Injector/Graphics/CameraSystem.hpp"
 #include "Injector/Graphics/KeyboardButton.hpp"
 #include "Injector/Graphics/GpuFramebuffer.hpp"
-#include "Injector/Graphics/Pipeline/ColorGpuPipeline.hpp"
-#include "Injector/Graphics/Pipeline/SimulatedSkyGpuPipeline.hpp"
-#include "Injector/Graphics/Pipeline/ImageDiffuseGpuPipeline.hpp"
 
 #include <string>
 #include <cstdint>
@@ -96,7 +93,6 @@ namespace Injector
 			const void* data) = 0;
 		virtual std::shared_ptr<GpuMesh> createMesh(
 			size_t indexCount,
-			GpuBufferIndex indexType,
 			const std::shared_ptr<GpuBuffer>& vertexBuffer,
 			const std::shared_ptr<GpuBuffer>& indexBuffer) = 0;
 		virtual std::shared_ptr<ShaderData> readShaderData(
@@ -116,24 +112,30 @@ namespace Injector
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data) = 0;
 		virtual std::shared_ptr<GpuFramebuffer> createFramebuffer(
-				const std::shared_ptr<GpuImage>& colorImage,
-				const std::shared_ptr<GpuImage>& depthImage,
-				const std::shared_ptr<GpuImage>& stencilImage) = 0;
+			const std::shared_ptr<GpuImage>& colorImage,
+			const std::shared_ptr<GpuImage>& depthImage,
+			const std::shared_ptr<GpuImage>& stencilImage) = 0;
 
-		virtual std::shared_ptr<ColorGpuPipeline> createColorPipeline(
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) = 0;
-		virtual std::shared_ptr<ColorGpuPipeline> createColColorPipeline(
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) = 0;
-		virtual std::shared_ptr<DiffuseGpuPipeline> createDiffusePipeline(
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) = 0;
-		virtual std::shared_ptr<ImageDiffuseGpuPipeline> createTexDiffusePipeline(
+		virtual std::shared_ptr<GpuPipeline> createColorPipeline(
+			PrimitiveTopology primitiveTopology,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const std::shared_ptr<GpuImage>& texture) = 0;
-		virtual std::shared_ptr<SimulatedSkyGpuPipeline> createSkyPipeline(
+			const Vector4& color) = 0;
+		virtual std::shared_ptr<GpuPipeline> createColorColorPipeline(
+			PrimitiveTopology primitiveTopology,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader) = 0;
+		virtual std::shared_ptr<GpuPipeline> createDiffusePipeline(
+			PrimitiveTopology primitiveTopology,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader) = 0;
+		virtual std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
+			PrimitiveTopology primitiveTopology,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const std::shared_ptr<GpuImage>& image) = 0;
+		virtual std::shared_ptr<GpuPipeline> createSkyPipeline(
+			PrimitiveTopology primitiveTopology,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader) = 0;
 

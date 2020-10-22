@@ -53,7 +53,7 @@ namespace Injector
 		}
 
 		auto imageViewCreateInfo = vk::ImageViewCreateInfo(
-			{},
+			vk::ImageViewCreateFlags(),
 			_image,
 			vk::ImageViewType::e2D,
 			surfaceFormat,
@@ -83,7 +83,7 @@ namespace Injector
 		}
 
 		auto framebufferCreateInfo = vk::FramebufferCreateInfo(
-			{},
+			vk::FramebufferCreateFlags(),
 			renderPass,
 			1,
 			&imageView,

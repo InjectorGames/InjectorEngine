@@ -289,7 +289,6 @@ namespace Injector
 
 		return createMesh(
 			indices.size(),
-			GpuBufferIndex::UnsignedShort,
 			vertexBuffer,
 			indexBuffer);
 	}
@@ -312,7 +311,6 @@ namespace Injector
 
 		return createMesh(
 			indices.size(),
-			GpuBufferIndex::UnsignedInt,
 			vertexBuffer,
 			indexBuffer);
 	}

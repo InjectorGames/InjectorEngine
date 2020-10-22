@@ -16,6 +16,7 @@ namespace Injector
 		Vector4 color;
 	 public:
 		GlColorGpuPipeline(
+			PrimitiveTopology primitiveTopology,
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
 			const Vector4& color = Vector4::one);

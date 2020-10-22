@@ -8,12 +8,20 @@ namespace Injector
 {
 	class VkGpuMesh : public GpuMesh
 	{
+	 protected:
+		std::shared_ptr<VkGpuBuffer> vertexBuffer;
+		std::shared_ptr<VkGpuBuffer> indexBuffer;
 	 public:
 		VkGpuMesh(
 			size_t indexCount,
-			GpuBufferIndex indexType,
-			const std::shared_ptr<GpuBuffer>& vertexBuffer,
-			const std::shared_ptr<GpuBuffer>& indexBuffer);
+			const std::shared_ptr<VkGpuBuffer>& vertexBuffer,
+			const std::shared_ptr<VkGpuBuffer>& indexBuffer);
+
+		std::shared_ptr<GpuBuffer> getVertexBuffer() const override;
+		void setVertexBuffer(const std::shared_ptr<GpuBuffer>& buffer) override;
+
+		std::shared_ptr<GpuBuffer> getIndexBuffer() const override;
+		void setIndexBuffer(const std::shared_ptr<GpuBuffer>& buffer) override;
 
 		void draw(vk::CommandBuffer commandBuffer);
 	};

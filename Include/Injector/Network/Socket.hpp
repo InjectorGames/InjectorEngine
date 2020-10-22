@@ -6,7 +6,7 @@
 
 namespace Injector
 {
-	class Socket final
+	class Socket
 	{
 	 protected:
 		SocketFamily family;

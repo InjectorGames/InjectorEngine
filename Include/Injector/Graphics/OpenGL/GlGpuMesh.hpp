@@ -12,13 +12,21 @@ namespace Injector
 	{
 	 protected:
 		GLuint vertexArray;
+
+		std::shared_ptr<GlGpuBuffer> vertexBuffer;
+		std::shared_ptr<GlGpuBuffer> indexBuffer;
 	 public:
 		GlGpuMesh(
 			size_t indexCount,
-			GpuBufferIndex indexType,
-			const std::shared_ptr<GpuBuffer>& vertexBuffer,
-			const std::shared_ptr<GpuBuffer>& indexBuffer);
+			const std::shared_ptr<GlGpuBuffer>& vertexBuffer,
+			const std::shared_ptr<GlGpuBuffer>& indexBuffer);
 		virtual ~GlGpuMesh();
+
+		std::shared_ptr<GpuBuffer> getVertexBuffer() const override;
+		void setVertexBuffer(const std::shared_ptr<GpuBuffer>& buffer) override;
+
+		std::shared_ptr<GpuBuffer> getIndexBuffer() const override;
+		void setIndexBuffer(const std::shared_ptr<GpuBuffer>& buffer) override;
 
 		GLuint getVertexArray() const noexcept;
 

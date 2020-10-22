@@ -24,11 +24,14 @@ namespace Injector
 
 		VkBufferCreateInfo bufferCreateInfo = {};
 		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		bufferCreateInfo.flags = 0;
 		bufferCreateInfo.size = size;
 		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(
 			toVkType(type) |
 			usageFlags);
 		bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		bufferCreateInfo.queueFamilyIndexCount = 0;
+		bufferCreateInfo.pQueueFamilyIndices = nullptr;
 
 		VmaAllocationCreateInfo allocationCreateInfo = {};
 		allocationCreateInfo.flags = VMA_ALLOCATION_CREATE_WITHIN_BUDGET_BIT;
@@ -330,7 +333,11 @@ namespace Injector
 		}
 
 		auto castedData = static_cast<char*>(mappedData);
-		memcpy(castedData + offset, data, _size);
+
+		memcpy(
+			castedData + offset,
+			data,
+			_size);
 
 		flush(_size, offset);
 		vmaUnmapMemory(allocator, allocation);

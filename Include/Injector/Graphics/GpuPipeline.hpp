@@ -1,15 +1,23 @@
 #pragma once
 #include "Injector/Mathematics/Matrix/Matrix4.hpp"
+#include "Injector/Graphics/PrimitiveTopology.hpp"
 
 namespace Injector
 {
 	class GpuPipeline
 	{
+	 protected:
+		PrimitiveTopology primitiveTopology;
 	 public:
-		GpuPipeline() = default;
+		// TODO: add other pipeline parameters from vulakn pipeline
+		// Ex: glPolygonMode
+		explicit GpuPipeline(
+			PrimitiveTopology primitiveTopology);
 		GpuPipeline(const GpuPipeline& pipeline) = delete;
 		GpuPipeline(GpuPipeline&& pipeline) = delete;
 		virtual ~GpuPipeline() = default;
+
+		PrimitiveTopology getPrimitiveTopology() const noexcept;
 
 		virtual void setUniforms(
 			const Matrix4& model,

@@ -147,6 +147,7 @@ add_library(InjectorEngine STATIC
 
     Source/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.cpp
     Source/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.cpp
+    Source/Graphics/Vulkan/Pipeline/VkImageDiffuseGpuPipeline.cpp
 
     Source/Graphics/Vulkan/VkCameraSystem.cpp
     Source/Graphics/Vulkan/VkGpuBuffer.cpp
@@ -166,6 +167,7 @@ add_library(InjectorEngine STATIC
     Source/Graphics/GpuFramebuffer.cpp
     Source/Graphics/GpuImage.cpp
     Source/Graphics/GpuMesh.cpp
+    Source/Graphics/GpuPipeline.cpp
     Source/Graphics/GpuShader.cpp
     Source/Graphics/GuiComponent.cpp
     Source/Graphics/GuiSystem.cpp
@@ -252,10 +254,10 @@ set(INJECTOR_RESOURCES
 
     Models/UtahTeapot.fbx
 
-    Shaders/ColorColor.frag
-    Shaders/ColorColor.vert
     Shaders/Color.frag
     Shaders/Color.vert
+    Shaders/ColorColor.frag
+    Shaders/ColorColor.vert
     Shaders/SimulatedSky.vert
     Shaders/SimulatedSky.frag
     Shaders/Diffuse.frag
@@ -265,8 +267,12 @@ set(INJECTOR_RESOURCES
 
     Shaders/Color.frag.spv
     Shaders/Color.vert.spv
+    Shaders/ColorColor.frag.spv
+    Shaders/ColorColor.vert.spv
     Shaders/Diffuse.frag.spv
-    Shaders/Diffuse.vert.spv)
+    Shaders/Diffuse.vert.spv
+    Shaders/ImageDiffuse.frag.spv
+    Shaders/ImageDiffuse.vert.spv)
 
 foreach (FILE ${INJECTOR_RESOURCES})
     configure_file(Resources/${FILE} Resources/${FILE} COPYONLY)

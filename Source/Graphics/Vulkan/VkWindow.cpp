@@ -615,12 +615,15 @@ namespace Injector
 				fences[i] = createFence(
 					device,
 					vk::FenceCreateFlagBits::eSignaled);
-				imageAcquiredSemaphores[i] =
-					createSemaphore(device, {});
-				drawCompleteSemaphores[i] =
-					createSemaphore(device, {});
-				imageOwnershipSemaphores[i] =
-					createSemaphore(device, {});
+				imageAcquiredSemaphores[i] = createSemaphore(
+					device,
+					vk::SemaphoreCreateFlags());
+				drawCompleteSemaphores[i] = createSemaphore(
+					device,
+					vk::SemaphoreCreateFlags());
+				imageOwnershipSemaphores[i] = createSemaphore(
+					device,
+					vk::SemaphoreCreateFlags());
 			}
 
 			swapchain = VkGpuSwapchain(
@@ -958,8 +961,8 @@ namespace Injector
 		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 		{
 			auto imageMemoryBarrier = vk::ImageMemoryBarrier(
-				{},
-				{},
+				vk::AccessFlags(),
+				vk::AccessFlags(),
 				vk::ImageLayout::ePresentSrcKHR,
 				vk::ImageLayout::ePresentSrcKHR,
 				graphicsQueueFamilyIndex,
@@ -974,7 +977,7 @@ namespace Injector
 			graphicsCommandBuffer.pipelineBarrier(
 				vk::PipelineStageFlagBits::eBottomOfPipe,
 				vk::PipelineStageFlagBits::eBottomOfPipe,
-				{},
+				vk::DependencyFlags(),
 				0,
 				nullptr,
 				0,
@@ -1002,8 +1005,8 @@ namespace Injector
 			}
 
 			auto imageMemoryBarrier = vk::ImageMemoryBarrier(
-				{},
-				{},
+				vk::AccessFlags(),
+				vk::AccessFlags(),
 				vk::ImageLayout::ePresentSrcKHR,
 				vk::ImageLayout::ePresentSrcKHR,
 				graphicsQueueFamilyIndex,
@@ -1018,7 +1021,7 @@ namespace Injector
 			presentCommandBuffer.pipelineBarrier(
 				vk::PipelineStageFlagBits::eBottomOfPipe,
 				vk::PipelineStageFlagBits::eBottomOfPipe,
-				{},
+				vk::DependencyFlags(),
 				0,
 				nullptr,
 				0,
@@ -1147,15 +1150,16 @@ namespace Injector
 	}
 	std::shared_ptr<GpuMesh> VkWindow::createMesh(
 		size_t indexCount,
-		GpuBufferIndex indexType,
 		const std::shared_ptr<GpuBuffer>& vertexBuffer,
 		const std::shared_ptr<GpuBuffer>& indexBuffer)
 	{
+		auto vkVertexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(vertexBuffer);
+		auto vkIndexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(indexBuffer);
+
 		return std::make_shared<VkGpuMesh>(
 			indexCount,
-			indexType,
-			vertexBuffer,
-			indexBuffer);
+			vkVertexBuffer,
+			vkIndexBuffer);
 	}
 	std::shared_ptr<ShaderData> VkWindow::readShaderData(
 		const std::string& filePath)
@@ -1191,6 +1195,55 @@ namespace Injector
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
+		/*void Demo::set_image_layout(vk::Image image, vk::ImageAspectFlags aspectMask, vk::ImageLayout oldLayout, vk::ImageLayout newLayout,
+			vk::AccessFlags srcAccessMask, vk::PipelineStageFlags src_stages, vk::PipelineStageFlags dest_stages) {
+			assert(cmd);
+
+			auto DstAccessMask = [](vk::ImageLayout const &layout) {
+			  vk::AccessFlags flags;
+
+			  switch (layout) {
+			  case vk::ImageLayout::eTransferDstOptimal:
+				  // Make sure anything that was copying from this image has
+				  // completed
+				  flags = vk::AccessFlagBits::eTransferWrite;
+				  break;
+			  case vk::ImageLayout::eColorAttachmentOptimal:
+				  flags = vk::AccessFlagBits::eColorAttachmentWrite;
+				  break;
+			  case vk::ImageLayout::eDepthStencilAttachmentOptimal:
+				  flags = vk::AccessFlagBits::eDepthStencilAttachmentWrite;
+				  break;
+			  case vk::ImageLayout::eShaderReadOnlyOptimal:
+				  // Make sure any Copy or CPU writes to image are flushed
+				  flags = vk::AccessFlagBits::eShaderRead | vk::AccessFlagBits::eInputAttachmentRead;
+				  break;
+			  case vk::ImageLayout::eTransferSrcOptimal:
+				  flags = vk::AccessFlagBits::eTransferRead;
+				  break;
+			  case vk::ImageLayout::ePresentSrcKHR:
+				  flags = vk::AccessFlagBits::eMemoryRead;
+				  break;
+			  default:
+				  break;
+			  }
+
+			  return flags;
+			};
+
+			auto const barrier = vk::ImageMemoryBarrier()
+				.setSrcAccessMask(srcAccessMask)
+				.setDstAccessMask(DstAccessMask(newLayout))
+				.setOldLayout(oldLayout)
+				.setNewLayout(newLayout)
+				.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+				.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+				.setImage(image)
+				.setSubresourceRange(vk::ImageSubresourceRange(aspectMask, 0, 1, 0, 1));
+
+			cmd.pipelineBarrier(src_stages, dest_stages, vk::DependencyFlagBits(), 0, nullptr, 0, nullptr, 1, &barrier);
+		}*/
+
 		auto image = std::make_shared<VkGpuImage>(
 			memoryAllocator,
 			vk::ImageUsageFlagBits::eTransferDst |
@@ -1235,36 +1288,31 @@ namespace Injector
 				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 			commandBuffer.begin(commandBufferBeginInfo);
 
-			vk::Extent3D imageExtent;
-
-			if(type == GpuImageType::Image1D)
-			{
-				imageExtent = vk::Extent3D(
-					size.x,
+			auto barrier = vk::ImageMemoryBarrier(
+				vk::AccessFlags(),
+				vk::AccessFlagBits::eTransferWrite,
+				vk::ImageLayout::eUndefined,
+				vk::ImageLayout::eTransferDstOptimal,
+				VK_QUEUE_FAMILY_IGNORED,
+				VK_QUEUE_FAMILY_IGNORED,
+				image->getImage(),
+				vk::ImageSubresourceRange(
+					vk::ImageAspectFlagBits::eColor,
+					0,
 					1,
-					1);
-			}
-			else if(type == GpuImageType::Image2D)
-			{
-				imageExtent = vk::Extent3D(
-					size.x,
-					size.y,
-					1);
-			}
-			else if(type == GpuImageType::Image3D)
-			{
-				imageExtent = vk::Extent3D(
-					size.x,
-					size.y,
-					size.z);
-			}
-			else
-			{
-				throw Exception(
-					"VkWindow",
-					"createImage",
-					"Unsupported image type");
-			}
+					0,
+					1));
+
+			commandBuffer.pipelineBarrier(
+				vk::PipelineStageFlagBits::eTopOfPipe,
+				vk::PipelineStageFlagBits::eTransfer,
+				vk::DependencyFlagBits(),
+				0,
+				nullptr,
+				0,
+				nullptr,
+				1,
+				&barrier);
 
 			auto bufferImageCopy = vk::BufferImageCopy(
 				0,
@@ -1275,8 +1323,14 @@ namespace Injector
 					0,
 					0,
 					1),
-				vk::Offset3D(0, 0, 0),
-				imageExtent);
+				vk::Offset3D(
+					0,
+					0,
+					0),
+				vk::Extent3D(
+					size.x,
+					size.y,
+					size.z));
 			commandBuffer.copyBufferToImage(
 				stagingBuffer.getBuffer(),
 				image->getImage(),
@@ -1284,7 +1338,31 @@ namespace Injector
 				1,
 				&bufferImageCopy);
 
-			// TODO: transfer
+			barrier = vk::ImageMemoryBarrier(
+				vk::AccessFlagBits::eTransferWrite,
+				vk::AccessFlagBits::eShaderRead,
+				vk::ImageLayout::eTransferDstOptimal,
+				vk::ImageLayout::eShaderReadOnlyOptimal,
+				VK_QUEUE_FAMILY_IGNORED,
+				VK_QUEUE_FAMILY_IGNORED,
+				image->getImage(),
+				vk::ImageSubresourceRange(
+					vk::ImageAspectFlagBits::eColor,
+					0,
+					1,
+					0,
+					1));
+
+			commandBuffer.pipelineBarrier(
+				vk::PipelineStageFlagBits::eTransfer,
+				vk::PipelineStageFlagBits::eFragmentShader,
+				vk::DependencyFlagBits(),
+				0,
+				nullptr,
+				0,
+				nullptr,
+				1,
+				&barrier);
 
 			commandBuffer.end();
 
@@ -1326,19 +1404,23 @@ namespace Injector
 		return nullptr;
 	}
 
-	std::shared_ptr<ColorGpuPipeline> VkWindow::createColorPipeline(
+	std::shared_ptr<GpuPipeline> VkWindow::createColorPipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const Vector4& color)
 	{
-		auto glVertexShader = std::dynamic_pointer_cast<VkGpuShader>(vertexShader);
-		auto glFragmentShader = std::dynamic_pointer_cast<VkGpuShader>(fragmentShader);
+		auto vkVertexShader = std::dynamic_pointer_cast<VkGpuShader>(vertexShader);
+		auto vkFragmentShader = std::dynamic_pointer_cast<VkGpuShader>(fragmentShader);
 
 		auto pipeline = std::make_shared<VkColorGpuPipeline>(
 			device,
 			swapchain.getRenderPass(),
 			swapchain.getExtent(),
-			glVertexShader,
-			glFragmentShader);
+			primitiveTopology,
+			vkVertexShader,
+			vkFragmentShader,
+			color);
 
 		if (!pipelines.emplace(pipeline).second)
 		{
@@ -1350,29 +1432,33 @@ namespace Injector
 
 		return pipeline;
 	}
-	std::shared_ptr<ColorGpuPipeline> VkWindow::createColColorPipeline(
+	std::shared_ptr<GpuPipeline> VkWindow::createColorColorPipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
 		// TODO:
 		return nullptr;
 	}
-	std::shared_ptr<DiffuseGpuPipeline> VkWindow::createDiffusePipeline(
+	std::shared_ptr<GpuPipeline> VkWindow::createDiffusePipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
 		// TODO:
 		return nullptr;
 	}
-	std::shared_ptr<ImageDiffuseGpuPipeline> VkWindow::createTexDiffusePipeline(
+	std::shared_ptr<GpuPipeline> VkWindow::createImageDiffusePipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
-		const std::shared_ptr<GpuImage>& texture)
+		const std::shared_ptr<GpuImage>& image)
 	{
 		// TODO:
 		return nullptr;
 	}
-	std::shared_ptr<SimulatedSkyGpuPipeline> VkWindow::createSkyPipeline(
+	std::shared_ptr<GpuPipeline> VkWindow::createSkyPipeline(
+		PrimitiveTopology primitiveTopology,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{

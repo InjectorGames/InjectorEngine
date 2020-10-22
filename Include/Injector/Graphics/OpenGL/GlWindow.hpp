@@ -35,10 +35,9 @@ namespace Injector
 			size_t size,
 			GpuBufferType type,
 			bool mappable,
-			const void* data = nullptr) override;
+			const void* data) override;
 		std::shared_ptr<GpuMesh> createMesh(
 			size_t indexCount,
-			GpuBufferIndex indexType,
 			const std::shared_ptr<GpuBuffer>& vertexBuffer,
 			const std::shared_ptr<GpuBuffer>& indexBuffer) override;
 		std::shared_ptr<ShaderData> readShaderData(
@@ -62,20 +61,26 @@ namespace Injector
 			const std::shared_ptr<GpuImage>& depthImage,
 			const std::shared_ptr<GpuImage>& stencilImage) override;
 
-		std::shared_ptr<ColorGpuPipeline> createColorPipeline(
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) override;
-		std::shared_ptr<ColorGpuPipeline> createColColorPipeline(
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) override;
-		std::shared_ptr<DiffuseGpuPipeline> createDiffusePipeline(
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) override;
-		std::shared_ptr<ImageDiffuseGpuPipeline> createTexDiffusePipeline(
+		std::shared_ptr<GpuPipeline> createColorPipeline(
+			PrimitiveTopology primitiveTopology,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const std::shared_ptr<GpuImage>& texture) override;
-		std::shared_ptr<SimulatedSkyGpuPipeline> createSkyPipeline(
+			const Vector4& color) override;
+		std::shared_ptr<GpuPipeline> createColorColorPipeline(
+			PrimitiveTopology primitiveTopology,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader) override;
+		std::shared_ptr<GpuPipeline> createDiffusePipeline(
+			PrimitiveTopology primitiveTopology,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader) override;
+		std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
+			PrimitiveTopology primitiveTopology,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const std::shared_ptr<GpuImage>& image) override;
+		std::shared_ptr<GpuPipeline> createSkyPipeline(
+			PrimitiveTopology primitiveTopology,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader) override;
 	};

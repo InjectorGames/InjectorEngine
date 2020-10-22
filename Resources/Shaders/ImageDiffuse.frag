@@ -26,5 +26,5 @@ void main()
     vec4 diffuseColor = fbo.lightColor * getDiffuse(f_Normal, fbo.lightDirection.xyz);
 
     o_Color = (ambientColor + diffuseColor) * fbo.objectColor *
-        image(u_Image, (f_TexCoord + fbo.imageOffset) * fbo.imageScale);
+        texture(u_Image, (f_TexCoord + fbo.imageOffset) * fbo.imageScale);
 }

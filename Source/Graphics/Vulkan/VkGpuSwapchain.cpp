@@ -141,7 +141,7 @@ namespace Injector
 		vk::SwapchainKHR swapchain;
 
 		auto swapchainCreateInfo = vk::SwapchainCreateInfoKHR(
-			{},
+			vk::SwapchainCreateFlagsKHR(),
 			surface,
 			imageCount,
 			surfaceFormat.format,
@@ -180,7 +180,7 @@ namespace Injector
 		vk::RenderPass renderPass;
 
 		auto colorAttachmentDescription = vk::AttachmentDescription(
-			{},
+			vk::AttachmentDescriptionFlags(),
 			format,
 			vk::SampleCountFlagBits::e1,
 			vk::AttachmentLoadOp::eClear,
@@ -195,7 +195,7 @@ namespace Injector
 			vk::ImageLayout::eColorAttachmentOptimal);
 
 		auto subpassDescription = vk::SubpassDescription(
-			{},
+			vk::SubpassDescriptionFlags(),
 			vk::PipelineBindPoint::eGraphics,
 			0,
 			nullptr,
@@ -207,12 +207,12 @@ namespace Injector
 			0,
 			vk::PipelineStageFlagBits::eColorAttachmentOutput,
 			vk::PipelineStageFlagBits::eColorAttachmentOutput,
-			{},
+			vk::AccessFlags(),
 			vk::AccessFlagBits::eColorAttachmentWrite,
-			{});
+			vk::DependencyFlags());
 
 		auto renderPassCreateInfo = vk::RenderPassCreateInfo(
-			{},
+			vk::RenderPassCreateFlags(),
 			1,
 			&colorAttachmentDescription,
 			1,
@@ -331,12 +331,9 @@ namespace Injector
 			capabilities,
 			size);
 
-		auto imageCount = getBestImageCount(
-			capabilities);
-		auto transform = getBestTransform(
-			capabilities);
-		auto compositeAlpha = getBestCompositeAlpha(
-			capabilities);
+		auto imageCount = getBestImageCount(capabilities);
+		auto transform = getBestTransform(capabilities);
+		auto compositeAlpha = getBestCompositeAlpha(capabilities);
 
 		swapchain = createSwapchain(
 			_device,
@@ -441,12 +438,9 @@ namespace Injector
 			capabilities,
 			size);
 
-		auto imageCount = getBestImageCount(
-			capabilities);
-		auto transform = getBestTransform(
-			capabilities);
-		auto compositeAlpha = getBestCompositeAlpha(
-			capabilities);
+		auto imageCount = getBestImageCount(capabilities);
+		auto transform = getBestTransform(capabilities);
+		auto compositeAlpha = getBestCompositeAlpha(capabilities);
 
 		auto newSwapchain = createSwapchain(
 			device,

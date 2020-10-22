@@ -169,8 +169,9 @@ namespace Injector
 	}
 
 	GlGpuPipeline::GlGpuPipeline(
-		GLenum _drawMode) noexcept :
-		drawMode(_drawMode)
+		PrimitiveTopology primitiveTopology) noexcept :
+		GpuPipeline(primitiveTopology),
+		glPrimitiveTopology(toGlPrimitiveTopology(primitiveTopology))
 	{
 		program = glCreateProgram();
 	}
@@ -183,9 +184,9 @@ namespace Injector
 	{
 		return program;
 	}
-	GLenum GlGpuPipeline::getDrawMode() const noexcept
+	GLenum GlGpuPipeline::getGlPrimitiveTopology() const noexcept
 	{
-		return drawMode;
+		return glPrimitiveTopology;
 	}
 
 	void GlGpuPipeline::bind()
@@ -208,16 +209,27 @@ namespace Injector
 		return program != pipeline.program;
 	}
 
-	GlGpuPipeline& GlGpuPipeline::operator=(
-		GlGpuPipeline&& pipeline) noexcept
+	GLenum GlGpuPipeline::toGlPrimitiveTopology(
+		PrimitiveTopology primitiveTopology)
 	{
-		if(this != &pipeline)
+		switch(primitiveTopology)
 		{
-			program = pipeline.program;
-			pipeline.program = 0;
+		case PrimitiveTopology::PointList:
+			return GL_POINTS;
+		case PrimitiveTopology::LineList:
+			return GL_LINES;
+		case PrimitiveTopology::LineStrip:
+			return GL_LINE_STRIP;
+		case PrimitiveTopology::TriangleList:
+			return GL_TRIANGLES;
+		case PrimitiveTopology::TriangleStrip:
+			return GL_TRIANGLE_STRIP;
+		default:
+			throw Exception(
+				"GlGpuPipeline",
+				"toGlPrimitiveTopology",
+				"Unsupported primitive topology");
 		}
-
-		return *this;
 	}
 
 	bool GlGpuPipeline::less(
