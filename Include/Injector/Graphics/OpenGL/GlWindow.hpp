@@ -28,19 +28,20 @@ namespace Injector
 
 		void onFramebufferResize(const IntVector2& size) override;
 
-		std::shared_ptr<CameraSystem> createCameraSystem() override;
-		std::shared_ptr<RenderSystem> createRenderSystem() override;
+		std::shared_ptr<CameraSystem> createCameraSystem(
+			const std::shared_ptr<Window>& window) override;
+		std::shared_ptr<RenderSystem> createRenderSystem(
+			const std::shared_ptr<Window>& window) override;
 
 		std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,
 			GpuBufferType type,
 			bool mappable,
-			const void* data = nullptr) override;
+			const void* data) override;
 		std::shared_ptr<GpuMesh> createMesh(
 			size_t indexCount,
-			GpuBufferIndex indexType,
-			const std::shared_ptr<GpuBuffer>& vertexBuffer = nullptr,
-			const std::shared_ptr<GpuBuffer>& indexBuffer = nullptr) override;
+			const std::shared_ptr<GpuBuffer>& vertexBuffer,
+			const std::shared_ptr<GpuBuffer>& indexBuffer) override;
 		std::shared_ptr<ShaderData> readShaderData(
 			const std::string& filePath) override;
 		std::shared_ptr<GpuShader> createShader(
@@ -48,34 +49,52 @@ namespace Injector
 			const std::shared_ptr<ShaderData>& data) override;
 		std::shared_ptr<GpuImage> createImage(
 			GpuImageType type,
-			const IntVector3& size,
 			GpuImageFormat format,
-			GpuImageFilter minFilter,
-			GpuImageFilter magFilter,
-			GpuImageWrap wrapU,
-			GpuImageWrap wrapV,
-			GpuImageWrap wrapW,
+			const IntVector3& size,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data = nullptr) override;
+			const std::shared_ptr<ImageData>& data) override;
 		std::shared_ptr<GpuFramebuffer> createFramebuffer(
 			const std::shared_ptr<GpuImage>& colorImage,
-			const std::shared_ptr<GpuImage>& depthImage = nullptr,
-			const std::shared_ptr<GpuImage>& stencilImage = nullptr) override;
+			const std::shared_ptr<GpuImage>& depthImage,
+			const std::shared_ptr<GpuImage>& stencilImage) override;
 
-		std::shared_ptr<ColorGpuPipeline> createColorPipeline(
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) override;
-		std::shared_ptr<ColorGpuPipeline> createColColorPipeline(
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) override;
-		std::shared_ptr<DiffuseGpuPipeline> createDiffusePipeline(
-			const std::shared_ptr<GpuShader>& vertexShader,
-			const std::shared_ptr<GpuShader>& fragmentShader) override;
-		std::shared_ptr<TextureDiffuseGpuPipeline> createTexDiffusePipeline(
+		std::shared_ptr<GpuPipeline> createColorPipeline(
+			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const std::shared_ptr<GpuImage>& texture) override;
-		std::shared_ptr<SimulatedSkyGpuPipeline> createSkyPipeline(
+			const Vector4& color) override;
+		std::shared_ptr<GpuPipeline> createColorColorPipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const Vector4& color) override;
+		std::shared_ptr<GpuPipeline> createDiffusePipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const Vector4& objectColor,
+			const Vector4& ambientColor,
+			const Vector4& lightColor,
+			const Vector3& lightDirection) override;
+		std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
+			GpuDrawMode drawMode,
+			GpuImageFilter imageMinFilter,
+			GpuImageFilter imageMagFilter,
+			GpuImageFilter mipmapFilter,
+			GpuImageWrap imageWrapU,
+			GpuImageWrap imageWrapV,
+			GpuImageWrap imageWrapW,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const std::shared_ptr<GpuImage>& image,
+			const Vector4& objectColor,
+			const Vector4& ambientColor,
+			const Vector4& lightColor,
+			const Vector3& lightDirection,
+			const Vector2& imageScale,
+			const Vector2& imageOffset) override;
+		std::shared_ptr<GpuPipeline> createSkyPipeline(
+			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader) override;
 	};

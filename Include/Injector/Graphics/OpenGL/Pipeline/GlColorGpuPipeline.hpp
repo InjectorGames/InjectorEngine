@@ -16,9 +16,10 @@ namespace Injector
 		Vector4 color;
 	 public:
 		GlColorGpuPipeline(
+			GpuDrawMode drawMode,
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
-			const Vector4& color = Vector4::one);
+			const Vector4& color);
 
 		const Vector4& getColor() const override;
 		void setColor(const Vector4& color) override;

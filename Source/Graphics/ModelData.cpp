@@ -8,8 +8,7 @@
 namespace Injector
 {
 	ModelData::ModelData() :
-		indices16(),
-		indices32(),
+		indices(),
 		vertices(),
 		colors(),
 		texCoords(),
@@ -19,16 +18,14 @@ namespace Injector
 	{
 	}
 	ModelData::ModelData(
-		const std::vector<uint16_t>& _indices16,
-		const std::vector<uint32_t>& _indices32,
+		const std::vector<uint32_t>& _indices,
 		const std::vector<Vector3>& _vertices,
 		const std::vector<Vector4>& _colors,
 		const std::vector<Vector2>& _texCoords,
 		const std::vector<Vector3>& _normals,
 		const std::vector<Vector3>& _tangents,
 		const std::vector<Vector3>& _bitangents) :
-		indices16(_indices16),
-		indices32(_indices32),
+		indices(_indices),
 		vertices(_vertices),
 		colors(_colors),
 		texCoords(_texCoords),
@@ -48,7 +45,7 @@ namespace Injector
 			vertices.data(),
 			vertices.size() * sizeof(Vector3));
 
-		return vertexData;
+		return std::move(vertexData);
 	}
 	std::vector<float> ModelData::getVertexColor() const
 	{
@@ -75,7 +72,7 @@ namespace Injector
 				sizeof(Vector4));
 		}
 
-		return vertexData;
+		return std::move(vertexData);
 	}
 	std::vector<float> ModelData::getVertexTexCoord() const
 	{
@@ -102,7 +99,7 @@ namespace Injector
 				sizeof(Vector2));
 		}
 
-		return vertexData;
+		return std::move(vertexData);
 	}
 	std::vector<float> ModelData::getVertexNormal() const
 	{
@@ -129,7 +126,7 @@ namespace Injector
 				sizeof(Vector3));
 		}
 
-		return vertexData;
+		return std::move(vertexData);
 	}
 	std::vector<float> ModelData::getVertexNormalTexCoord() const
 	{
@@ -161,7 +158,7 @@ namespace Injector
 				sizeof(Vector2));
 		}
 
-		return vertexData;
+		return std::move(vertexData);
 	}
 
 	std::shared_ptr<ModelData> ModelData::readFromFile(
@@ -209,7 +206,7 @@ namespace Injector
 
 		if (mesh->HasFaces())
 		{
-			auto& indices = modelData->indices32;
+			auto& indices = modelData->indices;
 
 			for (uint32_t i = 0; i < mesh->mNumFaces; i++)
 			{
@@ -273,10 +270,7 @@ namespace Injector
 		return modelData;
 	}
 
-	const std::vector<uint16_t> ModelData::squareIndices16 = {
-		0, 1, 2, 0, 2, 3,
-	};
-	const std::vector<uint32_t> ModelData::squareIndices32 = {
+	const std::vector<uint32_t> ModelData::squareIndices = {
 		0, 1, 2, 0, 2, 3,
 	};
 	const std::vector<Vector3> ModelData::squareVertices = {
@@ -304,15 +298,7 @@ namespace Injector
 		Vector3(0.0f, 0.0f, -1.0f),
 	};
 
-	const std::vector<uint16_t> ModelData::cubeIndices16 = {
-		0, 1, 2, 0, 2, 3,
-		4, 5, 6, 4, 6, 7,
-		8, 9, 10, 8, 10, 11,
-		12, 13, 14, 12, 14, 15,
-		16, 17, 18, 16, 18, 19,
-		20, 21, 22, 20, 22, 23,
-	};
-	const std::vector<uint32_t> ModelData::cubeIndices32 = {
+	const std::vector<uint32_t> ModelData::cubeIndices = {
 		0, 1, 2, 0, 2, 3,
 		4, 5, 6, 4, 6, 7,
 		8, 9, 10, 8, 10, 11,
@@ -445,10 +431,7 @@ namespace Injector
 		Vector3(0.0f, 0.0f, 1.0f),
 	};
 
-	const std::vector<uint16_t> ModelData::frameIndices16 = {
-		0, 1, 2, 0, 2, 3,
-	};
-	const std::vector<uint32_t> ModelData::frameIndices32 = {
+	const std::vector<uint32_t> ModelData::frameIndices = {
 		0, 1, 2, 0, 2, 3,
 	};
 	const std::vector<Vector3> ModelData::frameVertices = {
@@ -476,10 +459,7 @@ namespace Injector
 		Vector3(0.0f, 0.0f, -1.0f),
 	};
 
-	const std::vector<uint16_t> ModelData::axisIndices16 = {
-		0, 1, 2, 3, 4, 5,
-	};
-	const std::vector<uint32_t> ModelData::axisIndices32 = {
+	const std::vector<uint32_t> ModelData::axisIndices = {
 		0, 1, 2, 3, 4, 5,
 	};
 	const std::vector<Vector3> ModelData::axisVertices = {
@@ -502,8 +482,7 @@ namespace Injector
 	// TODO: Compute tangents and bitangets
 
 	const ModelData ModelData::square = ModelData(
-		squareIndices16,
-		squareIndices32,
+		squareIndices,
 		squareVertices,
 		squareColors,
 		squareTexCoords,
@@ -511,8 +490,7 @@ namespace Injector
 		{},
 		{});
 	const ModelData ModelData::cube = ModelData(
-		cubeIndices16,
-		cubeIndices32,
+		cubeIndices,
 		cubeVertices,
 		cubeColors,
 		cubeTexCoords,
@@ -520,8 +498,7 @@ namespace Injector
 		{},
 		{});
 	const ModelData ModelData::frame = ModelData(
-		frameIndices16,
-		frameIndices32,
+		frameIndices,
 		frameVertices,
 		frameColors,
 		frameTexCoords,
@@ -529,8 +506,7 @@ namespace Injector
 		{},
 		{});
 	const ModelData ModelData::axis = ModelData(
-		axisIndices16,
-		axisIndices32,
+		axisIndices,
 		axisVertices,
 		axisColors,
 		{},

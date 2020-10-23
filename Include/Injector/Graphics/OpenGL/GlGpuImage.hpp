@@ -13,13 +13,8 @@ namespace Injector
 	 public:
 		GlGpuImage(
 			GpuImageType type,
-			IntVector3 size,
 			GpuImageFormat format,
-			GpuImageFilter minFilter,
-			GpuImageFilter magFilter,
-			GpuImageWrap wrapU,
-			GpuImageWrap wrapV,
-			GpuImageWrap wrapW,
+			const IntVector3& size,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data = nullptr);
 		~GlGpuImage() override;
@@ -29,10 +24,5 @@ namespace Injector
 
 		void bind() noexcept;
 		void unbind() noexcept;
-
-		static GLenum toGlType(GpuImageType type);
-		static GLenum toGlFormat(GpuImageFormat format);
-		static GLint toGlFilter(GpuImageFilter filter, bool useMipmap);
-		static GLint toGlWrap(GpuImageWrap wrap);
 	};
 }

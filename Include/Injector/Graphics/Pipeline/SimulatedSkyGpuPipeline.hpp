@@ -1,9 +1,8 @@
 #pragma once
-#include "Injector/Graphics/GpuPipeline.hpp"
 
 namespace Injector
 {
-	class SimulatedSkyGpuPipeline : public GpuPipeline
+	class SimulatedSkyGpuPipeline
 	{
 	 public:
 		virtual float getHeight() const = 0;

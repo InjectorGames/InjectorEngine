@@ -1,5 +1,6 @@
 #include "Injector/Graphics/OpenGL/GlGpuPipeline.hpp"
 #include "Injector/Exception/Exception.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuDrawMode.hpp"
 
 namespace Injector
 {
@@ -169,16 +170,11 @@ namespace Injector
 	}
 
 	GlGpuPipeline::GlGpuPipeline(
-		GLenum _drawMode) noexcept :
-		drawMode(_drawMode)
+		GpuDrawMode drawMode) noexcept :
+		GpuPipeline(drawMode),
+		glDrawMode(toGlGpuDrawMode(drawMode))
 	{
 		program = glCreateProgram();
-	}
-	GlGpuPipeline::GlGpuPipeline(
-		GlGpuPipeline&& pipeline) noexcept
-	{
-		program = pipeline.program;
-		pipeline.program = 0;
 	}
 	GlGpuPipeline::~GlGpuPipeline()
 	{
@@ -189,9 +185,9 @@ namespace Injector
 	{
 		return program;
 	}
-	GLenum GlGpuPipeline::getDrawMode() const noexcept
+	GLenum GlGpuPipeline::getGlDrawMode() const noexcept
 	{
-		return drawMode;
+		return glDrawMode;
 	}
 
 	void GlGpuPipeline::bind()
@@ -212,18 +208,6 @@ namespace Injector
 		const GlGpuPipeline& pipeline) const noexcept
 	{
 		return program != pipeline.program;
-	}
-
-	GlGpuPipeline& GlGpuPipeline::operator=(
-		GlGpuPipeline&& pipeline) noexcept
-	{
-		if(this != &pipeline)
-		{
-			program = pipeline.program;
-			pipeline.program = 0;
-		}
-
-		return *this;
 	}
 
 	bool GlGpuPipeline::less(

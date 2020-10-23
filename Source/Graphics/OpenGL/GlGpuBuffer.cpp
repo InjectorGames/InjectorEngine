@@ -1,16 +1,28 @@
 #include "Injector/Graphics/OpenGL/GlGpuBuffer.hpp"
 #include "Injector/Exception/NullException.hpp"
 #include "Injector/Exception/OutOfRangeException.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuBufferType.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuBufferAccess.hpp"
 
 namespace Injector
 {
+	bool GlGpuBuffer::isGlMappable(
+		GLenum usage)
+	{
+		return
+			usage == GL_DYNAMIC_DRAW ||
+			usage == GL_DYNAMIC_READ ||
+			usage == GL_STREAM_DRAW ||
+			usage == GL_STREAM_READ;
+	}
+
 	GlGpuBuffer::GlGpuBuffer(
 		GpuBufferType type,
 		size_t size,
 		GLenum usage,
 		const void* data) :
 		GpuBuffer(type, size, isGlMappable(usage)),
-		glType(toGlType(type))
+		glType(toGlGpuBufferType(type))
 	{
 		glGenBuffers(GL_ONE, &buffer);
 		glBindBuffer(glType, buffer);
@@ -64,7 +76,7 @@ namespace Injector
 			glType,
 			0,
 			static_cast<GLsizeiptr>(size),
-			toGlAccess(access));
+			toGlGpuBufferAccess(access));
 
 		if (!mappedData)
 		{
@@ -116,7 +128,7 @@ namespace Injector
 			glType,
 			static_cast<GLintptr>(offset),
 			static_cast<GLsizeiptr>(_size),
-			toGlAccess(access));
+			toGlGpuBufferAccess(access));
 
 		if (!mappedData)
 		{
@@ -255,51 +267,5 @@ namespace Injector
 			data);
 
 		glBindBuffer(glType, GL_ZERO);
-	}
-
-	GLenum GlGpuBuffer::toGlType(GpuBufferType type)
-	{
-		switch (type)
-		{
-		case GpuBufferType::Uniform:
-			return GL_UNIFORM_BUFFER;
-		case GpuBufferType::Index:
-			return GL_ELEMENT_ARRAY_BUFFER;
-		case GpuBufferType::Vertex:
-			return GL_ARRAY_BUFFER;
-		case GpuBufferType::TransformFeedback:
-			return GL_TRANSFORM_FEEDBACK_BUFFER;
-		default:
-			throw Exception(
-				"GlGpuBuffer",
-				"toGlType",
-				"Unsupported type");
-		}
-	}
-	bool GlGpuBuffer::isGlMappable(GLenum usage)
-	{
-		return
-			usage == GL_DYNAMIC_DRAW ||
-			usage == GL_DYNAMIC_READ ||
-			usage == GL_STREAM_DRAW ||
-			usage == GL_STREAM_READ;
-	}
-	GLbitfield GlGpuBuffer::toGlAccess(GpuBufferAccess access)
-	{
-		if (access == GpuBufferAccess::ReadOnly)
-			return GL_MAP_READ_BIT;
-		else if (access == GpuBufferAccess::WriteOnly)
-			return GL_MAP_WRITE_BIT |
-				   GL_MAP_FLUSH_EXPLICIT_BIT |
-				   GL_MAP_INVALIDATE_RANGE_BIT; //TODO: Check if this correct
-		else if (access == GpuBufferAccess::ReadWrite)
-			return GL_MAP_READ_BIT |
-				   GL_MAP_WRITE_BIT |
-				   GL_MAP_FLUSH_EXPLICIT_BIT;
-		else
-			throw Exception(
-				"GlGpuBuffer",
-				"toGlAccess",
-				"Unsupported access");
 	}
 }

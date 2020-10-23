@@ -5,11 +5,62 @@ namespace Injector
 {
 	VkGpuMesh::VkGpuMesh(
 		size_t indexCount,
-		GpuBufferIndex indexType,
-		const std::shared_ptr<GpuBuffer>& vertexBuffer,
-		const std::shared_ptr<GpuBuffer>& indexBuffer) :
-		GpuMesh(indexCount, indexType, vertexBuffer, indexBuffer)
+		const std::shared_ptr<VkGpuBuffer>& _vertexBuffer,
+		const std::shared_ptr<VkGpuBuffer>& _indexBuffer) :
+		GpuMesh(indexCount),
+		vertexBuffer(_vertexBuffer),
+		indexBuffer(_indexBuffer)
 	{
+		if(_vertexBuffer && _vertexBuffer->getType() != GpuBufferType::Vertex)
+		{
+			throw Exception(
+				"VkGpuMesh",
+				"VkGpuMesh",
+				"Buffer is not vertex type");
+		}
+		if(_indexBuffer && _indexBuffer->getType() != GpuBufferType::Index)
+		{
+			throw Exception(
+				"VkGpuMesh",
+				"VkGpuMesh",
+				"Buffer is not index type");
+		}
+	}
+
+	std::shared_ptr<GpuBuffer> VkGpuMesh::getVertexBuffer() const
+	{
+		return vertexBuffer;
+	}
+	void VkGpuMesh::setVertexBuffer(
+		const std::shared_ptr<GpuBuffer>& buffer)
+	{
+		if(buffer && buffer->getType() != GpuBufferType::Vertex)
+		{
+			throw Exception(
+				"VkGpuMesh",
+				"setVertexBuffer",
+				"Buffer has not vertex type");
+		}
+
+		vertexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(buffer);
+	}
+
+	std::shared_ptr<GpuBuffer> VkGpuMesh::getIndexBuffer() const
+	{
+		return indexBuffer;
+	}
+	void VkGpuMesh::setIndexBuffer(
+		const std::shared_ptr<GpuBuffer>& buffer)
+	{
+		if(buffer && buffer->getType() != GpuBufferType::Index)
+		{
+			throw Exception(
+				"VkGpuMesh",
+				"setIndexBuffer",
+				"Buffer has not index type");
+		}
+
+		indexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(buffer);
 	}
 
 	void VkGpuMesh::draw(vk::CommandBuffer commandBuffer)
@@ -22,15 +73,11 @@ namespace Injector
 				"commandBuffer");
 		}
 
-		const VkDeviceSize offset = 0;
-
-		auto vkVertexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(vertexBuffer);
-		auto vkIndexBuffer = std::dynamic_pointer_cast<VkGpuBuffer>(vertexBuffer);
-
-		if (!vkVertexBuffer || !vkIndexBuffer)
+		if (!vertexBuffer || !indexBuffer)
 			return;
 
-		auto buffer = vkVertexBuffer->getBuffer();
+		const VkDeviceSize offset = 0;
+		auto buffer = vertexBuffer->getBuffer();
 
 		commandBuffer.bindVertexBuffers(
 			0,
@@ -38,13 +85,10 @@ namespace Injector
 			&buffer,
 			&offset);
 
-		auto index = (indexType == GpuBufferIndex::UnsignedShort) ?
-			vk::IndexType::eUint16 : vk::IndexType::eUint32;
-
 		commandBuffer.bindIndexBuffer(
-			vkIndexBuffer->getBuffer(),
+			indexBuffer->getBuffer(),
 			0,
-			index);
+			vk::IndexType::eUint32);
 
 		commandBuffer.drawIndexed(
 			static_cast<uint32_t>(indexCount),

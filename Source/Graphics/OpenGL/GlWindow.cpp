@@ -8,7 +8,7 @@
 #include "Injector/Graphics/OpenGL/GlGpuFramebuffer.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.hpp"
-#include "Injector/Graphics/OpenGL/Pipeline/GlTextureDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.hpp"
 
 namespace Injector
 {
@@ -68,7 +68,12 @@ namespace Injector
 		glfwMakeContextCurrent(window);
 
 		if (glewInit() != GLEW_OK)
-			throw Exception("GlWindow", "GlWindow", "Failed to initialize GLEW");
+		{
+			throw Exception(
+				"GlWindow",
+				"GlWindow",
+				"Failed to initialize GLEW");
+		}
 
 		glfwSwapInterval(0);
 	}
@@ -93,15 +98,19 @@ namespace Injector
 		glViewport(0, 0, size.x, size.y);
 	}
 
-	std::shared_ptr<CameraSystem> GlWindow::createCameraSystem()
+	std::shared_ptr<CameraSystem> GlWindow::createCameraSystem(
+		const std::shared_ptr<Window>& window)
 	{
-		auto system = std::make_shared<GlCameraSystem>(*this);
+		auto glWindow = std::dynamic_pointer_cast<GlWindow>(window);
+		auto system = std::make_shared<GlCameraSystem>(glWindow);
 		systems.push_back(system);
 		return system;
 	}
-	std::shared_ptr<RenderSystem> GlWindow::createRenderSystem()
+	std::shared_ptr<RenderSystem> GlWindow::createRenderSystem(
+		const std::shared_ptr<Window>& window)
 	{
-		auto system = std::make_shared<GlRenderSystem>(*this);
+		auto glWindow = std::dynamic_pointer_cast<GlWindow>(window);
+		auto system = std::make_shared<GlRenderSystem>(glWindow);
 		systems.push_back(system);
 		return system;
 	}
@@ -113,7 +122,8 @@ namespace Injector
 		const void* data)
 	{
 		auto usage = mappable ?
-				GL_DYNAMIC_DRAW : GL_STATIC_DRAW;
+			GL_DYNAMIC_DRAW :
+			GL_STATIC_DRAW;
 
 		return std::make_shared<GlGpuBuffer>(
 			type,
@@ -123,15 +133,16 @@ namespace Injector
 	}
 	std::shared_ptr<GpuMesh> GlWindow::createMesh(
 		size_t indexCount,
-		GpuBufferIndex indexType,
 		const std::shared_ptr<GpuBuffer>& vertexBuffer,
 		const std::shared_ptr<GpuBuffer>& indexBuffer)
 	{
+		auto glVertexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(vertexBuffer);
+		auto glIndexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(indexBuffer);
+
 		return std::make_shared<GlGpuMesh>(
 			indexCount,
-			indexType,
-			vertexBuffer,
-			indexBuffer);
+			glVertexBuffer,
+			glIndexBuffer);
 	}
 	std::shared_ptr<ShaderData> GlWindow::readShaderData(
 		const std::string& filePath)
@@ -151,25 +162,15 @@ namespace Injector
 	}
 	std::shared_ptr<GpuImage> GlWindow::createImage(
 		GpuImageType type,
-		const IntVector3& size,
 		GpuImageFormat format,
-		GpuImageFilter minFilter,
-		GpuImageFilter magFilter,
-		GpuImageWrap wrapU,
-		GpuImageWrap wrapV,
-		GpuImageWrap wrapW,
+		const IntVector3& size,
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
 		return std::make_shared<GlGpuImage>(
 			type,
-			size,
 			format,
-			minFilter,
-			magFilter,
-			wrapU,
-			wrapV,
-			wrapW,
+			size,
 			useMipmap,
 			data);
 	}
@@ -188,62 +189,112 @@ namespace Injector
 			glStencilImage);
 	}
 
-	std::shared_ptr<ColorGpuPipeline> GlWindow::createColorPipeline(
+	std::shared_ptr<GpuPipeline> GlWindow::createColorPipeline(
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const Vector4& color)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
 		return std::make_shared<GlColorGpuPipeline>(
+			drawMode,
 			glVertexShader,
-			glFragmentShader);
+			glFragmentShader,
+			color);
 	}
-	std::shared_ptr<ColorGpuPipeline> GlWindow::createColColorPipeline(
+	std::shared_ptr<GpuPipeline> GlWindow::createColorColorPipeline(
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const Vector4& color)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
 		return std::make_shared<GlColorColorGpuPipeline>(
+			drawMode,
 			glVertexShader,
-			glFragmentShader);
+			glFragmentShader,
+			color);
 	}
-	std::shared_ptr<DiffuseGpuPipeline> GlWindow::createDiffusePipeline(
+	std::shared_ptr<GpuPipeline> GlWindow::createDiffusePipeline(
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
-		const std::shared_ptr<GpuShader>& fragmentShader)
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const Vector4& objectColor,
+		const Vector4& ambientColor,
+		const Vector4& lightColor,
+		const Vector3& lightDirection)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
 		return std::make_shared<GlDiffuseGpuPipeline>(
+			drawMode,
 			glVertexShader,
-			glFragmentShader);
+			glFragmentShader,
+			GlDiffuseGpuPipeline::UniformBufferObject(
+				objectColor,
+				ambientColor,
+				lightColor,
+				lightDirection));
 	}
-	std::shared_ptr<TextureDiffuseGpuPipeline> GlWindow::createTexDiffusePipeline(
+	std::shared_ptr<GpuPipeline> GlWindow::createImageDiffusePipeline(
+		GpuDrawMode drawMode,
+		GpuImageFilter imageMinFilter,
+		GpuImageFilter imageMagFilter,
+		GpuImageFilter mipmapFilter,
+		GpuImageWrap imageWrapU,
+		GpuImageWrap imageWrapV,
+		GpuImageWrap imageWrapW,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
-		const std::shared_ptr<GpuImage>& texture)
+		const std::shared_ptr<GpuImage>& image,
+		const Vector4& objectColor,
+		const Vector4& ambientColor,
+		const Vector4& lightColor,
+		const Vector3& lightDirection,
+		const Vector2& imageScale,
+		const Vector2& imageOffset)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
-		auto glTexture = std::dynamic_pointer_cast<GlGpuImage>(texture);
+		auto glImage = std::dynamic_pointer_cast<GlGpuImage>(image);
 
-		return std::make_shared<GlTextureDiffuseGpuPipeline>(
+		return std::make_shared<GlImageDiffuseGpuPipeline>(
+			drawMode,
+			imageMinFilter,
+			imageMagFilter,
+			mipmapFilter,
+			imageWrapU,
+			imageWrapV,
+			imageWrapW,
 			glVertexShader,
 			glFragmentShader,
-			glTexture);
+			glImage,
+			GlImageDiffuseGpuPipeline::UniformBufferObject(
+				objectColor,
+				ambientColor,
+				lightColor,
+				lightDirection,
+				imageScale,
+				imageOffset));
 	}
-	std::shared_ptr<SimulatedSkyGpuPipeline> GlWindow::createSkyPipeline(
+	std::shared_ptr<GpuPipeline> GlWindow::createSkyPipeline(
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader)
 	{
+		// TODO:
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
 		return std::make_shared<GlSimulatedSkyGpuPipeline>(
+			drawMode,
 			glVertexShader,
-			glFragmentShader);
+			glFragmentShader,
+			GlSimulatedSkyGpuPipeline::UniformBufferObject(0.0f));
 	}
 }

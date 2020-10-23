@@ -131,8 +131,8 @@ add_library(InjectorEngine STATIC
     Source/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlDiffuseGpuPipeline.cpp
+    Source/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.cpp
-    Source/Graphics/OpenGL/Pipeline/GlTextureDiffuseGpuPipeline.cpp
 
     Source/Graphics/OpenGL/GlCameraSystem.cpp
     Source/Graphics/OpenGL/GlGpuBuffer.cpp
@@ -147,6 +147,7 @@ add_library(InjectorEngine STATIC
 
     Source/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.cpp
     Source/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.cpp
+    Source/Graphics/Vulkan/Pipeline/VkImageDiffuseGpuPipeline.cpp
 
     Source/Graphics/Vulkan/VkCameraSystem.cpp
     Source/Graphics/Vulkan/VkGpuBuffer.cpp
@@ -154,6 +155,7 @@ add_library(InjectorEngine STATIC
     Source/Graphics/Vulkan/VkGpuMesh.cpp
     Source/Graphics/Vulkan/VkGpuPipeline.cpp
     Source/Graphics/Vulkan/VkGpuShader.cpp
+    Source/Graphics/Vulkan/VkGpuSwapchain.cpp
     Source/Graphics/Vulkan/VkRenderSystem.cpp
     Source/Graphics/Vulkan/VkSwapchainData.cpp
     Source/Graphics/Vulkan/VkWindow.cpp
@@ -165,6 +167,7 @@ add_library(InjectorEngine STATIC
     Source/Graphics/GpuFramebuffer.cpp
     Source/Graphics/GpuImage.cpp
     Source/Graphics/GpuMesh.cpp
+    Source/Graphics/GpuPipeline.cpp
     Source/Graphics/GpuShader.cpp
     Source/Graphics/GuiComponent.cpp
     Source/Graphics/GuiSystem.cpp
@@ -251,20 +254,25 @@ set(INJECTOR_RESOURCES
 
     Models/UtahTeapot.fbx
 
-    Shaders/ColorColor.frag
-    Shaders/ColorColor.vert
     Shaders/Color.frag
     Shaders/Color.vert
+    Shaders/ColorColor.frag
+    Shaders/ColorColor.vert
     Shaders/SimulatedSky.vert
     Shaders/SimulatedSky.frag
     Shaders/Diffuse.frag
     Shaders/Diffuse.vert
-    Shaders/TextureDiffuse.frag
-    Shaders/TextureDiffuse.vert
+    Shaders/ImageDiffuse.frag
+    Shaders/ImageDiffuse.vert
+
     Shaders/Color.frag.spv
     Shaders/Color.vert.spv
+    Shaders/ColorColor.frag.spv
+    Shaders/ColorColor.vert.spv
     Shaders/Diffuse.frag.spv
-    Shaders/Diffuse.vert.spv)
+    Shaders/Diffuse.vert.spv
+    Shaders/ImageDiffuse.frag.spv
+    Shaders/ImageDiffuse.vert.spv)
 
 foreach (FILE ${INJECTOR_RESOURCES})
     configure_file(Resources/${FILE} Resources/${FILE} COPYONLY)

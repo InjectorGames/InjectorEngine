@@ -2,22 +2,46 @@
 #include "Injector/Graphics/Vulkan/VkGpuBuffer.hpp"
 #include "Injector/Exception/NullException.hpp"
 #include "Injector/Exception/OutOfRangeException.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuBufferType.hpp"
 
 namespace Injector
 {
+	bool VkGpuBuffer::isVkMappable(
+		VmaMemoryUsage usage)
+	{
+		return
+			usage == VMA_MEMORY_USAGE_CPU_ONLY ||
+			usage == VMA_MEMORY_USAGE_CPU_TO_GPU ||
+			usage == VMA_MEMORY_USAGE_GPU_TO_CPU;
+	}
+
 	VkGpuBuffer::VkGpuBuffer(
-		GpuBufferType type,
-		size_t size,
 		VmaAllocator _allocator,
 		vk::BufferUsageFlags usageFlags,
-		VmaMemoryUsage usage) :
+		VmaMemoryUsage usage,
+		GpuBufferType type,
+		size_t size) :
 		GpuBuffer(type, size, isVkMappable(usage)),
 		allocator(_allocator)
 	{
+		if(!_allocator)
+		{
+			throw NullException(
+				"VkGpuBuffer",
+				"VkGpuBuffer",
+				"allocator");
+		}
+
 		VkBufferCreateInfo bufferCreateInfo = {};
 		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		bufferCreateInfo.flags = 0;
 		bufferCreateInfo.size = size;
-		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(toVkType(type) | usageFlags);
+		bufferCreateInfo.usage = static_cast<VkBufferUsageFlags>(
+			toVkGpuBufferType(type) |
+			usageFlags);
+		bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		bufferCreateInfo.queueFamilyIndexCount = 0;
+		bufferCreateInfo.pQueueFamilyIndices = nullptr;
 
 		VmaAllocationCreateInfo allocationCreateInfo = {};
 		allocationCreateInfo.flags = VMA_ALLOCATION_CREATE_WITHIN_BUDGET_BIT;
@@ -49,7 +73,7 @@ namespace Injector
 	{
 		vmaDestroyBuffer(
 			allocator,
-			static_cast<VkBuffer_T*>(buffer),
+			static_cast<VkBuffer>(buffer),
 			allocation);
 	}
 
@@ -103,7 +127,8 @@ namespace Injector
 		}
 	}
 
-	void* VkGpuBuffer::map(GpuBufferAccess access)
+	void* VkGpuBuffer::map(
+		GpuBufferAccess access)
 	{
 		if (!mappable)
 		{
@@ -147,7 +172,10 @@ namespace Injector
 		mapOffset = 0;
 		return mappedData;
 	}
-	void* VkGpuBuffer::map(GpuBufferAccess access, size_t _size, size_t offset)
+	void* VkGpuBuffer::map(
+		GpuBufferAccess access,
+		size_t _size,
+		size_t offset)
 	{
 		if (!mappable)
 		{
@@ -219,7 +247,9 @@ namespace Injector
 		mapped = false;
 	}
 
-	void VkGpuBuffer::setData(const void* data, size_t _size)
+	void VkGpuBuffer::setData(
+		const void* data,
+		size_t _size)
 	{
 		if (!mappable)
 		{
@@ -271,7 +301,10 @@ namespace Injector
 		flush(_size, 0);
 		vmaUnmapMemory(allocator, allocation);
 	}
-	void VkGpuBuffer::setData(const void* data, size_t _size, size_t offset)
+	void VkGpuBuffer::setData(
+		const void* data,
+		size_t _size,
+		size_t offset)
 	{
 		if (!mappable)
 		{
@@ -319,46 +352,13 @@ namespace Injector
 		}
 
 		auto castedData = static_cast<char*>(mappedData);
-		memcpy(castedData + offset, data, _size);
+
+		memcpy(
+			castedData + offset,
+			data,
+			_size);
 
 		flush(_size, offset);
 		vmaUnmapMemory(allocator, allocation);
-	}
-
-	vk::BufferUsageFlagBits VkGpuBuffer::toVkType(GpuBufferType type)
-	{
-		switch (type)
-		{
-		case GpuBufferType::UniformTexel:
-			return vk::BufferUsageFlagBits::eUniformTexelBuffer;
-		case GpuBufferType::StorageTexel:
-			return vk::BufferUsageFlagBits::eStorageTexelBuffer;
-		case GpuBufferType::Uniform:
-			return vk::BufferUsageFlagBits::eUniformBuffer;
-		case GpuBufferType::Storage:
-			return vk::BufferUsageFlagBits::eStorageBuffer;
-		case GpuBufferType::Index:
-			return vk::BufferUsageFlagBits::eIndexBuffer;
-		case GpuBufferType::Vertex:
-			return vk::BufferUsageFlagBits::eVertexBuffer;
-		case GpuBufferType::Indirect:
-			return vk::BufferUsageFlagBits::eIndirectBuffer;
-		case GpuBufferType::TransformFeedback:
-			return vk::BufferUsageFlagBits::eTransformFeedbackBufferEXT;
-		case GpuBufferType::TransformFeedbackCounter:
-			return vk::BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT;
-		default:
-			throw Exception(
-				"VkGpuBuffer",
-				"toVkType",
-				"Unsupported type");
-		}
-	}
-	bool VkGpuBuffer::isVkMappable(VmaMemoryUsage usage)
-	{
-		return
-			usage == VMA_MEMORY_USAGE_CPU_ONLY ||
-			usage == VMA_MEMORY_USAGE_CPU_TO_GPU ||
-			usage == VMA_MEMORY_USAGE_GPU_TO_CPU;
 	}
 }

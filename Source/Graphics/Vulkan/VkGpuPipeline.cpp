@@ -1,14 +1,25 @@
 #include "Injector/Graphics/Vulkan/VkGpuPipeline.hpp"
-#include "Injector/Exception/Exception.hpp"
+#include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
 	VkGpuPipeline::VkGpuPipeline(
-		vk::Device _device) :
+		vk::Device _device,
+		GpuDrawMode drawMode) :
+		GpuPipeline(drawMode),
 		device(_device),
 		bindedCommandBuffer()
 	{
-		auto pipelineCacheCreateInfo = vk::PipelineCacheCreateInfo();
+		if(!_device)
+		{
+			throw NullException(
+				"VkGpuPipeline",
+				"VkGpuPipeline",
+				"device");
+		}
+
+		auto pipelineCacheCreateInfo =
+			vk::PipelineCacheCreateInfo();
 
 		auto result = _device.createPipelineCache(
 			&pipelineCacheCreateInfo,
@@ -25,7 +36,8 @@ namespace Injector
 	}
 	VkGpuPipeline::~VkGpuPipeline()
 	{
-		device.destroyPipelineCache(pipelineCache);
+		device.destroyPipelineCache(
+			pipelineCache);
 	}
 
 	vk::Device VkGpuPipeline::getDevice()
@@ -41,6 +53,14 @@ namespace Injector
 		vk::CommandBuffer commandBuffer,
 		size_t imageIndex)
 	{
+		if(!commandBuffer)
+		{
+			throw NullException(
+				"VkGpuPipeline",
+				"bind",
+				"commandBuffer");
+		}
+
 		bindedCommandBuffer = commandBuffer;
 	}
 }

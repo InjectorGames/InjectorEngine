@@ -1,15 +1,23 @@
 #pragma once
 #include "Injector/Mathematics/Matrix/Matrix4.hpp"
+#include "Injector/Graphics/GpuDrawMode.hpp"
 
 namespace Injector
 {
 	class GpuPipeline
 	{
+	 protected:
+		GpuDrawMode drawMode;
 	 public:
-		GpuPipeline() = default;
+		// TODO: add other pipeline parameters from vulakn pipeline
+		// Ex: glPolygonMode
+		explicit GpuPipeline(
+			GpuDrawMode drawMode);
 		GpuPipeline(const GpuPipeline& pipeline) = delete;
 		GpuPipeline(GpuPipeline&& pipeline) = delete;
 		virtual ~GpuPipeline() = default;
+
+		GpuDrawMode getDrawMode() const noexcept;
 
 		virtual void setUniforms(
 			const Matrix4& model,

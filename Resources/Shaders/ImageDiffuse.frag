@@ -9,11 +9,11 @@ layout(std140) uniform FragmentBufferObject
     highp vec4 ambientColor;
     highp vec4 lightColor;
     highp vec4 lightDirection;
-    highp vec2 textureScale;
-    highp vec2 textureOffset;
+    highp vec2 imageScale;
+    highp vec2 imageOffset;
 } fbo;
 
-uniform sampler2D u_Texture;
+uniform sampler2D u_Image;
 
 float getDiffuse(vec3 normal, vec3 direction)
 {
@@ -26,5 +26,5 @@ void main()
     vec4 diffuseColor = fbo.lightColor * getDiffuse(f_Normal, fbo.lightDirection.xyz);
 
     o_Color = (ambientColor + diffuseColor) * fbo.objectColor *
-        texture(u_Texture, (f_TexCoord + fbo.textureOffset) * fbo.textureScale);
+        texture(u_Image, (f_TexCoord + fbo.imageOffset) * fbo.imageScale);
 }

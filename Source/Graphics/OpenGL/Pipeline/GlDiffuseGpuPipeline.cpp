@@ -4,25 +4,43 @@
 namespace Injector
 {
 	GlDiffuseGpuPipeline::GlDiffuseGpuPipeline(
+		GpuDrawMode drawMode,
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
 		const UniformBufferObject& _ubo) :
-		GlGpuPipeline(GL_TRIANGLES),
+		GlGpuPipeline(drawMode),
 		ubo(_ubo)
 	{
-		if (!vertexShader || !fragmentShader)
+		if (!vertexShader)
 		{
 			throw NullException(
 				"GlDiffuseGpuPipeline",
 				"GlDiffuseGpuPipeline",
-				"shader");
+				"vertexShader");
+		}
+		if (!fragmentShader)
+		{
+			throw NullException(
+				"GlDiffuseGpuPipeline",
+				"GlDiffuseGpuPipeline",
+				"fragmentShader");
 		}
 
-		glAttachShader(program, vertexShader->getShader());
-		glAttachShader(program, fragmentShader->getShader());
+		glAttachShader(
+			program,
+			vertexShader->getShader());
+		glAttachShader(
+			program,
+			fragmentShader->getShader());
+
 		glLinkProgram(program);
-		glDetachShader(program, vertexShader->getShader());
-		glDetachShader(program, fragmentShader->getShader());
+
+		glDetachShader(
+			program,
+			vertexShader->getShader());
+		glDetachShader(
+			program,
+			fragmentShader->getShader());
 
 		if (!getLinkStatus(program))
 		{
@@ -35,12 +53,20 @@ namespace Injector
 				"Failed to link program, " + log);
 		}
 
-		mvpLocation = getUniformLocation(program, "u_MVP");
-		normalLocation = getUniformLocation(program, "u_Normal");
+		mvpLocation = getUniformLocation(
+			program,
+			"u_MVP");
+		normalLocation = getUniformLocation(
+			program,
+			"u_Normal");
 
 		auto uniformBlockIndex = getUniformBlockIndex(
-			program, "FragmentBufferObject");
-		glUniformBlockBinding(program, uniformBlockIndex, 0);
+			program,
+			"FragmentBufferObject");
+		glUniformBlockBinding(
+			program,
+			uniformBlockIndex,
+			0);
 
 		uniformBuffer = std::make_shared<GlGpuBuffer>(
 			GpuBufferType::Uniform,
@@ -95,12 +121,16 @@ namespace Injector
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);
 
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0,
+		glBindBufferBase(
+			GL_UNIFORM_BUFFER,
+			0,
 			uniformBuffer->getBuffer());
 	}
 	void GlDiffuseGpuPipeline::flush()
 	{
-		uniformBuffer->setData(&ubo, sizeof(UniformBufferObject));
+		uniformBuffer->setData(
+			&ubo,
+			sizeof(UniformBufferObject));
 	}
 	void GlDiffuseGpuPipeline::setAttributes()
 	{
@@ -130,7 +160,13 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-		setUniform(mvpLocation, mvp);
-		setUniform(normalLocation, model.getInverted().getMatrix3(), GL_TRUE);
+		auto normal = model.getInverted().getTransposed();
+
+		setUniform(
+			mvpLocation,
+			mvp);
+		setUniform(
+			normalLocation,
+			normal);
 	}
 }

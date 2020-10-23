@@ -235,7 +235,8 @@ namespace Injector
 	}
 
 	void Engine::glfwErrorCallback(
-		int error, const char* description)
+		int error,
+		const char* description)
 	{
 		throw Exception(
 			"Engine",

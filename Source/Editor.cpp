@@ -14,17 +14,17 @@ void initialize()
 	auto window = Window::create();
 
 	window->setIcons(std::vector<std::shared_ptr<ImageData>>{
-		ImageData::readFromFile("Resources/Images/Logo16.png", 4, false),
+		ImageData::readFromFile("Resources/Images/Logo48.png", 4, false),
 		ImageData::readFromFile("Resources/Images/Logo32.png", 4, false),
-		ImageData::readFromFile("Resources/Images/Logo48.png", 4, false), });
+		ImageData::readFromFile("Resources/Images/Logo16.png", 4, false), });
 
 	auto freeCameraSystem = window->createSystem<FreeCameraSystem>(window);
 	auto guiSystem = window->createSystem<GuiSystem>();
 	auto simSkySystem = window->createSystem<SimSkySystem>(window);
 	//auto vrSystem = window->createSystem<VrSystem>();
 	auto transformSystem = window->createSystem<TransformSystem>();
-	auto cameraSystem = window->createCameraSystem();
-	auto renderSystem = window->createRenderSystem();
+	auto cameraSystem = window->createCameraSystem(window);
+	auto renderSystem = window->createRenderSystem(window);
 
 	auto freeCamera = window->createEntity();
 	freeCamera->createComponent<TransformComponent>(
@@ -54,32 +54,36 @@ void initialize()
 	cameraSystem->addCamera(guiCamera);
 	renderSystem->addCamera(guiCamera);
 
-	auto texDiffuseVertexShader = window->createShader(
+	auto imageDiffuseVertexShader = window->createShader(
 		GpuShaderStage::Vertex,
 		window->readShaderData(
-			"Resources/Shaders/TextureDiffuse.vert"));
-	auto texDiffuseFragmentShader = window->createShader(
+			"Resources/Shaders/ImageDiffuse.vert"));
+	auto imageDiffuseFragmentShader = window->createShader(
 		GpuShaderStage::Fragment,
 		window->readShaderData(
-			"Resources/Shaders/TextureDiffuse.frag"));
+			"Resources/Shaders/ImageDiffuse.frag"));
 	auto boxImageData = ImageData::readFromFile(
 		"Resources/Images/GrayBox.png",
-		3,
+		4,
 		false);
-	auto boxImage = window->createImage(boxImageData->size,
-		GpuImageFormat::RGB8,
-		GpuImageFilter::Nearest,
-		GpuImageFilter::Nearest,
-		GpuImageWrap::Repeat,
-		GpuImageWrap::Repeat,
+	auto boxImage = window->createImage(
+		GpuImageFormat::RGBA8,
+ 		boxImageData->size,
 		true,
 		boxImageData);
-	auto texDiffusePipeline = window->createTexDiffusePipeline(
-		texDiffuseVertexShader,
-		texDiffuseFragmentShader,
+	auto imageDiffusePipeline = window->createImageDiffusePipeline(
+		GpuDrawMode::TriangleList,
+		GpuImageFilter::Nearest,
+		GpuImageFilter::Nearest,
+		GpuImageFilter::Linear,
+		GpuImageWrap::Repeat,
+		GpuImageWrap::Repeat,
+		GpuImageWrap::Repeat,
+		imageDiffuseVertexShader,
+		imageDiffuseFragmentShader,
 		boxImage);
 
-	auto simSkyVertexShader = window->createShader(
+	/*auto simSkyVertexShader = window->createShader(
 		GpuShaderStage::Vertex,
 		window->readShaderData(
 			"Resources/Shaders/SimulatedSky.vert"));
@@ -88,8 +92,9 @@ void initialize()
 		window->readShaderData(
 			"Resources/Shaders/SimulatedSky.frag"));
 	auto simSkyPipeline = window->createSkyPipeline(
+		PrimitiveTopology::TriangleList,
 		simSkyVertexShader,
-		simSkyFragmentShader);
+		simSkyFragmentShader);*/
 
 	auto teapotModelData = ModelData::readFromFile(
 		"Resources/Models/UtahTeapot.fbx");
@@ -97,32 +102,32 @@ void initialize()
 	auto simSkyMesh = window->createMesh(
 		ModelData::frame.getVertex(),
 		false,
-		ModelData::frame.indices16,
+		ModelData::frame.indices,
 		false);
 	auto floorMesh = window->createMesh(
 		ModelData::square.getVertexNormalTexCoord(),
 		false,
-		ModelData::square.indices16,
+		ModelData::square.indices,
 		false);
 	auto cubeMesh = window->createMesh(
 		ModelData::cube.getVertexNormalTexCoord(),
 		false,
-		ModelData::cube.indices16,
+		ModelData::cube.indices,
 		false);
 	auto teapotMesh = window->createMesh(
 		teapotModelData->getVertexNormalTexCoord(),
 		false,
-		teapotModelData->indices32,
+		teapotModelData->indices,
 		false);
 
-	auto simSky = window->createEntity();
+	/*auto simSky = window->createEntity();
 	simSky->createComponent<TransformComponent>(
 		Vector3(0.0f, 0.0f, 10.0f));
 	simSky->createComponent<RenderComponent>(
 		simSkyPipeline,
 		simSkyMesh);
 	transformSystem->addTransform(simSky);
-	freeCameraComponent->renders.emplace(simSky);
+	freeCameraComponent->renders.emplace(simSky);*/
 
 	auto floor = window->createEntity();
 	floor->createComponent<TransformComponent>(
@@ -134,7 +139,7 @@ void initialize()
 				0.0f)),
 		Vector3::one * 10);
 	floor->createComponent<RenderComponent>(
-		texDiffusePipeline,
+		imageDiffusePipeline,
 		floorMesh);
 	transformSystem->addTransform(floor);
 	freeCameraComponent->renders.emplace(floor);
@@ -148,7 +153,7 @@ void initialize()
 		Matrix4::identity,
 		nullptr);
 	cube->createComponent<RenderComponent>(
-		texDiffusePipeline,
+		imageDiffusePipeline,
 		cubeMesh);
 	transformSystem->addTransform(cube);
 	freeCameraComponent->renders.emplace(cube);
@@ -162,7 +167,7 @@ void initialize()
 		Matrix4::identity,
 		cube);
 	teapot->createComponent<RenderComponent>(
-		texDiffusePipeline,
+		imageDiffusePipeline,
 		teapotMesh);
 	transformSystem->addTransform(teapot);
 	freeCameraComponent->renders.emplace(teapot);
@@ -172,10 +177,8 @@ int main()
 {
 	try
 	{
-		//Engine::initializeGraphics(
-		// 	GraphicsAPI::Vulkan);
 		Engine::initializeGraphics(
-			GraphicsAPI::OpenGL);
+		 	GraphicsAPI::Vulkan);
 		//Engine::initializeVirtualReality();
 		Engine::setTargetUpdateRate(60);
 		Engine::initializeEngine();

@@ -1,9 +1,9 @@
 #pragma once
-#include "Injector/Graphics/GpuPipeline.hpp"
+#include "Injector/Mathematics/Vector/Vector4.hpp"
 
 namespace Injector
 {
-	class ColorGpuPipeline : public GpuPipeline
+	class ColorGpuPipeline
 	{
 	 public:
 		virtual const Vector4& getColor() const = 0;

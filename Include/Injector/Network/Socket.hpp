@@ -6,7 +6,7 @@
 
 namespace Injector
 {
-	class Socket final
+	class Socket
 	{
 	 protected:
 		SocketFamily family;
@@ -63,9 +63,9 @@ namespace Injector
 		bool connect(const Endpoint& endpoint) noexcept;
 
 		// Returns receives message byte count
-		int receive(void* buffer, size_t size) noexcept;
+		int receive(void* buffer, int size) noexcept;
 		// Returns sent message byte count
-		int send(const void* buffer, size_t size) noexcept;
+		int send(const void* buffer, int size) noexcept;
 
 		// Returns receives message byte count
 		template<class T = uint8_t>
@@ -73,7 +73,7 @@ namespace Injector
 		{
 			return receive(
 				buffer.data(),
-				buffer.size() * sizeof(T));
+				static_cast<int>(buffer.size() * sizeof(T)));
 		}
 		// Returns sent message byte count
 		template<class T = uint8_t>
@@ -81,18 +81,18 @@ namespace Injector
 		{
 			return send(
 				buffer.data(),
-				buffer.size() * sizeof(T));
+				static_cast<int>(buffer.size() * sizeof(T)));
 		}
 
 		// Returns receives message byte count
 		int receiveFrom(
 			void* buffer,
-			size_t size,
+			int size,
 			Endpoint& endpoint) noexcept;
 		// Returns sent message byte count
 		int sendTo(
 			const void* buffer,
-			size_t size,
+			int size,
 			const Endpoint& endpoint) noexcept;
 
 		// Returns receives message byte count
@@ -127,12 +127,15 @@ namespace Injector
 		bool close() noexcept;
 
 		// Returns true if sockets is equal
-		bool operator==(const Socket& socket) const noexcept;
+		bool operator==(
+			const Socket& socket) const noexcept;
 		// Returns true if sockets is not equal
-		bool operator!=(const Socket& socket) const noexcept;
+		bool operator!=(
+			const Socket& socket) const noexcept;
 
 		// Socket move assigment operator
-		Socket& operator=(Socket&& socket) noexcept;
+		Socket& operator=(
+			Socket&& socket) noexcept;
 
 		// Returns true if a < b
 		static bool less(

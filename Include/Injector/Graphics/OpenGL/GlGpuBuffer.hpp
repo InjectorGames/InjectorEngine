@@ -11,12 +11,15 @@ namespace Injector
 	 protected:
 		GLuint buffer;
 		GLenum glType;
+
+		static bool isGlMappable(
+			GLenum usage);
 	 public:
 		GlGpuBuffer(
 			GpuBufferType type,
 			size_t size,
 			GLenum usage,
-			const void* data = 0);
+			const void* data = nullptr);
 		~GlGpuBuffer() override;
 
 		GLuint getBuffer() const noexcept;
@@ -41,9 +44,5 @@ namespace Injector
 			const void* data,
 			size_t size,
 			size_t offset) override;
-
-		static GLenum toGlType(GpuBufferType type);
-		static bool isGlMappable(GLenum usage);
-		static GLbitfield toGlAccess(GpuBufferAccess access);
 	};
 }

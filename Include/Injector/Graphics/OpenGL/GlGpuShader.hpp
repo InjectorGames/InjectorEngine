@@ -30,7 +30,5 @@ namespace Injector
 		bool isGLES() const noexcept;
 		GLuint getShader() const noexcept;
 		GLenum getGlStage() const noexcept;
-
-		static GLenum toGlStage(GpuShaderStage stage);
 	};
 }

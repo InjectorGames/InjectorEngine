@@ -7,10 +7,10 @@ namespace Injector
 	class GlCameraSystem : public CameraSystem
 	{
 	 protected:
-		GlWindow& window;
+		std::shared_ptr<GlWindow> window;
 	 public:
 		explicit GlCameraSystem(
-			GlWindow& window);
+			const std::shared_ptr<GlWindow>& window);
 
 		void update() override;
 	};

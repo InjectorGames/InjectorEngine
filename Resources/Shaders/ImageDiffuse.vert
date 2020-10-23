@@ -6,11 +6,11 @@ out highp vec3 f_Normal;
 out highp vec2 f_TexCoord;
 
 uniform highp mat4 u_MVP;
-uniform highp mat3 u_Normal;
+uniform highp mat4 u_Normal;
 
 void main()
 {
     gl_Position = u_MVP * vec4(v_Position, 1.0);
-    f_Normal = normalize(u_Normal * v_Normal);
+    f_Normal = normalize(mat3(u_Normal) * v_Normal);
     f_TexCoord = vec2(v_TexCoord.x, -v_TexCoord.y);
 }

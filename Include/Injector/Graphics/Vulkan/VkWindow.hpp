@@ -3,10 +3,7 @@
 
 #include "Injector/Graphics/Window.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuBuffer.hpp"
-#include "Injector/Graphics/Vulkan/VkSwapchainData.hpp"
-#include "Injector/Graphics/Vulkan/VkGpuPipeline.hpp"
-
-#include <set>
+#include "Injector/Graphics/Vulkan/VkGpuSwapchain.hpp"
 
 namespace Injector
 {
@@ -22,21 +19,18 @@ namespace Injector
 		uint32_t presentQueueFamilyIndex;
 		vk::Device device;
 		VmaAllocator memoryAllocator;
-		std::vector<vk::Fence> fences;
-		std::vector<vk::Semaphore> imageAcquiredSemaphores;
-		std::vector<vk::Semaphore> drawCompleteSemaphores;
-		std::vector<vk::Semaphore> imageOwnershipSemaphores;
 		vk::Queue graphicsQueue;
 		vk::Queue presentQueue;
 		vk::CommandPool graphicsCommandPool;
 		vk::CommandPool presentCommandPool;
 		vk::CommandPool transferCommandPool;
-		vk::Extent2D surfaceExtent;
-		vk::SwapchainKHR swapchain;
-		vk::RenderPass renderPass;
-		uint32_t frameIndex;
-		std::vector<std::shared_ptr<VkSwapchainData>> swapchainDatas;
+		VkGpuSwapchain swapchain;
+		std::vector<vk::Fence> fences;
+		std::vector<vk::Semaphore> imageAcquiredSemaphores;
+		std::vector<vk::Semaphore> drawCompleteSemaphores;
+		std::vector<vk::Semaphore> imageOwnershipSemaphores;
 		std::set<std::shared_ptr<VkGpuPipeline>> pipelines;
+		uint32_t frameIndex;
 
 		static VkBool32 VKAPI_CALL debugMessengerCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -71,57 +65,31 @@ namespace Injector
 			vk::Instance instance,
 			vk::PhysicalDevice physicalDevice,
 			vk::Device device);
-		static vk::Fence createFence(
-			vk::Device device,
-			vk::FenceCreateFlags flags);
-		static vk::Semaphore createSemaphore(
-			vk::Device device,
-			vk::SemaphoreCreateFlags flags);
 		static vk::Queue getQueue(
 			vk::Device device,
 			uint32_t queueFamilyIndex,
 			uint32_t queueIndex);
-		static uint32_t getBestSurfaceImageCount(
-			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
-		static vk::SurfaceFormatKHR getBestSurfaceFormat(
-			vk::PhysicalDevice physicalDevice,
-			vk::SurfaceKHR surface);
-		static vk::PresentModeKHR getBestSurfacePresentMode(
-			vk::PhysicalDevice physicalDevice,
-			vk::SurfaceKHR surface);
-		static vk::SurfaceTransformFlagBitsKHR getBestSurfaceTransform(
-			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
-		static vk::CompositeAlphaFlagBitsKHR getBestSurfaceCompositeAlpha(
-			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities);
-		static vk::Extent2D getBestSurfaceExtent(
-			const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
-			IntVector2 surfaceSize);
-		static vk::SwapchainKHR createSwapchain(
-			vk::Device device,
-			vk::SurfaceKHR surface,
-			uint32_t surfaceImageCount,
-			vk::SurfaceFormatKHR surfaceFormat,
-			vk::Extent2D surfaceExtent,
-			vk::SurfaceTransformFlagBitsKHR surfaceTransform,
-			vk::CompositeAlphaFlagBitsKHR surfaceCompositeAlpha,
-			vk::PresentModeKHR surfacePresentMode);
-		static vk::RenderPass createRenderPass(
-			vk::Device device,
-			vk::Format format);
 		static vk::CommandPool createCommandPool(
 			vk::Device device,
-			vk::CommandPoolCreateFlags flags,
+			const vk::CommandPoolCreateFlags& flags,
 			uint32_t queueFamilyIndex);
+		static vk::Fence createFence(
+			vk::Device device,
+			const vk::FenceCreateFlags& flags);
+		static vk::Semaphore createSemaphore(
+			vk::Device device,
+			const vk::SemaphoreCreateFlags& flags);
 	 public:
-		explicit VkWindow(const std::string& title = defaultTitle,
-			const IntVector2& size = defaultSize,
-			bool stereo = false);
+		explicit VkWindow(
+			const std::string& title = defaultTitle,
+			const IntVector2& size = defaultSize);
 		~VkWindow() override;
 
-		vk::CommandBuffer getGraphicsCommandBuffer(uint32_t imageIndex) const;
-		vk::CommandBuffer getPresentCommandBuffer(uint32_t imageIndex) const;
+		void onFramebufferResize(
+			const IntVector2& size) override;
 
-		void onFramebufferResize(const IntVector2& size) override;
+		vk::CommandBuffer getGraphicsCommandBuffer(
+			uint32_t imageIndex) const;
 
 		uint32_t beginImage();
 		void endImage(uint32_t imageIndex);
@@ -129,8 +97,10 @@ namespace Injector
 		void beginRecord(uint32_t imageIndex);
 		void endRecord(uint32_t imageIndex);
 
-		std::shared_ptr<CameraSystem> createCameraSystem() override;
-		std::shared_ptr<RenderSystem> createRenderSystem() override;
+		std::shared_ptr<CameraSystem> createCameraSystem(
+			const std::shared_ptr<Window>& window) override;
+		std::shared_ptr<RenderSystem> createRenderSystem(
+			const std::shared_ptr<Window>& window) override;
 
 		std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,
@@ -139,7 +109,6 @@ namespace Injector
 			const void* data) override;
 		std::shared_ptr<GpuMesh> createMesh(
 			size_t indexCount,
-			GpuBufferIndex indexType,
 			const std::shared_ptr<GpuBuffer>& vertexBuffer,
 			const std::shared_ptr<GpuBuffer>& indexBuffer) override;
 		std::shared_ptr<ShaderData> readShaderData(
@@ -147,8 +116,55 @@ namespace Injector
 		std::shared_ptr<GpuShader> createShader(
 			GpuShaderStage stage,
 			const std::shared_ptr<ShaderData>& data) override;
+		std::shared_ptr<GpuImage> createImage(
+			GpuImageType type,
+			GpuImageFormat format,
+			const IntVector3& size,
+			bool useMipmap,
+			const std::shared_ptr<ImageData>& data) override;
+		std::shared_ptr<GpuFramebuffer> createFramebuffer(
+			const std::shared_ptr<GpuImage>& colorImage,
+			const std::shared_ptr<GpuImage>& depthImage,
+			const std::shared_ptr<GpuImage>& stencilImage) override;
 
-		/*std::shared_ptr<ColorPipeline> createColorPipeline() override;
-		std::shared_ptr<DiffusePipeline> createDiffusePipeline() override;*/
+		std::shared_ptr<GpuPipeline> createColorPipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const Vector4& color) override;
+		std::shared_ptr<GpuPipeline> createColorColorPipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const Vector4& color) override;
+		std::shared_ptr<GpuPipeline> createDiffusePipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const Vector4& objectColor,
+			const Vector4& ambientColor,
+			const Vector4& lightColor,
+			const Vector3& lightDirection) override;
+		std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
+			GpuDrawMode drawMode,
+			GpuImageFilter imageMinFilter,
+			GpuImageFilter imageMagFilter,
+			GpuImageFilter mipmapFilter,
+			GpuImageWrap imageWrapU,
+			GpuImageWrap imageWrapV,
+			GpuImageWrap imageWrapW,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const std::shared_ptr<GpuImage>& image,
+			const Vector4& objectColor,
+			const Vector4& ambientColor,
+			const Vector4& lightColor,
+			const Vector3& lightDirection,
+			const Vector2& imageScale,
+			const Vector2& imageOffset) override;
+		std::shared_ptr<GpuPipeline> createSkyPipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader) override;
 	};
 }

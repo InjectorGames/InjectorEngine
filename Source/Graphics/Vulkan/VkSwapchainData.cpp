@@ -1,5 +1,5 @@
 #include "Injector/Graphics/Vulkan/VkSwapchainData.hpp"
-#include "Injector/Exception/Exception.hpp"
+#include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
@@ -9,17 +9,62 @@ namespace Injector
 		vk::RenderPass renderPass,
 		vk::CommandPool _graphicsCommandPool,
 		vk::CommandPool _presentCommandPool,
-		vk::Format surfaceFormat,
-		vk::Extent2D surfaceExtent) :
+		vk::Format format,
+		vk::ImageView depthImageView,
+		const vk::Extent2D& surfaceExtent) :
 		device(_device),
 		image(_image),
 		graphicsCommandPool(_graphicsCommandPool),
 		presentCommandPool(_presentCommandPool)
 	{
-		auto imageViewCreateInfo = vk::ImageViewCreateInfo({},
+		if(!_device)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"device");
+		}
+		if(!_image)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"image");
+		}
+		if(!renderPass)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"renderPass");
+		}
+		if(!_graphicsCommandPool)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"graphicsCommandPool");
+		}
+		if(!_presentCommandPool)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"presentCommandPool");
+		}
+		if(!depthImageView)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"depthImageView");
+		}
+
+		auto imageViewCreateInfo = vk::ImageViewCreateInfo(
+			vk::ImageViewCreateFlags(),
 			_image,
 			vk::ImageViewType::e2D,
-			surfaceFormat,
+			format,
 			vk::ComponentMapping(
 				vk::ComponentSwizzle::eIdentity,
 				vk::ComponentSwizzle::eIdentity,
@@ -45,10 +90,17 @@ namespace Injector
 				"Failed to create image view");
 		}
 
-		auto framebufferCreateInfo = vk::FramebufferCreateInfo({},
+		vk::ImageView imageViews[2] =
+		{
+			imageView,
+			depthImageView
+		};
+
+		auto framebufferCreateInfo = vk::FramebufferCreateInfo(
+			vk::FramebufferCreateFlags(),
 			renderPass,
-			1,
-			&imageView,
+			2,
+			imageViews,
 			surfaceExtent.width,
 			surfaceExtent.height,
 			1);

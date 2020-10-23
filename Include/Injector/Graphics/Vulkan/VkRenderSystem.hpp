@@ -7,10 +7,10 @@ namespace Injector
 	class VkRenderSystem : public RenderSystem
 	{
 	 protected:
-		VkWindow& window;
+		std::shared_ptr<VkWindow> window;
 	 public:
 		explicit VkRenderSystem(
-			VkWindow& window);
+			const std::shared_ptr<VkWindow>& window);
 
 		void update() override;
 	};

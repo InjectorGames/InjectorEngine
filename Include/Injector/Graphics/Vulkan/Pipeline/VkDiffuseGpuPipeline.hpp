@@ -19,9 +19,10 @@ namespace Injector
 			Vector4 objectColor;
 			Vector4 ambientColor;
 			Vector4 lightColor;
-			alignas(16) Vector3 lightDirection;
+			Vector3 lightDirection;
+			float alignment;
 
-			UniformBufferObject(
+			explicit UniformBufferObject(
 				const Vector4& _objectColor,
 				const Vector4& _ambientColor,
 				const Vector4& _lightColor,
@@ -29,7 +30,8 @@ namespace Injector
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
-				lightDirection(_lightDirection)
+				lightDirection(_lightDirection),
+				alignment()
 			{
 			}
 		};
@@ -38,19 +40,27 @@ namespace Injector
 		vk::PipelineLayout pipelineLayout;
 		vk::Pipeline pipeline;
 		vk::DescriptorPool descriptorPool;
+
 		std::shared_ptr<VkGpuShader> vertexShader;
 		std::shared_ptr<VkGpuShader> fragmentShader;
+
 		std::vector<std::shared_ptr<VkGpuBuffer>> uniformBuffers;
 		std::vector<vk::DescriptorSet> descriptorSets;
 
 		UniformBufferObject ubo;
 
+		static vk::DescriptorSetLayout createDescriptorSetLayout(
+			vk::Device device);
+		static vk::PipelineLayout createPipelineLayout(
+			vk::Device device,
+			vk::DescriptorSetLayout descriptorSetLayout);
 		static vk::Pipeline createPipeline(
 			vk::Device device,
 			vk::PipelineCache pipelineCache,
 			vk::PipelineLayout pipelineLayout,
 			vk::RenderPass renderPass,
 			const vk::Extent2D& surfaceExtent,
+			vk::PrimitiveTopology primitiveTopology,
 			const std::shared_ptr<VkGpuShader>& vertexShader,
 			const std::shared_ptr<VkGpuShader>& fragmentShader);
 		static vk::DescriptorPool createDescriptorPool(
@@ -72,30 +82,11 @@ namespace Injector
 			vk::RenderPass renderPass,
 			uint32_t imageCount,
 			const vk::Extent2D& surfaceExtent,
+			GpuDrawMode drawMode,
 			const std::shared_ptr<VkGpuShader>& vertexShader,
 			const std::shared_ptr<VkGpuShader>& fragmentShader,
-			const Vector4& objectColor = Vector4::one,
-			const Vector4& ambientColor = Vector4::one / 4.0f,
-			const Vector4& lightColor = Vector4::one,
-			const Vector3& lightDirection = Vector3(1.0f, 2.0f, 3.0f));
+			const UniformBufferObject& ubo);
 		~VkDiffuseGpuPipeline() override;
-
-		void recreate(
-			VmaAllocator allocator,
-			vk::RenderPass renderPass,
-			uint32_t imageCount,
-			const vk::Extent2D& surfaceExtent) override;
-		void flush(
-			size_t imageIndex) override;
-		void bind(
-			vk::CommandBuffer commandBuffer,
-			size_t imageIndex) override;
-		void setUniforms(
-			const Matrix4& model,
-			const Matrix4& view,
-			const Matrix4& proj,
-			const Matrix4& viewProj,
-			const Matrix4& mvp) override;
 
 		const Vector4& getObjectColor() const override;
 		void setObjectColor(const Vector4& color) override;
@@ -108,5 +99,22 @@ namespace Injector
 
 		const Vector3& getLightDirection() const override;
 		void setLightDirection(const Vector3& direction) override;
+
+		void recreate(
+			VmaAllocator allocator,
+			vk::RenderPass renderPass,
+			uint32_t imageCount,
+			const vk::Extent2D& extent) override;
+		void flush(
+			size_t imageIndex) override;
+		void bind(
+			vk::CommandBuffer commandBuffer,
+			size_t imageIndex) override;
+		void setUniforms(
+			const Matrix4& model,
+			const Matrix4& view,
+			const Matrix4& proj,
+			const Matrix4& viewProj,
+			const Matrix4& mvp) override;
 	};
 }

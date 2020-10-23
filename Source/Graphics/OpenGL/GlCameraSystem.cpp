@@ -1,16 +1,24 @@
 #include "Injector/Graphics/OpenGL/GlCameraSystem.hpp"
+#include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
 	GlCameraSystem::GlCameraSystem(
-		GlWindow& _window) :
+		const std::shared_ptr<GlWindow>& _window) :
 		window(_window)
 	{
+		if(!_window)
+		{
+			throw NullException(
+				"GlCameraSystem",
+				"GlCameraSystem",
+				"window");
+		}
 	}
 
 	void GlCameraSystem::update()
 	{
-		auto windowSize = window.getSize();
+		auto windowSize = window->getSize();
 		updateAspectRatio(windowSize.x / float(windowSize.y));
 
 		for (auto& camera : cameras)

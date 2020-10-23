@@ -1,4 +1,5 @@
 #include "Injector/Graphics/OpenGL/GlRenderSystem.hpp"
+#include "Injector/Exception/NullException.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuMesh.hpp"
 
 #include <map>
@@ -7,14 +8,21 @@
 namespace Injector
 {
 	GlRenderSystem::GlRenderSystem(
-		GlWindow& _window) :
+		const std::shared_ptr<GlWindow>& _window) :
 		window(_window)
 	{
+		if(!_window)
+		{
+			throw NullException(
+				"GlRenderSystem",
+				"GlRenderSystem",
+				"window");
+		}
 	}
 
 	void GlRenderSystem::update()
 	{
-		if (window.isMinimized())
+		if (window->isMinimized())
 			return;
 
 		struct CameraData
@@ -44,7 +52,7 @@ namespace Injector
 			cameraPairs.emplace(cameraData.camera->queue, cameraData);
 		}
 
-		window.makeCurrent();
+		window->makeCurrent();
 
 		glClear(
 			GL_COLOR_BUFFER_BIT |
@@ -120,33 +128,33 @@ namespace Injector
 			switch (error)
 			{
 			case GL_INVALID_ENUM:
-				std::cout << "Engine: OpenGL Error: GL_INVALID_ENUM";
+				std::cout << "Engine: OpenGL Error: GL_INVALID_ENUM\n";
 				break;
 			case GL_INVALID_VALUE:
-				std::cout << "Engine: OpenGL Error: GL_INVALID_VALUE";
+				std::cout << "Engine: OpenGL Error: GL_INVALID_VALUE\n";
 				break;
 			case GL_INVALID_OPERATION:
-				std::cout << "Engine: OpenGL Error: GL_INVALID_OPERATION";
+				std::cout << "Engine: OpenGL Error: GL_INVALID_OPERATION\n";
 				break;
 			case GL_INVALID_FRAMEBUFFER_OPERATION:
-				std::cout << "Engine: OpenGL Error: GL_INVALID_FRAMEBUFFER_OPERATION";
+				std::cout << "Engine: OpenGL Error: GL_INVALID_FRAMEBUFFER_OPERATION\n";
 				break;
 			case GL_OUT_OF_MEMORY:
-				std::cout << "Engine: OpenGL Error: GL_OUT_OF_MEMORY";
+				std::cout << "Engine: OpenGL Error: GL_OUT_OF_MEMORY\n";
 				break;
 			case GL_STACK_UNDERFLOW:
-				std::cout << "Engine: OpenGL Error: GL_STACK_UNDERFLOW";
+				std::cout << "Engine: OpenGL Error: GL_STACK_UNDERFLOW\n";
 				break;
 			case GL_STACK_OVERFLOW:
-				std::cout << "Engine: OpenGL Error: GL_STACK_OVERFLOW";
+				std::cout << "Engine: OpenGL Error: GL_STACK_OVERFLOW\n";
 				break;
 			default:
-				std::cout << "Engine: OpenGL Error: Unknown";
+				std::cout << "Engine: OpenGL Error: Unknown\n";
 				break;
 			}
 		}
 #endif
 
-		window.swapBuffers();
+		window->swapBuffers();
 	}
 }

@@ -7,10 +7,10 @@ namespace Injector
 	class VkCameraSystem : public CameraSystem
 	{
 	 protected:
-		VkWindow& window;
+		std::shared_ptr<VkWindow> window;
 	 public:
 		explicit VkCameraSystem(
-			VkWindow& window);
+			const std::shared_ptr<VkWindow>& window);
 
 		void update() override;
 	};
