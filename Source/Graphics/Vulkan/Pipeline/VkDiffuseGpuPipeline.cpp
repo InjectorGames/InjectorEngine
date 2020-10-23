@@ -44,7 +44,7 @@ namespace Injector
 		auto pushConstantRange = vk::PushConstantRange(
 			vk::ShaderStageFlagBits::eVertex,
 			0,
-			sizeof(Matrix4) + sizeof(Matrix3));
+			sizeof(Matrix4) * 2);
 
 		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo(
 			vk::PipelineLayoutCreateFlags(),
@@ -518,8 +518,7 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
-		auto normal = model.getInverted().
-			getMatrix3().getTransposed();
+		auto normal = model.getInverted().getTransposed();
 
 		bindedCommandBuffer.pushConstants(
 			pipelineLayout,
@@ -531,7 +530,7 @@ namespace Injector
 			pipelineLayout,
 			vk::ShaderStageFlagBits::eVertex,
 			sizeof(Matrix4),
-			sizeof(Matrix3),
+			sizeof(Matrix4),
 			&normal);
 	}
 }
