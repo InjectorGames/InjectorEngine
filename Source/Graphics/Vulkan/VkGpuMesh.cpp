@@ -31,7 +31,8 @@ namespace Injector
 	{
 		return vertexBuffer;
 	}
-	void VkGpuMesh::setVertexBuffer(const std::shared_ptr<GpuBuffer>& buffer)
+	void VkGpuMesh::setVertexBuffer(
+		const std::shared_ptr<GpuBuffer>& buffer)
 	{
 		if(buffer && buffer->getType() != GpuBufferType::Vertex)
 		{
@@ -48,7 +49,8 @@ namespace Injector
 	{
 		return indexBuffer;
 	}
-	void VkGpuMesh::setIndexBuffer(const std::shared_ptr<GpuBuffer>& buffer)
+	void VkGpuMesh::setIndexBuffer(
+		const std::shared_ptr<GpuBuffer>& buffer)
 	{
 		if(buffer && buffer->getType() != GpuBufferType::Index)
 		{

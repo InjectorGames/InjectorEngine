@@ -108,7 +108,7 @@ namespace Injector
 
 		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
 			0,
-			sizeof(Vector3) * 2,
+			sizeof(Vector3) * 2 + sizeof(Vector2),
 			vk::VertexInputRate::eVertex);
 
 		vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[3] =

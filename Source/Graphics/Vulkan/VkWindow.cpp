@@ -736,7 +736,8 @@ namespace Injector
 			pipeline->recreate(
 				memoryAllocator,
 				swapchain.getRenderPass(),
-				swapchain.getDatas().size(),
+				static_cast<uint32_t>(
+					swapchain.getDatas().size()),
 				swapchain.getExtent());
 		}
 
@@ -1199,7 +1200,7 @@ namespace Injector
 			format,
 			size);
 
-		if(!data)
+		if(data)
 		{
 			auto stagingBufferSize =
 				data->size.x * data->size.y * data->componentCount;
@@ -1235,7 +1236,7 @@ namespace Injector
 				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 			commandBuffer.begin(commandBufferBeginInfo);
 
-			auto barrier = vk::ImageMemoryBarrier(
+			auto firstBarrier = vk::ImageMemoryBarrier(
 				vk::AccessFlags(),
 				vk::AccessFlagBits::eTransferWrite,
 				vk::ImageLayout::eUndefined,
@@ -1259,7 +1260,7 @@ namespace Injector
 				0,
 				nullptr,
 				1,
-				&barrier);
+				&firstBarrier);
 
 			auto bufferImageCopy = vk::BufferImageCopy(
 				0,
@@ -1285,7 +1286,7 @@ namespace Injector
 				1,
 				&bufferImageCopy);
 
-			barrier = vk::ImageMemoryBarrier(
+			auto secondBarrier = vk::ImageMemoryBarrier(
 				vk::AccessFlagBits::eTransferWrite,
 				vk::AccessFlagBits::eShaderRead,
 				vk::ImageLayout::eTransferDstOptimal,
@@ -1309,7 +1310,7 @@ namespace Injector
 				0,
 				nullptr,
 				1,
-				&barrier);
+				&secondBarrier);
 
 			commandBuffer.end();
 
