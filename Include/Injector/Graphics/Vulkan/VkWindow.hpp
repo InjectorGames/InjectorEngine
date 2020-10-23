@@ -97,8 +97,10 @@ namespace Injector
 		void beginRecord(uint32_t imageIndex);
 		void endRecord(uint32_t imageIndex);
 
-		std::shared_ptr<CameraSystem> createCameraSystem() override;
-		std::shared_ptr<RenderSystem> createRenderSystem() override;
+		std::shared_ptr<CameraSystem> createCameraSystem(
+			const std::shared_ptr<Window>& window) override;
+		std::shared_ptr<RenderSystem> createRenderSystem(
+			const std::shared_ptr<Window>& window) override;
 
 		std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,

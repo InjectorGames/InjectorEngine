@@ -1,4 +1,5 @@
 #include "Injector/Graphics/Vulkan/VkRenderSystem.hpp"
+#include "Injector/Exception/NullException.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuMesh.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuPipeline.hpp"
 
@@ -7,14 +8,21 @@
 namespace Injector
 {
 	VkRenderSystem::VkRenderSystem(
-		VkWindow& _window) :
+		const std::shared_ptr<VkWindow>& _window) :
 		window(_window)
 	{
+		if(!_window)
+		{
+			throw NullException(
+				"VkRenderSystem",
+				"VkRenderSystem",
+				"window");
+		}
 	}
 
 	void VkRenderSystem::update()
 	{
-		if (window.isMinimized())
+		if (window->isMinimized())
 			return;
 
 		struct CameraData
@@ -44,9 +52,9 @@ namespace Injector
 			cameraPairs.emplace(cameraData.camera->queue, cameraData);
 		}
 
-		auto imageIndex = window.beginImage();
-		auto commandBuffer = window.getGraphicsCommandBuffer(imageIndex);
-		window.beginRecord(imageIndex);
+		auto imageIndex = window->beginImage();
+		auto commandBuffer = window->getGraphicsCommandBuffer(imageIndex);
+		window->beginRecord(imageIndex);
 
 		for (auto& cameraPair : cameraPairs)
 		{
@@ -109,7 +117,7 @@ namespace Injector
 			}
 		}
 
-		window.endRecord(imageIndex);
-		window.endImage(imageIndex);
+		window->endRecord(imageIndex);
+		window->endImage(imageIndex);
 	}
 }

@@ -52,6 +52,13 @@ namespace Injector
 				"VkSwapchainData",
 				"presentCommandPool");
 		}
+		if(!depthImageView)
+		{
+			throw NullException(
+				"VkSwapchainData",
+				"VkSwapchainData",
+				"depthImageView");
+		}
 
 		auto imageViewCreateInfo = vk::ImageViewCreateInfo(
 			vk::ImageViewCreateFlags(),

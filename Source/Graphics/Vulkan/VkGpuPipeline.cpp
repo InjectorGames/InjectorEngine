@@ -53,6 +53,14 @@ namespace Injector
 		vk::CommandBuffer commandBuffer,
 		size_t imageIndex)
 	{
+		if(!commandBuffer)
+		{
+			throw NullException(
+				"VkGpuPipeline",
+				"bind",
+				"commandBuffer");
+		}
+
 		bindedCommandBuffer = commandBuffer;
 	}
 }

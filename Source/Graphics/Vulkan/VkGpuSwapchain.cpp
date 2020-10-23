@@ -357,7 +357,6 @@ namespace Injector
 	}
 
 	VkGpuSwapchain::VkGpuSwapchain() noexcept :
-		allocator(),
 		device(),
 		physicalDevice(),
 		extent(),
@@ -369,18 +368,17 @@ namespace Injector
 	{
 	}
 	VkGpuSwapchain::VkGpuSwapchain(
-		VmaAllocator _allocator,
+		VmaAllocator allocator,
 		vk::Device _device,
 		vk::PhysicalDevice _physicalDevice,
 		vk::SurfaceKHR surface,
 		vk::CommandPool graphicsCommandPool,
 		vk::CommandPool presentCommandPool,
 		const IntVector2& size) :
-		allocator(_allocator),
 		device(_device),
 		physicalDevice(_physicalDevice)
 	{
-		if(!_allocator)
+		if(!allocator)
 		{
 			throw NullException(
 				"VkGpuSwapchain",
@@ -455,7 +453,7 @@ namespace Injector
 		auto vkDepthFormat = toVkGpuImageFormat(depthFormat);
 
 		depthImage = std::make_shared<VkGpuImage>(
-			_allocator,
+			allocator,
 			vk::ImageUsageFlagBits::eDepthStencilAttachment,
 			GpuImageType::Image2D,
 			depthFormat,
@@ -483,7 +481,6 @@ namespace Injector
 	VkGpuSwapchain::VkGpuSwapchain(
 		VkGpuSwapchain&& _swapchain) noexcept
 	{
-		allocator = _swapchain.allocator;
 		device = _swapchain.device;
 		physicalDevice = _swapchain.physicalDevice;
 		extent = _swapchain.extent;
@@ -533,6 +530,7 @@ namespace Injector
 	}
 
 	void VkGpuSwapchain::resize(
+		VmaAllocator allocator,
 		vk::SurfaceKHR surface,
 		vk::CommandPool graphicsCommandPool,
 		vk::CommandPool presentCommandPool,
@@ -544,6 +542,27 @@ namespace Injector
 				"VkGpuSwapchain",
 				"VkGpuSwapchain",
 				"device");
+		}
+		if(!allocator)
+		{
+			throw NullException(
+				"VkGpuSwapchain",
+				"VkGpuSwapchain",
+				"allocator");
+		}
+		if(!graphicsCommandPool)
+		{
+			throw NullException(
+				"VkGpuSwapchain",
+				"VkGpuSwapchain",
+				"graphicsCommandPool");
+		}
+		if(!presentCommandPool)
+		{
+			throw NullException(
+				"VkGpuSwapchain",
+				"VkGpuSwapchain",
+				"presentCommandPool");
 		}
 
 		datas.clear();
@@ -618,7 +637,6 @@ namespace Injector
 	{
 		if(this != &_swapchain)
 		{
-			allocator = _swapchain.allocator;
 			device = _swapchain.device;
 			physicalDevice = _swapchain.physicalDevice;
 			extent = _swapchain.extent;

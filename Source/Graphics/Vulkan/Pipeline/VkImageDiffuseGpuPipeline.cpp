@@ -666,6 +666,21 @@ namespace Injector
 		uint32_t imageCount,
 		const vk::Extent2D& extent)
 	{
+		if(!allocator)
+		{
+			throw NullException(
+				"VkImageDiffuseGpuPipeline",
+				"recreate",
+				"allocator");
+		}
+		if(!renderPass)
+		{
+			throw NullException(
+				"VkImageDiffuseGpuPipeline",
+				"recreate",
+				"renderPass");
+		}
+
 		device.destroyDescriptorPool(
 			descriptorPool);
 		device.destroyPipeline(
@@ -701,7 +716,7 @@ namespace Injector
 	void VkImageDiffuseGpuPipeline::flush(
 		size_t imageIndex)
 	{
-		auto uniformBuffer = uniformBuffers[imageIndex];
+		auto uniformBuffer = uniformBuffers.at(imageIndex);
 		auto mappedData = uniformBuffer->map(GpuBufferAccess::WriteOnly);
 		memcpy(mappedData, &ubo, sizeof(UniformBufferObject));
 		uniformBuffer->unmap();

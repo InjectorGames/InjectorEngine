@@ -98,15 +98,19 @@ namespace Injector
 		glViewport(0, 0, size.x, size.y);
 	}
 
-	std::shared_ptr<CameraSystem> GlWindow::createCameraSystem()
+	std::shared_ptr<CameraSystem> GlWindow::createCameraSystem(
+		const std::shared_ptr<Window>& window)
 	{
-		auto system = std::make_shared<GlCameraSystem>(*this);
+		auto glWindow = std::dynamic_pointer_cast<GlWindow>(window);
+		auto system = std::make_shared<GlCameraSystem>(glWindow);
 		systems.push_back(system);
 		return system;
 	}
-	std::shared_ptr<RenderSystem> GlWindow::createRenderSystem()
+	std::shared_ptr<RenderSystem> GlWindow::createRenderSystem(
+		const std::shared_ptr<Window>& window)
 	{
-		auto system = std::make_shared<GlRenderSystem>(*this);
+		auto glWindow = std::dynamic_pointer_cast<GlWindow>(window);
+		auto system = std::make_shared<GlRenderSystem>(glWindow);
 		systems.push_back(system);
 		return system;
 	}

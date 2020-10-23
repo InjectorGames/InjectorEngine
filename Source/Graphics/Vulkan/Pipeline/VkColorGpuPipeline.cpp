@@ -253,6 +253,21 @@ namespace Injector
 		uint32_t imageCount,
 		const vk::Extent2D& surfaceExtent)
 	{
+		if(!allocator)
+		{
+			throw NullException(
+				"VkColorGpuPipeline",
+				"recreate",
+				"allocator");
+		}
+		if(!renderPass)
+		{
+			throw NullException(
+				"VkColorGpuPipeline",
+				"recreate",
+				"renderPass");
+		}
+
 		device.destroyPipeline(
 			pipeline);
 

@@ -1,4 +1,5 @@
 #include "Injector/Graphics/OpenGL/GlRenderSystem.hpp"
+#include "Injector/Exception/NullException.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuMesh.hpp"
 
 #include <map>
@@ -7,14 +8,21 @@
 namespace Injector
 {
 	GlRenderSystem::GlRenderSystem(
-		GlWindow& _window) :
+		const std::shared_ptr<GlWindow>& _window) :
 		window(_window)
 	{
+		if(!_window)
+		{
+			throw NullException(
+				"GlRenderSystem",
+				"GlRenderSystem",
+				"window");
+		}
 	}
 
 	void GlRenderSystem::update()
 	{
-		if (window.isMinimized())
+		if (window->isMinimized())
 			return;
 
 		struct CameraData
@@ -44,7 +52,7 @@ namespace Injector
 			cameraPairs.emplace(cameraData.camera->queue, cameraData);
 		}
 
-		window.makeCurrent();
+		window->makeCurrent();
 
 		glClear(
 			GL_COLOR_BUFFER_BIT |
@@ -147,6 +155,6 @@ namespace Injector
 		}
 #endif
 
-		window.swapBuffers();
+		window->swapBuffers();
 	}
 }

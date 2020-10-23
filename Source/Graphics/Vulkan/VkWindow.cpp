@@ -300,7 +300,7 @@ namespace Injector
 				if (graphicsQueueFamilyIndex == UINT32_MAX)
 					graphicsQueueFamilyIndex = i;
 			}
-			// TODO ONLY TEST: && graphicsQueueFamilyIndex != i
+			// ONLY TEST: && graphicsQueueFamilyIndex != i
 			if (physicalDevice.getSurfaceSupportKHR(i, surface))
 			{
 				if (presentQueueFamilyIndex == UINT32_MAX)
@@ -437,7 +437,9 @@ namespace Injector
 		uint32_t queueFamilyIndex,
 		uint32_t queueIndex)
 	{
-		auto queue = device.getQueue(queueFamilyIndex, queueIndex);
+		auto queue = device.getQueue(
+			queueFamilyIndex,
+			queueIndex);
 
 		if (!queue)
 		{
@@ -662,11 +664,14 @@ namespace Injector
 
 		for (uint32_t i = 0; i < VK_FRAME_LAG; i++)
 		{
-			device.waitForFences(
+			auto result = device.waitForFences(
 				1,
 				&fences[i],
 				VK_TRUE,
 				UINT64_MAX);
+
+			if(result != vk::Result::eSuccess)
+				std::cout << "Engine Vulkan: Failed to wait for fences\n";
 
 			device.destroyFence(fences[i]);
 			device.destroySemaphore(imageAcquiredSemaphores[i]);
@@ -709,6 +714,7 @@ namespace Injector
 		device.waitIdle();
 
 		swapchain.resize(
+			memoryAllocator,
 			surface,
 			graphicsCommandPool,
 			presentCommandPool,
@@ -769,8 +775,7 @@ namespace Injector
 				"Failed to wait for fence");
 		}
 
-		device.resetFences(
-			{ fences[frameIndex] });
+		device.resetFences({ fences[frameIndex] });
 
 		uint32_t imageIndex;
 
@@ -1042,15 +1047,19 @@ namespace Injector
 		}
 	}
 
-	std::shared_ptr<CameraSystem> VkWindow::createCameraSystem()
+	std::shared_ptr<CameraSystem> VkWindow::createCameraSystem(
+		const std::shared_ptr<Window>& window)
 	{
-		auto system = std::make_shared<VkCameraSystem>(*this);
+		auto vkWindow = std::dynamic_pointer_cast<VkWindow>(window);
+		auto system = std::make_shared<VkCameraSystem>(vkWindow);
 		systems.push_back(system);
 		return system;
 	}
-	std::shared_ptr<RenderSystem> VkWindow::createRenderSystem()
+	std::shared_ptr<RenderSystem> VkWindow::createRenderSystem(
+		const std::shared_ptr<Window>& window)
 	{
-		auto system = std::make_shared<VkRenderSystem>(*this);
+		auto vkWindow = std::dynamic_pointer_cast<VkWindow>(window);
+		auto system = std::make_shared<VkRenderSystem>(vkWindow);
 		systems.push_back(system);
 		return system;
 	}
@@ -1257,7 +1266,6 @@ namespace Injector
 					1,
 					0,
 					1));
-
 			commandBuffer.pipelineBarrier(
 				vk::PipelineStageFlagBits::eTopOfPipe,
 				vk::PipelineStageFlagBits::eTransfer,
@@ -1307,7 +1315,6 @@ namespace Injector
 					1,
 					0,
 					1));
-
 			commandBuffer.pipelineBarrier(
 				vk::PipelineStageFlagBits::eTransfer,
 				vk::PipelineStageFlagBits::eFragmentShader,
@@ -1349,7 +1356,80 @@ namespace Injector
 		}
 		else
 		{
-			// TODO: only transfer layout to draw
+			vk::CommandBuffer commandBuffer;
+
+			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo(
+				transferCommandPool,
+				vk::CommandBufferLevel::ePrimary,
+				1);
+			auto result = device.allocateCommandBuffers(
+				&commandBufferAllocateInfo,
+				&commandBuffer);
+
+			if (result != vk::Result::eSuccess)
+			{
+				throw Exception(
+					"VkWindow",
+					"createImage",
+					"Failed to allocate command buffer");
+			}
+
+			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
+				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+			commandBuffer.begin(commandBufferBeginInfo);
+
+			auto barrier = vk::ImageMemoryBarrier(
+				vk::AccessFlags(),
+				vk::AccessFlagBits::eShaderRead,
+				vk::ImageLayout::eUndefined,
+				vk::ImageLayout::eShaderReadOnlyOptimal,
+				VK_QUEUE_FAMILY_IGNORED,
+				VK_QUEUE_FAMILY_IGNORED,
+				image->getImage(),
+				vk::ImageSubresourceRange(
+					vk::ImageAspectFlagBits::eColor,
+					0,
+					1,
+					0,
+					1));
+			commandBuffer.pipelineBarrier(
+				vk::PipelineStageFlagBits::eTopOfPipe,
+				vk::PipelineStageFlagBits::eFragmentShader,
+				vk::DependencyFlagBits(),
+				0,
+				nullptr,
+				0,
+				nullptr,
+				1,
+				&barrier);
+
+			commandBuffer.end();
+
+			auto submitInfo = vk::SubmitInfo(
+				0,
+				nullptr,
+				nullptr,
+				1,
+				&commandBuffer);
+			result = graphicsQueue.submit(
+				1,
+				&submitInfo,
+				nullptr);
+
+			if(result != vk::Result::eSuccess)
+			{
+				throw Exception(
+					"VkWindow",
+					"createImage",
+					"Failed to submit graphics queue");
+			}
+
+			graphicsQueue.waitIdle();
+
+			device.freeCommandBuffers(
+				transferCommandPool,
+				1,
+				&commandBuffer);
 		}
 
 		return image;

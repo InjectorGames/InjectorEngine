@@ -23,8 +23,8 @@ void initialize()
 	auto simSkySystem = window->createSystem<SimSkySystem>(window);
 	//auto vrSystem = window->createSystem<VrSystem>();
 	auto transformSystem = window->createSystem<TransformSystem>();
-	auto cameraSystem = window->createCameraSystem();
-	auto renderSystem = window->createRenderSystem();
+	auto cameraSystem = window->createCameraSystem(window);
+	auto renderSystem = window->createRenderSystem(window);
 
 	auto freeCamera = window->createEntity();
 	freeCamera->createComponent<TransformComponent>(

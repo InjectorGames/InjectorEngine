@@ -16,14 +16,14 @@ namespace Injector
 			throw Exception(
 				"VkGpuMesh",
 				"VkGpuMesh",
-				"Buffer has not vertex type");
+				"Buffer is not vertex type");
 		}
 		if(_indexBuffer && _indexBuffer->getType() != GpuBufferType::Index)
 		{
 			throw Exception(
 				"VkGpuMesh",
 				"VkGpuMesh",
-				"Buffer has not index type");
+				"Buffer is not index type");
 		}
 	}
 

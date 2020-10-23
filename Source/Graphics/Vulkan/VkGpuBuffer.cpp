@@ -127,7 +127,8 @@ namespace Injector
 		}
 	}
 
-	void* VkGpuBuffer::map(GpuBufferAccess access)
+	void* VkGpuBuffer::map(
+		GpuBufferAccess access)
 	{
 		if (!mappable)
 		{
@@ -171,7 +172,10 @@ namespace Injector
 		mapOffset = 0;
 		return mappedData;
 	}
-	void* VkGpuBuffer::map(GpuBufferAccess access, size_t _size, size_t offset)
+	void* VkGpuBuffer::map(
+		GpuBufferAccess access,
+		size_t _size,
+		size_t offset)
 	{
 		if (!mappable)
 		{
@@ -243,7 +247,9 @@ namespace Injector
 		mapped = false;
 	}
 
-	void VkGpuBuffer::setData(const void* data, size_t _size)
+	void VkGpuBuffer::setData(
+		const void* data,
+		size_t _size)
 	{
 		if (!mappable)
 		{
@@ -295,7 +301,10 @@ namespace Injector
 		flush(_size, 0);
 		vmaUnmapMemory(allocator, allocation);
 	}
-	void VkGpuBuffer::setData(const void* data, size_t _size, size_t offset)
+	void VkGpuBuffer::setData(
+		const void* data,
+		size_t _size,
+		size_t offset)
 	{
 		if (!mappable)
 		{

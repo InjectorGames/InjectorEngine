@@ -7,10 +7,10 @@ namespace Injector
 	class GlRenderSystem : public RenderSystem
 	{
 	 protected:
-		GlWindow& window;
+		std::shared_ptr<GlWindow> window;
 	 public:
 		explicit GlRenderSystem(
-			GlWindow& window);
+			const std::shared_ptr<GlWindow>& window);
 
 		void update() override;
 	};

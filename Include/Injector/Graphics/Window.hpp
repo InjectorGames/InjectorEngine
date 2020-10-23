@@ -86,8 +86,10 @@ namespace Injector
 		void focus() noexcept;
 		void requestAttention() noexcept;
 
-		virtual std::shared_ptr<CameraSystem> createCameraSystem() = 0;
-		virtual std::shared_ptr<RenderSystem> createRenderSystem() = 0;
+		virtual std::shared_ptr<CameraSystem> createCameraSystem(
+			const std::shared_ptr<Window>& window) = 0;
+		virtual std::shared_ptr<RenderSystem> createRenderSystem(
+			const std::shared_ptr<Window>& window) = 0;
 
 		virtual std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,

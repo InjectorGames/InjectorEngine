@@ -28,8 +28,10 @@ namespace Injector
 
 		void onFramebufferResize(const IntVector2& size) override;
 
-		std::shared_ptr<CameraSystem> createCameraSystem() override;
-		std::shared_ptr<RenderSystem> createRenderSystem() override;
+		std::shared_ptr<CameraSystem> createCameraSystem(
+			const std::shared_ptr<Window>& window) override;
+		std::shared_ptr<RenderSystem> createRenderSystem(
+			const std::shared_ptr<Window>& window) override;
 
 		std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,

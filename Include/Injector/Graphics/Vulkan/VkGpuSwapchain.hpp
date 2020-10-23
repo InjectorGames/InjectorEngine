@@ -10,7 +10,6 @@ namespace Injector
 	class VkGpuSwapchain
 	{
 	 protected:
-		VmaAllocator allocator;
 		vk::Device device;
 		vk::PhysicalDevice physicalDevice;
 		vk::Extent2D extent;
@@ -86,6 +85,7 @@ namespace Injector
 		const std::vector<std::shared_ptr<VkSwapchainData>>& getDatas() const noexcept;
 
 		void resize(
+			VmaAllocator allocator,
 			vk::SurfaceKHR surface,
 			vk::CommandPool graphicsCommandPool,
 			vk::CommandPool presentCommandPool,
