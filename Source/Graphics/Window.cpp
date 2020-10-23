@@ -86,12 +86,8 @@ namespace Injector
 		{
 			if (isResized)
 			{
-				if (!isMinimized())
-				{
-					auto size = getFramebufferSize();
-					onFramebufferResize(size);
-				}
-
+				auto size = getFramebufferSize();
+				onFramebufferResize(size);
 				isResized = false;
 			}
 

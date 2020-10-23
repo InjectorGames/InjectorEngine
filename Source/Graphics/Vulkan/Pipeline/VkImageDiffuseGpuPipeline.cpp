@@ -701,7 +701,7 @@ namespace Injector
 	void VkImageDiffuseGpuPipeline::flush(
 		size_t imageIndex)
 	{
-		auto uniformBuffer = uniformBuffers.at(imageIndex);
+		auto uniformBuffer = uniformBuffers[imageIndex];
 		auto mappedData = uniformBuffer->map(GpuBufferAccess::WriteOnly);
 		memcpy(mappedData, &ubo, sizeof(UniformBufferObject));
 		uniformBuffer->unmap();

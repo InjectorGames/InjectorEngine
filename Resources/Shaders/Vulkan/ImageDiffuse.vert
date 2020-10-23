@@ -9,8 +9,8 @@ layout(location = 1) out vec2 f_TexCoord;
 
 layout(push_constant) uniform VertexPushConstant
 {
-	mat4 mvp;
-	mat3 normal;
+	layout(offset = 0) mat4 mvp;
+	layout(offset = 64) mat3 normal;
 } vpc;
 
 void main()
