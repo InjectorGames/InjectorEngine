@@ -9,7 +9,8 @@ namespace Injector
 		vk::RenderPass renderPass,
 		vk::CommandPool _graphicsCommandPool,
 		vk::CommandPool _presentCommandPool,
-		vk::Format surfaceFormat,
+		vk::Format format,
+		vk::ImageView depthImageView,
 		const vk::Extent2D& surfaceExtent) :
 		device(_device),
 		image(_image),
@@ -56,7 +57,7 @@ namespace Injector
 			vk::ImageViewCreateFlags(),
 			_image,
 			vk::ImageViewType::e2D,
-			surfaceFormat,
+			format,
 			vk::ComponentMapping(
 				vk::ComponentSwizzle::eIdentity,
 				vk::ComponentSwizzle::eIdentity,
@@ -82,11 +83,17 @@ namespace Injector
 				"Failed to create image view");
 		}
 
+		vk::ImageView imageViews[2] =
+		{
+			imageView,
+			depthImageView
+		};
+
 		auto framebufferCreateInfo = vk::FramebufferCreateInfo(
 			vk::FramebufferCreateFlags(),
 			renderPass,
-			1,
-			&imageView,
+			2,
+			imageViews,
 			surfaceExtent.width,
 			surfaceExtent.height,
 			1);

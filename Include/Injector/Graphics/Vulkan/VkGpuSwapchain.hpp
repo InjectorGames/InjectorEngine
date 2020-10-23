@@ -1,4 +1,5 @@
 #pragma once
+#include "Injector/Graphics/Vulkan/VkGpuImage.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuPipeline.hpp"
 #include "Injector/Graphics/Vulkan/VkSwapchainData.hpp"
 
@@ -9,10 +10,13 @@ namespace Injector
 	class VkGpuSwapchain
 	{
 	 protected:
+		VmaAllocator allocator;
 		vk::Device device;
 		vk::PhysicalDevice physicalDevice;
 		vk::Extent2D extent;
 		vk::SwapchainKHR swapchain;
+		std::shared_ptr<VkGpuImage> depthImage;
+		vk::ImageView depthImageView;
 		vk::RenderPass renderPass;
 		std::vector<std::shared_ptr<VkSwapchainData>> datas;
 
@@ -43,6 +47,13 @@ namespace Injector
 			vk::SwapchainKHR oldSwapchain = nullptr);
 		static vk::RenderPass createRenderPass(
 			vk::Device device,
+			vk::Format colorFormat,
+			vk::Format depthFormat);
+		static GpuImageFormat getBestDepthFormat(
+			vk::PhysicalDevice physicalDevice);
+		static vk::ImageView createDepthImageView(
+			vk::Device device,
+			vk::Image image,
 			vk::Format format);
 		static std::vector<std::shared_ptr<VkSwapchainData>> createDatas(
 			vk::Device device,
@@ -51,10 +62,12 @@ namespace Injector
 			vk::CommandPool graphicsCommandPool,
 			vk::CommandPool presentCommandPool,
 			vk::Format format,
+			vk::ImageView depthImageView,
 			const vk::Extent2D& extent);
 	 public:
 		VkGpuSwapchain() noexcept;
 		VkGpuSwapchain(
+			VmaAllocator allocator,
 			vk::Device device,
 			vk::PhysicalDevice physicalDevice,
 			vk::SurfaceKHR surface,

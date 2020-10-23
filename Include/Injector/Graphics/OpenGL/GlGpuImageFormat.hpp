@@ -82,15 +82,13 @@ namespace Injector
 			return GL_RGBA32UI;
 		case GpuImageFormat::RGBA32I:
 			return GL_RGBA32I;
-		case GpuImageFormat::Depth16:
+		case GpuImageFormat::D16:
 			return GL_DEPTH_COMPONENT16;
-		case GpuImageFormat::Depth24:
-			return GL_DEPTH_COMPONENT24;
-		case GpuImageFormat::Depth32:
+		case GpuImageFormat::D32:
 			return GL_DEPTH_COMPONENT32F;
-		case GpuImageFormat::Depth24Stencil8:
+		case GpuImageFormat::D24S8:
 			return GL_DEPTH24_STENCIL8;
-		case GpuImageFormat::Depth32Stencil8:
+		case GpuImageFormat::D32S8:
 			return GL_DEPTH32F_STENCIL8;
 		default:
 			throw Exception(

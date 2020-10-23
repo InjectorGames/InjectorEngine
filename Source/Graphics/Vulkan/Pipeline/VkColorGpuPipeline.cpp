@@ -88,7 +88,7 @@ namespace Injector
 		auto pipelineInputAssemblyStateCreateInfo = vk::PipelineInputAssemblyStateCreateInfo(
 			vk::PipelineInputAssemblyStateCreateFlags(),
 			primitiveTopology,
-			false);
+			VK_FALSE);
 
 		auto viewport = vk::Viewport(
 			0.0f,
@@ -109,12 +109,12 @@ namespace Injector
 
 		auto pipelineRasterizationStateCreateInfo = vk::PipelineRasterizationStateCreateInfo(
 			vk::PipelineRasterizationStateCreateFlags(),
-			false,
-			false,
+			VK_FALSE,
+			VK_FALSE,
 			vk::PolygonMode::eFill,
 			vk::CullModeFlagBits::eBack,
 			vk::FrontFace::eClockwise,
-			false,
+			VK_FALSE,
 			0.0f,
 			0.0f,
 			0.0f,
@@ -123,14 +123,14 @@ namespace Injector
 		auto pipelineMultisampleStateCreateInfo = vk::PipelineMultisampleStateCreateInfo(
 			vk::PipelineMultisampleStateCreateFlags(),
 			vk::SampleCountFlagBits::e1,
-			false,
+			VK_FALSE,
 			0.0f,
 			nullptr,
-			false,
-			false);
+			VK_FALSE,
+			VK_FALSE);
 
 		auto pipelineColorBlendAttachmentStateCreateInfo = vk::PipelineColorBlendAttachmentState(
-			false,
+			VK_FALSE,
 			vk::BlendFactor(),
 			vk::BlendFactor(),
 			vk::BlendOp(),
@@ -144,7 +144,7 @@ namespace Injector
 
 		auto pipelineColorBlendStateCreateInfo = vk::PipelineColorBlendStateCreateInfo(
 			vk::PipelineColorBlendStateCreateFlags(),
-			false,
+			VK_FALSE,
 			vk::LogicOp(),
 			1,
 			&pipelineColorBlendAttachmentStateCreateInfo);

@@ -19,7 +19,8 @@ namespace Injector
 			Vector4 objectColor;
 			Vector4 ambientColor;
 			Vector4 lightColor;
-			alignas(16) Vector3 lightDirection;
+			Vector3 lightDirection;
+			float alignment;
 
 			explicit UniformBufferObject(
 				const Vector4& _objectColor,
@@ -29,7 +30,8 @@ namespace Injector
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
-				lightDirection(_lightDirection)
+				lightDirection(_lightDirection),
+				alignment()
 			{
 			}
 		};

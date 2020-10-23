@@ -8,7 +8,7 @@ layout(binding = 0) uniform FragmentBufferObject
 	vec4 objectColor;
 	vec4 ambientColor;
 	vec4 lightColor;
-	vec3 lightDirection;
+	vec4 lightDirection;
 } fbo;
 
 float getDiffuse(vec3 normal, vec3 direction)
@@ -19,7 +19,7 @@ float getDiffuse(vec3 normal, vec3 direction)
 void main()
 {
     vec4 ambientColor = fbo.objectColor * fbo.ambientColor;
-    vec4 diffuseColor =  fbo.lightColor * getDiffuse(f_Normal, fbo.lightDirection);
+    vec4 diffuseColor =  fbo.lightColor * getDiffuse(f_Normal, fbo.lightDirection.xyz);
 
     o_Color = (ambientColor + diffuseColor) * fbo.objectColor;
 }

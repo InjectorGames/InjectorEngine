@@ -20,7 +20,8 @@ namespace Injector
 			Vector4 objectColor;
 			Vector4 ambientColor;
 			Vector4 lightColor;
-			alignas(16) Vector3 lightDirection;
+			Vector3 lightDirection;
+			float alignment;
 			Vector2 imageScale;
 			Vector2 imageOffset;
 
@@ -35,6 +36,7 @@ namespace Injector
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
 				lightDirection(_lightDirection),
+				alignment(),
 				imageScale(_imageScale),
 				imageOffset(_imageOffset)
 			{

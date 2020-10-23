@@ -28,6 +28,7 @@ namespace Injector
 	 protected:
 		GLFWwindow* window;
 		GLFWcursor* cursor;
+		bool useDepthBuffer;
 		Vector2 deltaScroll;
 		bool isResized;
 

@@ -52,10 +52,10 @@ namespace Injector
 		RGBA64F,
 		RGBA64U,
 		RGBA64I,
-		Depth16,
-		Depth24,
-		Depth32,
-		Depth24Stencil8,
-		Depth32Stencil8,
+		D16,
+		D32,
+		D16S8,
+		D24S8,
+		D32S8,
 	};
 }

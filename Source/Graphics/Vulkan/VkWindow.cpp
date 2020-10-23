@@ -628,6 +628,7 @@ namespace Injector
 			}
 
 			swapchain = VkGpuSwapchain(
+				memoryAllocator,
 				device,
 				physicalDevice,
 				surface,
@@ -932,20 +933,26 @@ namespace Injector
 				"Failed to begin command buffer");
 		}
 
-		auto clearValues = vk::ClearValue(vk::ClearColorValue(
-			std::array<float, 4>{
+		vk::ClearValue clearValues[2] =
+		{
+			vk::ClearValue(vk::ClearColorValue(std::array<float, 4>{
 				0.0f,
 				0.0f,
 				0.0f,
-				0.0f }));
+				1.0f, })),
+			vk::ClearValue(vk::ClearDepthStencilValue(
+				1.0f,
+				0.0f)),
+		};
+
 		auto renderPassBeginInfo = vk::RenderPassBeginInfo(
 			swapchain.getRenderPass(),
 			swapchainData->framebuffer,
 			vk::Rect2D(
 				{ 0, 0 },
 				swapchain.getExtent()),
-			1,
-			&clearValues);
+			2,
+			clearValues);
 		graphicsCommandBuffer.beginRenderPass(
 			&renderPassBeginInfo,
 			vk::SubpassContents::eInline);
@@ -1339,6 +1346,10 @@ namespace Injector
 				transferCommandPool,
 				1,
 				&commandBuffer);
+		}
+		else
+		{
+			// TODO: only transfer layout to draw
 		}
 
 		return image;

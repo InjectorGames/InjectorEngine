@@ -17,5 +17,5 @@ void main()
 {
     gl_Position = vpc.mvp * vec4(v_Position, 1.0);
     f_Normal = normalize(vpc.normal * v_Normal);
-    f_TexCoord = v_TexCoord;
+    f_TexCoord = vec2(v_TexCoord.x, -v_TexCoord.y);
 }

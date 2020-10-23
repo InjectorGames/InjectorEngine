@@ -107,6 +107,16 @@ namespace Injector
 			return vk::Format::eR64G64B64A64Uint;
 		case GpuImageFormat::RGBA64I:
 			return vk::Format::eR64G64B64A64Sint;
+		case GpuImageFormat::D16:
+			return vk::Format::eD16Unorm;
+		case GpuImageFormat::D32:
+			return vk::Format::eD32Sfloat;
+		case GpuImageFormat::D16S8:
+			return vk::Format::eD16UnormS8Uint;
+		case GpuImageFormat::D24S8:
+			return vk::Format::eD24UnormS8Uint;
+		case GpuImageFormat::D32S8:
+			return vk::Format::eD32SfloatS8Uint;
 		default:
 			throw Exception(
 				"",

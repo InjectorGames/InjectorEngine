@@ -87,7 +87,7 @@ namespace Injector
 				dataFormat = GL_RGBA;
 				dataType = GL_UNSIGNED_BYTE;
 				break;
-			case GpuImageFormat::Depth24Stencil8:
+			case GpuImageFormat::D24S8:
 				dataFormat = GL_DEPTH_STENCIL;
 				dataType = GL_UNSIGNED_INT_24_8;
 				break;

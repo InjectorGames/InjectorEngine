@@ -1,5 +1,6 @@
 #include "Injector/Graphics/Vulkan/VkGpuSwapchain.hpp"
 #include "Injector/Exception/NullException.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuImageFormat.hpp"
 
 namespace Injector
 {
@@ -175,24 +176,41 @@ namespace Injector
 	}
 	vk::RenderPass VkGpuSwapchain::createRenderPass(
 		vk::Device device,
-		vk::Format format)
+		vk::Format colorFormat,
+		vk::Format depthFormat)
 	{
 		vk::RenderPass renderPass;
 
-		auto colorAttachmentDescription = vk::AttachmentDescription(
-			vk::AttachmentDescriptionFlags(),
-			format,
-			vk::SampleCountFlagBits::e1,
-			vk::AttachmentLoadOp::eClear,
-			vk::AttachmentStoreOp::eStore,
-			vk::AttachmentLoadOp::eDontCare,
-			vk::AttachmentStoreOp::eDontCare,
-			vk::ImageLayout::eUndefined,
-			vk::ImageLayout::ePresentSrcKHR);
+		vk::AttachmentDescription attachmentDescriptions[2] =
+		{
+			vk::AttachmentDescription(
+				vk::AttachmentDescriptionFlags(),
+				colorFormat,
+				vk::SampleCountFlagBits::e1,
+				vk::AttachmentLoadOp::eClear,
+				vk::AttachmentStoreOp::eStore,
+				vk::AttachmentLoadOp::eDontCare,
+				vk::AttachmentStoreOp::eDontCare,
+				vk::ImageLayout::eUndefined,
+				vk::ImageLayout::ePresentSrcKHR),
+			vk::AttachmentDescription(
+				vk::AttachmentDescriptionFlags(),
+				depthFormat,
+				vk::SampleCountFlagBits::e1,
+				vk::AttachmentLoadOp::eClear,
+				vk::AttachmentStoreOp::eDontCare,
+				vk::AttachmentLoadOp::eDontCare,
+				vk::AttachmentStoreOp::eDontCare,
+				vk::ImageLayout::eUndefined,
+				vk::ImageLayout::eDepthStencilAttachmentOptimal),
+		};
 
 		auto colorAttachmentReference = vk::AttachmentReference(
 			0,
 			vk::ImageLayout::eColorAttachmentOptimal);
+		auto depthAttachmentReference = vk::AttachmentReference(
+			1,
+			vk::ImageLayout::eDepthStencilAttachmentOptimal);
 
 		auto subpassDescription = vk::SubpassDescription(
 			vk::SubpassDescriptionFlags(),
@@ -200,7 +218,11 @@ namespace Injector
 			0,
 			nullptr,
 			1,
-			&colorAttachmentReference);
+			&colorAttachmentReference,
+			nullptr,
+			&depthAttachmentReference,
+			0,
+			nullptr);
 
 		auto subpassDependency = vk::SubpassDependency(
 			VK_SUBPASS_EXTERNAL,
@@ -213,8 +235,8 @@ namespace Injector
 
 		auto renderPassCreateInfo = vk::RenderPassCreateInfo(
 			vk::RenderPassCreateFlags(),
-			1,
-			&colorAttachmentDescription,
+			2,
+			attachmentDescriptions,
 			1,
 			&subpassDescription,
 			1,
@@ -235,6 +257,76 @@ namespace Injector
 
 		return renderPass;
 	}
+	GpuImageFormat VkGpuSwapchain::getBestDepthFormat(
+		vk::PhysicalDevice physicalDevice)
+	{
+		auto properties = physicalDevice.getFormatProperties(
+			vk::Format::eD32SfloatS8Uint);
+
+		if((properties.optimalTilingFeatures & vk::FormatFeatureFlagBits::eDepthStencilAttachment) ==
+			vk::FormatFeatureFlagBits::eDepthStencilAttachment)
+		{
+			return GpuImageFormat::D32S8;
+		}
+
+		properties = physicalDevice.getFormatProperties(
+			vk::Format::eD24UnormS8Uint);
+
+		if((properties.optimalTilingFeatures & vk::FormatFeatureFlagBits::eDepthStencilAttachment) ==
+		   vk::FormatFeatureFlagBits::eDepthStencilAttachment)
+		{
+			return GpuImageFormat::D24S8;
+		}
+
+		properties = physicalDevice.getFormatProperties(
+			vk::Format::eD16UnormS8Uint);
+
+		if((properties.optimalTilingFeatures & vk::FormatFeatureFlagBits::eDepthStencilAttachment) ==
+		   vk::FormatFeatureFlagBits::eDepthStencilAttachment)
+		{
+			return GpuImageFormat::D16S8;
+		}
+
+		throw Exception(
+			"VkGpuSwapchain",
+			"getBestDepthFormat",
+			"No supported depth format");
+	}
+	vk::ImageView VkGpuSwapchain::createDepthImageView(
+		vk::Device device,
+		vk::Image image,
+		vk::Format format)
+	{
+		vk::ImageView imageView;
+
+		auto imageViewCreateInfo = vk::ImageViewCreateInfo(
+			vk::ImageViewCreateFlags(),
+			image,
+			vk::ImageViewType::e2D,
+			format,
+			vk::ComponentMapping(),
+			vk::ImageSubresourceRange(
+				vk::ImageAspectFlagBits::eDepth,
+				0,
+				1,
+				0,
+				1));
+
+		auto result = device.createImageView(
+			&imageViewCreateInfo,
+			nullptr,
+			&imageView);
+
+		if(result != vk::Result::eSuccess)
+		{
+			throw Exception(
+				"VkGpuSwapchain",
+				"createDepthImageView",
+				"Failed to create image view");
+		}
+
+		return imageView;
+	}
 	std::vector<std::shared_ptr<VkSwapchainData>> VkGpuSwapchain::createDatas(
 		vk::Device device,
 		vk::SwapchainKHR swapchain,
@@ -242,6 +334,7 @@ namespace Injector
 		vk::CommandPool graphicsCommandPool,
 		vk::CommandPool presentCommandPool,
 		vk::Format format,
+		vk::ImageView depthImageView,
 		const vk::Extent2D& extent)
 	{
 		auto images = device.getSwapchainImagesKHR(swapchain);
@@ -256,6 +349,7 @@ namespace Injector
 				graphicsCommandPool,
 				presentCommandPool,
 				format,
+				depthImageView,
 				extent);
 		}
 
@@ -263,24 +357,36 @@ namespace Injector
 	}
 
 	VkGpuSwapchain::VkGpuSwapchain() noexcept :
+		allocator(),
 		device(),
 		physicalDevice(),
 		extent(),
 		swapchain(),
 		renderPass(),
+		depthImage(),
+		depthImageView(),
 		datas()
 	{
 	}
 	VkGpuSwapchain::VkGpuSwapchain(
+		VmaAllocator _allocator,
 		vk::Device _device,
 		vk::PhysicalDevice _physicalDevice,
 		vk::SurfaceKHR surface,
 		vk::CommandPool graphicsCommandPool,
 		vk::CommandPool presentCommandPool,
 		const IntVector2& size) :
+		allocator(_allocator),
 		device(_device),
 		physicalDevice(_physicalDevice)
 	{
+		if(!_allocator)
+		{
+			throw NullException(
+				"VkGpuSwapchain",
+				"VkGpuSwapchain",
+				"allocator");
+		}
 		if(!_device)
 		{
 			throw NullException(
@@ -345,9 +451,24 @@ namespace Injector
 			compositeAlpha,
 			presentMode);
 
+		auto depthFormat = getBestDepthFormat(_physicalDevice);
+		auto vkDepthFormat = toVkGpuImageFormat(depthFormat);
+
+		depthImage = std::make_shared<VkGpuImage>(
+			_allocator,
+			vk::ImageUsageFlagBits::eDepthStencilAttachment,
+			GpuImageType::Image2D,
+			depthFormat,
+			IntVector3(extent.width, extent.height, 1));
+		depthImageView = createDepthImageView(
+			_device,
+			depthImage->getImage(),
+			vkDepthFormat);
+
 		renderPass = createRenderPass(
 			_device,
-			surfaceFormat.format);
+			surfaceFormat.format,
+			vkDepthFormat);
 
 		datas = createDatas(
 			_device,
@@ -356,16 +477,20 @@ namespace Injector
 			graphicsCommandPool,
 			presentCommandPool,
 			surfaceFormat.format,
+			depthImageView,
 			extent);
 	}
 	VkGpuSwapchain::VkGpuSwapchain(
 		VkGpuSwapchain&& _swapchain) noexcept
 	{
+		allocator = _swapchain.allocator;
 		device = _swapchain.device;
 		physicalDevice = _swapchain.physicalDevice;
 		extent = _swapchain.extent;
 		swapchain = _swapchain.swapchain;
 		renderPass = _swapchain.renderPass;
+		depthImage = std::move(_swapchain.depthImage);
+		depthImageView = _swapchain.depthImageView;
 		datas = std::move(_swapchain.datas);
 		_swapchain.device = nullptr;
 	}
@@ -376,6 +501,7 @@ namespace Injector
 		if(device)
 		{
 			device.destroyRenderPass(renderPass);
+			device.destroyImageView(depthImageView);
 			device.destroySwapchainKHR(swapchain);
 		}
 	}
@@ -423,6 +549,7 @@ namespace Injector
 		datas.clear();
 
 		device.destroyRenderPass(renderPass);
+		device.destroyImageView(depthImageView);
 
 		auto surfaceFormat = getBestSurfaceFormat(
 			physicalDevice,
@@ -456,9 +583,24 @@ namespace Injector
 		device.destroySwapchainKHR(swapchain);
 		swapchain = newSwapchain;
 
+		auto depthFormat = getBestDepthFormat(physicalDevice);
+		auto vkDepthFormat = toVkGpuImageFormat(depthFormat);
+
+		depthImage = std::make_shared<VkGpuImage>(
+			allocator,
+			vk::ImageUsageFlagBits::eDepthStencilAttachment,
+			GpuImageType::Image2D,
+			depthFormat,
+			IntVector3(size.x, size.y, 1));
+		depthImageView = createDepthImageView(
+			device,
+			depthImage->getImage(),
+			vkDepthFormat);
+
 		renderPass = createRenderPass(
 			device,
-			surfaceFormat.format);
+			surfaceFormat.format,
+			vkDepthFormat);
 
 		datas = createDatas(
 			device,
@@ -467,6 +609,7 @@ namespace Injector
 			graphicsCommandPool,
 			presentCommandPool,
 			surfaceFormat.format,
+			depthImageView,
 			extent);
 	}
 
@@ -475,11 +618,14 @@ namespace Injector
 	{
 		if(this != &_swapchain)
 		{
+			allocator = _swapchain.allocator;
 			device = _swapchain.device;
 			physicalDevice = _swapchain.physicalDevice;
 			extent = _swapchain.extent;
 			swapchain = _swapchain.swapchain;
 			renderPass = _swapchain.renderPass;
+			depthImage = std::move(_swapchain.depthImage);
+			depthImageView = _swapchain.depthImageView;
 			datas = std::move(_swapchain.datas);
 			_swapchain.device = nullptr;
 		}
