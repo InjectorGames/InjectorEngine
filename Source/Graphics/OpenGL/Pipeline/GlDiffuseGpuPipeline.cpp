@@ -160,12 +160,14 @@ namespace Injector
 		const Matrix4& viewProj,
 		const Matrix4& mvp)
 	{
+		auto normal = model.getInverted().
+			getMatrix3().getTransposed();
+
 		setUniform(
 			mvpLocation,
 			mvp);
 		setUniform(
 			normalLocation,
-			model.getInverted().getMatrix3(),
-			GL_TRUE);
+			normal);
 	}
 }
