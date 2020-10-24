@@ -25,7 +25,8 @@ namespace Injector
 		{
 			throw Exception(
 				"",
-				"toVkGpuImageType",
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported image type");
 		}
 	}

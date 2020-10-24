@@ -37,8 +37,9 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				"TcpServerSystem",
-				"TcpServerSystem",
+				std::string(typeid(TcpServerEcsSystem).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unspecified socket family");
 		}
 

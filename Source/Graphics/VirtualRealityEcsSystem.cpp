@@ -1,9 +1,9 @@
-#include "Injector/Graphics/VrSystem.hpp"
+#include "Injector/Graphics/VirtualRealityEcsSystem.hpp"
 #include "Injector/Engine.hpp"
 
 namespace Injector
 {
-	void VrSystem::update()
+	void VirtualRealityEcsSystem::update()
 	{
 		CameraEcsComponent* cameraComponent;
 

@@ -7,7 +7,7 @@
 
 namespace Injector
 {
-	class VrSystem : public EcsSystem
+	class VirtualRealityEcsSystem : public EcsSystem
 	{
 	public:
 		std::shared_ptr<EcsEntity> hmd;

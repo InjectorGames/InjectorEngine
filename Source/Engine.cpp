@@ -113,8 +113,9 @@ namespace Injector
 		if (engineInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"initializeEngine",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Already initialized");
 		}
 
@@ -135,15 +136,17 @@ namespace Injector
 		if (!engineInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"terminateEngine",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Already terminated");
 		}
 		if(updateRunning)
 		{
 			throw Exception(
-				"Engine",
-				"terminateEngine",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Update is still running");
 		}
 
@@ -170,15 +173,17 @@ namespace Injector
 		if (engineInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"initializeNetwork",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Engine is already initialized");
 		}
 		if (networkInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"initializeNetwork",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Network is already initialized");
 		}
 
@@ -208,15 +213,17 @@ namespace Injector
 		if (!engineInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"terminateNetwork",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Engine is already terminated");
 		}
 		if (!networkInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"terminateNetwork",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Network is already terminated");
 		}
 
@@ -239,8 +246,9 @@ namespace Injector
 		const char* description)
 	{
 		throw Exception(
-			"Engine",
-			"glfwErrorCallback",
+			typeid(Engine).name(),
+			std::string(__func__),
+			std::to_string(__LINE__),
 			std::string(description));
 	}
 	void Engine::initializeGraphics(
@@ -249,15 +257,17 @@ namespace Injector
 		if (engineInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"initializeGraphics",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Engine is already initialized");
 		}
 		if (graphicsInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"initializeGraphics",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Graphics is already initialized");
 		}
 
@@ -266,8 +276,9 @@ namespace Injector
 		if (!glfwInit())
 		{
 			throw Exception(
-				"Engine",
-				"initializeGraphics",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to initialize GLFW");
 		}
 
@@ -275,8 +286,9 @@ namespace Injector
 			glfwVulkanSupported() == GLFW_FALSE)
 		{
 			throw Exception(
-				"Engine",
-				"initializeGraphics",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Vulkan is not supported");
 		}
 
@@ -290,15 +302,17 @@ namespace Injector
 		if (!engineInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"terminateGraphics",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Engine is already terminated");
 		}
 		if (!graphicsInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"terminateGraphics",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Graphics is already terminated");
 		}
 
@@ -319,16 +333,18 @@ namespace Injector
 		if (engineInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"initializeVirtualReality",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Engine is already initialized");
 
 		}
 		if (virtualRealityInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"initializeVirtualReality",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Virtual Reality is already initialized");
 		}
 
@@ -350,8 +366,9 @@ namespace Injector
 		std::cout << "Engine: Initialized Virtual Reality\n";
 #else
 		throw Exception(
-			"Engine",
-			"initializeVirtualReality",
+			typeid(Engine).name(),
+			std::string(__func__),
+			std::to_string(__LINE__),
 			"Virtual Reality is not supported");
 #endif
 	}
@@ -360,15 +377,17 @@ namespace Injector
 		if (!engineInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"terminateVirtualReality",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Engine is already terminated");
 		}
 		if (!virtualRealityInitialized)
 		{
 			throw Exception(
-				"Engine",
-				"terminateVirtualReality",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Virtual Reality is already terminated");
 		}
 
@@ -379,8 +398,9 @@ namespace Injector
 		std::cout << "Engine: Terminated Virtual Reality\n";
 #else
 		throw Exception(
-			"Engine",
-			"initializeVirtualReality",
+			typeid(Engine).name(),
+			std::string(__func__),
+			std::to_string(__LINE__),
 			"Virtual Reality is not supported");
 #endif
 	}
@@ -394,8 +414,9 @@ namespace Injector
 		if (updateRunning)
 		{
 			throw Exception(
-				"Engine",
-				"startUpdateLoop",
+				typeid(Engine).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Already started");
 		}
 

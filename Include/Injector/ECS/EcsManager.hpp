@@ -8,26 +8,26 @@
 
 namespace Injector
 {
-	// Entity Component System manager
+	// Entity Component System manager class
 	class EcsManager
 	{
 	 protected:
 		// Is manager still active
 		bool active;
 
-		// Manager entity container
+		// Entity set
 		std::set<std::shared_ptr<EcsEntity>> entities;
-		// Manager system container
+		// System vector
 		std::vector<std::shared_ptr<EcsSystem>> systems;
 	 public:
-		// Creates a new manager
+		// Creates a new ECS manager
 		explicit EcsManager(
 			bool active = true) noexcept;
-		// Deleted manager copy constructor
+		// Deleted ECS manager copy constructor
 		EcsManager(const EcsManager& manager) = delete;
-		// Deleted manager move constructor
+		// Deleted ECS manager move constructor
 		EcsManager(EcsManager&& manager) = delete;
-		// Destroys all entities, systems and manager
+		// Destroys ECS manager and all entities, systems and manager
 		virtual ~EcsManager() = default;
 
 		// Executes on each update cycle

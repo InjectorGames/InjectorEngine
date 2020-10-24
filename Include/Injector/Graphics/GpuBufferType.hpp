@@ -2,6 +2,7 @@
 
 namespace Injector
 {
+	// Graphics Processing Unit buffer type
 	enum class GpuBufferType
 	{
 		TransferSource,

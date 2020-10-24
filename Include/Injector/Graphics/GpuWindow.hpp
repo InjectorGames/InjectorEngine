@@ -28,14 +28,17 @@ namespace Injector
 	 protected:
 		GLFWwindow* window;
 		GLFWcursor* cursor;
-		bool useDepthBuffer;
 		Vector2 deltaScroll;
 		bool isResized;
 
 		static void scrollCallback(
-			GLFWwindow* window, double x, double y);
+			GLFWwindow* window,
+			double x,
+			double y);
 		static void framebufferSizeCallback(
-			GLFWwindow* window, int width, int height);
+			GLFWwindow* window,
+			int width,
+			int height);
 	 public:
 		static const std::string defaultTitle;
 		static const IntVector2 defaultSize;

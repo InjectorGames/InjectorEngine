@@ -4,9 +4,11 @@
 
 namespace Injector
 {
+	// OpenGL camera ECS system class
 	class GlCameraEcsSystem : public CameraEcsSystem
 	{
 	 public:
+		// Updates OpenGL camera view and projection matrices
 		void update() override;
 	};
 }

@@ -13,7 +13,9 @@ namespace Injector
 		IntVector2(800, 600);
 
 	void GpuWindow::scrollCallback(
-		GLFWwindow* window, double x, double y)
+		GLFWwindow* window,
+		double x,
+		double y)
 	{
 		auto instance = static_cast<GpuWindow*>(
 			glfwGetWindowUserPointer(window));
@@ -21,7 +23,9 @@ namespace Injector
 			Vector2(static_cast<float>(x), static_cast<float>(y));
 	}
 	void GpuWindow::framebufferSizeCallback(
-		GLFWwindow* window, int width, int height)
+		GLFWwindow* window,
+		int width,
+		int height)
 	{
 		auto instance = static_cast<GpuWindow*>(
 			glfwGetWindowUserPointer(window));
@@ -37,8 +41,9 @@ namespace Injector
 		if (!window)
 		{
 			throw NullException(
-				"Window",
-				"Window",
+				std::string(typeid(GpuWindow).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"window");
 		}
 
@@ -146,8 +151,9 @@ namespace Injector
 		if (min.x < 1 || min.y < 1 || max.x < 1 || max.y < 1)
 		{
 			throw Exception(
-				"Window",
-				"setSizeLimits",
+				std::string(typeid(GpuWindow).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Size can not be less than one");
 		}
 
@@ -407,8 +413,9 @@ namespace Injector
 		if(!Engine::isGraphicsInitialized())
 		{
 			throw Exception(
-				"Window",
-				"create",
+				typeid(GpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Video is not initialized");
 		}
 
@@ -437,8 +444,9 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				"Window",
-				"create",
+				typeid(GpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unknown graphics API");
 		}
 	}

@@ -14,16 +14,18 @@ namespace Injector
 		if(_vertexBuffer && _vertexBuffer->getType() != GpuBufferType::Vertex)
 		{
 			throw Exception(
-				"GlGpuMesh",
-				"GlGpuMesh",
-				"Buffer is not vertex type");
+				std::string(typeid(GlGpuMesh).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer type is not vertex");
 		}
 		if(_indexBuffer && _indexBuffer->getType() != GpuBufferType::Index)
 		{
 			throw Exception(
-				"GlGpuMesh",
-				"GlGpuMesh",
-				"Buffer is not index type");
+				std::string(typeid(GlGpuMesh).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer type is not index");
 		}
 
 		glGenVertexArrays(GL_ONE, &vertexArray);
@@ -42,9 +44,10 @@ namespace Injector
 		if(buffer && buffer->getType() != GpuBufferType::Vertex)
 		{
 			throw Exception(
-				"GlGpuMesh",
-				"setVertexBuffer",
-				"Buffer has not vertex type");
+				std::string(typeid(GlGpuMesh).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer type is not vertex");
 		}
 
 		vertexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(buffer);
@@ -59,9 +62,10 @@ namespace Injector
 		if(buffer && buffer->getType() != GpuBufferType::Index)
 		{
 			throw Exception(
-				"GlGpuMesh",
-				"setIndexBuffer",
-				"Buffer has not index type");
+				std::string(typeid(GlGpuMesh).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer type is not index");
 		}
 
 		indexBuffer = std::dynamic_pointer_cast<GlGpuBuffer>(buffer);
@@ -77,8 +81,9 @@ namespace Injector
 		if(!pipeline)
 		{
 			throw NullException(
-				"GlGpuMesh",
-				"draw",
+				std::string(typeid(GlGpuMesh).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"pipeline");
 		}
 

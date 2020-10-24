@@ -19,8 +19,9 @@ namespace Injector
 		if (!_window)
 		{
 			throw NullException(
-				"FreeCameraSystem",
-				"FreeCameraSystem",
+				std::string(typeid(FreeCameraEcsSystem).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"window");
 		}
 	}

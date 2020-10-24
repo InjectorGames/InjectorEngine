@@ -14,15 +14,17 @@ namespace Injector
 		if (!vertexShader)
 		{
 			throw NullException(
-				"GlDiffuseGpuPipeline",
-				"GlDiffuseGpuPipeline",
+				std::string(typeid(GlDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"vertexShader");
 		}
 		if (!fragmentShader)
 		{
 			throw NullException(
-				"GlDiffuseGpuPipeline",
-				"GlDiffuseGpuPipeline",
+				std::string(typeid(GlDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"fragmentShader");
 		}
 
@@ -48,8 +50,9 @@ namespace Injector
 			glDeleteProgram(program);
 
 			throw Exception(
-				"GlDiffuseGpuPipeline",
-				"GlDiffuseGpuPipeline",
+				std::string(typeid(GlDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to link program, " + log);
 		}
 

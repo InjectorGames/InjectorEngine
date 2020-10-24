@@ -2,6 +2,7 @@
 
 namespace Injector
 {
+	// Graphical User Interface anchor type
 	enum class GuiAnchorType
 	{
 		Center,

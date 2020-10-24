@@ -10,18 +10,29 @@
 
 namespace Injector
 {
+	// Camera ECS component structure
 	struct CameraEcsComponent final : public EcsComponent
 	{
-		int queue;
+		// Camera component render queue value
+		int renderQueue;
+		// Camera component type value
 		CameraType type;
+		// Camera component field of view value
 		float fieldOfView;
+		// Camera component frustum value
 		Vector4 frustum;
+		// Camera component clip plane value
 		Vector2 clipPlane;
+		// Camera component aspect ratio value
 		float aspectRatio;
+		// Camera component projection matrix value
 		Matrix4 matrix;
+		// Is camera component should be rendered
 		bool render;
+		// Camera component render container
 		std::set<std::shared_ptr<EcsEntity>> renders;
 
+		// Creates a new camera ECS component
 		explicit CameraEcsComponent(
 			int queue = 0,
 			CameraType type = CameraType::Perspective,

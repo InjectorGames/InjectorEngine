@@ -4,7 +4,7 @@
 #include "Injector/Exception/Exception.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuMesh.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuImage.hpp"
-#include "Injector/Graphics/Vulkan/VkCameraSystem.hpp"
+#include "Injector/Graphics/Vulkan/VkCameraEcsSystem.hpp"
 #include "Injector/Graphics/Vulkan/VkRenderEcsSystem.hpp"
 #include "Injector/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.hpp"
 #include "Injector/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.hpp"
@@ -67,8 +67,9 @@ namespace Injector
 		if (instanceLayerProperties.size() == 0)
 		{
 			throw Exception(
-				"VkWindow",
-				"createInstance",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get instance layer properties");
 		}
 
@@ -88,8 +89,9 @@ namespace Injector
 			if (!found)
 			{
 				throw Exception(
-					"VkWindow",
-					"createInstance",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to get instance layer \"" +
 					std::string(layer) + "\"");
 			}
@@ -104,8 +106,9 @@ namespace Injector
 		if (extensionCount == 0)
 		{
 			throw Exception(
-				"VkWindow",
-				"createInstance",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get instance extensions");
 		}
 
@@ -139,10 +142,11 @@ namespace Injector
 			if (!found)
 			{
 				throw Exception(
-					"VkWindow",
-					"createInstance",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to get instance extension \"" +
-					std::string(extension) + "\"");
+						std::string(extension) + "\"");
 			}
 		}
 
@@ -182,8 +186,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkWindow",
-				"createInstance",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create instance");
 		}
 
@@ -213,8 +218,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkWindow",
-				"createDebugMessenger",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create debug messenger");
 		}
 
@@ -250,8 +256,9 @@ namespace Injector
 		if (targetPhysicalDevices.empty())
 		{
 			throw Exception(
-				"VkWindow",
-				"getBestPhysicalDevice",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to find best physical devices");
 		}
 
@@ -272,8 +279,9 @@ namespace Injector
 		if (result != VK_SUCCESS)
 		{
 			throw Exception(
-				"VkWindow",
-				"createSurface",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create surface");
 		}
 
@@ -315,15 +323,17 @@ namespace Injector
 		if (graphicsQueueFamilyIndex == UINT32_MAX)
 		{
 			throw Exception(
-				"VkWindow",
-				"getQueueFamilyIndices",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to find graphics queue family");
 		}
 		if (presentQueueFamilyIndex == UINT32_MAX)
 		{
 			throw Exception(
-				"VkWindow",
-				"getQueueFamilyIndices",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to find present queue family");
 		}
 	}
@@ -358,8 +368,9 @@ namespace Injector
 			if (!found)
 			{
 				throw Exception(
-					"VkWindow",
-					"createDevice",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to find device extension \"" +
 					std::string(extension) + "\"");
 			}
@@ -401,8 +412,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkWindow",
-				"createDevice",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create device");
 		}
 
@@ -425,8 +437,9 @@ namespace Injector
 		if (result != VK_SUCCESS)
 		{
 			throw Exception(
-				"VkWindow",
-				"createMemoryAllocator",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create memory allocator");
 		}
 
@@ -444,8 +457,9 @@ namespace Injector
 		if (!queue)
 		{
 			throw Exception(
-				"VkWindow",
-				"getQueue",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get queue");
 		}
 
@@ -469,8 +483,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkWindow",
-				"createCommandPool",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create command pool");
 		}
 
@@ -492,8 +507,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkWindow",
-				"createFence",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create fence");
 		}
 
@@ -515,8 +531,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkWindow",
-				"createSemaphore",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create semaphore");
 		}
 
@@ -533,8 +550,9 @@ namespace Injector
 		if(size.x < 1 || size.y < 1)
 		{
 			throw Exception(
-				"VkWindow",
-				"VkWindow",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Incorrect size");
 		}
 
@@ -770,8 +788,9 @@ namespace Injector
 			result != vk::Result::eTimeout)
 		{
 			throw Exception(
-				"VkWindow",
-				"beginImage",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to wait for fence");
 		}
 
@@ -812,8 +831,9 @@ namespace Injector
 				result != vk::Result::eSuboptimalKHR)
 			{
 				throw Exception(
-					"VkWindow",
-					"beginImage",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to acquire next image");
 			}
 		} while (result != vk::Result::eSuccess);
@@ -849,8 +869,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkWindow",
-				"endImage",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to submit graphics queue");
 		}
 
@@ -880,8 +901,9 @@ namespace Injector
 			if (result != vk::Result::eSuccess)
 			{
 				throw Exception(
-					"VkWindow",
-					"endImage",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to submit present queue");
 			}
 
@@ -911,8 +933,9 @@ namespace Injector
 			result != vk::Result::eSuboptimalKHR)
 		{
 			throw Exception(
-				"VkWindow",
-				"endImage",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to present next image");
 		}
 	}
@@ -933,8 +956,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkWindow",
-				"beginRecord",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to begin command buffer");
 		}
 
@@ -1013,8 +1037,9 @@ namespace Injector
 			if (result != vk::Result::eSuccess)
 			{
 				throw Exception(
-					"VkWindow",
-					"endRecord",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to begin command buffer");
 			}
 
@@ -1049,7 +1074,7 @@ namespace Injector
 
 	std::shared_ptr<CameraEcsSystem> VkGpuWindow::createCameraSystem()
 	{
-		auto system = std::make_shared<VkCameraSystem>();
+		auto system = std::make_shared<VkCameraEcsSystem>();
 		systems.push_back(system);
 		return system;
 	}
@@ -1114,8 +1139,9 @@ namespace Injector
 			if (result != vk::Result::eSuccess)
 			{
 				throw Exception(
-					"VkWindow",
-					"createBuffer",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to allocate command buffer");
 			}
 
@@ -1149,8 +1175,9 @@ namespace Injector
 			if(result != vk::Result::eSuccess)
 			{
 				throw Exception(
-					"VkWindow",
-					"createBuffer",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to submit graphics queue");
 			}
 
@@ -1187,8 +1214,9 @@ namespace Injector
 		if (!fileStream.is_open())
 		{
 			throw Exception(
-				"VkWindow",
-				"readShaderData",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to open shader file '" +
 					std::string(filePath) + "'");
 		}
@@ -1250,8 +1278,9 @@ namespace Injector
 			if (result != vk::Result::eSuccess)
 			{
 				throw Exception(
-					"VkWindow",
-					"createImage",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to allocate command buffer");
 			}
 
@@ -1349,8 +1378,9 @@ namespace Injector
 			if(result != vk::Result::eSuccess)
 			{
 				throw Exception(
-					"VkWindow",
-					"createImage",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to submit graphics queue");
 			}
 
@@ -1376,8 +1406,9 @@ namespace Injector
 			if (result != vk::Result::eSuccess)
 			{
 				throw Exception(
-					"VkWindow",
-					"createImage",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to allocate command buffer");
 			}
 
@@ -1426,8 +1457,9 @@ namespace Injector
 			if(result != vk::Result::eSuccess)
 			{
 				throw Exception(
-					"VkWindow",
-					"createImage",
+					typeid(VkGpuWindow).name(),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to submit graphics queue");
 			}
 
@@ -1471,8 +1503,9 @@ namespace Injector
 		if (!pipelines.emplace(pipeline).second)
 		{
 			throw Exception(
-				"VkWindow",
-				"createColorPipeline",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to emplace");
 		}
 
@@ -1517,8 +1550,9 @@ namespace Injector
 		if (!pipelines.emplace(pipeline).second)
 		{
 			throw Exception(
-				"VkWindow",
-				"createDiffusePipeline",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to emplace");
 		}
 
@@ -1573,8 +1607,9 @@ namespace Injector
 		if (!pipelines.emplace(pipeline).second)
 		{
 			throw Exception(
-				"VkWindow",
-				"createImageDiffusePipeline",
+				typeid(VkGpuWindow).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to emplace");
 		}
 

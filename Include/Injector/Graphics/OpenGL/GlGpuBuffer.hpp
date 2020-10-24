@@ -6,6 +6,7 @@
 
 namespace Injector
 {
+	//
 	class GlGpuBuffer : public GpuBuffer
 	{
 	 protected:

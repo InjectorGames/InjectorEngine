@@ -1,5 +1,5 @@
 #include "Injector/Engine.hpp"
-#include "Injector/Graphics/VrSystem.hpp"
+#include "Injector/Graphics/VirtualRealityEcsSystem.hpp"
 #include "Injector/Graphics/AspectRatioEcsSystem.hpp"
 #include "Injector/Graphics/GUI/GuiSystem.hpp"
 #include "Injector/Graphics/GUI/EditorGuiHandler.hpp"
@@ -72,7 +72,7 @@ int main()
 
 		return 0;
 	}
-	catch (const std::exception& exception)
+	catch (const Exception& exception)
 	{
 		std::cout << "Engine: " <<
 			typeid(exception).name() << ": " <<

@@ -12,7 +12,7 @@ namespace Injector
 		bool _render,
 		const Matrix4& _matrix,
 		const std::set<std::shared_ptr<EcsEntity>>& _renders) noexcept :
-		queue(_queue),
+		renderQueue(_queue),
 		type(_type),
 		fieldOfView(_fieldOfView),
 		frustum(_frustum),

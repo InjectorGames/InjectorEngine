@@ -120,8 +120,8 @@ if (INJECTOR_SUPPORT_VIRTUAL_REALITY)
 endif ()
 
 add_library(InjectorEngine STATIC
-        Source/ECS/EcsEntity.cpp
-        Source/ECS/EcsManager.cpp
+    Source/ECS/EcsEntity.cpp
+    Source/ECS/EcsManager.cpp
 
     Source/Exception/CastException.cpp
     Source/Exception/Exception.cpp
@@ -129,7 +129,7 @@ add_library(InjectorEngine STATIC
     Source/Exception/OutOfRangeException.cpp
 
     Source/Graphics/GUI/EditorGuiHandler.cpp
-        Source/Graphics/GUI/GuiEcsComponent.cpp
+    Source/Graphics/GUI/GuiEcsComponent.cpp
     Source/Graphics/GUI/GuiSystem.cpp
 
     Source/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.cpp
@@ -138,7 +138,7 @@ add_library(InjectorEngine STATIC
     Source/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.cpp
 
-        Source/Graphics/OpenGL/GlCameraEcsSystem.cpp
+    Source/Graphics/OpenGL/GlCameraEcsSystem.cpp
     Source/Graphics/OpenGL/GlGpuBuffer.cpp
     Source/Graphics/OpenGL/GlGpuFramebuffer.cpp
     Source/Graphics/OpenGL/GlGpuShader.cpp
@@ -146,42 +146,42 @@ add_library(InjectorEngine STATIC
     Source/Graphics/OpenGL/GlGpuMesh.cpp
     Source/Graphics/OpenGL/GlGpuPipeline.cpp
     Source/Graphics/OpenGL/GlGpuShader.cpp
-        Source/Graphics/OpenGL/GlRenderEcsSystem.cpp
-        Source/Graphics/OpenGL/GlGpuWindow.cpp
+    Source/Graphics/OpenGL/GlGpuWindow.cpp
+    Source/Graphics/OpenGL/GlRenderEcsSystem.cpp
 
     Source/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.cpp
     Source/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.cpp
     Source/Graphics/Vulkan/Pipeline/VkImageDiffuseGpuPipeline.cpp
 
-    Source/Graphics/Vulkan/VkCameraSystem.cpp
+    Source/Graphics/Vulkan/VkCameraEcsSystem.cpp
     Source/Graphics/Vulkan/VkGpuBuffer.cpp
     Source/Graphics/Vulkan/VkGpuImage.cpp
     Source/Graphics/Vulkan/VkGpuMesh.cpp
     Source/Graphics/Vulkan/VkGpuPipeline.cpp
     Source/Graphics/Vulkan/VkGpuShader.cpp
     Source/Graphics/Vulkan/VkGpuSwapchain.cpp
-        Source/Graphics/Vulkan/VkRenderEcsSystem.cpp
+    Source/Graphics/Vulkan/VkGpuWindow.cpp
+    Source/Graphics/Vulkan/VkRenderEcsSystem.cpp
     Source/Graphics/Vulkan/VkSwapchainData.cpp
-        Source/Graphics/Vulkan/VkGpuWindow.cpp
 
-        Source/Graphics/AspectRatioEcsSystem.cpp
-        Source/Graphics/CameraEcsComponent.cpp
-        Source/Graphics/CameraEcsSystem.cpp
-        Source/Graphics/FreeCameraEcsSystem.cpp
+    Source/Graphics/AspectRatioEcsSystem.cpp
+    Source/Graphics/CameraEcsComponent.cpp
+    Source/Graphics/CameraEcsSystem.cpp
+    Source/Graphics/FreeCameraEcsSystem.cpp
     Source/Graphics/GpuBuffer.cpp
     Source/Graphics/GpuFramebuffer.cpp
     Source/Graphics/GpuImage.cpp
     Source/Graphics/GpuMesh.cpp
     Source/Graphics/GpuPipeline.cpp
     Source/Graphics/GpuShader.cpp
+    Source/Graphics/GpuWindow.cpp
     Source/Graphics/ImageData.cpp
     Source/Graphics/ModelData.cpp
-        Source/Graphics/RenderEcsComponent.cpp
-        Source/Graphics/RenderEcsSystem.cpp
+    Source/Graphics/RenderEcsComponent.cpp
+    Source/Graphics/RenderEcsSystem.cpp
     Source/Graphics/ShaderData.cpp
-        Source/Graphics/SimSkyEcsSystem.cpp
-    Source/Graphics/VrSystem.cpp
-    Source/Graphics/Window.cpp
+    Source/Graphics/SimSkyEcsSystem.cpp
+    Source/Graphics/VirtualRealityEcsSystem.cpp
 
     Source/Mathematics/Vector/IntVector2.cpp
     Source/Mathematics/Vector/IntVector3.cpp
@@ -199,19 +199,19 @@ add_library(InjectorEngine STATIC
 
     Source/Mathematics/Converter.cpp
     Source/Mathematics/Quaternion.cpp
-        Source/Mathematics/RotateEcsComponent.cpp
-        Source/Mathematics/TransformEcsComponent.cpp
-        Source/Mathematics/TransformEcsSystem.cpp
-        Source/Mathematics/TranslateEcsComponent.cpp
+    Source/Mathematics/RotateEcsComponent.cpp
+    Source/Mathematics/TransformEcsComponent.cpp
+    Source/Mathematics/TransformEcsSystem.cpp
+    Source/Mathematics/TranslateEcsComponent.cpp
 
-        Source/Network/TCP/TcpClientEcsSystem.cpp
+    Source/Network/TCP/TcpClientEcsSystem.cpp
+    Source/Network/TCP/TcpServerEcsSystem.cpp
     Source/Network/TCP/TcpServerSession.cpp
-        Source/Network/TCP/TcpServerEcsSystem.cpp
 
     Source/Network/UDP/UdpClientSystem.cpp
     Source/Network/UDP/UdpServerSystem.cpp
 
-        Source/Network/ConsoleEcsSystem.cpp
+    Source/Network/ConsoleEcsSystem.cpp
     Source/Network/Endpoint.cpp
     Source/Network/Socket.cpp
 

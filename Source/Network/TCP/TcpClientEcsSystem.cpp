@@ -50,8 +50,9 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				"TcpClientSystem",
-				"TcpClientSystem",
+				std::string(typeid(TcpClientEcsSystem).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unspecified socket family");
 		}
 
@@ -114,15 +115,17 @@ namespace Injector
 		if(socketConnect == SocketConnect::Connected)
 		{
 			throw Exception(
-				"TcpClientSystem",
-				"connect",
+				std::string(typeid(TcpClientEcsSystem).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Already connected");
 		}
 		else if(socketConnect == SocketConnect::Connecting)
 		{
 			throw Exception(
-				"TcpClientSystem",
-				"connect",
+				std::string(typeid(TcpClientEcsSystem).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Still in progress");
 		}
 

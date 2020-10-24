@@ -2,16 +2,16 @@
 
 namespace Injector
 {
-	// Entity Component System component
+	// Entity Component System component structure
 	struct EcsComponent
 	{
-		// Creates a new component
+		// Creates a new ECS component
 		EcsComponent() = default;
-		// Deleted component copy constructor
+		// Deleted ECS component copy constructor
 		EcsComponent(const EcsComponent& component) = delete;
-		// Deleted component move constructor
+		// Deleted ECS component move constructor
 		EcsComponent(EcsComponent&& component) = delete;
-		// Destroys component
+		// Destroys ECS component
 		virtual ~EcsComponent() = default;
 	};
 }

@@ -2,6 +2,7 @@
 
 namespace Injector
 {
+	// Graphics Processing Unit draw mode
 	enum class GpuDrawMode
 	{
 		PointList,

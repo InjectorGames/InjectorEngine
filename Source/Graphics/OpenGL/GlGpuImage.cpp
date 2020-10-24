@@ -21,8 +21,9 @@ namespace Injector
 		if(size.x < 1 || size.y < 1 || size.z < 1)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"GlGpuBuffer",
+				std::string(typeid(GlGpuImage).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Size x/y/z is less than one");
 		}
 
@@ -54,8 +55,9 @@ namespace Injector
 			else
 			{
 				throw Exception(
-					"GlGpuImage",
-					"GlGpuImage",
+					std::string(typeid(GlGpuImage).name()),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Unsupported image format");
 			}
 
@@ -93,8 +95,9 @@ namespace Injector
 				break;
 			default:
 				throw Exception(
-					"GlGpuImage",
-					"GlGpuImage",
+					std::string(typeid(GlGpuImage).name()),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Unsupported null image format");
 			};
 
@@ -143,8 +146,9 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				"GlGpuImage",
-				"GlGpuImage",
+				std::string(typeid(GlGpuImage).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported image type");
 		}
 

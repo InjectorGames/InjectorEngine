@@ -34,7 +34,8 @@ namespace Injector
 		default:
 			throw Exception(
 				"",
-				"toVkGpuDrawMode",
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported draw mode");
 		}
 	}

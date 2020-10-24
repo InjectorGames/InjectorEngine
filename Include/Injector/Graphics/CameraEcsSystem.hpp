@@ -7,19 +7,26 @@
 
 namespace Injector
 {
+	// Camera ECS system class
 	class CameraEcsSystem : public EcsSystem
 	{
 	 protected:
+		// Update camera container
 		std::set<std::shared_ptr<EcsEntity>> cameras;
 	 public:
+		// Creates a new camera ECS system
 		CameraEcsSystem() noexcept;
 
+		// Returns update camera count
 		size_t getCameraCount() const noexcept;
 
+		// Returns true if camera was added
 		bool addCamera(
 			const std::shared_ptr<EcsEntity>& entity) noexcept;
+		// Returns true if camera was removed
 		bool removeCamera(
 			const std::shared_ptr<EcsEntity>& entity) noexcept;
+		// Removes all cameras
 		void removeCameras() noexcept;
 	};
 }

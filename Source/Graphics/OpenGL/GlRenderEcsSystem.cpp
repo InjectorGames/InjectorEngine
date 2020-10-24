@@ -15,8 +15,9 @@ namespace Injector
 		if(!_window)
 		{
 			throw NullException(
-				"GlRenderSystem",
-				"GlRenderSystem",
+				std::string(typeid(GlRenderEcsSystem).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"window");
 		}
 	}
@@ -50,7 +51,7 @@ namespace Injector
 				!cameraData.camera->render)
 				continue;
 
-			cameraPairs.emplace(cameraData.camera->queue, cameraData);
+			cameraPairs.emplace(cameraData.camera->renderQueue, cameraData);
 		}
 
 		window->makeCurrent();
@@ -104,10 +105,10 @@ namespace Injector
 						if (cycleCount > 0xFFFF)
 						{
 							throw OutOfRangeException(
-								"GlRenderSystem",
-								"update",
-								cycleCount,
-								0xFFFF);
+								std::string(typeid(GlRenderEcsSystem).name()),
+								std::string(__func__),
+								std::to_string(__LINE__),
+								cycleCount, 0xFFFF);
 						}
 						else
 						{

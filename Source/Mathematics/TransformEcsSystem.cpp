@@ -95,10 +95,10 @@ namespace Injector
 					if (cycleCount > 0xFFFF)
 					{
 						throw OutOfRangeException(
-							"TransformSystem",
-							"update",
-							cycleCount,
-							0xFFFF);
+							std::string(typeid(TransformEcsSystem).name()),
+							std::string(__func__),
+							std::to_string(__LINE__),
+							cycleCount, 0xFFFF);
 					}
 					else
 					{

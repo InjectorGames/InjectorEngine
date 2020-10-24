@@ -36,8 +36,9 @@ namespace Injector
 		if (!entities.emplace(entity).second)
 		{
 			throw Exception(
-				"Manager",
-				"createEntity",
+				std::string(typeid(EcsEntity).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create entity");
 		}
 

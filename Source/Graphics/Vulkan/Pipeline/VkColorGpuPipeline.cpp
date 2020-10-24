@@ -35,8 +35,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkColorGpuPipeline",
-				"createPipelineLayout",
+				std::string(typeid(VkColorGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create pipeline layout");
 		}
 
@@ -187,8 +188,9 @@ namespace Injector
 		if (resultValue.result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkColorGpuPipeline",
-				"createPipeline",
+				std::string(typeid(VkColorGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create pipeline");
 		}
 
@@ -211,22 +213,25 @@ namespace Injector
 		if(!renderPass)
 		{
 			throw NullException(
-				"VkColorGpuPipeline",
-				"VkColorGpuPipeline",
+				std::string(typeid(VkColorGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"renderPass");
 		}
 		if (!_vertexShader)
 		{
 			throw NullException(
-				"VkColorGpuPipeline",
-				"VkColorGpuPipeline",
+				std::string(typeid(VkColorGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"vertexShader");
 		}
 		if (!_fragmentShader)
 		{
 			throw NullException(
-				"VkColorGpuPipeline",
-				"VkColorGpuPipeline",
+				std::string(typeid(VkColorGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"fragmentShader");
 		}
 
@@ -268,15 +273,17 @@ namespace Injector
 		if(!allocator)
 		{
 			throw NullException(
-				"VkColorGpuPipeline",
-				"recreate",
+				std::string(typeid(VkColorGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"allocator");
 		}
 		if(!renderPass)
 		{
 			throw NullException(
-				"VkColorGpuPipeline",
-				"recreate",
+				std::string(typeid(VkColorGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"renderPass");
 		}
 

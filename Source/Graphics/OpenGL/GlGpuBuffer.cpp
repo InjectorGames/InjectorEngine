@@ -58,16 +58,18 @@ namespace Injector
 		if (!mappable)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"map",
-				"Not mappable");
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer is not mappable");
 		}
 		if (mapped)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"map",
-				"Already mapped");
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer is already mapped");
 		}
 
 		glBindBuffer(glType, buffer);
@@ -81,8 +83,9 @@ namespace Injector
 		if (!mappedData)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"map",
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to map buffer");
 		}
 
@@ -102,22 +105,25 @@ namespace Injector
 		if (!mappable)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"map",
-				"Not mappable");
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer is not mappable");
 		}
 		if (mapped)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"map",
-				"Already mapped");
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer is already mapped");
 		}
 		if (_size + offset > size)
 		{
 			throw OutOfRangeException(
-				"GlGpuBuffer",
-				"map",
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				static_cast<uint64_t>(_size + offset),
 				static_cast<uint64_t>(size));
 		}
@@ -133,8 +139,9 @@ namespace Injector
 		if (!mappedData)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"map",
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to map buffer");
 		}
 
@@ -151,9 +158,10 @@ namespace Injector
 		if (!mapped)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"map",
-				"Not mapped");
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer is not mapped");
 		}
 
 		glBindBuffer(glType, buffer);
@@ -170,8 +178,9 @@ namespace Injector
 		if (glUnmapBuffer(glType) == GL_FALSE)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"unmap",
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to unmap buffer");
 		}
 
@@ -186,29 +195,33 @@ namespace Injector
 		if (!mappable)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"setData",
-				"Not mappable");
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer is not mappable");
 		}
 		if (mapped)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"setData",
-				"Already mapped");
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer is already mapped");
 		}
 		if(!data)
 		{
 			throw NullException(
-				"GlGpuBuffer",
-				"setData",
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"data");
 		}
 		if (_size > size)
 		{
 			throw OutOfRangeException(
-				"GlGpuBuffer",
-				"setData",
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				static_cast<uint64_t>(_size),
 				static_cast<uint64_t>(size));
 		}
@@ -231,29 +244,33 @@ namespace Injector
 		if (!mappable)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"setData",
-				"Not mappable");
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer is not mappable");
 		}
 		if (mapped)
 		{
 			throw Exception(
-				"GlGpuBuffer",
-				"setData",
-				"Already mapped");
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Buffer is already mapped");
 		}
 		if(!data)
 		{
 			throw NullException(
-				"GlGpuBuffer",
-				"setData",
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"data");
 		}
 		if (_size + offset > size)
 		{
 			throw OutOfRangeException(
-				"GlGpuBuffer",
-				"setData",
+				std::string(typeid(GlGpuBuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				static_cast<uint64_t>(_size + offset),
 				static_cast<uint64_t>(size));
 		}

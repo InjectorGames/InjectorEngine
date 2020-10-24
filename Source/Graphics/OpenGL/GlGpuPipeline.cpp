@@ -50,9 +50,10 @@ namespace Injector
 		if (location == -1)
 		{
 			throw Exception(
-				"GlGpuPipeline",
-				"getUniformLocation",
-				"Incorrect name");
+				std::string(typeid(GlGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Incorrect uniform name");
 		}
 
 		return location;
@@ -68,9 +69,10 @@ namespace Injector
 		if (index == GL_INVALID_INDEX)
 		{
 			throw Exception(
-				"GlGpuPipeline",
-				"getUniformBlockIndex",
-				"Incorrect name");
+				std::string(typeid(GlGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Incorrect uniform block name");
 		}
 
 		return index;

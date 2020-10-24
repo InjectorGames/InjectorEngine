@@ -24,7 +24,8 @@ namespace Injector
 		default:
 			throw Exception(
 				"",
-				"toVkGpuImageWrap",
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported image wrap");
 		}
 	}

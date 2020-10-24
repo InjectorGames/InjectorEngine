@@ -4,9 +4,11 @@
 
 namespace Injector
 {
-	class VkCameraSystem : public CameraEcsSystem
+	// Vulkan camera ECS system class
+	class VkCameraEcsSystem : public CameraEcsSystem
 	{
 	 public:
+		// Updates Vulkan camera view and projection matrices
 		void update() override;
 	};
 }

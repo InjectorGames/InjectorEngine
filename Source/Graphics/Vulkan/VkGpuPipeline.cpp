@@ -13,8 +13,9 @@ namespace Injector
 		if(!_device)
 		{
 			throw NullException(
-				"VkGpuPipeline",
-				"VkGpuPipeline",
+				std::string(typeid(VkGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"device");
 		}
 
@@ -29,8 +30,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkGpuPipeline",
-				"VkGpuPipeline",
+				std::string(typeid(VkGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create pipeline cache");
 		}
 	}
@@ -56,8 +58,9 @@ namespace Injector
 		if(!commandBuffer)
 		{
 			throw NullException(
-				"VkGpuPipeline",
-				"bind",
+				std::string(typeid(VkGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"commandBuffer");
 		}
 

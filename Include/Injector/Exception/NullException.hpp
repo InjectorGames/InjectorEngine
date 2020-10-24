@@ -3,6 +3,7 @@
 
 namespace Injector
 {
+	// Null exception class
 	class NullException : public Exception
 	{
 	 public:
@@ -10,6 +11,7 @@ namespace Injector
 		NullException(
 			const std::string& className,
 			const std::string& functionName,
+			const std::string& lineNumber,
 			const std::string& variableName) noexcept;
 	};
 }

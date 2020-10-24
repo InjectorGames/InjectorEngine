@@ -11,8 +11,9 @@ namespace Injector
 		if (!_window)
 		{
 			throw NullException(
-				"AspectRatioSystem",
-				"AspectRatioSystem",
+				std::string(typeid(AspectRatioEcsSystem).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"window");
 		}
 	}

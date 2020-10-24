@@ -28,8 +28,9 @@ namespace Injector
 		if(result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkDiffuseGpuPipeline",
-				"createDescriptorSetLayout",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create descriptor set layout");
 		}
 
@@ -61,8 +62,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkDiffuseGpuPipeline",
-				"createPipelineLayout",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create pipeline layout");
 		}
 
@@ -222,8 +224,9 @@ namespace Injector
 		if (resultValue.result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkDiffuseGpuPipeline",
-				"createPipeline",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create pipeline");
 		}
 
@@ -252,8 +255,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkDiffuseGpuPipeline",
-				"createDescriptorPool",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create descriptor pool");
 		}
 
@@ -301,8 +305,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkDiffuseGpuPipeline",
-				"createDescriptorSets",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to allocate descriptor sets");
 		}
 
@@ -350,29 +355,33 @@ namespace Injector
 		if(!allocator)
 		{
 			throw NullException(
-				"VkDiffuseGpuPipeline",
-				"VkDiffuseGpuPipeline",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"allocator");
 		}
 		if(!renderPass)
 		{
 			throw NullException(
-				"VkDiffuseGpuPipeline",
-				"VkDiffuseGpuPipeline",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"renderPass");
 		}
 		if (!_vertexShader)
 		{
 			throw NullException(
-				"VkDiffuseGpuPipeline",
-				"VkDiffuseGpuPipeline",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"vertexShader");
 		}
 		if (!_fragmentShader)
 		{
 			throw NullException(
-				"VkDiffuseGpuPipeline",
-				"VkDiffuseGpuPipeline",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"fragmentShader");
 		}
 
@@ -460,15 +469,17 @@ namespace Injector
 		if(!allocator)
 		{
 			throw NullException(
-				"VkDiffuseGpuPipeline",
-				"recreate",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"allocator");
 		}
 		if(!renderPass)
 		{
 			throw NullException(
-				"VkDiffuseGpuPipeline",
-				"recreate",
+				std::string(typeid(VkDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"renderPass");
 		}
 

@@ -2,17 +2,17 @@
 
 namespace Injector
 {
-	// Entity Component System system
+	// Entity Component System system class
 	class EcsSystem
 	{
 	 public:
-		// Creates a new system
+		// Creates a new ECS system
 		EcsSystem() = default;
-		// Deleted copy constructor
+		// Deleted ECS system copy constructor
 		EcsSystem(const EcsSystem& system) = delete;
-		// Deleted move constructor
+		// Deleted ECS system move constructor
 		EcsSystem(EcsSystem&& system) = delete;
-		// Destroys system
+		// Destroys ECS system
 		virtual ~EcsSystem() = default;
 
 		// Executes on each update cycle

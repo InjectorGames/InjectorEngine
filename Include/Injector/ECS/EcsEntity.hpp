@@ -7,25 +7,25 @@
 
 namespace Injector
 {
-	// Entity Component System entity
+	// Entity Component System entity structure
 	struct EcsEntity final
 	{
 	 private:
-		// Entity component container
+		// Component map
 		std::map<std::type_index, EcsComponent*> components;
 	 public:
-		// Creates a new entity
+		// Creates a new ECS entity
 		EcsEntity() noexcept;
-		// Deleted entity copy constructor
+		// Deleted ECS entity copy constructor
 		EcsEntity(const EcsEntity& entity) = default;
-		// Deleted entity move constructor
+		// Deleted ECS entity move constructor
 		EcsEntity(EcsEntity&& entity) = default;
-		// Destroys all components and entity
+		// Destroys ECS entity and all components
 		~EcsEntity();
 
-		// Destroys all entity components
+		// Destroys all ECS entity components
 		void destroyComponents() noexcept;
-		// Returns entity component count
+		// Returns ECS entity component count
 		size_t getComponentCount() const noexcept;
 
 		// Returns a new created and added to the entity component
@@ -40,14 +40,16 @@ namespace Injector
 				delete component;
 
 				throw Exception(
-					"Entity",
-					"createComponent",
+					std::string(typeid(EcsEntity).name()),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to add component");
 			}
 
 			return component;
 		}
-		// Returns true if component has been created and added to the entity
+		// Returns true if component has been created
+		// and added to the entity
 		template<class T, class ...Args>
 		bool createComponent(T*& _component, Args... args) noexcept
 		{
@@ -95,7 +97,7 @@ namespace Injector
 		{
 			return static_cast<const T*>(components.at(typeid(T)));
 		}
-		// Returns true and specified entity component if contains
+		// Returns true and specified component if entity contains it
 		template<class T>
 		bool getComponent(T*& component) noexcept
 		{

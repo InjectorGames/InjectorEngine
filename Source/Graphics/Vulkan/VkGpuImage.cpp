@@ -21,15 +21,17 @@ namespace Injector
 		if(size.x < 1 || size.y < 1 || size.z < 1)
 		{
 			throw Exception(
-				"VkGpuBuffer",
-				"VkGpuBuffer",
+				std::string(typeid(VkGpuImage).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Size x/y/z is less than one");
 		}
 		if(!_allocator)
 		{
 			throw NullException(
-				"VkGpuBuffer",
-				"VkGpuBuffer",
+				std::string(typeid(VkGpuImage).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"allocator");
 		}
 
@@ -72,8 +74,9 @@ namespace Injector
 		if (result != VK_SUCCESS)
 		{
 			throw Exception(
-				"VkGpuImage",
-				"VkGpuImage",
+				std::string(typeid(*this).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create image");
 		}
 

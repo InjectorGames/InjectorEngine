@@ -3,7 +3,6 @@
 #include "Injector/Graphics/GUI/GuiSystem.hpp"
 #include "Injector/Mathematics/TransformEcsSystem.hpp"
 
-
 namespace Injector
 {
 	class EditorGuiHandler

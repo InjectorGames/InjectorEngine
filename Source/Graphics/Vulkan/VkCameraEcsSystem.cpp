@@ -1,8 +1,8 @@
-#include "Injector/Graphics/Vulkan/VkCameraSystem.hpp"
+#include "Injector/Graphics/Vulkan/VkCameraEcsSystem.hpp"
 
 namespace Injector
 {
-	void VkCameraSystem::update()
+	void VkCameraEcsSystem::update()
 	{
 		for (auto& camera : cameras)
 		{
