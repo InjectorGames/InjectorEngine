@@ -1,17 +1,12 @@
 #pragma once
-#include "Injector/Graphics/CameraSystem.hpp"
-#include "Injector/Graphics/Vulkan/VkWindow.hpp"
+#include "Injector/Graphics/CameraEcsSystem.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuWindow.hpp"
 
 namespace Injector
 {
-	class VkCameraSystem : public CameraSystem
+	class VkCameraSystem : public CameraEcsSystem
 	{
-	 protected:
-		std::shared_ptr<VkWindow> window;
 	 public:
-		explicit VkCameraSystem(
-			const std::shared_ptr<VkWindow>& window);
-
 		void update() override;
 	};
 }

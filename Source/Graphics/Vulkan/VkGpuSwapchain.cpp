@@ -15,7 +15,7 @@ namespace Injector
 
 		for (auto& format : surfaceFormats)
 		{
-			if (format.format == vk::Format::eB8G8R8A8Srgb &&
+			if (format.format == vk::Format::eB8G8R8A8Unorm &&
 				format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear)
 			{
 				surfaceFormat = format;

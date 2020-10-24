@@ -76,10 +76,15 @@ namespace Injector
 		IntVector4& operator<<=(int value) noexcept;
 		IntVector4& operator>>=(int value) noexcept;
 
+		// (0, 0, 0, 0)
 		static const IntVector4 zero;
+		// (-1, -1, -1, -1)
 		static const IntVector4 minusOne;
+		// (1, 1, 1, 1)
 		static const IntVector4 one;
+		// (INT32_MIN, INT32_MIN, INT32_MIN, INT32_MIN)
 		static const IntVector4 minimum;
+		// (INT32_MAX, INT32_MAX, INT32_MAX, INT32_MAX)
 		static const IntVector4 maximum;
 
 		static bool less(

@@ -1,16 +1,16 @@
 #pragma once
-#include "Injector/ECS/System.hpp"
-#include "Injector/ECS/Entity.hpp"
-#include "Injector/Graphics/CameraComponent.hpp"
+#include "Injector/ECS/EcsSystem.hpp"
+#include "Injector/ECS/EcsEntity.hpp"
+#include "Injector/Graphics/CameraEcsComponent.hpp"
 
 #include <memory>
 
 namespace Injector
 {
-	class VrSystem : public System
+	class VrSystem : public EcsSystem
 	{
 	public:
-		std::shared_ptr<Entity> hmd;
+		std::shared_ptr<EcsEntity> hmd;
 		
 		void update() override;
 	};

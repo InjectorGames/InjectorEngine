@@ -1,7 +1,7 @@
 #include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
-#include "Injector/Graphics/OpenGL/GlWindow.hpp"
-#include "Injector/Graphics/Vulkan/VkWindow.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuWindow.hpp"
+#include "Injector/Graphics/Vulkan/VkGpuWindow.hpp"
 
 #include <thread>
 #include <iostream>
@@ -71,7 +71,7 @@ namespace Injector
 	Matrix4 Engine::leftEyeProjMatrix = Matrix4::identity;
 	Matrix4 Engine::rightEyeProjMatrix = Matrix4::identity;
 
-	std::vector<std::shared_ptr<Manager>> Engine::managers = {};
+	std::vector<std::shared_ptr<EcsManager>> Engine::managers = {};
 
 	bool Engine::getCapUpdateRate() noexcept
 	{
@@ -542,7 +542,7 @@ namespace Injector
 	}
 
 	bool Engine::addManager(
-		const std::shared_ptr<Manager>& manager) noexcept
+		const std::shared_ptr<EcsManager>& manager) noexcept
 	{
 		if (manager == nullptr)
 			return false;
@@ -551,7 +551,7 @@ namespace Injector
 		return true;
 	}
 	bool Engine::removeManager(
-		const std::shared_ptr<Manager>& manager) noexcept
+		const std::shared_ptr<EcsManager>& manager) noexcept
 	{
 		if (manager == nullptr)
 			return false;
@@ -568,7 +568,7 @@ namespace Injector
 		return false;
 	}
 	bool Engine::containsManager(
-		const std::shared_ptr<Manager>& manager) noexcept
+		const std::shared_ptr<EcsManager>& manager) noexcept
 	{
 		if (manager == nullptr)
 			return false;

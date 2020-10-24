@@ -71,9 +71,24 @@ namespace Injector
 		Vector3& operator/=(float value) noexcept;
 		Vector3& operator*=(float value) noexcept;
 
+		// (0.0f, 0.0f, 0.0f)
 		static const Vector3 zero;
+		// (-1.0f, -1.0f, -1.0f)
 		static const Vector3 minusOne;
+		// (1.0f, 1.0f, 1.0f)
 		static const Vector3 one;
+		// (-1.0f, 0.0f, 0.0f)
+		static const Vector3 left;
+		// (1.0f, 0.0f, 0.0f)
+		static const Vector3 right;
+		// (0.0f, -1.0f, 0.0f)
+		static const Vector3 down;
+		// (0.0f, 1.0f, 0.0f)
+		static const Vector3 up;
+		// (0.0f, 0.0f, -1.0f)
+		static const Vector3 back;
+		// (0.0f, 0.0f, 1.0f)
+		static const Vector3 forward;
 
 		static bool less(
 			const Vector3& a,

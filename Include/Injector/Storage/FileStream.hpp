@@ -14,15 +14,15 @@ namespace Injector
 		explicit FileStream(
 			const char* filePath,
 			std::ios::openmode mode =
-				std::ios::in | std::ios::out);
+				std::ios::in | std::ios::out) noexcept;
 		explicit FileStream(
 			const std::string& filePath,
 			std::ios::openmode mode =
-				std::ios::in | std::ios::out);
+				std::ios::in | std::ios::out) noexcept;
 		explicit FileStream(
 			const std::filesystem::path& filePath,
 			std::ios::openmode mode =
-				std::ios::in | std::ios::out);
+				std::ios::in | std::ios::out) noexcept;
 
 		size_t getSize() const noexcept;
 

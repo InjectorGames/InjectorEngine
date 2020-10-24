@@ -5,7 +5,7 @@ namespace Injector
 {
 	void VrSystem::update()
 	{
-		CameraComponent* cameraComponent;
+		CameraEcsComponent* cameraComponent;
 
 		if(!hmd || !hmd->getComponent(cameraComponent))
 			return;

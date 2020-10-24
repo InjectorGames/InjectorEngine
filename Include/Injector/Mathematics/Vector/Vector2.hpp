@@ -62,7 +62,9 @@ namespace Injector
 		Vector2& operator/=(float value) noexcept;
 		Vector2& operator*=(float value) noexcept;
 
+		// (0.0f, 0.0f, 0.0f)
 		static const Vector2 zero;
+		//
 		static const Vector2 minusOne;
 		static const Vector2 one;
 

@@ -129,6 +129,18 @@ namespace Injector
 			VK_FALSE,
 			VK_FALSE);
 
+		auto pipelineDepthStencilStateCreateInfo = vk::PipelineDepthStencilStateCreateInfo(
+			vk::PipelineDepthStencilStateCreateFlags(),
+			VK_TRUE,
+			VK_TRUE,
+			vk::CompareOp::eLess,
+			VK_FALSE,
+			VK_FALSE,
+			vk::StencilOpState(),
+			vk::StencilOpState(),
+			0.0f,
+			0.0f);
+
 		auto pipelineColorBlendAttachmentStateCreateInfo = vk::PipelineColorBlendAttachmentState(
 			VK_FALSE,
 			vk::BlendFactor(),
@@ -159,7 +171,7 @@ namespace Injector
 			&pipelineViewportStateCreateInfo,
 			&pipelineRasterizationStateCreateInfo,
 			&pipelineMultisampleStateCreateInfo,
-			nullptr,
+			&pipelineDepthStencilStateCreateInfo,
 			&pipelineColorBlendStateCreateInfo,
 			nullptr,
 			pipelineLayout,

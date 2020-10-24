@@ -120,13 +120,17 @@ if (INJECTOR_SUPPORT_VIRTUAL_REALITY)
 endif ()
 
 add_library(InjectorEngine STATIC
-    Source/ECS/Entity.cpp
-    Source/ECS/Manager.cpp
+        Source/ECS/EcsEntity.cpp
+        Source/ECS/EcsManager.cpp
 
     Source/Exception/CastException.cpp
     Source/Exception/Exception.cpp
     Source/Exception/NullException.cpp
     Source/Exception/OutOfRangeException.cpp
+
+    Source/Graphics/GUI/EditorGuiHandler.cpp
+        Source/Graphics/GUI/GuiEcsComponent.cpp
+    Source/Graphics/GUI/GuiSystem.cpp
 
     Source/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlColorGpuPipeline.cpp
@@ -134,7 +138,7 @@ add_library(InjectorEngine STATIC
     Source/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.cpp
 
-    Source/Graphics/OpenGL/GlCameraSystem.cpp
+        Source/Graphics/OpenGL/GlCameraEcsSystem.cpp
     Source/Graphics/OpenGL/GlGpuBuffer.cpp
     Source/Graphics/OpenGL/GlGpuFramebuffer.cpp
     Source/Graphics/OpenGL/GlGpuShader.cpp
@@ -142,8 +146,8 @@ add_library(InjectorEngine STATIC
     Source/Graphics/OpenGL/GlGpuMesh.cpp
     Source/Graphics/OpenGL/GlGpuPipeline.cpp
     Source/Graphics/OpenGL/GlGpuShader.cpp
-    Source/Graphics/OpenGL/GlRenderSystem.cpp
-    Source/Graphics/OpenGL/GlWindow.cpp
+        Source/Graphics/OpenGL/GlRenderEcsSystem.cpp
+        Source/Graphics/OpenGL/GlGpuWindow.cpp
 
     Source/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.cpp
     Source/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.cpp
@@ -156,27 +160,26 @@ add_library(InjectorEngine STATIC
     Source/Graphics/Vulkan/VkGpuPipeline.cpp
     Source/Graphics/Vulkan/VkGpuShader.cpp
     Source/Graphics/Vulkan/VkGpuSwapchain.cpp
-    Source/Graphics/Vulkan/VkRenderSystem.cpp
+        Source/Graphics/Vulkan/VkRenderEcsSystem.cpp
     Source/Graphics/Vulkan/VkSwapchainData.cpp
-    Source/Graphics/Vulkan/VkWindow.cpp
+        Source/Graphics/Vulkan/VkGpuWindow.cpp
 
-    Source/Graphics/CameraComponent.cpp
-    Source/Graphics/CameraSystem.cpp
-    Source/Graphics/FreeCameraSystem.cpp
+        Source/Graphics/AspectRatioEcsSystem.cpp
+        Source/Graphics/CameraEcsComponent.cpp
+        Source/Graphics/CameraEcsSystem.cpp
+        Source/Graphics/FreeCameraEcsSystem.cpp
     Source/Graphics/GpuBuffer.cpp
     Source/Graphics/GpuFramebuffer.cpp
     Source/Graphics/GpuImage.cpp
     Source/Graphics/GpuMesh.cpp
     Source/Graphics/GpuPipeline.cpp
     Source/Graphics/GpuShader.cpp
-    Source/Graphics/GuiComponent.cpp
-    Source/Graphics/GuiSystem.cpp
     Source/Graphics/ImageData.cpp
     Source/Graphics/ModelData.cpp
-    Source/Graphics/RenderComponent.cpp
-    Source/Graphics/RenderSystem.cpp
+        Source/Graphics/RenderEcsComponent.cpp
+        Source/Graphics/RenderEcsSystem.cpp
     Source/Graphics/ShaderData.cpp
-    Source/Graphics/SimSkySystem.cpp
+        Source/Graphics/SimSkyEcsSystem.cpp
     Source/Graphics/VrSystem.cpp
     Source/Graphics/Window.cpp
 
@@ -196,19 +199,19 @@ add_library(InjectorEngine STATIC
 
     Source/Mathematics/Converter.cpp
     Source/Mathematics/Quaternion.cpp
-    Source/Mathematics/RotateComponent.cpp
-    Source/Mathematics/TransformComponent.cpp
-    Source/Mathematics/TransformSystem.cpp
-    Source/Mathematics/TranslateComponent.cpp
+        Source/Mathematics/RotateEcsComponent.cpp
+        Source/Mathematics/TransformEcsComponent.cpp
+        Source/Mathematics/TransformEcsSystem.cpp
+        Source/Mathematics/TranslateEcsComponent.cpp
 
-    Source/Network/TCP/TcpClientSystem.cpp
+        Source/Network/TCP/TcpClientEcsSystem.cpp
     Source/Network/TCP/TcpServerSession.cpp
-    Source/Network/TCP/TcpServerSystem.cpp
+        Source/Network/TCP/TcpServerEcsSystem.cpp
 
     Source/Network/UDP/UdpClientSystem.cpp
     Source/Network/UDP/UdpServerSystem.cpp
 
-    Source/Network/ConsoleSystem.cpp
+        Source/Network/ConsoleEcsSystem.cpp
     Source/Network/Endpoint.cpp
     Source/Network/Socket.cpp
 
