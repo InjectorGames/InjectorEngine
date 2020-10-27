@@ -68,14 +68,29 @@ namespace Injector
 		IntVector2& operator<<=(int value) noexcept;
 		IntVector2& operator>>=(int value) noexcept;
 
+		// (0, 0)
 		static const IntVector2 zero;
+		// (-1, -1)
 		static const IntVector2 minusOne;
+		// (1, 1)
 		static const IntVector2 one;
+		// (INT32_MIN, INT32_MIN)
 		static const IntVector2 minimum;
+		// (INT32_MAX, INT32_MAX)
 		static const IntVector2 maximum;
 
 		static bool less(
 			const IntVector2& a,
 			const IntVector2& b) noexcept;
+
+		struct Less
+		{
+			bool operator()(
+				const IntVector2& a,
+				const IntVector2& b) const noexcept
+			{
+				return less(a, b);
+			}
+		};
 	};
 }

@@ -15,7 +15,7 @@ namespace Injector
 
 		for (auto& format : surfaceFormats)
 		{
-			if (format.format == vk::Format::eB8G8R8A8Srgb &&
+			if (format.format == vk::Format::eB8G8R8A8Unorm &&
 				format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear)
 			{
 				surfaceFormat = format;
@@ -123,8 +123,9 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				"VkGpuSwapchain",
-				"createSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"No supported composite alpha");
 		}
 	}
@@ -167,8 +168,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create swapchain");
 		}
 
@@ -250,8 +252,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkGpuSwapchain",
-				"createRenderPass",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create render pass");
 		}
 
@@ -288,8 +291,9 @@ namespace Injector
 		}
 
 		throw Exception(
-			"VkGpuSwapchain",
-			"getBestDepthFormat",
+			std::string(typeid(VkGpuSwapchain).name()),
+			std::string(__func__),
+			std::to_string(__LINE__),
 			"No supported depth format");
 	}
 	vk::ImageView VkGpuSwapchain::createDepthImageView(
@@ -320,8 +324,9 @@ namespace Injector
 		if(result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkGpuSwapchain",
-				"createDepthImageView",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create image view");
 		}
 
@@ -381,43 +386,49 @@ namespace Injector
 		if(!allocator)
 		{
 			throw NullException(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"allocator");
 		}
 		if(!_device)
 		{
 			throw NullException(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"device");
 		}
 		if(!_physicalDevice)
 		{
 			throw NullException(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"physicalDevice");
 		}
 		if(!surface)
 		{
 			throw NullException(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"surface");
 		}
 		if(!graphicsCommandPool)
 		{
 			throw NullException(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"graphicsCommandPool");
 		}
 		if(!presentCommandPool)
 		{
 			throw NullException(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"presentCommandPool");
 		}
 
@@ -539,29 +550,33 @@ namespace Injector
 		if(!device)
 		{
 			throw NullException(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"device");
 		}
 		if(!allocator)
 		{
 			throw NullException(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"allocator");
 		}
 		if(!graphicsCommandPool)
 		{
 			throw NullException(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"graphicsCommandPool");
 		}
 		if(!presentCommandPool)
 		{
 			throw NullException(
-				"VkGpuSwapchain",
-				"VkGpuSwapchain",
+				std::string(typeid(VkGpuSwapchain).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"presentCommandPool");
 		}
 

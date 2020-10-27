@@ -53,8 +53,9 @@ namespace Injector
 		if (!data)
 		{
 			throw NullException(
-				"GlGpuShader",
-				"GlGpuShader",
+				std::string(typeid(GlGpuShader).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"data");
 		}
 
@@ -85,8 +86,9 @@ namespace Injector
 			glDeleteShader(shader);
 
 			throw Exception(
-				"GlGpuShader",
-				"GlGpuShader",
+				std::string(typeid(GlGpuShader).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to compile shader: " + log);
 		}
 	}

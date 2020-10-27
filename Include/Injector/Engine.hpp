@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Defines.hpp"
-#include "Injector/ECS/Manager.hpp"
+#include "Injector/ECS/EcsManager.hpp"
 #include "Injector/Mathematics/Matrix/Matrix4.hpp"
 #include "Injector/Graphics/GraphicsAPI.hpp"
 
@@ -32,7 +32,7 @@ namespace Injector
 		static Matrix4 leftEyeProjMatrix;
 		static Matrix4 rightEyeProjMatrix;
 
-		static std::vector<std::shared_ptr<Manager>> managers;
+		static std::vector<std::shared_ptr<EcsManager>> managers;
 	 public:
 		static bool getCapUpdateRate() noexcept;
 		static void setCapUpdateRate(bool cap = true) noexcept;
@@ -84,15 +84,15 @@ namespace Injector
 		static const Matrix4& getRightEyeProjMatrix() noexcept;
 
 		static bool addManager(
-			const std::shared_ptr<Manager>& manager) noexcept;
+			const std::shared_ptr<EcsManager>& manager) noexcept;
 		static bool removeManager(
-			const std::shared_ptr<Manager>& manager) noexcept;
+			const std::shared_ptr<EcsManager>& manager) noexcept;
 		static bool containsManager(
-			const std::shared_ptr<Manager>& manager) noexcept;
+			const std::shared_ptr<EcsManager>& manager) noexcept;
 		static void removeManagers() noexcept;
 		static size_t getManagerCount() noexcept;
 
-		template<class T = Manager, class ...Args>
+		template<class T = EcsManager, class ...Args>
 		static std::shared_ptr<T> createManager(Args... args) noexcept
 		{
 			auto manager = std::make_shared<T>(args...);

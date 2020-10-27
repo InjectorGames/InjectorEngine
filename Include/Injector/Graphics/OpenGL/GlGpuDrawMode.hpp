@@ -23,7 +23,8 @@ namespace Injector
 		default:
 			throw Exception(
 				"",
-				"toGlGpuDrawMode",
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported draw mode");
 		}
 	}

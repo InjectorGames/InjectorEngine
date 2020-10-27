@@ -5,6 +5,7 @@
 
 namespace Injector
 {
+	// Returns OpenGL GPU buffer access
 	static GLbitfield toGlGpuBufferAccess(GpuBufferAccess access)
 	{
 		if (access == GpuBufferAccess::ReadOnly)
@@ -28,7 +29,8 @@ namespace Injector
 		{
 			throw Exception(
 				"",
-				"toGlGpuBufferAccess",
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported buffer access");
 		}
 	}

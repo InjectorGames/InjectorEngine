@@ -40,8 +40,9 @@ namespace Injector
 		if(result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkImageDiffuseGpuPipeline",
-				"createDescriptorSetLayout",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create descriptor set layout");
 		}
 
@@ -73,8 +74,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkImageDiffuseGpuPipeline",
-				"createPipelineLayout",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create pipeline layout");
 		}
 
@@ -239,8 +241,9 @@ namespace Injector
 		if (resultValue.result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkImageDiffuseGpuPipeline",
-				"createPipeline",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create pipeline");
 		}
 
@@ -276,8 +279,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkImageDiffuseGpuPipeline",
-				"createDescriptorPool",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create descriptor pool");
 		}
 
@@ -310,8 +314,9 @@ namespace Injector
 		if(result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkImageDiffuseGpuPipeline",
-				"createImageView",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create image view");
 		}
 
@@ -354,8 +359,9 @@ namespace Injector
 		if(result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkImageDiffuseGpuPipeline",
-				"createImageSampler",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create sampler");
 		}
 
@@ -405,8 +411,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkImageDiffuseGpuPipeline",
-				"createDescriptorSets",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to allocate descriptor sets");
 		}
 
@@ -486,36 +493,41 @@ namespace Injector
 		if(!allocator)
 		{
 			throw NullException(
-				"VkImageDiffuseGpuPipeline",
-				"VkImageDiffuseGpuPipeline",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"allocator");
 		}
 		if(!renderPass)
 		{
 			throw NullException(
-				"VkImageDiffuseGpuPipeline",
-				"VkImageDiffuseGpuPipeline",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"renderPass");
 		}
 		if (!_vertexShader)
 		{
 			throw NullException(
-				"VkImageDiffuseGpuPipeline",
-				"VkImageDiffuseGpuPipeline",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"vertexShader");
 		}
 		if (!_fragmentShader)
 		{
 			throw NullException(
-				"VkImageDiffuseGpuPipeline",
-				"VkImageDiffuseGpuPipeline",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"fragmentShader");
 		}
 		if (!_image)
 		{
 			throw NullException(
-				"VkImageDiffuseGpuPipeline",
-				"VkImageDiffuseGpuPipeline",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"image");
 		}
 
@@ -669,15 +681,17 @@ namespace Injector
 		if(!allocator)
 		{
 			throw NullException(
-				"VkImageDiffuseGpuPipeline",
-				"recreate",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"allocator");
 		}
 		if(!renderPass)
 		{
 			throw NullException(
-				"VkImageDiffuseGpuPipeline",
-				"recreate",
+				std::string(typeid(VkImageDiffuseGpuPipeline).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"renderPass");
 		}
 

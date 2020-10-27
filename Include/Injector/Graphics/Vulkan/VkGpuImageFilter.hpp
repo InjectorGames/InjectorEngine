@@ -21,7 +21,8 @@ namespace Injector
 		{
 			throw Exception(
 				"",
-				"toVkGpuImageFilter",
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported image filter");
 		}
 	}
@@ -40,7 +41,8 @@ namespace Injector
 		{
 			throw Exception(
 				"",
-				"toVkGpuMipmapFilter",
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported mipmap filter");
 		}
 	}

@@ -36,7 +36,8 @@ namespace Injector
 		default:
 			throw Exception(
 				"",
-				"toVkGpuBufferType",
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported buffer type");
 		}
 	}

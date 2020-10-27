@@ -52,8 +52,9 @@ namespace Injector
 		if (vertices.size() != colors.size())
 		{
 			throw Exception(
-				"ModelData",
-				"getVertexColor",
+				typeid(ModelData).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Different array sizes");
 		}
 
@@ -79,8 +80,9 @@ namespace Injector
 		if (vertices.size() != texCoords.size())
 		{
 			throw Exception(
-				"ModelData",
-				"getVertexTexCoord",
+				typeid(ModelData).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Different array sizes");
 		}
 
@@ -106,8 +108,9 @@ namespace Injector
 		if (vertices.size() != normals.size())
 		{
 			throw Exception(
-				"ModelData",
-				"getVertexNormal",
+				typeid(ModelData).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Different array sizes");
 		}
 
@@ -134,8 +137,9 @@ namespace Injector
 			vertices.size() != texCoords.size())
 		{
 			throw Exception(
-				"ModelData",
-				"getVertexNormalTexCoord",
+				typeid(ModelData).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Different array sizes");
 		}
 
@@ -174,22 +178,25 @@ namespace Injector
 		if (!scene)
 		{
 			throw Exception(
-				"ModelData",
-				"readFromFile",
+				typeid(ModelData).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to load scene");
 		}
 		if (!scene->HasMeshes())
 		{
 			throw Exception(
-				"ModelData",
-				"readFromFile",
+				typeid(ModelData).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Scene has no meshes");
 		}
 		if (scene->mNumMeshes > 1)
 		{
 			throw Exception(
-				"ModelData",
-				"readFromFile",
+				typeid(ModelData).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Scene has more than one mesh");
 		}
 

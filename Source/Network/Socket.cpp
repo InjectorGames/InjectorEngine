@@ -35,8 +35,9 @@ namespace Injector
 		if(!Engine::isNetworkInitialized())
 		{
 			throw Exception(
-				"Socket",
-				"Socket",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Network is not initialized");
 		}
 
@@ -53,8 +54,9 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				"Socket",
-				"Socket",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported address family");
 		}
 
@@ -74,8 +76,9 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				"Socket",
-				"Socket",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported protocol type");
 		}
 
@@ -87,8 +90,9 @@ namespace Injector
 		if(socket == NULL_SOCKET)
 		{
 			throw Exception(
-				"Socket",
-				"Socket",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create socket");
 		}
 
@@ -131,8 +135,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"getIsListening",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get socket option");
 		}
 
@@ -156,8 +161,9 @@ namespace Injector
 		if (result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"getLocalEndpoint",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get socket name");
 		}
 
@@ -180,8 +186,9 @@ namespace Injector
 		if (result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"getRemoteEndpoint",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get socket name");
 		}
 
@@ -199,8 +206,9 @@ namespace Injector
 		if (flags == -1)
 		{
 			throw Exception(
-				"Socket",
-				"setBlocking",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get flags");
 		}
 
@@ -216,8 +224,9 @@ namespace Injector
 		if (result == -1)
 		{
 			throw Exception(
-				"Socket",
-				"setBlocking",
+				std::string(typeid(*this).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to set flags");
 		}
 #elif INJECTOR_SYSTEM_WINDOWS
@@ -256,8 +265,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"getReceiveTimeout",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get socket option");
 		}
 
@@ -303,8 +313,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"setReceiveTimeout",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to set socket option");
 		}
 #elif INJECTOR_SYSTEM_WINDOWS
@@ -318,8 +329,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"setReceiveTimeout",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to set socket option");
 		}
 #endif
@@ -341,8 +353,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"getReceiveTimeout",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get socket option");
 		}
 
@@ -388,8 +401,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"setReceiveTimeout",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to set socket option");
 		}
 #elif INJECTOR_SYSTEM_WINDOWS
@@ -403,8 +417,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"setReceiveTimeout",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to set socket option");
 		}
 #endif
@@ -429,8 +444,9 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				"Socket",
-				"bind",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported address family");
 		}
 
@@ -442,8 +458,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"bind",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to bind socket");
 		}
 	}
@@ -456,8 +473,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"listen",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to listen socket");
 		}
 	}

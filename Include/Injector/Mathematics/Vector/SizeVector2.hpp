@@ -17,12 +17,25 @@ namespace Injector
 		bool operator==(const SizeVector2& vector) const noexcept;
 		bool operator!=(const SizeVector2& vector) const noexcept;
 
+		// (0, 0)
 		static const SizeVector2 zero;
+		// (1, 1)
 		static const SizeVector2 one;
+		// (SIZE_MAX, SIZE_MAX)
 		static const SizeVector2 maximum;
 
 		static bool less(
 			const SizeVector2& a,
 			const SizeVector2& b) noexcept;
+
+		struct Less
+		{
+			bool operator()(
+				const SizeVector2& a,
+				const SizeVector2& b) const noexcept
+			{
+				return less(a, b);
+			}
+		};
 	};
 }

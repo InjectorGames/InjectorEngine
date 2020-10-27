@@ -573,7 +573,7 @@ namespace Injector
 		return Matrix4(
 			2.0f / (right - left),
 			0.0f, 0.0f, 0.0f, 0.0f,
-			2.0f / (top - bottom),
+			-2.0f / (top - bottom),
 			0.0f, 0.0f, 0.0f, 0.0f,
 			1.0f / (farClipPlane - nearClipPlane),
 			0.0f,

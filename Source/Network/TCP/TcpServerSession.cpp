@@ -59,6 +59,10 @@ namespace Injector
 	{
 		return receiveBuffer;
 	}
+	const std::vector<uint8_t>& TcpServerSession::getSendBuffer() const noexcept
+	{
+		return sendBuffer;
+	}
 
 	void TcpServerSession::update()
 	{

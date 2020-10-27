@@ -3,6 +3,7 @@
 
 namespace Injector
 {
+	// Keyboard or mouse button state
 	enum class ButtonState : int
 	{
 		Press = GLFW_PRESS,

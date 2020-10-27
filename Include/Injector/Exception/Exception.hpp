@@ -4,6 +4,7 @@
 
 namespace Injector
 {
+	// Fatal exception class
 	class Exception : public std::exception
 	{
 	 protected:
@@ -14,6 +15,7 @@ namespace Injector
 		Exception(
 			const std::string& className,
 			const std::string& functionName,
+			const std::string& lineNumber,
 			const std::string& message) noexcept;
 
 		// Returns exception message

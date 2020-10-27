@@ -25,8 +25,9 @@ namespace Injector
 				else
 				{
 					throw Exception(
-						"",
-						"toGlGpuImageFilter",
+						"std::string(typeid(*this).name())",
+						std::string(__func__),
+						std::to_string(__LINE__),
 						"Unsupported mipmap filter");
 				}
 			}
@@ -49,7 +50,8 @@ namespace Injector
 			{
 				throw Exception(
 					"",
-					"toGlGpuImageFilter",
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Unsupported mipmap filter");
 			}
 		}
@@ -57,7 +59,8 @@ namespace Injector
 		{
 			throw Exception(
 				"",
-				"toGlGpuImageFilter",
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported image filter");
 		}
 	}

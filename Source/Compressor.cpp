@@ -12,9 +12,10 @@ namespace Injector
 		if (count == 0)
 		{
 			throw Exception(
-				"Compressor",
-				"getDestinationSize",
-				"Incorrect input");
+				typeid(Compressor).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
+				"Incorrect source size");
 		}
 
 		return count;
@@ -34,8 +35,9 @@ namespace Injector
 		if (count == 0)
 		{
 			throw Exception(
-				"Compressor",
-				"compress",
+				typeid(Compressor).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to compress");
 		}
 
@@ -56,8 +58,9 @@ namespace Injector
 		if (count < 1)
 		{
 			throw Exception(
-				"Compressor",
-				"compress",
+				typeid(Compressor).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to decompress");
 		}
 

@@ -76,12 +76,25 @@ namespace Injector
 		Vector4& operator/=(float value) noexcept;
 		Vector4& operator*=(float value) noexcept;
 
+		// (0.0f, 0.0f, 0.0f, 0.0f)
 		static const Vector4 zero;
+		// (-1.0f, -1.0f, -1.0f, -1.0f)
 		static const Vector4 minusOne;
+		// (1.0f, 1.0f, 1.0f, 1.0f)
 		static const Vector4 one;
 
 		static bool less(
 			const Vector4& a,
 			const Vector4& b) noexcept;
+
+		struct Less
+		{
+			bool operator()(
+				const Vector4& a,
+				const Vector4& b) const noexcept
+			{
+				return less(a, b);
+			}
+		};
 	};
 }

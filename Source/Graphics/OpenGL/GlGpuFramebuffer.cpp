@@ -43,8 +43,9 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				"GlGpuFramebuffer",
-				"GlGpuFramebuffer",
+				std::string(typeid(GlGpuFramebuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Unsupported color image type");
 		}
 
@@ -83,8 +84,9 @@ namespace Injector
 				else
 				{
 					throw Exception(
-						"GlGpuFramebuffer",
-						"GlGpuFramebuffer",
+						std::string(typeid(GlGpuFramebuffer).name()),
+						std::string(__func__),
+						std::to_string(__LINE__),
 						"Unsupported depth stencil image type");
 				}
 			}
@@ -121,8 +123,9 @@ namespace Injector
 				else
 				{
 					throw Exception(
-						"GlGpuFramebuffer",
-						"GlGpuFramebuffer",
+						std::string(typeid(GlGpuFramebuffer).name()),
+						std::string(__func__),
+						std::to_string(__LINE__),
 						"Unsupported depth image type");
 				}
 			}
@@ -133,8 +136,9 @@ namespace Injector
 			glBindFramebuffer(GL_FRAMEBUFFER, GL_ZERO);
 
 			throw Exception(
-				"GlGpuFramebuffer",
-				"GlGpuFramebuffer",
+				std::string(typeid(GlGpuFramebuffer).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Framebuffer is not complete");
 		}
 

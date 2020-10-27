@@ -20,43 +20,49 @@ namespace Injector
 		if(!_device)
 		{
 			throw NullException(
-				"VkSwapchainData",
-				"VkSwapchainData",
+				std::string(typeid(VkSwapchainData).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"device");
 		}
 		if(!_image)
 		{
 			throw NullException(
-				"VkSwapchainData",
-				"VkSwapchainData",
+				std::string(typeid(VkSwapchainData).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"image");
 		}
 		if(!renderPass)
 		{
 			throw NullException(
-				"VkSwapchainData",
-				"VkSwapchainData",
+				std::string(typeid(VkSwapchainData).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"renderPass");
 		}
 		if(!_graphicsCommandPool)
 		{
 			throw NullException(
-				"VkSwapchainData",
-				"VkSwapchainData",
+				std::string(typeid(VkSwapchainData).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"graphicsCommandPool");
 		}
 		if(!_presentCommandPool)
 		{
 			throw NullException(
-				"VkSwapchainData",
-				"VkSwapchainData",
+				std::string(typeid(VkSwapchainData).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"presentCommandPool");
 		}
 		if(!depthImageView)
 		{
 			throw NullException(
-				"VkSwapchainData",
-				"VkSwapchainData",
+				std::string(typeid(VkSwapchainData).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"depthImageView");
 		}
 
@@ -85,8 +91,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkSwapchainData",
-				"VkSwapchainData",
+				std::string(typeid(VkSwapchainData).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create image view");
 		}
 
@@ -112,8 +119,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkSwapchainData",
-				"VkSwapchainData",
+				std::string(typeid(VkSwapchainData).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to create framebuffer");
 		}
 
@@ -128,8 +136,9 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				"VkSwapchainData",
-				"VkSwapchainData",
+				std::string(typeid(VkSwapchainData).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to allocate command buffers");
 		}
 
@@ -144,8 +153,9 @@ namespace Injector
 			if (result != vk::Result::eSuccess)
 			{
 				throw Exception(
-					"VkSwapchainData",
-					"VkSwapchainData",
+					std::string(typeid(VkSwapchainData).name()),
+					std::string(__func__),
+					std::to_string(__LINE__),
 					"Failed to allocate command buffers");
 			}
 		}

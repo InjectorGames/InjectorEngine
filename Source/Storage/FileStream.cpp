@@ -6,55 +6,25 @@ namespace Injector
 {
 	FileStream::FileStream(
 		const char* filePath,
-		std::ios::openmode mode) :
+		std::ios::openmode mode) noexcept :
 		std::fstream(filePath, mode | std::ios::ate)
 	{
-		// TODO: move is open check outside constructor
-		// and mark constructor as noexcept
-
-		if (!is_open())
-		{
-			throw Exception(
-				"FileStream",
-				"FileStream",
-				"Failed to open file '" +
-				std::string(filePath) + "'");
-		}
-
 		size = static_cast<size_t>(tellg());
 		seekg(0, beg);
 	}
 	FileStream::FileStream(
 		const std::string& filePath,
-		std::ios::openmode mode) :
+		std::ios::openmode mode) noexcept :
 		std::fstream(filePath, mode | std::ios::ate)
 	{
-		if (!is_open())
-		{
-			throw Exception(
-				"FileStream",
-				"FileStream",
-				"Failed to open file '" +
-				filePath + "'");
-		}
-
 		size = static_cast<size_t>(tellg());
 		seekg(0, beg);
 	}
 	FileStream::FileStream(
 		const std::filesystem::path& filePath,
-		std::ios::openmode mode) :
+		std::ios::openmode mode) noexcept :
 		std::fstream(filePath, mode | std::ios::ate)
 	{
-		if (!is_open())
-		{
-			throw Exception(
-				"FileStream",
-				"FileStream",
-				"Failed to open file '" +
-				filePath.string() + "'");
-		}
-
 		size = static_cast<size_t>(tellg());
 		seekg(0, beg);
 	}

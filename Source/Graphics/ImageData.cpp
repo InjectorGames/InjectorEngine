@@ -65,10 +65,11 @@ namespace Injector
 		if (!data)
 		{
 			throw Exception(
-				"ImageData",
-				"readFromFile",
+				typeid(ImageData).name(),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to load image, " +
-				std::string(stbi_failure_reason()));
+					std::string(stbi_failure_reason()));
 		}
 
 		auto imageData = std::make_shared<ImageData>(

@@ -73,14 +73,41 @@ namespace Injector
 		IntVector3& operator<<=(int value) noexcept;
 		IntVector3& operator>>=(int value) noexcept;
 
+		// (0, 0, 0)
 		static const IntVector3 zero;
+		// (-1, -1, -1)
 		static const IntVector3 minusOne;
+		// (1, 1, 1)
 		static const IntVector3 one;
+		// (-1, 0, 0)
+		static const IntVector3 left;
+		// (1, 0, 0)
+		static const IntVector3 right;
+		// (0, -1, 0)
+		static const IntVector3 down;
+		// (0, 1, 0)
+		static const IntVector3 up;
+		// (0, 0, -1)
+		static const IntVector3 back;
+		// (0, 0, 1)
+		static const IntVector3 forward;
+		// (INT32_MIN, INT32_MIN, INT32_MIN)
 		static const IntVector3 minimum;
+		// (INT32_MAX, INT32_MAX, INT32_MAX)
 		static const IntVector3 maximum;
 
 		static bool less(
 			const IntVector3& a,
 			const IntVector3& b) noexcept;
+
+		struct Less
+		{
+			bool operator()(
+				const IntVector3& a,
+				const IntVector3& b) const noexcept
+			{
+				return less(a, b);
+			}
+		};
 	};
 }
