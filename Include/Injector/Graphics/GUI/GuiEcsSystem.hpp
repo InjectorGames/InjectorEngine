@@ -1,6 +1,5 @@
 #pragma once
-#include "Injector/ECS/EcsSystem.hpp"
-#include "Injector/ECS/EcsEntity.hpp"
+#include "Injector/Graphics/GpuWindow.hpp"
 #include "Injector/Graphics/CameraEcsComponent.hpp"
 #include "Injector/Graphics/GUI/GuiEcsComponent.hpp"
 #include "Injector/Mathematics/TransformEcsComponent.hpp"
@@ -10,14 +9,16 @@
 
 namespace Injector
 {
-	class GuiSystem : public EcsSystem
+	class GuiEcsSystem : public EcsSystem
 	{
 	 protected:
+		std::shared_ptr<GpuWindow> window;
 		std::set<std::shared_ptr<EcsEntity>> guis;
 	 public:
 		std::shared_ptr<EcsEntity> camera;
 
-		explicit GuiSystem() noexcept;
+		explicit GuiEcsSystem(
+			const std::shared_ptr<GpuWindow>& window) noexcept;
 
 		size_t getGuiCount() const noexcept;
 

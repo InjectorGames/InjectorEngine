@@ -103,9 +103,18 @@ namespace Injector
 			std::string& host,
 			std::string& service);
 
-		// Returns true if a < b
 		static bool less(
 			const Endpoint& a,
-			const Endpoint& b) noexcept;
+			const Endpoint& b);
+
+		struct Less
+		{
+			bool operator()(
+				const Endpoint& a,
+				const Endpoint& b) const
+			{
+				return less(a, b);
+			}
+		};
 	};
 }

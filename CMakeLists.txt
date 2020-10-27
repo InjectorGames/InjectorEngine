@@ -66,7 +66,7 @@ set(ASSIMP_INSTALL_PDB OFF CACHE BOOL "" FORCE)
 add_subdirectory(Libraries/assimp)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-    set(OPENSSL_ROOT_DIR /usr/local/Cellar/openssl@1.1/1.1.1g)
+    set(OPENSSL_ROOT_DIR /usr/local/Cellar/openssl@1.1/1.1.1h CACHE FILEPATH "" FORCE)
     set(OPENSSL_SSL_LIBRARY ${OPENSSL_ROOT_DIR}/lib/libssl.dylib CACHE FILEPATH "" FORCE)
     set(OPENSSL_CRYPTO_LIBRARY ${OPENSSL_ROOT_DIR}/lib/libcrypto.dylib CACHE FILEPATH "" FORCE)
 endif ()
@@ -130,7 +130,7 @@ add_library(InjectorEngine STATIC
 
     Source/Graphics/GUI/EditorGuiHandler.cpp
     Source/Graphics/GUI/GuiEcsComponent.cpp
-    Source/Graphics/GUI/GuiSystem.cpp
+    Source/Graphics/GUI/GuiEcsSystem.cpp
 
     Source/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlColorGpuPipeline.cpp
@@ -208,8 +208,8 @@ add_library(InjectorEngine STATIC
     Source/Network/TCP/TcpServerEcsSystem.cpp
     Source/Network/TCP/TcpServerSession.cpp
 
-    Source/Network/UDP/UdpClientSystem.cpp
-    Source/Network/UDP/UdpServerSystem.cpp
+        Source/Network/UDP/UdpClientEcsSystem.cpp
+        Source/Network/UDP/UdpServerEcsSystem.cpp
 
     Source/Network/ConsoleEcsSystem.cpp
     Source/Network/Endpoint.cpp

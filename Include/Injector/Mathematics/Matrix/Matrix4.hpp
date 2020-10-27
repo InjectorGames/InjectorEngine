@@ -117,5 +117,15 @@ namespace Injector
 		static bool less(
 			const Matrix4& a,
 			const Matrix4& b) noexcept;
+
+		struct Less
+		{
+			bool operator()(
+				const Matrix4& a,
+				const Matrix4& b) const noexcept
+			{
+				return less(a, b);
+			}
+		};
 	};
 }

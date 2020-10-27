@@ -6,6 +6,7 @@
 
 namespace Injector
 {
+	// Transfer Control Protocol server ECS system class
 	class TcpServerEcsSystem : public EcsSystem
 	{
 	 protected:
@@ -28,9 +29,9 @@ namespace Injector
 			const std::string& port,
 			size_t maxSessionCount = 256);
 
-		// Returns server socket
+		// Returns server TCP socket
 		const Socket& getSocket() const noexcept;
-		// Returns server maximal session count
+		// Returns server maximum session count
 		size_t getMaxSessionCount() const noexcept;
 		// Returns server sessions
 		const std::vector<std::shared_ptr<

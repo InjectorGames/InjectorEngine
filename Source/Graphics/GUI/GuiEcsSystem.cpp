@@ -1,18 +1,20 @@
-#include "Injector/Graphics/GUI/GuiSystem.hpp"
+#include "Injector/Graphics/GUI/GuiEcsSystem.hpp"
 
 namespace Injector
 {
-	GuiSystem::GuiSystem() noexcept :
+	GuiEcsSystem::GuiEcsSystem(
+		const std::shared_ptr<GpuWindow>& _window) noexcept :
+		window(_window),
 		guis()
 	{
 	}
 
-	size_t GuiSystem::getGuiCount() const noexcept
+	size_t GuiEcsSystem::getGuiCount() const noexcept
 	{
 		return guis.size();
 	}
 
-	void GuiSystem::update()
+	void GuiEcsSystem::update()
 	{
 		CameraEcsComponent* cameraComponent;
 
@@ -90,11 +92,26 @@ namespace Injector
 
 			guiComponent->rotation = guiComponent->rotation;
 
-			// TODO: fixed scale transforms
+			if(guiComponent->fixedScale)
+			{
+				auto guiScale = guiComponent->scale;
+				auto framebufferSize = window->getFramebufferSize();
+
+				transformComponent->scale = Vector3(
+					(guiScale.x * std::abs(frustum.x - frustum.y)) /
+						(framebufferSize.x / aspectRatio),
+					(guiScale.y * std::abs(frustum.z - frustum.w)) /
+						framebufferSize.y,
+					guiScale.z);
+			}
+			else
+			{
+				transformComponent->scale = guiComponent->scale;
+			}
 		}
 	}
 
-	bool GuiSystem::addGui(
+	bool GuiEcsSystem::addGui(
 		const std::shared_ptr<EcsEntity>& entity) noexcept
 	{
 		if (entity == nullptr)
@@ -102,7 +119,7 @@ namespace Injector
 
 		return guis.emplace(entity).second;
 	}
-	bool GuiSystem::removeGui(
+	bool GuiEcsSystem::removeGui(
 		const std::shared_ptr<EcsEntity>& entity) noexcept
 	{
 		if (entity == nullptr)
@@ -116,7 +133,7 @@ namespace Injector
 		guis.erase(iterator);
 		return true;
 	}
-	void GuiSystem::removeGuis() noexcept
+	void GuiEcsSystem::removeGuis() noexcept
 	{
 		guis.clear();
 	}

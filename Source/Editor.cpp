@@ -1,7 +1,7 @@
 #include "Injector/Engine.hpp"
 #include "Injector/Graphics/VirtualRealityEcsSystem.hpp"
 #include "Injector/Graphics/AspectRatioEcsSystem.hpp"
-#include "Injector/Graphics/GUI/GuiSystem.hpp"
+#include "Injector/Graphics/GUI/GuiEcsSystem.hpp"
 #include "Injector/Graphics/GUI/EditorGuiHandler.hpp"
 #include "Injector/Mathematics/TransformEcsSystem.hpp"
 
@@ -19,7 +19,7 @@ void initialize()
 		ImageData::readFromFile("Resources/Images/Logo16.png", 4, false), });
 
 	auto aspectRatioSystem = window->createSystem<AspectRatioEcsSystem>(window);
-	auto guiSystem = window->createSystem<GuiSystem>();
+	auto guiSystem = window->createSystem<GuiEcsSystem>(window);
 	auto transformSystem = window->createSystem<TransformEcsSystem>();
 	auto cameraSystem = window->createCameraSystem();
 	auto renderSystem = window->createRenderSystem(window);

@@ -1,45 +1,40 @@
 #pragma once
 #include "Injector/ECS/EcsSystem.hpp"
 #include "Injector/Network/Socket.hpp"
-#include "Injector/Network/SocketConnect.hpp"
 
 namespace Injector
 {
-	// Transfer Control Protocol client ECS system class
-	class TcpClientEcsSystem : public EcsSystem
+	// User Datagram Protocol client ECS system class
+	class UdpClientEcsSystem : public EcsSystem
 	{
 	 protected:
-		// Client TCP socket
+		// Client UDP socket
 		Socket socket;
-		// Socket connect state
-		SocketConnect socketConnect;
+		// Is client still connected to the server
+		bool isConnected;
 		// Server response timeout time
 		double timeoutTime;
 		// Last server response time
 		double lastResponseTime;
-		// Message receive buffer
+		// Datagram receive buffer
 		std::vector<uint8_t> receiveBuffer;
-		// Message send buffer
+		// Datagram send buffer
 		std::vector<uint8_t> sendBuffer;
 
-		// Socket result handle
-		virtual void onConnect(bool result);
 		// Message receive handle
 		virtual void onReceive(size_t byteCount);
 		// Response timeout handle
 		virtual void onResponseTimeout();
 	 public:
-		// Creates and binds a new TCP client system
-		explicit TcpClientEcsSystem(
+		// Creates and binds a new UDP client ECS system
+		explicit UdpClientEcsSystem(
 			SocketFamily family,
 			double timeoutTime = 6.0,
 			size_t receiveBufferSize = 8192,
 			size_t sendBufferSize = 8192);
 
-		// Returns client TCP socket
+		// Returns client UDP socket
 		const Socket& getSocket() const noexcept;
-		// Returns client TCP socket connect state
-		SocketConnect getSocketConnect() const noexcept;
 		// Returns server response timeout time
 		double getTimeoutTime() const noexcept;
 		// Returns last server response time

@@ -3,6 +3,7 @@
 
 namespace Injector
 {
+	// Transfer Control Protocol server session class
 	class TcpServerSession
 	{
 	 protected:
@@ -32,24 +33,26 @@ namespace Injector
 			const Endpoint& endpoint,
 			bool alive = true,
 			double timeoutTime = 6.0,
-			size_t receiveBufferSize = 65536,
-			size_t sendBufferSize = 65536);
+			size_t receiveBufferSize = 8192,
+			size_t sendBufferSize = 8192);
 
 		// Closes and destroys session
 		virtual ~TcpServerSession();
 
 		// Returns true if session is still alive
 		bool isAlive() const noexcept;
-		// Returns session timeout time
+		// Returns client timeout time
 		double getTimeoutTime() const noexcept;
-		// Returns last socket response time
+		// Returns client last response time
 		double getLastResponseTime() const noexcept;
-		// Returns session TCP socket
+		// Returns client TCP socket
 		const Socket& getSocket() const noexcept;
-		// Returns session socket remote endpoint
+		// Returns client TCP socket remote endpoint
 		const Endpoint& getEndpoint() const noexcept;
-		// Returns socket message receive buffer
+		// Returns message receive buffer
 		const std::vector<uint8_t>& getReceiveBuffer() const noexcept;
+		// Returns message send buffer
+		const std::vector<uint8_t>& getSendBuffer() const noexcept;
 
 		// Executes on each update cycle
 		void update();

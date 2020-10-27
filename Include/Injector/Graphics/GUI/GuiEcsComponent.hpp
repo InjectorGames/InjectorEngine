@@ -13,6 +13,7 @@ namespace Injector
 		Quaternion rotation;
 		Vector3 scale;
 		GuiAnchorType anchor;
+		bool fixedScale;
 		std::shared_ptr<GuiHandler> handler;
 
 		explicit GuiEcsComponent(
@@ -20,6 +21,7 @@ namespace Injector
 			const Quaternion& rotation = Quaternion(Vector3::zero),
 			const Vector3& scale = Vector3::one,
 			GuiAnchorType anchor = GuiAnchorType::Center,
+			bool fixedScale = false,
 			const std::shared_ptr<GuiHandler>& handler = nullptr);
 	};
 }

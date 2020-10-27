@@ -6,11 +6,15 @@
 
 namespace Injector
 {
+	// One endpoint of a two-way communication link between two programs
 	class Socket
 	{
 	 protected:
+		// Socket family value
 		SocketFamily family;
+		// Socket protocol value
 		SocketProtocol protocol;
+		// Socket system handle
 		int handle;
 	 public:
 		// Creates a new null socket
@@ -137,9 +141,18 @@ namespace Injector
 		Socket& operator=(
 			Socket&& socket) noexcept;
 
-		// Returns true if a < b
 		static bool less(
 			const Socket& a,
 			const Socket& b) noexcept;
+
+		struct Less
+		{
+			bool operator()(
+				const Socket& a,
+				const Socket& b) const noexcept
+			{
+				return less(a, b);
+			}
+		};
 	};
 }

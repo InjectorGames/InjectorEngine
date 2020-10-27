@@ -67,5 +67,15 @@ namespace Injector
 		static bool less(
 			const Quaternion& a,
 			const Quaternion& b) noexcept;
+
+		struct Less
+		{
+			bool operator()(
+				const Quaternion& a,
+				const Quaternion& b) const noexcept
+			{
+				return less(a, b);
+			}
+		};
 	};
 }

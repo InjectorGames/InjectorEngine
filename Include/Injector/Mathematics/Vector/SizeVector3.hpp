@@ -29,5 +29,15 @@ namespace Injector
 		static bool less(
 			const SizeVector3& a,
 			const SizeVector3& b) noexcept;
+
+		struct Less
+		{
+			bool operator()(
+				const SizeVector3& a,
+				const SizeVector3& b) const noexcept
+			{
+				return less(a, b);
+			}
+		};
 	};
 }

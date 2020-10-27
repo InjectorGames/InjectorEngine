@@ -601,7 +601,7 @@ namespace Injector
 
 	bool Endpoint::less(
 		const Endpoint& a,
-		const Endpoint& b) noexcept
+		const Endpoint& b)
 	{
 		auto socketAddress =
 			static_cast<sockaddr_storage*>(a.handle);
@@ -646,7 +646,11 @@ namespace Injector
 		}
 		else
 		{
-			return false;
+			throw Exception(
+				std::string(typeid(Endpoint).name()),
+				std::string(__func__ ),
+				std::to_string(__LINE__),
+				"Unsupported address family");
 		}
 	}
 }
