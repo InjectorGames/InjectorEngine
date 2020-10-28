@@ -1,18 +1,29 @@
 #pragma once
+#include "Injector/Defines.hpp"
 #include "Injector/Network/SocketProtocol.hpp"
 #include "Injector/Network/SocketFamily.hpp"
 
 #include <string>
 #include <vector>
 
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+#include <netdb.h>
+#include <sys/socket.h>
+#elif INJECTOR_SYSTEM_WINDOWS
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#else
+#error Unknown operating system
+#endif
+
 namespace Injector
 {
 	// Socket IP address and port number storage
-	struct Endpoint final
+	struct Endpoint
 	{
 	 private:
-		// Endpoint sockaddr_storage pointer
-		void* handle;
+		// Endpoint socket address storage
+		sockaddr_storage storage;
 	 public:
 		// Any IPv4 IP address ("0.0.0.0")
 		static const std::string anyAddressIPv4;
@@ -49,15 +60,14 @@ namespace Injector
 			uint16_t port,
 			uint32_t scopeID,
 			uint32_t flowInfo);
-		// Copies other endpoint
-		Endpoint(const Endpoint& endpoint) noexcept;
-		// Moves other endpoint
-		Endpoint(Endpoint&& endpoint) noexcept;
 		// Destroys endpoint
-		virtual ~Endpoint();
+		virtual ~Endpoint() = default;
 
-		// Returns endpoint sockaddr_storage pointer
-		void* getHandle() const noexcept;
+		// Returns endpoint socket address storage
+		sockaddr_storage& getStorage() noexcept;
+		// Returns endpoint socket address storage
+		const sockaddr_storage& getStorage() const noexcept;
+
 		// Returns socket endpoint family
 		SocketFamily getSocketFamily() const noexcept;
 
@@ -85,11 +95,6 @@ namespace Injector
 		bool operator==(const Endpoint& endpoint) const noexcept;
 		// Returns true if socket endpoints is not equal
 		bool operator!=(const Endpoint& endpoint) const noexcept;
-
-		// Endpoint copy assigment operator
-		Endpoint& operator=(const Endpoint& endpoint) noexcept;
-		// Endpoint move assigment operator
-		Endpoint& operator=(Endpoint&& endpoint) noexcept;
 
 		// Resolves socket endpoints from host and service
 		static std::vector<Endpoint> resolve(

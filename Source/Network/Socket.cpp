@@ -2,28 +2,12 @@
 #include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
 
-#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
-#include <netdb.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#define NULL_SOCKET -1
-#define SOCKET_TYPE int
-#elif INJECTOR_SYSTEM_WINDOWS
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#define NULL_SOCKET INVALID_SOCKET
-#define SOCKET_TYPE SOCKET
-#else
-#error Unknown operating system
-#endif
-
 namespace Injector
 {
 	Socket::Socket() noexcept :
 		family(SocketFamily::Unspecified),
 		protocol(SocketProtocol::Unspecified),
-		handle(static_cast<int>(NULL_SOCKET))
+		handle(NULL_SOCKET)
 	{
 	}
 	Socket::Socket(
@@ -96,14 +80,14 @@ namespace Injector
 				"Failed to create socket");
 		}
 
-		handle = static_cast<int>(socket);
+		handle = socket;
 	}
 	Socket::Socket(Socket&& socket) noexcept
 	{
 		family = socket.family;
 		protocol = socket.protocol;
 		handle = socket.handle;
-		socket.handle = static_cast<int>(NULL_SOCKET);
+		socket.handle = NULL_SOCKET;
 	}
 	Socket::~Socket()
 	{
@@ -119,14 +103,18 @@ namespace Injector
 	{
 		return protocol;
 	}
+	SOCKET_TYPE Socket::getHandle() const noexcept
+	{
+		return handle;
+	}
 
-	bool Socket::getIsListening() const
+	bool Socket::isListening() const
 	{
 		bool listening;
 		socklen_t length = sizeof(bool);
 
 		auto result = ::getsockopt(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			SOL_SOCKET,
 			SO_ACCEPTCONN,
 			reinterpret_cast<char*>(&listening),
@@ -148,13 +136,13 @@ namespace Injector
 	{
 		auto endpoint = Endpoint();
 
-		auto address = static_cast<sockaddr*>(
-			endpoint.getHandle());
+		auto address = reinterpret_cast<sockaddr*>(
+			&endpoint.getStorage());
 		socklen_t length =
 			sizeof(sockaddr_storage);
 
 		auto result = ::getsockname(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			address,
 			&length);
 
@@ -173,13 +161,13 @@ namespace Injector
 	{
 		auto endpoint = Endpoint();
 
-		auto address = static_cast<sockaddr*>(
-			endpoint.getHandle());
+		auto address = reinterpret_cast<sockaddr*>(
+			&endpoint.getStorage());
 		socklen_t length =
 			sizeof(sockaddr_storage);
 
 		auto result = ::getpeername(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			address,
 			&length);
 
@@ -235,15 +223,16 @@ namespace Injector
 			1;
 
 		auto result = ioctlsocket(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			FIONBIO,
 			&mode);
 
    		if(result != 0)
    		{
 			throw Exception(
-				"Socket",
-				"setBlockingMode",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to set socket mode");
    		}
 #endif
@@ -256,7 +245,7 @@ namespace Injector
 		socklen_t size = sizeof(timeval);
 
 		auto result = getsockopt(
-			static_cast<int>(handle),
+			handle,
 			SOL_SOCKET,
 			SO_RCVTIMEO,
 			&timeout,
@@ -279,7 +268,7 @@ namespace Injector
 		int size = sizeof(uint32_t);
 
 		auto result = getsockopt(
-			static_cast<int>(handle),
+			handle,
 			SOL_SOCKET,
 			SO_RCVTIMEO,
 			reinterpret_cast<char*>(&timeout),
@@ -288,8 +277,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"getReceiveTimeout",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get socket option");
 		}
 
@@ -304,7 +294,7 @@ namespace Injector
 		timeout.tv_usec = (milliseconds % 1000) * 1000;
 
 		auto result = setsockopt(
-			static_cast<int>(handle),
+			handle,
 			SOL_SOCKET,
 			SO_RCVTIMEO,
 			&timeout,
@@ -320,7 +310,7 @@ namespace Injector
 		}
 #elif INJECTOR_SYSTEM_WINDOWS
 		auto result = setsockopt(
-			static_cast<int>(handle),
+			handle,
 			SOL_SOCKET,
 			SO_RCVTIMEO,
 			reinterpret_cast<const char*>(&milliseconds),
@@ -344,7 +334,7 @@ namespace Injector
 		socklen_t size = sizeof(timeval);
 
 		auto result = getsockopt(
-			static_cast<int>(handle),
+			handle,
 			SOL_SOCKET,
 			SO_SNDTIMEO,
 			&timeout,
@@ -367,7 +357,7 @@ namespace Injector
 		int size = sizeof(uint32_t);
 
 		auto result = getsockopt(
-			static_cast<int>(handle),
+			handle,
 			SOL_SOCKET,
 			SO_SNDTIMEO,
 			reinterpret_cast<char*>(&timeout),
@@ -376,8 +366,9 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				"Socket",
-				"getReceiveTimeout",
+				std::string(typeid(Socket).name()),
+				std::string(__func__),
+				std::to_string(__LINE__),
 				"Failed to get socket option");
 		}
 
@@ -392,7 +383,7 @@ namespace Injector
 		timeout.tv_usec = (milliseconds % 1000) * 1000;
 
 		auto result = setsockopt(
-			static_cast<int>(handle),
+			handle,
 			SOL_SOCKET,
 			SO_RCVTIMEO,
 			&timeout,
@@ -408,7 +399,7 @@ namespace Injector
 		}
 #elif INJECTOR_SYSTEM_WINDOWS
 		auto result = setsockopt(
-			static_cast<int>(handle),
+			handle,
 			SOL_SOCKET,
 			SO_RCVTIMEO,
 			reinterpret_cast<const char*>(&milliseconds),
@@ -427,8 +418,8 @@ namespace Injector
 
 	void Socket::bind(const Endpoint& endpoint)
 	{
-		auto address = static_cast<const sockaddr*>(
-			endpoint.getHandle());
+		auto address = reinterpret_cast<const sockaddr*>(
+			&endpoint.getStorage());
 		auto family = endpoint.getSocketFamily();
 
 		socklen_t length;
@@ -451,7 +442,7 @@ namespace Injector
 		}
 
 		auto result = ::bind(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			address,
 			length);
 
@@ -467,7 +458,7 @@ namespace Injector
 	void Socket::listen()
 	{
 		auto result = ::listen(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			SOMAXCONN);
 
 		if(result != 0)
@@ -484,13 +475,13 @@ namespace Injector
 		Socket& socket,
 		Endpoint& endpoint) noexcept
 	{
-		auto address = static_cast<sockaddr*>(
-			endpoint.getHandle());
+		auto address = reinterpret_cast<sockaddr*>(
+			&endpoint.getStorage());
 		socklen_t length =
 			sizeof(sockaddr_storage);
 
 		auto result = ::accept(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			address,
 			&length);
 
@@ -505,8 +496,8 @@ namespace Injector
 	}
 	bool Socket::connect(const Endpoint& endpoint) noexcept
 	{
-		auto address = static_cast<const sockaddr*>(
-			endpoint.getHandle());
+		auto address = reinterpret_cast<const sockaddr*>(
+			&endpoint.getStorage());
 		auto family = endpoint.getSocketFamily();
 
 		socklen_t length;
@@ -519,7 +510,7 @@ namespace Injector
 			return false;
 
 		auto result = ::connect(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			address,
 			length);
 
@@ -531,7 +522,7 @@ namespace Injector
 		int size) noexcept
 	{
 		return ::recv(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			static_cast<char*>(buffer),
 			size,
 			0);
@@ -541,7 +532,7 @@ namespace Injector
 		int size) noexcept
 	{
 		return ::send(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			static_cast<const char*>(buffer),
 			size,
 			0);
@@ -552,13 +543,13 @@ namespace Injector
 		int size,
 		Endpoint& endpoint) noexcept
 	{
-		auto address = static_cast<sockaddr*>(
-			endpoint.getHandle());
+		auto address = reinterpret_cast<sockaddr*>(
+			&endpoint.getStorage());
 		socklen_t length =
 			sizeof(sockaddr_storage);
 
 		auto result = ::recvfrom(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			static_cast<char*>(buffer),
 			size,
 			0,
@@ -575,11 +566,11 @@ namespace Injector
 		int size,
 		const Endpoint& endpoint) noexcept
 	{
-		auto address = static_cast<const sockaddr*>(
-			endpoint.getHandle());
+		auto address = reinterpret_cast<const sockaddr*>(
+			&endpoint.getStorage());
 
 		return ::sendto(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			static_cast<const char*>(buffer),
 			size,
 			0,
@@ -613,20 +604,19 @@ namespace Injector
 #endif
 
 		auto result = ::shutdown(
-			static_cast<SOCKET_TYPE>(handle),
+			handle,
 			shutdownType);
 
 		return result == 0;
 	}
 	bool Socket::close() noexcept
 	{
-		handle = static_cast<int>(NULL_SOCKET);
+		handle = NULL_SOCKET;
 
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 		return ::close(handle) == 0;
 #elif INJECTOR_SYSTEM_WINDOWS
-		return ::closesocket(
-			static_cast<SOCKET_TYPE>(handle)) == 0;
+		return ::closesocket(handle) == 0;
 #endif
 	}
 
@@ -651,7 +641,7 @@ namespace Injector
 			handle = socket.handle;
 			socket.family = SocketFamily::Unspecified;
 			socket.protocol = SocketProtocol::Unspecified;
-			socket.handle = static_cast<int>(NULL_SOCKET);
+			socket.handle = NULL_SOCKET;
 		}
 
 		return *this;

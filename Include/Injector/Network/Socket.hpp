@@ -1,8 +1,20 @@
 #pragma once
+#include "Injector/Defines.hpp"
 #include "Injector/Network/Endpoint.hpp"
 #include "Injector/Network/SocketProtocol.hpp"
 #include "Injector/Network/SocketShutdown.hpp"
-#include "Injector/Network/RequestResponse.hpp"
+
+#if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
+#include <fcntl.h>
+#include <unistd.h>
+#define NULL_SOCKET -1
+#define SOCKET_TYPE int
+#elif INJECTOR_SYSTEM_WINDOWS
+#define NULL_SOCKET INVALID_SOCKET
+#define SOCKET_TYPE SOCKET
+#else
+#error Unknown operating system
+#endif
 
 namespace Injector
 {
@@ -15,7 +27,7 @@ namespace Injector
 		// Socket protocol value
 		SocketProtocol protocol;
 		// Socket system handle
-		int handle;
+		SOCKET_TYPE handle;
 	 public:
 		// Creates a new null socket
 		Socket() noexcept;
@@ -34,9 +46,11 @@ namespace Injector
 		SocketFamily getAddressFamily() const noexcept;
 		// Returns socket protocol type
 		SocketProtocol getProtocolType() const noexcept;
+		// Returns socket system handle
+		SOCKET_TYPE getHandle() const noexcept;
 
 		// Returns true if socket is listening
-		bool getIsListening() const;
+		bool isListening() const;
 
 		// Returns current endpoint to which socket is bound
 		Endpoint getLocalEndpoint() const;
@@ -73,7 +87,7 @@ namespace Injector
 
 		// Returns receives message byte count
 		template<class T = uint8_t>
-		int receive(std::vector<T>& buffer)
+		int receive(std::vector<T>& buffer) noexcept
 		{
 			return receive(
 				buffer.data(),
@@ -81,7 +95,7 @@ namespace Injector
 		}
 		// Returns sent message byte count
 		template<class T = uint8_t>
-		int send(const std::vector<T>& buffer)
+		int send(const std::vector<T>& buffer) noexcept
 		{
 			return send(
 				buffer.data(),
@@ -103,7 +117,7 @@ namespace Injector
 		template<class T = uint8_t>
 		int receiveFrom(
 			std::vector<T>& buffer,
-			Endpoint& endpoint)
+			Endpoint& endpoint) noexcept
 		{
 			return receiveFrom(
 				buffer.data(),
@@ -114,7 +128,7 @@ namespace Injector
 		template<class T = uint8_t>
 		int sendTo(
 			const std::vector<T>& buffer,
-			const Endpoint& endpoint)
+			const Endpoint& endpoint) noexcept
 		{
 			return sendTo(
 				buffer.data(),

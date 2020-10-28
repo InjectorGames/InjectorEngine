@@ -4,89 +4,79 @@
 
 namespace Injector
 {
-	void UdpClientEcsSystem::onReceive(size_t byteCount)
+	void UdpClientEcsSystem::onAsyncReceive(
+		int byteCount)
 	{
-		lastResponseTime = Engine::getUpdateStartTime();
+		datagramBufferMutex.lock();
+
+		if(datagramBuffer.size() < maxDatagramBufferSize)
+		{
+			auto datagram = createDatagram(
+				receiveBuffer.data(),
+				receiveBuffer.size());
+
+			datagramBuffer.push_back(std::move(datagram));
+			lastResponseTime = Engine::getTimeNow();
+		}
+
+		datagramBufferMutex.unlock();
 	}
+
 	void UdpClientEcsSystem::onResponseTimeout()
 	{
-		isConnected = false;
+		running = false;
 	}
 
 	UdpClientEcsSystem::UdpClientEcsSystem(
 		SocketFamily family,
-		double _timeoutTime,
-		size_t _receiveBufferSize,
-		size_t _sendBufferSize) :
-		socket(family, SocketProtocol::UDP),
-		timeoutTime(_timeoutTime),
-		lastResponseTime(0.0),
-		receiveBuffer(_receiveBufferSize),
-		sendBuffer(_sendBufferSize)
+		double _responseTimeoutTime,
+		size_t _maxDatagramBufferSize,
+		size_t receiveBufferSize) :
+		UdpClient(
+			family,
+			receiveBufferSize),
+		responseTimeoutTime(_responseTimeoutTime),
+		maxDatagramBufferSize(_maxDatagramBufferSize),
+		datagramBufferMutex(),
+		datagramBuffer()
 	{
-		auto localEndpoint = Endpoint();
-
-		if (family == SocketFamily::IPv4)
-		{
-			localEndpoint = Endpoint::anyIPv4;
-		}
-		else if (family == SocketFamily::IPv6)
-		{
-			localEndpoint = Endpoint::anyIPv6;
-		}
-		else
-		{
-			throw Exception(
-				std::string(typeid(UdpClientEcsSystem).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
-				"Unspecified socket family");
-		}
-
-		socket.setBlocking(false);
-		socket.bind(localEndpoint);
 	}
 
-	const Socket& UdpClientEcsSystem::getSocket() const noexcept
-	{
-		return socket;
-	}
 	double UdpClientEcsSystem::getTimeoutTime() const noexcept
 	{
-		return timeoutTime;
+		return responseTimeoutTime;
 	}
-	double UdpClientEcsSystem::getLastResponseTime() const noexcept
+	void UdpClientEcsSystem::setTimeoutTime(double time) noexcept
 	{
-		return lastResponseTime;
+		responseTimeoutTime = time;
 	}
-	const std::vector<uint8_t>& UdpClientEcsSystem::getReceiveBuffer() const noexcept
+
+	size_t UdpClientEcsSystem::getMaxDatagramBufferSize() const noexcept
 	{
-		return receiveBuffer;
+		return maxDatagramBufferSize;
 	}
-	const std::vector<uint8_t>& UdpClientEcsSystem::getSendBuffer() const noexcept
+	void UdpClientEcsSystem::setMaxDatagramBufferSize(size_t size) noexcept
 	{
-		return sendBuffer;
+		maxDatagramBufferSize = size;
 	}
 
 	void UdpClientEcsSystem::update()
 	{
-		if(Engine::getUpdateStartTime() - lastResponseTime > timeoutTime)
+		if(!running)
+			return;
+
+		if(Engine::getUpdateStartTime() - lastResponseTime > responseTimeoutTime)
 		{
 			onResponseTimeout();
 			return;
 		}
 
-		int byteCount;
+		datagramBufferMutex.lock();
 
-		while((byteCount = socket.receive(receiveBuffer)) > 0)
-			onReceive(static_cast<size_t>(byteCount));
-	}
+		for (int i = 0; i < datagramBuffer.size(); i++)
+			onDatagramReceive(datagramBuffer[i]);
 
-	void UdpClientEcsSystem::connect(
-		const Endpoint& endpoint)
-	{
-		socket.connect(endpoint);
-		lastResponseTime = Engine::getUpdateStartTime();
-		isConnected = true;
+		datagramBuffer.clear();
+		datagramBufferMutex.unlock();
 	}
 }

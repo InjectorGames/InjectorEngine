@@ -3,9 +3,6 @@
 #include "Injector/Graphics/OpenGL/GlGpuWindow.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuWindow.hpp"
 
-#include <thread>
-#include <iostream>
-
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 #include <signal.h>
 #elif INJECTOR_SYSTEM_WINDOWS
@@ -19,6 +16,12 @@
 #if INJECTOR_SUPPORT_VIRTUAL_REALITY
 #include "openvr.h"
 #endif
+
+#include "openssl/ssl.h"
+#include "openssl/err.h"
+
+#include <thread>
+#include <iostream>
 
 namespace Injector
 {
@@ -205,6 +208,9 @@ namespace Injector
 		}
 #endif
 
+		SSL_load_error_strings();
+		OpenSSL_add_ssl_algorithms();
+
 		networkInitialized = true;
 		std::cout << "Engine: Initialized Network\n";
 	}
@@ -226,6 +232,8 @@ namespace Injector
 				std::to_string(__LINE__),
 				"Network is already terminated");
 		}
+
+		EVP_cleanup();
 
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 		signal(SIGPIPE, SIG_DFL);

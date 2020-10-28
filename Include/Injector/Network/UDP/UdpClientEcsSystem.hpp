@@ -1,53 +1,58 @@
 #pragma once
 #include "Injector/ECS/EcsSystem.hpp"
-#include "Injector/Network/Socket.hpp"
+#include "Injector/Network/UDP/UdpClient.hpp"
+#include "Injector/Network/Datagram.hpp"
+#include "Injector/Network/DatagramFactory.hpp"
 
 namespace Injector
 {
 	// User Datagram Protocol client ECS system class
-	class UdpClientEcsSystem : public EcsSystem
+	class UdpClientEcsSystem :
+		public EcsSystem,
+		public UdpClient
 	{
 	 protected:
-		// Client UDP socket
-		Socket socket;
-		// Is client still connected to the server
-		bool isConnected;
+		// Maximal datagram buffer size
+		size_t maxDatagramBufferSize;
 		// Server response timeout time
-		double timeoutTime;
-		// Last server response time
-		double lastResponseTime;
-		// Datagram receive buffer
-		std::vector<uint8_t> receiveBuffer;
-		// Datagram send buffer
-		std::vector<uint8_t> sendBuffer;
+		double responseTimeoutTime;
+		// Received datagram buffer mutex
+		std::mutex datagramBufferMutex;
+		// Received datagram buffer
+		std::vector<std::shared_ptr<Datagram>> datagramBuffer;
 
 		// Message receive handle
-		virtual void onReceive(size_t byteCount);
-		// Response timeout handle
+		void onAsyncReceive(
+			int byteCount) override;
+
+		// Create datagram handle
+		virtual std::shared_ptr<Datagram> createDatagram(
+			const void* buffer,
+			size_t byteCount) = 0;
+		// Datagram receive handle
+		virtual void onDatagramReceive(
+			const std::shared_ptr<Datagram>& datagram) = 0;
+		// Server response timeout handle
 		virtual void onResponseTimeout();
 	 public:
 		// Creates and binds a new UDP client ECS system
-		explicit UdpClientEcsSystem(
+		UdpClientEcsSystem(
 			SocketFamily family,
-			double timeoutTime = 6.0,
-			size_t receiveBufferSize = 8192,
-			size_t sendBufferSize = 8192);
+			double responseTimeoutTime = 6.0,
+			size_t maxDatagramBufferLength = 16,
+			size_t receiveBufferSize = 8192);
 
-		// Returns client UDP socket
-		const Socket& getSocket() const noexcept;
-		// Returns server response timeout time
+		// Returns client receive timeout time
 		double getTimeoutTime() const noexcept;
-		// Returns last server response time
-		double getLastResponseTime() const noexcept;
-		// Returns message receive buffer
-		const std::vector<uint8_t>& getReceiveBuffer() const noexcept;
-		// Returns message send buffer
-		const std::vector<uint8_t>& getSendBuffer() const noexcept;
+		// Sets client receive timeout time
+		void setTimeoutTime(double time) noexcept;
+
+		// Returns maximal received datagram buffer size
+		size_t getMaxDatagramBufferSize() const noexcept;
+		// Sets maximal received datagram buffer size
+		void setMaxDatagramBufferSize(size_t size) noexcept;
 
 		// Executes on each update cycle
 		void update() override;
-
-		// Starts connection to the server
-		void connect(const Endpoint& endpoint);
 	};
 }

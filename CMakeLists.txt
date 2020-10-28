@@ -204,14 +204,17 @@ add_library(InjectorEngine STATIC
     Source/Mathematics/TransformEcsSystem.cpp
     Source/Mathematics/TranslateEcsComponent.cpp
 
+    Source/Network/TCP/TcpClient.cpp
     Source/Network/TCP/TcpClientEcsSystem.cpp
-    Source/Network/TCP/TcpServerEcsSystem.cpp
-    Source/Network/TCP/TcpServerSession.cpp
+    Source/Network/TCP/TcpServer.cpp
+    Source/Network/TCP/TcpSession.cpp
 
-        Source/Network/UDP/UdpClientEcsSystem.cpp
-        Source/Network/UDP/UdpServerEcsSystem.cpp
+    Source/Network/UDP/UdpClient.cpp
+    Source/Network/UDP/UdpClientEcsSystem.cpp
+    Source/Network/UDP/UdpServer.cpp
 
     Source/Network/ConsoleEcsSystem.cpp
+    Source/Network/Datagram.cpp
     Source/Network/Endpoint.cpp
     Source/Network/Socket.cpp
 
