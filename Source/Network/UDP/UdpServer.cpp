@@ -8,7 +8,7 @@ namespace Injector
 		while(running)
 		{
 			auto endpoint = Endpoint();
-			
+
 			auto byteCount = socket.receiveFrom(
 				receiveBuffer, 
 				endpoint);
@@ -45,9 +45,7 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				std::string(typeid(UdpServer).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unspecified socket family");
 		}
 
@@ -68,9 +66,7 @@ namespace Injector
 		if(running)
 		{
 			throw Exception(
-				std::string(typeid(UdpServer).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Server is already running");
 		}
 
@@ -84,15 +80,6 @@ namespace Injector
 		const Datagram& datagram,
 		const Endpoint& endpoint)
 	{
-		if(!datagram.isValid())
-		{
-			throw Exception(
-				std::string(typeid(UdpServer).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
-				"Datagram is not valid");
-		}
-
 		auto byteSize = datagram.getByteSize();
 
 		if(sendBuffer.size() < byteSize)
@@ -100,7 +87,7 @@ namespace Injector
 
 		datagram.writeData(sendBuffer.data());
 
-		socket.sendTo(
+		return socket.sendTo(
 			sendBuffer,
 			endpoint);
 	}

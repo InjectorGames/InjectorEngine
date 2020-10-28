@@ -23,9 +23,7 @@ namespace Injector
 			return vk::SamplerAddressMode::eMirrorClampToEdge;
 		default:
 			throw Exception(
-				"",
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unsupported image wrap");
 		}
 	}

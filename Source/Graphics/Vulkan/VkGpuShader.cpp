@@ -13,17 +13,13 @@ namespace Injector
 		if(!_device)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuShader).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"device");
 		}
 		if(!data)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuShader).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"data");
 		}
 
@@ -39,9 +35,7 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				std::string(typeid(VkGpuShader).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to create shader module");
 		}
 	}

@@ -82,9 +82,7 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				std::string(typeid(TcpServer).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unspecified socket family");
 		}
 
@@ -113,9 +111,7 @@ namespace Injector
 		if(running)
 		{
 			throw Exception(
-				std::string(typeid(TcpServer).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Server is already running");
 		}
 

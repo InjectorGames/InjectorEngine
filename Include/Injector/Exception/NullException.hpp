@@ -9,9 +9,7 @@ namespace Injector
 	 public:
 		// Creates a new null exception
 		NullException(
-			const std::string& className,
 			const std::string& functionName,
-			const std::string& lineNumber,
 			const std::string& variableName) noexcept;
 	};
 }

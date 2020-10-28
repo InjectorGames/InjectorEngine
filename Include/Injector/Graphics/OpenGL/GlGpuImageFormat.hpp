@@ -92,9 +92,7 @@ namespace Injector
 			return GL_DEPTH32F_STENCIL8;
 		default:
 			throw Exception(
-				"",
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unsupported image format");
 		}
 	}

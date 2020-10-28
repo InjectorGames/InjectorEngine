@@ -1,4 +1,3 @@
-#pragma once
 #include "Injector/Network/UDP/UdpClient.hpp"
 #include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
@@ -12,8 +11,13 @@ namespace Injector
 			auto byteCount = socket.receive(
 				receiveBuffer);
 
-			if (byteCount > 0)
-				onAsyncReceive(byteCount);
+			if (byteCount <= 0)
+			{
+				running = false;
+				return;
+			}
+
+			onAsyncReceive(byteCount);
 		}
 	}
 
@@ -46,9 +50,7 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				std::string(typeid(UdpClient).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unspecified socket family");
 		}
 
@@ -82,16 +84,14 @@ namespace Injector
 		if(running)
 		{
 			throw Exception(
-				std::string(typeid(UdpClient).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Client is already running");
 		}
 
 		running = true;
+		lastResponseTime = Engine::getTimeNow();
 
 		socket.connect(endpoint);
-		lastResponseTime = Engine::getTimeNow();
 
 		receiveThread = std::thread(
 			&UdpClient::asyncReceiveHandle,
@@ -100,21 +100,12 @@ namespace Injector
 	int UdpClient::send(
 		const Datagram& datagram)
 	{
-		if(!datagram.isValid())
-		{
-			throw Exception(
-				std::string(typeid(UdpClient).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
-				"Datagram is not valid");
-		}
-
 		auto byteSize = datagram.getByteSize();
 
 		if(sendBuffer.size() < byteSize)
 			sendBuffer.resize(byteSize);
 
 		datagram.writeData(sendBuffer.data());
-		socket.send(sendBuffer);
+		return socket.send(sendBuffer);
 	}
 }

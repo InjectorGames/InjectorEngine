@@ -20,9 +20,7 @@ namespace Injector
 			return GL_TRANSFORM_FEEDBACK_BUFFER;
 		default:
 			throw Exception(
-				"",
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unsupported buffer type");
 		}
 	}

@@ -62,6 +62,8 @@ namespace Injector
 
 	void UdpClientEcsSystem::update()
 	{
+		datagramBufferMutex.lock();
+
 		if(!running)
 			return;
 
@@ -70,8 +72,6 @@ namespace Injector
 			onResponseTimeout();
 			return;
 		}
-
-		datagramBufferMutex.lock();
 
 		for (int i = 0; i < datagramBuffer.size(); i++)
 			onDatagramReceive(datagramBuffer[i]);

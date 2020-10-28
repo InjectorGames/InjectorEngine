@@ -123,9 +123,7 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"No supported composite alpha");
 		}
 	}
@@ -168,9 +166,7 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to create swapchain");
 		}
 
@@ -252,9 +248,7 @@ namespace Injector
 		if (result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to create render pass");
 		}
 
@@ -291,9 +285,7 @@ namespace Injector
 		}
 
 		throw Exception(
-			std::string(typeid(VkGpuSwapchain).name()),
-			std::string(__func__),
-			std::to_string(__LINE__),
+			THIS_FUNCTION_NAME,
 			"No supported depth format");
 	}
 	vk::ImageView VkGpuSwapchain::createDepthImageView(
@@ -324,9 +316,7 @@ namespace Injector
 		if(result != vk::Result::eSuccess)
 		{
 			throw Exception(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to create image view");
 		}
 
@@ -386,49 +376,37 @@ namespace Injector
 		if(!allocator)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"allocator");
 		}
 		if(!_device)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"device");
 		}
 		if(!_physicalDevice)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"physicalDevice");
 		}
 		if(!surface)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"surface");
 		}
 		if(!graphicsCommandPool)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"graphicsCommandPool");
 		}
 		if(!presentCommandPool)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"presentCommandPool");
 		}
 
@@ -550,33 +528,25 @@ namespace Injector
 		if(!device)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"device");
 		}
 		if(!allocator)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"allocator");
 		}
 		if(!graphicsCommandPool)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"graphicsCommandPool");
 		}
 		if(!presentCommandPool)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuSwapchain).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"presentCommandPool");
 		}
 

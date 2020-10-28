@@ -20,9 +20,7 @@ namespace Injector
 		if(size.x < 1 || size.y < 1)
 		{
 			throw Exception(
-				std::string(typeid(GlGpuWindow).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Incorrect window x/y size");
 		}
 
@@ -71,9 +69,7 @@ namespace Injector
 		if (glewInit() != GLEW_OK)
 		{
 			throw Exception(
-				std::string(typeid(GlGpuWindow).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to initialize GLEW");
 		}
 
@@ -152,9 +148,7 @@ namespace Injector
 		if (!fileStream.is_open())
 		{
 			throw Exception(
-				std::string(typeid(GlGpuWindow).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to open shader file '" +
 					std::string(filePath) + "'");
 		}

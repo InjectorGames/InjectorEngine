@@ -1,57 +1,59 @@
 #pragma once
 #include "Injector/ECS/EcsSystem.hpp"
-#include "Injector/Network/Socket.hpp"
-#include "Injector/Network/SocketConnect.hpp"
+#include "Injector/Network/TCP/TcpClient.hpp"
+#include "Injector/Network/Datagram.hpp"
+
+#include <mutex>
 
 namespace Injector
 {
 	// Transfer Control Protocol client ECS system class
-	class TcpClientEcsSystem : public EcsSystem
+	class TcpClientEcsSystem :
+		public EcsSystem,
+		public TcpClient
 	{
 	 protected:
-		// Client TCP socket
-		Socket socket;
-		// Socket connect state
-		SocketConnect socketConnect;
+		// Maximal datagram buffer size
+		size_t maxDatagramBufferSize;
 		// Server response timeout time
-		double timeoutTime;
-		// Last server response time
-		double lastResponseTime;
-		// Message receive buffer
-		std::vector<uint8_t> receiveBuffer;
-		// Message send buffer
-		std::vector<uint8_t> sendBuffer;
+		double responseTimeoutTime;
+		// Received datagram buffer mutex
+		std::mutex datagramBufferMutex;
+		// Received datagram buffer
+		std::vector<std::shared_ptr<Datagram>> datagramBuffer;
 
-		// Socket result handle
-		virtual void onConnect(bool result);
 		// Message receive handle
-		virtual void onReceive(size_t byteCount);
-		// Response timeout handle
+		void onAsyncReceive(
+			int byteCount) override;
+
+		// Create datagram handle
+		virtual std::shared_ptr<Datagram> createDatagram(
+			const void* buffer,
+			size_t byteCount) = 0;
+		// Datagram receive handle
+		virtual void onDatagramReceive(
+			const std::shared_ptr<Datagram>& datagram) = 0;
+		// Server response timeout handle
 		virtual void onResponseTimeout();
 	 public:
 		// Creates and binds a new TCP client system
 		explicit TcpClientEcsSystem(
 			SocketFamily family,
-			double timeoutTime = 6.0,
+			double responseTimeoutTime = 6.0,
+			size_t maxDatagramBufferLength = 16,
 			size_t receiveBufferSize = 8192);
 
-		// Returns client TCP socket
-		const Socket& getSocket() const noexcept;
-		// Returns client TCP socket connect state
-		SocketConnect getSocketConnect() const noexcept;
-		// Returns server response timeout time
+		// Returns server receive timeout time
 		double getTimeoutTime() const noexcept;
-		// Returns last server response time
-		double getLastResponseTime() const noexcept;
-		// Returns message receive buffer
-		const std::vector<uint8_t>& getReceiveBuffer() const noexcept;
-		// Returns message send buffer
-		const std::vector<uint8_t>& getSendBuffer() const noexcept;
+		// Sets server receive timeout time
+		void setTimeoutTime(double time) noexcept;
 
-		// Executes on each update cycle
+		// Returns maximal received datagram buffer size
+		size_t getMaxDatagramBufferSize() const noexcept;
+		// Sets maximal received datagram buffer size
+		void setMaxDatagramBufferSize(size_t size) noexcept;
+
+		// Processes received datagrams
 		void update() override;
-
-		// Starts connection to the server
-		void connect(const Endpoint& endpoint);
 	};
 }

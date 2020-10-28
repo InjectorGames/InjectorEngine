@@ -14,17 +14,13 @@ namespace Injector
 		if(_vertexBuffer && _vertexBuffer->getType() != GpuBufferType::Vertex)
 		{
 			throw Exception(
-				std::string(typeid(VkGpuMesh).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer type is not vertex");
 		}
 		if(_indexBuffer && _indexBuffer->getType() != GpuBufferType::Index)
 		{
 			throw Exception(
-				std::string(typeid(VkGpuMesh).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer type is not index");
 		}
 	}
@@ -39,9 +35,7 @@ namespace Injector
 		if(buffer && buffer->getType() != GpuBufferType::Vertex)
 		{
 			throw Exception(
-				std::string(typeid(VkGpuMesh).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer type is not vertex");
 		}
 
@@ -58,9 +52,7 @@ namespace Injector
 		if(buffer && buffer->getType() != GpuBufferType::Index)
 		{
 			throw Exception(
-				std::string(typeid(VkGpuMesh).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer type is not index");
 		}
 
@@ -72,9 +64,7 @@ namespace Injector
 		if(!commandBuffer)
 		{
 			throw NullException(
-				std::string(typeid(VkGpuMesh).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"commandBuffer");
 		}
 

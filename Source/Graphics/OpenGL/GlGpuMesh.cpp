@@ -14,17 +14,13 @@ namespace Injector
 		if(_vertexBuffer && _vertexBuffer->getType() != GpuBufferType::Vertex)
 		{
 			throw Exception(
-				std::string(typeid(GlGpuMesh).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer type is not vertex");
 		}
 		if(_indexBuffer && _indexBuffer->getType() != GpuBufferType::Index)
 		{
 			throw Exception(
-				std::string(typeid(GlGpuMesh).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer type is not index");
 		}
 
@@ -44,9 +40,7 @@ namespace Injector
 		if(buffer && buffer->getType() != GpuBufferType::Vertex)
 		{
 			throw Exception(
-				std::string(typeid(GlGpuMesh).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer type is not vertex");
 		}
 
@@ -62,9 +56,7 @@ namespace Injector
 		if(buffer && buffer->getType() != GpuBufferType::Index)
 		{
 			throw Exception(
-				std::string(typeid(GlGpuMesh).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer type is not index");
 		}
 
@@ -81,9 +73,7 @@ namespace Injector
 		if(!pipeline)
 		{
 			throw NullException(
-				std::string(typeid(GlGpuMesh).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"pipeline");
 		}
 

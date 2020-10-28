@@ -2,7 +2,8 @@
 #include "Injector/ECS/EcsSystem.hpp"
 #include "Injector/Network/UDP/UdpClient.hpp"
 #include "Injector/Network/Datagram.hpp"
-#include "Injector/Network/DatagramFactory.hpp"
+
+#include <mutex>
 
 namespace Injector
 {
@@ -42,9 +43,9 @@ namespace Injector
 			size_t maxDatagramBufferLength = 16,
 			size_t receiveBufferSize = 8192);
 
-		// Returns client receive timeout time
+		// Returns server receive timeout time
 		double getTimeoutTime() const noexcept;
-		// Sets client receive timeout time
+		// Sets server receive timeout time
 		void setTimeoutTime(double time) noexcept;
 
 		// Returns maximal received datagram buffer size
@@ -52,7 +53,7 @@ namespace Injector
 		// Sets maximal received datagram buffer size
 		void setMaxDatagramBufferSize(size_t size) noexcept;
 
-		// Executes on each update cycle
+		// Processes received datagrams
 		void update() override;
 	};
 }

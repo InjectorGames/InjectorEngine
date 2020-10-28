@@ -14,9 +14,7 @@ namespace Injector
 		if(!_colorImage)
 		{
 			throw NullException(
-				std::string(typeid(GpuFramebuffer).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"colorImage");
 		}
 	}

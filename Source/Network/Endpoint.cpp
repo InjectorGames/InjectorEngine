@@ -51,9 +51,7 @@ namespace Injector
 			freeaddrinfo(addressInfos);
 
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to get address information");
 		}
 
@@ -76,9 +74,7 @@ namespace Injector
 		if (address.size() != sizeof(in_addr))
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Incorrect address size");
 		}
 
@@ -108,9 +104,7 @@ namespace Injector
 		if (address.size() != sizeof(in6_addr))
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Incorrect address size");
 		}
 
@@ -186,9 +180,7 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unspecified address family");
 		}
 	}
@@ -209,9 +201,7 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unspecified address family");
 		}
 	}
@@ -238,9 +228,7 @@ namespace Injector
 		if (result != 0)
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to get name information");
 		}
 
@@ -268,9 +256,7 @@ namespace Injector
 		if (result != 0)
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to get name information");
 		}
 
@@ -303,9 +289,7 @@ namespace Injector
 		if (result != 0)
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to get name information");
 		}
 
@@ -321,9 +305,7 @@ namespace Injector
 		if (socketAddress->sin6_family != AF_INET6)
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Address family is not IPv6");
 		}
 
@@ -338,9 +320,7 @@ namespace Injector
 		{
 			{
 				throw Exception(
-					std::string(typeid(Endpoint).name()),
-					std::string(__func__),
-					std::to_string(__LINE__),
+					THIS_FUNCTION_NAME,
 					"Address family is not IPv6");
 			}
 		}
@@ -408,9 +388,7 @@ namespace Injector
 		if(!Engine::isNetworkInitialized())
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Network is not initialized");
 		}
 
@@ -452,9 +430,7 @@ namespace Injector
 		if (result != 0)
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to get address information");
 		}
 
@@ -483,9 +459,7 @@ namespace Injector
 		if(!Engine::isNetworkInitialized())
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Network is not initialized");
 		}
 
@@ -510,9 +484,7 @@ namespace Injector
 		if (result != 0)
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to get name information");
 		}
 
@@ -566,9 +538,7 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				std::string(typeid(Endpoint).name()),
-				std::string(__func__ ),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unsupported address family");
 		}
 	}

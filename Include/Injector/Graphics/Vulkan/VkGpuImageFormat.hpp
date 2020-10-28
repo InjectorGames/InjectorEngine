@@ -119,9 +119,7 @@ namespace Injector
 			return vk::Format::eD32SfloatS8Uint;
 		default:
 			throw Exception(
-				"",
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unsupported image format");
 		}
 	}

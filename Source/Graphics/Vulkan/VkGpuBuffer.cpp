@@ -27,9 +27,7 @@ namespace Injector
 		if(!_allocator)
 		{
 			throw NullException(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"allocator");
 		}
 
@@ -63,9 +61,7 @@ namespace Injector
 		if (result != VK_SUCCESS)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to create buffer");
 		}
 
@@ -105,9 +101,7 @@ namespace Injector
 		if (result != VK_SUCCESS)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to invalidate buffer");
 		}
 	}
@@ -124,9 +118,7 @@ namespace Injector
 		if (result != VK_SUCCESS)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to flush buffer");
 		}
 	}
@@ -137,17 +129,13 @@ namespace Injector
 		if (!mappable)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer is not mappable");
 		}
 		if (mapped)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer is already mapped");
 		}
 
@@ -161,9 +149,7 @@ namespace Injector
 		if (result != VK_SUCCESS)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to map buffer");
 		}
 
@@ -187,25 +173,19 @@ namespace Injector
 		if (!mappable)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer is not mappable");
 		}
 		if (mapped)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer is already mapped");
 		}
 		if (_size + offset > size)
 		{
 			throw OutOfRangeException(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				static_cast<uint64_t>(_size + offset),
 				static_cast<uint64_t>(size));
 		}
@@ -220,9 +200,7 @@ namespace Injector
 		if (result != VK_SUCCESS)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to map buffer");
 		}
 
@@ -243,9 +221,7 @@ namespace Injector
 		if (!mapped)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer is not mapped");
 		}
 
@@ -266,33 +242,25 @@ namespace Injector
 		if (!mappable)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer is not mappable");
 		}
 		if (mapped)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer is already mapped");
 		}
 		if(!data)
 		{
 			throw NullException(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"data");
 		}
 		if (_size > size)
 		{
 			throw OutOfRangeException(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				static_cast<uint64_t>(_size),
 				static_cast<uint64_t>(size));
 		}
@@ -307,9 +275,7 @@ namespace Injector
 		if (result != VK_SUCCESS)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to map buffer");
 		}
 
@@ -326,33 +292,25 @@ namespace Injector
 		if (!mappable)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer is not mappable");
 		}
 		if (mapped)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Buffer is already mapped");
 		}
 		if(!data)
 		{
 			throw NullException(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"data");
 		}
 		if (_size + offset > size)
 		{
 			throw OutOfRangeException(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				static_cast<uint64_t>(_size + offset),
 				static_cast<uint64_t>(size));
 		}
@@ -367,9 +325,7 @@ namespace Injector
 		if (result != VK_SUCCESS)
 		{
 			throw Exception(
-				typeid(VkGpuBuffer).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to map buffer");
 		}
 

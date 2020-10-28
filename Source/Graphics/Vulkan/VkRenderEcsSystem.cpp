@@ -15,9 +15,7 @@ namespace Injector
 		if(!_window)
 		{
 			throw NullException(
-				std::string(typeid(VkRenderEcsSystem).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"window");
 		}
 	}
@@ -102,10 +100,9 @@ namespace Injector
 						if (cycleCount > 0xFFFF)
 						{
 							throw OutOfRangeException(
-								std::string(typeid(VkRenderEcsSystem).name()),
-								std::string(__func__),
-								std::to_string(__LINE__),
-								cycleCount, 0xFFFF);
+								THIS_FUNCTION_NAME,
+								cycleCount,
+								0xFFFF);
 						}
 						else
 						{

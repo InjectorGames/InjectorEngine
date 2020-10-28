@@ -27,10 +27,10 @@ namespace Injector
 		virtual size_t getByteSize() const = 0;
 		// Reads datagram data from the buffer
 		virtual void readData(
-			const void* buffer,
+			const uint8_t* buffer,
 			size_t byteCount) = 0;
 		// Writes datagram data to the buffer
 		virtual void writeData(
-			void* buffer) const = 0;
+			uint8_t* buffer) const = 0;
 	};
 }

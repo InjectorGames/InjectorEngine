@@ -1,10 +1,8 @@
 #pragma once
 #include "Injector/Network/Socket.hpp"
 #include "Injector/Network/Datagram.hpp"
-#include "Injector/Network/SocketConnect.hpp"
 
 #include <thread>
-#include <mutex>
 
 namespace Injector
 {
@@ -14,31 +12,36 @@ namespace Injector
 	 protected:
 		// Client TCP socket
 		Socket socket;
-		// Socket connect state
-		SocketConnect socketConnect;
-		// Server response timeout time
-		double responseTimeoutTime;
 		// Last server response time
 		double lastResponseTime;
+		// Is client is still running
+		bool running;
+		// Message receive thread
+		std::thread receiveThread;
 		// Message receive buffer
 		std::vector<uint8_t> receiveBuffer;
 		// Message send buffer
 		std::vector<uint8_t> sendBuffer;
+
+		// Asynchronous message receive handle
+		void asyncReceiveHandle(
+			const Endpoint& endpoint);
+
+		// Asynchronous message receive handle
+		virtual void onAsyncReceive(
+			int byteCount);
 	 public:
 		// Creates and binds a new TCP client
 		explicit TcpClient(
 			SocketFamily family,
-			double responseTimeoutTime = 6.0,
 			size_t receiveBufferSize = 8192);
 
 		// Returns client TCP socket
 		const Socket& getSocket() const noexcept;
-		// Returns client TCP socket connect state
-		SocketConnect getSocketConnect() const noexcept;
-		// Returns server response timeout time
-		double getTimeoutTime() const noexcept;
-		// Returns last server response time
+		// Returns last client response time
 		double getLastResponseTime() const noexcept;
+		// Returns true if client is still running
+		bool isRunning() const noexcept;
 		// Returns message receive buffer
 		const std::vector<uint8_t>& getReceiveBuffer() const noexcept;
 		// Returns message send buffer

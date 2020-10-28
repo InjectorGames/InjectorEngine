@@ -25,9 +25,7 @@ namespace Injector
 				else
 				{
 					throw Exception(
-						"std::string(typeid(*this).name())",
-						std::string(__func__),
-						std::to_string(__LINE__),
+						THIS_FUNCTION_NAME,
 						"Unsupported mipmap filter");
 				}
 			}
@@ -49,18 +47,14 @@ namespace Injector
 			else
 			{
 				throw Exception(
-					"",
-					std::string(__func__),
-					std::to_string(__LINE__),
+					THIS_FUNCTION_NAME,
 					"Unsupported mipmap filter");
 			}
 		}
 		else
 		{
 			throw Exception(
-				"",
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unsupported image filter");
 		}
 	}

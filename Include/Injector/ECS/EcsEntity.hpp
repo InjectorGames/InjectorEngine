@@ -40,9 +40,7 @@ namespace Injector
 				delete component;
 
 				throw Exception(
-					std::string(typeid(EcsEntity).name()),
-					std::string(__func__),
-					std::to_string(__LINE__),
+					THIS_FUNCTION_NAME,
 					"Failed to add component");
 			}
 

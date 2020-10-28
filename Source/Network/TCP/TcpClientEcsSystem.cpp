@@ -4,137 +4,79 @@
 
 namespace Injector
 {
-	void TcpClientEcsSystem::onConnect(bool result)
+	void TcpClientEcsSystem::onAsyncReceive(
+		int byteCount)
 	{
-		if(result)
+		datagramBufferMutex.lock();
+
+		if(datagramBuffer.size() < maxDatagramBufferSize)
 		{
-			socketConnect = SocketConnect::Connected;
-			lastResponseTime = Engine::getUpdateStartTime();
+			auto datagram = createDatagram(
+				receiveBuffer.data(),
+				receiveBuffer.size());
+
+			datagramBuffer.push_back(std::move(datagram));
+			lastResponseTime = Engine::getTimeNow();
 		}
-		else
-		{
-			socketConnect = SocketConnect::Disconnected;
-		}
+
+		datagramBufferMutex.unlock();
 	}
-	void TcpClientEcsSystem::onReceive(size_t byteCount)
-	{
-		lastResponseTime = Engine::getUpdateStartTime();
-	}
+
 	void TcpClientEcsSystem::onResponseTimeout()
 	{
-		socketConnect = SocketConnect::Disconnected;
+		running = false;
 	}
 
 	TcpClientEcsSystem::TcpClientEcsSystem(
 		SocketFamily family,
-		double _timeoutTime,
-		size_t _receiveBufferSize,
-		size_t _sendBufferSize) :
-		socket(family, SocketProtocol::TCP),
-		socketConnect(SocketConnect::Disconnected),
-		timeoutTime(_timeoutTime),
-		lastResponseTime(0.0),
-		receiveBuffer(_receiveBufferSize),
-		sendBuffer(_sendBufferSize)
+		double _responseTimeoutTime,
+		size_t _maxDatagramBufferSize,
+		size_t receiveBufferSize) :
+		TcpClient(
+			family,
+			receiveBufferSize),
+		responseTimeoutTime(_responseTimeoutTime),
+		maxDatagramBufferSize(_maxDatagramBufferSize),
+		datagramBufferMutex(),
+		datagramBuffer()
 	{
-		auto localEndpoint = Endpoint();
-
-		if (family == SocketFamily::IPv4)
-		{
-			localEndpoint = Endpoint::anyIPv4;
-		}
-		else if (family == SocketFamily::IPv6)
-		{
-			localEndpoint = Endpoint::anyIPv6;
-		}
-		else
-		{
-			throw Exception(
-				std::string(typeid(TcpClientEcsSystem).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
-				"Unspecified socket family");
-		}
-
-		socket.setBlocking(false);
-		socket.bind(localEndpoint);
 	}
 
-	const Socket& TcpClientEcsSystem::getSocket() const noexcept
-	{
-		return socket;
-	}
-	SocketConnect TcpClientEcsSystem::getSocketConnect() const noexcept
-	{
-		return socketConnect;
-	}
 	double TcpClientEcsSystem::getTimeoutTime() const noexcept
 	{
-		return timeoutTime;
+		return responseTimeoutTime;
 	}
-	double TcpClientEcsSystem::getLastResponseTime() const noexcept
+	void TcpClientEcsSystem::setTimeoutTime(double time) noexcept
 	{
-		return lastResponseTime;
+		responseTimeoutTime = time;
 	}
-	const std::vector<uint8_t>& TcpClientEcsSystem::getReceiveBuffer() const noexcept
+
+	size_t TcpClientEcsSystem::getMaxDatagramBufferSize() const noexcept
 	{
-		return receiveBuffer;
+		return maxDatagramBufferSize;
 	}
-	const std::vector<uint8_t>& TcpClientEcsSystem::getSendBuffer() const noexcept
+	void TcpClientEcsSystem::setMaxDatagramBufferSize(size_t size) noexcept
 	{
-		return sendBuffer;
+		maxDatagramBufferSize = size;
 	}
 
 	void TcpClientEcsSystem::update()
 	{
-		if(socketConnect == SocketConnect::Connected)
-		{
-			if(Engine::getUpdateStartTime() - lastResponseTime > timeoutTime)
-			{
-				onResponseTimeout();
-				return;
-			}
+		datagramBufferMutex.lock();
 
-			int byteCount;
+		if(!running)
+			return;
 
-			while((byteCount = socket.receive(receiveBuffer)) > 0)
-				onReceive(static_cast<size_t>(byteCount));
-		}
-		else if(socketConnect == SocketConnect::Connecting)
+		if(Engine::getUpdateStartTime() - lastResponseTime > responseTimeoutTime)
 		{
-			if(Engine::getUpdateStartTime() - lastResponseTime > timeoutTime)
-			{
-				onConnect(false);
-				return;
-			}
-
-			if(socket.send(nullptr, 0) == 0)
-				onConnect(true);
-		}
-	}
-
-	void TcpClientEcsSystem::connect(
-		const Endpoint& endpoint)
-	{
-		if(socketConnect == SocketConnect::Connected)
-		{
-			throw Exception(
-				std::string(typeid(TcpClientEcsSystem).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
-				"Already connected");
-		}
-		else if(socketConnect == SocketConnect::Connecting)
-		{
-			throw Exception(
-				std::string(typeid(TcpClientEcsSystem).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
-				"Still in progress");
+			onResponseTimeout();
+			return;
 		}
 
-		socket.connect(endpoint);
-		socketConnect = SocketConnect::Connecting;
-		lastResponseTime = Engine::getUpdateStartTime();
+		for (int i = 0; i < datagramBuffer.size(); i++)
+			onDatagramReceive(datagramBuffer[i]);
+
+		datagramBuffer.clear();
+		datagramBufferMutex.unlock();
 	}
 }

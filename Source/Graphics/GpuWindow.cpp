@@ -41,9 +41,7 @@ namespace Injector
 		if (!window)
 		{
 			throw NullException(
-				std::string(typeid(GpuWindow).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"window");
 		}
 
@@ -151,9 +149,7 @@ namespace Injector
 		if (min.x < 1 || min.y < 1 || max.x < 1 || max.y < 1)
 		{
 			throw Exception(
-				std::string(typeid(GpuWindow).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Size can not be less than one");
 		}
 
@@ -413,9 +409,7 @@ namespace Injector
 		if(!Engine::isGraphicsInitialized())
 		{
 			throw Exception(
-				typeid(GpuWindow).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Video is not initialized");
 		}
 
@@ -444,9 +438,7 @@ namespace Injector
 		else
 		{
 			throw Exception(
-				typeid(GpuWindow).name(),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Unknown graphics API");
 		}
 	}

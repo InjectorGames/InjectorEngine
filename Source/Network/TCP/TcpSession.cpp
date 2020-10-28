@@ -10,8 +10,13 @@ namespace Injector
 			auto byteCount = socket.receive(
 				receiveBuffer);
 
-			if (byteCount > 0)
-				onAsyncReceive(byteCount);
+			if(byteCount <= 0)
+			{
+				running = false;
+				return;
+			}
+
+			onAsyncReceive(byteCount);
 		}
 	}
 
@@ -61,21 +66,12 @@ namespace Injector
 
 	int TcpSession::send(const Datagram& datagram)
 	{
-		if(!datagram.isValid())
-		{
-			throw Exception(
-				std::string(typeid(TcpSession).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
-				"Datagram is not valid");
-		}
-
 		auto byteSize = datagram.getByteSize();
 
 		if(sendBuffer.size() < byteSize)
 			sendBuffer.resize(byteSize);
 
 		datagram.writeData(sendBuffer.data());
-		socket.send(sendBuffer);
+		return socket.send(sendBuffer);
 	}
 }
