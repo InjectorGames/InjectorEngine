@@ -68,7 +68,7 @@ namespace Injector
 		// Returns socket send timeout
 		uint32_t getSendTimeout() const;
 		// Sets socket send timeout
-		void setSendTimeout(uint32_t ms) const;
+		void setSendTimeout(uint32_t milliseconds) const;
 
 		// Assigns socket local endpoint
 		void bind(const Endpoint& endpoint);

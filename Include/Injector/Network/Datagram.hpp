@@ -14,7 +14,9 @@ namespace Injector
 		bool valid;
 	 public:
 		// Creates a new datagram
-		explicit Datagram(uint8_t type);
+		explicit Datagram(
+			uint8_t type,
+			bool valid) noexcept;
 		// Destroys datagram
 		virtual ~Datagram() = default;
 
@@ -24,7 +26,7 @@ namespace Injector
 		bool isValid() const noexcept;
 
 		// Returns datagram data binary size
-		virtual size_t getByteSize() const = 0;
+		virtual size_t getDataSize() const = 0;
 		// Reads datagram data from the buffer
 		virtual void readData(
 			const uint8_t* buffer,

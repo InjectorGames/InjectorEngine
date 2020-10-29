@@ -3,9 +3,10 @@
 namespace Injector
 {
 	Datagram::Datagram(
-		uint8_t _type) :
+		uint8_t _type,
+		bool _valid) noexcept :
 		type(_type),
-		valid(false)
+		valid(_valid)
 	{
 	}
 

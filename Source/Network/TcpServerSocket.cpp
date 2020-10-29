@@ -1,10 +1,10 @@
-#include "Injector/Network/TCP/TcpServer.hpp"
+#include "Injector/Network/TcpServerSocket.hpp"
 #include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
-	void TcpServer::asyncAcceptHandle()
+	void TcpServerSocket::asyncAcceptHandle()
 	{
 		while(running)
 		{
@@ -12,11 +12,25 @@ namespace Injector
 			auto endpoint = Endpoint();
 
 			if(!socket.accept(remoteSocket, endpoint))
+			{
+				onAsyncAcceptError();
 				continue;
+			}
+
+			for (size_t i = 0; i < sessions.size(); i++)
+			{
+				auto session = sessions[i];
+
+				if(!session->isRunning())
+				{
+					sessions.erase(sessions.begin() + i);
+					i--;
+				}
+			}
 
 			if(sessions.size() < maxSessionCount)
 			{
-				auto session = createSession(
+				auto session = asyncCreateSession(
 					std::move(remoteSocket),
 					endpoint);
 				sessions.push_back(session);
@@ -27,40 +41,15 @@ namespace Injector
 					SocketShutdown::Both);
 				remoteSocket.close();
 			}
-
-			auto time = Engine::getUpdateStartTime();
-
-			for (size_t i = 0; i < sessions.size(); i++)
-			{
-				auto session = sessions[i];
-
-				if(!session->isRunning() ||
-					time - session->getLastRequestTime() > requestTimeoutTime)
-				{
-					sessions.erase(sessions.begin() + i);
-					i--;
-				}
-			}
 		}
 	}
 
-	std::shared_ptr<TcpSession> TcpServer::createSession(
-		Socket socket,
-		const Endpoint& endpoint)
-	{
-		return std::make_shared<TcpSession>(
-			std::move(socket),
-			endpoint);
-	}
-
-	TcpServer::TcpServer(
+	TcpServerSocket::TcpServerSocket(
 		SocketFamily family,
 		const std::string& port,
-		size_t _maxSessionCount,
-		double _requestTimeoutTime) :
+		size_t _maxSessionCount) :
 		socket(family, SocketProtocol::TCP),
 		maxSessionCount(_maxSessionCount),
-		requestTimeoutTime(_requestTimeoutTime),
 		running(false),
 		acceptThread(),
 		sessions()
@@ -87,26 +76,33 @@ namespace Injector
 		}
 
 		socket.bind(localEndpoint);
+		socket.listen();
 	}
 
-	const Socket& TcpServer::getSocket() const noexcept
+	const Socket& TcpServerSocket::getSocket() const noexcept
 	{
 		return socket;
 	}
-	size_t TcpServer::getMaxSessionCount() const noexcept
-	{
-		return maxSessionCount;
-	}
-	double TcpServer::getRequestTimeoutTime() const noexcept
-	{
-		return requestTimeoutTime;
-	}
-	bool TcpServer::isRunning() const noexcept
+	bool TcpServerSocket::isRunning() const noexcept
 	{
 		return running;
 	}
+	const std::vector<std::shared_ptr<
+	    TcpSessionSocket>>& TcpServerSocket::getSessions() const noexcept
+	{
+		return sessions;
+	}
 
-	void TcpServer::start()
+	size_t TcpServerSocket::getMaxSessionCount() const noexcept
+	{
+		return maxSessionCount;
+	}
+	void TcpServerSocket::setMaxSessionCount(size_t count) noexcept
+	{
+		maxSessionCount = count;
+	}
+
+	void TcpServerSocket::start()
 	{
 		if(running)
 		{
@@ -116,10 +112,21 @@ namespace Injector
 		}
 
 		running = true;
-		socket.listen();
 
 		acceptThread = std::thread(
-			&TcpServer::asyncAcceptHandle,
+			&TcpServerSocket::asyncAcceptHandle,
 			this);
+		acceptThread.detach();
+	}
+	void TcpServerSocket::stop()
+	{
+		if(!running)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Server is not running");
+		}
+
+		running = false;
 	}
 }
