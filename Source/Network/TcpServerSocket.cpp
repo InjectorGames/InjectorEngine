@@ -6,7 +6,7 @@ namespace Injector
 {
 	void TcpServerSocket::asyncAcceptHandle()
 	{
-		while(running)
+		while(acceptRunning.load())
 		{
 			auto remoteSocket = Socket();
 			auto endpoint = Endpoint();
@@ -14,18 +14,16 @@ namespace Injector
 			if(!socket.accept(remoteSocket, endpoint))
 			{
 				onAsyncAcceptError();
-				continue;
+				acceptRunning.store(false);
+				return;
 			}
 
 			for (size_t i = 0; i < sessions.size(); i++)
 			{
 				auto session = sessions[i];
 
-				if(!session->isRunning())
-				{
-					sessions.erase(sessions.begin() + i);
-					i--;
-				}
+				if(!session->getReceiveRunning().load())
+					sessions.erase(sessions.begin() + i--);
 			}
 
 			if(sessions.size() < maxSessionCount)
@@ -50,8 +48,8 @@ namespace Injector
 		size_t _maxSessionCount) :
 		socket(family, SocketProtocol::TCP),
 		maxSessionCount(_maxSessionCount),
-		running(false),
 		acceptThread(),
+		acceptRunning(false),
 		sessions()
 	{
 		auto localEndpoint = Endpoint();
@@ -78,14 +76,26 @@ namespace Injector
 		socket.bind(localEndpoint);
 		socket.listen();
 	}
+	TcpServerSocket::~TcpServerSocket()
+	{
+		acceptRunning.store(false);
+
+		socket.shutdown(
+			SocketShutdown::Both);
+		socket.close();
+	}
 
 	const Socket& TcpServerSocket::getSocket() const noexcept
 	{
 		return socket;
 	}
-	bool TcpServerSocket::isRunning() const noexcept
+	const std::thread& TcpServerSocket::getAcceptThread() const noexcept
 	{
-		return running;
+		return acceptThread;
+	}
+	const std::atomic<bool>& TcpServerSocket::getAcceptRunning() const noexcept
+	{
+		return acceptRunning;
 	}
 	const std::vector<std::shared_ptr<
 	    TcpSessionSocket>>& TcpServerSocket::getSessions() const noexcept
@@ -104,14 +114,14 @@ namespace Injector
 
 	void TcpServerSocket::start()
 	{
-		if(running)
+		if(acceptRunning.load())
 		{
 			throw Exception(
 				THIS_FUNCTION_NAME,
-				"Server is already running");
+				"Already running");
 		}
 
-		running = true;
+		acceptRunning.store(true);
 
 		acceptThread = std::thread(
 			&TcpServerSocket::asyncAcceptHandle,
@@ -120,13 +130,17 @@ namespace Injector
 	}
 	void TcpServerSocket::stop()
 	{
-		if(!running)
+		if(!acceptRunning.load())
 		{
 			throw Exception(
 				THIS_FUNCTION_NAME,
-				"Server is not running");
+				"Not running");
 		}
 
-		running = false;
+		acceptRunning.store(false);
+
+		socket.shutdown(
+			SocketShutdown::Both);
+		socket.close();
 	}
 }

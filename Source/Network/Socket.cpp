@@ -579,13 +579,14 @@ namespace Injector
 	}
 	bool Socket::close() noexcept
 	{
-		handle = NULL_SOCKET;
-
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
-		return ::close(handle) == 0;
+		auto result = ::close(handle);
 #elif INJECTOR_SYSTEM_WINDOWS
-		return ::closesocket(handle) == 0;
+		auto result ::closesocket(handle);
 #endif
+
+		handle = NULL_SOCKET;
+		return result == 0;
 	}
 
 	bool Socket::operator==(

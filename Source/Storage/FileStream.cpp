@@ -7,31 +7,29 @@ namespace Injector
 	FileStream::FileStream(
 		const char* filePath,
 		std::ios::openmode mode) noexcept :
-		std::fstream(filePath, mode | std::ios::ate)
+		std::fstream(filePath, mode)
 	{
-		size = static_cast<size_t>(tellg());
-		seekg(0, beg);
 	}
 	FileStream::FileStream(
 		const std::string& filePath,
 		std::ios::openmode mode) noexcept :
-		std::fstream(filePath, mode | std::ios::ate)
+		std::fstream(filePath, mode)
 	{
-		size = static_cast<size_t>(tellg());
-		seekg(0, beg);
 	}
 	FileStream::FileStream(
 		const std::filesystem::path& filePath,
 		std::ios::openmode mode) noexcept :
-		std::fstream(filePath, mode | std::ios::ate)
+		std::fstream(filePath, mode)
 	{
-		size = static_cast<size_t>(tellg());
-		seekg(0, beg);
 	}
 
-	size_t FileStream::getSize() const noexcept
+	size_t FileStream::getSize() noexcept
 	{
-		return size;
+		auto startPosition = tellg();
+		seekg(0, end);
+		auto fileSize = static_cast<size_t>(tellg());
+		seekg(startPosition, beg);
+		return fileSize;
 	}
 
 	std::istream& FileStream::read(char& value)

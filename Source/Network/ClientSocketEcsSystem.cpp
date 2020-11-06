@@ -3,7 +3,7 @@
 
 namespace Injector
 {
-	void ClientSocketEcsSystem::onAsyncReceive(
+	bool ClientSocketEcsSystem::onAsyncReceive(
 		int byteCount)
 	{
 		datagramBufferMutex.lock();
@@ -19,6 +19,7 @@ namespace Injector
 		}
 
 		datagramBufferMutex.unlock();
+		return true;
 	}
 
 	ClientSocketEcsSystem::ClientSocketEcsSystem(
@@ -47,15 +48,16 @@ namespace Injector
 
 	void ClientSocketEcsSystem::update()
 	{
-		if(!running)
-			return;
-
 		datagramBufferMutex.lock();
 
-		for (int i = 0; i < datagramBuffer.size(); i++)
-			onDatagramReceive(datagramBuffer[i]);
+		if(datagramBuffer.size() > 0)
+		{
+			for (int i = 0; i < datagramBuffer.size(); i++)
+				onDatagramReceive(datagramBuffer[i]);
 
-		datagramBuffer.clear();
+			datagramBuffer.clear();
+		}
+
 		datagramBufferMutex.unlock();
 	}
 }

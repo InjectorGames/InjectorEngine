@@ -8,10 +8,6 @@ namespace Injector
 	 public:
 		// Creates a new ECS system
 		EcsSystem() = default;
-		// Deleted ECS system copy constructor
-		EcsSystem(const EcsSystem& system) = delete;
-		// Deleted ECS system move constructor
-		EcsSystem(EcsSystem&& system) = delete;
 		// Destroys ECS system
 		virtual ~EcsSystem() = default;
 

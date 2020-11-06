@@ -4,62 +4,35 @@ namespace Injector
 {
 	void TcpSessionSocket::asyncReceiveHandle()
 	{
-		while (running)
+		while (receiveRunning.load())
 		{
 			auto byteCount = socket.receive(
 				receiveBuffer);
 
 			if (byteCount > 0)
 			{
-				onAsyncReceive(byteCount);
+				if(!onAsyncReceive(byteCount))
+				{
+					receiveRunning.store(false);
+					return;
+				}
 			}
 			else if(byteCount == 0)
 			{
 				onAsyncShutdown();
+				receiveRunning.store(false);
+				return;
 			}
 			else
 			{
 				onAsyncReceiveError();
+				receiveRunning.store(false);
+				return;
 			}
 		}
 	}
 
-	TcpSessionSocket::TcpSessionSocket(
-		Socket _socket,
-		const Endpoint& _endpoint,
-		size_t _receiveBufferSize) :
-		socket(std::move(_socket)),
-		endpoint(_endpoint),
-		running(true),
-		receiveThread(&TcpSessionSocket::asyncReceiveHandle, this),
-		receiveBuffer(_receiveBufferSize),
-		sendBuffer()
-	{
-		receiveThread.detach();
-	}
-
-	const Socket& TcpSessionSocket::getSocket() const noexcept
-	{
-		return socket;
-	}
-	const Endpoint& TcpSessionSocket::getEndpoint() const noexcept
-	{
-		return endpoint;
-	}
-	bool TcpSessionSocket::isRunning() const noexcept
-	{
-		return running;
-	}
-	const std::vector<uint8_t>& TcpSessionSocket::getReceiveBuffer() const noexcept
-	{
-		return receiveBuffer;
-	}
-	const std::vector<uint8_t>& TcpSessionSocket::getSendBuffer() const noexcept
-	{
-		return sendBuffer;
-	}
-
-	void TcpSessionSocket::send(const Datagram& datagram)
+	void TcpSessionSocket::asyncSend(const Datagram& datagram)
 	{
 		auto bufferSize =
 			datagram.getDataSize() + 1;
@@ -79,5 +52,52 @@ namespace Injector
 
 		if(byteCount != bufferSize)
 			onAsyncSendError(byteCount);
+	}
+
+	TcpSessionSocket::TcpSessionSocket(
+		Socket _socket,
+		const Endpoint& _endpoint,
+		size_t _receiveBufferSize) :
+		socket(std::move(_socket)),
+		endpoint(_endpoint),
+		receiveThread(&TcpSessionSocket::asyncReceiveHandle, this),
+		receiveRunning(true),
+		receiveBuffer(_receiveBufferSize),
+		sendBuffer()
+	{
+		receiveThread.detach();
+	}
+	TcpSessionSocket::~TcpSessionSocket()
+	{
+		receiveRunning.store(false);
+
+		socket.shutdown(
+			SocketShutdown::Both);
+		socket.close();
+	}
+
+	const Socket& TcpSessionSocket::getSocket() const noexcept
+	{
+		return socket;
+	}
+	const Endpoint& TcpSessionSocket::getEndpoint() const noexcept
+	{
+		return endpoint;
+	}
+	const std::thread& TcpSessionSocket::getReceiveThread() const noexcept
+	{
+		return receiveThread;
+	}
+	const std::atomic<bool>& TcpSessionSocket::getReceiveRunning() const noexcept
+	{
+		return receiveRunning;
+	}
+	const std::vector<uint8_t>& TcpSessionSocket::getReceiveBuffer() const noexcept
+	{
+		return receiveBuffer;
+	}
+	const std::vector<uint8_t>& TcpSessionSocket::getSendBuffer() const noexcept
+	{
+		return sendBuffer;
 	}
 }

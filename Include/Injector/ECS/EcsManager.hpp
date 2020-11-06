@@ -23,10 +23,6 @@ namespace Injector
 		// Creates a new ECS manager
 		explicit EcsManager(
 			bool active = true) noexcept;
-		// Deleted ECS manager copy constructor
-		EcsManager(const EcsManager& manager) = delete;
-		// Deleted ECS manager move constructor
-		EcsManager(EcsManager&& manager) = delete;
 		// Destroys ECS manager and all entities, systems and manager
 		virtual ~EcsManager() = default;
 

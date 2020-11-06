@@ -21,7 +21,7 @@ namespace Injector
 		std::vector<std::shared_ptr<Datagram>> datagramBuffer;
 
 		// Asynchronous message receive handle
-		void onAsyncReceive(int byteCount) override;
+		bool onAsyncReceive(int byteCount) override;
 
 		// Create datagram handle
 		virtual std::shared_ptr<Datagram> createDatagram(

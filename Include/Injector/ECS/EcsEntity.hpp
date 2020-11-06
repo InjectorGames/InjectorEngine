@@ -16,10 +16,6 @@ namespace Injector
 	 public:
 		// Creates a new ECS entity
 		EcsEntity() noexcept;
-		// Deleted ECS entity copy constructor
-		EcsEntity(const EcsEntity& entity) = default;
-		// Deleted ECS entity move constructor
-		EcsEntity(EcsEntity&& entity) = default;
 		// Destroys ECS entity and all components
 		~EcsEntity();
 

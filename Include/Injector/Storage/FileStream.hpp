@@ -8,8 +8,6 @@ namespace Injector
 {
 	class FileStream : public std::fstream
 	{
-	 protected:
-		size_t size;
 	 public:
 		explicit FileStream(
 			const char* filePath,
@@ -24,7 +22,7 @@ namespace Injector
 			std::ios::openmode mode =
 				std::ios::in | std::ios::out) noexcept;
 
-		size_t getSize() const noexcept;
+		size_t getSize() noexcept;
 
 		std::istream& read(char& value);
 		std::istream& read(char* values, size_t count);

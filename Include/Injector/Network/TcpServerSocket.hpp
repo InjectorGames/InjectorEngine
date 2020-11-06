@@ -12,10 +12,10 @@ namespace Injector
 		Socket socket;
 		// Maximal session count
 		size_t maxSessionCount;
-		// Is server still running
-		bool running;
 		// Client accept thread
 		std::thread acceptThread;
+		// Is accept thread is still running
+		std::atomic<bool> acceptRunning;
 
 		// Accepted socket sessions
 		std::vector<std::shared_ptr<
@@ -38,11 +38,15 @@ namespace Injector
 			size_t maxSessionCount = 256);
 		// Deleted copy constructor
 		TcpServerSocket(const TcpServerSocket& server) = delete;
+		// Closes and destroys TCP server socket
+		virtual ~TcpServerSocket();
 
 		// Returns server TCP socket
 		const Socket& getSocket() const noexcept;
-		// Returns true if server is still running
-		bool isRunning() const noexcept;
+		// Returns server accept thread
+		const std::thread& getAcceptThread() const noexcept;
+		// Returns server accept running atomic
+		const std::atomic<bool>& getAcceptRunning() const noexcept;
 		// Returns accepted socket sessions
 		const std::vector<std::shared_ptr<
 			TcpSessionSocket>>& getSessions() const noexcept;
