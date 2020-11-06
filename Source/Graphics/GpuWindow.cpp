@@ -90,7 +90,10 @@ namespace Injector
 			if (isResized)
 			{
 				auto size = getFramebufferSize();
-				onFramebufferResize(size);
+
+				if (size.x > 0 && size.y > 0)
+					onFramebufferResize(size);
+
 				isResized = false;
 			}
 

@@ -212,9 +212,7 @@ namespace Injector
    		if(result != 0)
    		{
 			throw Exception(
-				std::string(typeid(Socket).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to set socket mode");
    		}
 #endif
@@ -257,9 +255,7 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				std::string(typeid(Socket).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to get socket option");
 		}
 
@@ -297,9 +293,7 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				std::string(typeid(Socket).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to set socket option");
 		}
 #endif
@@ -342,9 +336,7 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				std::string(typeid(Socket).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to get socket option");
 		}
 
@@ -382,9 +374,7 @@ namespace Injector
 		if(result != 0)
 		{
 			throw Exception(
-				std::string(typeid(Socket).name()),
-				std::string(__func__),
-				std::to_string(__LINE__),
+				THIS_FUNCTION_NAME,
 				"Failed to set socket option");
 		}
 #endif
@@ -582,7 +572,7 @@ namespace Injector
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 		auto result = ::close(handle);
 #elif INJECTOR_SYSTEM_WINDOWS
-		auto result ::closesocket(handle);
+		auto result = ::closesocket(handle);
 #endif
 
 		handle = NULL_SOCKET;

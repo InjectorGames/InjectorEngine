@@ -192,8 +192,7 @@ namespace Injector
 		if (result != 0)
 		{
 			throw Exception(
-				"Engine",
-				"initializeNetwork",
+				THIS_FUNCTION_NAME,
 				"Failed to startup WSA");
 		}
 #endif
@@ -327,14 +326,14 @@ namespace Injector
 #if INJECTOR_SUPPORT_VIRTUAL_REALITY
 		vr::EVRInitError error;
 
-		vr::VR_Init(&error,
+		vr::VR_Init(
+			&error,
 			vr::EVRApplicationType::VRApplication_Scene);
 
 		if(error != vr::EVRInitError::VRInitError_None)
 		{
 			throw Exception(
-				"Engine",
-				"initializeVr",
+				THIS_FUNCTION_NAME,
 				std::string(vr::VR_GetVRInitErrorAsSymbol(error)));
 		}
 

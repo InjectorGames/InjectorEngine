@@ -5,6 +5,8 @@
 #include "Injector/Graphics/GUI/GuiHandler.hpp"
 #include "Injector/Graphics/GUI/GuiAnchorType.hpp"
 
+#include <memory>
+
 namespace Injector
 {
 	struct GuiEcsComponent final : public EcsComponent

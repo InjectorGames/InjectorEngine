@@ -6,7 +6,7 @@
 
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
 #define THIS_FUNCTION_NAME std::string(__PRETTY_FUNCTION__)
-#elif INJECTOR_SYSTEM_WINDOW
+#elif INJECTOR_SYSTEM_WINDOWS
 #define THIS_FUNCTION_NAME std::string(__FUNCSIG__)
 #else
 #error Unknown operating system

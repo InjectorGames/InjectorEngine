@@ -693,6 +693,13 @@ namespace Injector
 	void VkGpuWindow::onFramebufferResize(
 		const IntVector2& size)
 	{
+		if (size.x < 1 || size.y < 1)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Size x/y is less than one");
+		}
+
 		device.waitIdle();
 
 		swapchain.resize(

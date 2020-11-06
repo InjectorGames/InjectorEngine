@@ -3,6 +3,7 @@
 #include "Injector/Network/Datagram.hpp"
 
 #include <thread>
+#include <atomic>
 
 namespace Injector
 {

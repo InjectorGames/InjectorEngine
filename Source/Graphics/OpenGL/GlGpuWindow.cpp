@@ -92,6 +92,13 @@ namespace Injector
 
 	void GlGpuWindow::onFramebufferResize(const IntVector2& size)
 	{
+		if (size.x < 1 || size.y < 1)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Size x/y is less than one");
+		}
+
 		glfwMakeContextCurrent(window);
 		glViewport(0, 0, size.x, size.y);
 	}
