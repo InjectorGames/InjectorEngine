@@ -6,7 +6,7 @@
 - [x] Transparency rendering
 
 ## Build requirements
-* C++17 comiler
+* C++17 compiler
 * [CMake 3.10+](https://cmake.org/)
 * [VulkanSDK](https://vulkan.lunarg.com/)
 * [OpenSSL](https://www.openssl.org)
