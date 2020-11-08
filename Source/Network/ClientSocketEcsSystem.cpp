@@ -14,8 +14,11 @@ namespace Injector
 				receiveBuffer.data(),
 				receiveBuffer.size());
 
-			datagramBuffer.push_back(
-				std::move(datagram));
+			if(datagram)
+			{
+				datagramBuffer.push_back(
+					std::move(datagram));
+			}
 		}
 
 		datagramBufferMutex.unlock();

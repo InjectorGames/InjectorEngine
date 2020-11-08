@@ -25,7 +25,7 @@ namespace Injector
 
 		// Create datagram handle
 		virtual std::shared_ptr<Datagram> createDatagram(
-			const void* buffer,
+			const uint8_t* buffer,
 			size_t byteCount) = 0;
 		// Datagram receive handle
 		virtual void onDatagramReceive(

@@ -31,7 +31,12 @@ namespace Injector
 				auto session = asyncCreateSession(
 					std::move(remoteSocket),
 					endpoint);
-				sessions.push_back(session);
+
+				if(session)
+				{
+					sessions.push_back(
+						std::move(session));
+				}
 			}
 			else
 			{
