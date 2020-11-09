@@ -20,3 +20,6 @@
 [submodule "Libraries/openvr"]
 	path = Libraries/openvr
 	url = https://github.com/InjectorGames/openvr
+[submodule "Libraries/freetype2"]
+	path = Libraries/freetype2
+	url = https://github.com/InjectorGames/freetype2

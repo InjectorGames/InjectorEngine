@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Graphics/GpuPipeline.hpp"
-#include "Injector/Graphics/GlfwDefines.hpp"
+#include "Injector/GlfwDefines.hpp"
 #include "Injector/Mathematics/Vector/Vector4.hpp"
 
 #include <string>

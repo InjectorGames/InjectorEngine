@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/Graphics/GlfwDefines.hpp"
+#include "Injector/GlfwDefines.hpp"
 
 namespace Injector
 {

@@ -48,8 +48,8 @@ namespace Injector
 				deltaMousePosition.x * sensitivity,
 				0.0f);
 			eulerAngles.x = std::clamp(eulerAngles.x,
-				-Converter::toRadians(89.9f),
-				Converter::toRadians(89.9f));
+				-Angle::toRadians(89.9f),
+				Angle::toRadians(89.9f));
 			transformComponent->rotation = Quaternion(eulerAngles);
 
 			auto translation = Vector3();

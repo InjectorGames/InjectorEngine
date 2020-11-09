@@ -1,4 +1,5 @@
 #include "Injector/Graphics/GUI/EditorGuiHandler.hpp"
+#include "Injector/Mathematics/Color.hpp"
 
 namespace Injector
 {
@@ -16,15 +17,18 @@ namespace Injector
 			GpuShaderStage::Fragment,
 			window->readShaderData(
 				"Resources/Shaders/Color.frag"));
-		auto colorPipeline = window->createColorPipeline(
+		auto darkColorPipeline = window->createColorPipeline(
 			GpuDrawMode::TriangleList,
 			colorVertexShader,
 			colorFragmentShader,
-			Vector4(
-				63 / 255.0f,
-				63 / 255.0f,
-				63 / 255.0f,
-				255 / 255.0f));
+			Color::toVector(
+				47,53,66,255));
+		auto greyColorPipeline = window->createColorPipeline(
+			GpuDrawMode::TriangleList,
+			colorVertexShader,
+			colorFragmentShader,
+			Color::toVector(
+				87,96,111,255));
 
 		auto squareMesh = window->createMesh(
 			ModelData::square.getVertex(),
@@ -39,30 +43,54 @@ namespace Injector
 		editorWindow->createComponent<TransformEcsComponent>();
 		editorWindow->createComponent<GuiEcsComponent>(
 			Vector3::zero,
-			Quaternion(Vector3::zero),
-			Vector3(
-				150.0f,
-				25.0f,
-				1.0f),
+			Quaternion::zero,
+			Vector3::one,
 			GuiAnchorType::Center,
-			true);
+			false,
+			nullptr,
+			nullptr);
+		guiSystem->addGui(editorWindow);
+		transformSystem->addTransform(editorWindow);
 
 		auto bar = window->createEntity();
 		bar->createComponent<TransformEcsComponent>();
 		bar->createComponent<GuiEcsComponent>(
-			Vector3::zero,
-			Quaternion(Vector3::zero),
 			Vector3(
-				150.0f,
-				25.0f,
+				0.0f,
+				65.0f,
+				0.0f),
+			Quaternion::zero,
+			Vector3(
+				300.0f,
+				30.0f,
 				1.0f),
 			GuiAnchorType::Center,
-			true);
+			true,
+			editorWindow);
 		bar->createComponent<RenderEcsComponent>(
-			colorPipeline,
+			greyColorPipeline,
 			squareMesh);
 		guiSystem->addGui(bar);
 		transformSystem->addTransform(bar);
 		renders.emplace(bar);
+
+		auto panel = window->createEntity();
+		panel->createComponent<TransformEcsComponent>();
+		panel->createComponent<GuiEcsComponent>(
+			Vector3::zero,
+			Quaternion::zero,
+			Vector3(
+				300.0f,
+				100.0f,
+				1.0f),
+			GuiAnchorType::Center,
+			true,
+			editorWindow);
+		panel->createComponent<RenderEcsComponent>(
+			darkColorPipeline,
+			squareMesh);
+		guiSystem->addGui(panel);
+		transformSystem->addTransform(panel);
+		renders.emplace(panel);
 	}
 }

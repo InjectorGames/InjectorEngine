@@ -1,5 +1,6 @@
 #pragma once
-#include "Injector/Graphics/MouseButton.hpp"
+#include "Injector/Input/MouseButton.hpp"
+#include "Injector/Input/ButtonState.hpp"
 
 namespace Injector
 {
@@ -11,6 +12,9 @@ namespace Injector
 		virtual void onMouseStay() = 0;
 
 		virtual void onMouseButton(
-			MouseButton button) = 0;
+			MouseButton button,
+			ButtonState state) = 0;
+
+		virtual void update() = 0;
 	};
 }

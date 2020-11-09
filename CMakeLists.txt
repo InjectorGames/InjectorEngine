@@ -128,6 +128,7 @@ add_library(InjectorEngine STATIC
     Source/Exception/NullException.cpp
     Source/Exception/OutOfRangeException.cpp
 
+    Source/Graphics/GUI/DragGuiHandler.cpp
     Source/Graphics/GUI/EditorGuiHandler.cpp
     Source/Graphics/GUI/GuiEcsComponent.cpp
     Source/Graphics/GUI/GuiEcsSystem.cpp
@@ -197,7 +198,9 @@ add_library(InjectorEngine STATIC
     Source/Mathematics/Matrix/Matrix3.cpp
     Source/Mathematics/Matrix/Matrix4.cpp
 
-    Source/Mathematics/Converter.cpp
+    Source/Mathematics/Color.cpp
+    Source/Mathematics/BoundingBox.cpp
+    Source/Mathematics/Angle.cpp
     Source/Mathematics/Quaternion.cpp
     Source/Mathematics/RotateEcsComponent.cpp
     Source/Mathematics/TransformEcsComponent.cpp

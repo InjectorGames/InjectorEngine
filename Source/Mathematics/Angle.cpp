@@ -1,23 +1,24 @@
-#include "Injector/Mathematics/Converter.hpp"
+#include "Injector/Mathematics/Angle.hpp"
 
 #define _USE_MATH_DEFINES
 #include <cmath>
 
 namespace Injector
 {
-	float Converter::toDegrees(float radians)
+	float Angle::toDegrees(float radians) noexcept
 	{
 		return radians * (180.0f / static_cast<float>(M_PI));
 	}
-	double Converter::toDegrees(double radians)
+	double Angle::toDegrees(double radians) noexcept
 	{
 		return radians * (180.0 / M_PI);
 	}
-	float Converter::toRadians(float degrees)
+
+	float Angle::toRadians(float degrees) noexcept
 	{
 		return degrees * (static_cast<float>(M_PI) / 180.0f);
 	}
-	double Converter::toRadians(double degrees)
+	double Angle::toRadians(double degrees) noexcept
 	{
 		return degrees * (M_PI / 180.0);
 	}

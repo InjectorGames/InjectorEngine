@@ -1,6 +1,6 @@
 #pragma once
 #include "Injector/Graphics/GpuWindow.hpp"
-#include "Injector/Graphics/GlfwDefines.hpp"
+#include "Injector/GlfwDefines.hpp"
 
 #include "GLFW/glfw3.h"
 

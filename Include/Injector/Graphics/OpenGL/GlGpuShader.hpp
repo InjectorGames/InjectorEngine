@@ -1,7 +1,7 @@
 #pragma once
 #include "Injector/Graphics/GpuShader.hpp"
 #include "Injector/Graphics/ShaderData.hpp"
-#include "Injector/Graphics/GlfwDefines.hpp"
+#include "Injector/GlfwDefines.hpp"
 
 #include <string>
 #include <memory>

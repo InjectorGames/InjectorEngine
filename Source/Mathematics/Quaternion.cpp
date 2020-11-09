@@ -6,12 +6,19 @@
 
 namespace Injector
 {
-	Quaternion::Quaternion() noexcept :
-		x(0.0f),
-		y(0.0f),
-		z(0.0f),
-		w(0.0f)
+	Quaternion::Quaternion(
+		const Vector3& eulerAngles) noexcept
 	{
+		auto s = eulerAngles * 0.5f;
+		s = s.getSine();
+
+		auto c = eulerAngles * 0.5f;
+		c = c.getCosine();
+
+		x = s.x * c.y * c.z - c.x * s.y * s.z;
+		y = c.x * s.y * c.z + s.x * c.y * s.z;
+		z = c.x * c.y * s.z - s.x * s.y * c.z;
+		w = c.x * c.y * c.z + s.x * s.y * s.z;
 	}
 	Quaternion::Quaternion(
 		float _x,
@@ -33,20 +40,6 @@ namespace Injector
 		y = v.y;
 		z = v.z;
 		w = cos(angle * 0.5f);
-	}
-	Quaternion::Quaternion(
-		const Vector3& eulerAngles) noexcept
-	{
-		auto s = eulerAngles * 0.5f;
-		s = s.getSine();
-
-		auto c = eulerAngles * 0.5f;
-		c = c.getCosine();
-
-		x = s.x * c.y * c.z - c.x * s.y * s.z;
-		y = c.x * s.y * c.z + s.x * c.y * s.z;
-		z = c.x * c.y * s.z - s.x * s.y * c.z;
-		w = c.x * c.y * c.z + s.x * s.y * s.z;
 	}
 	Quaternion::Quaternion(
 		const Vector3& a,
@@ -214,7 +207,7 @@ namespace Injector
 	{
 		return Quaternion(-x, -y, -z, w);
 	}
-	Quaternion Quaternion::getInversed() const noexcept
+	Quaternion Quaternion::getInverted() const noexcept
 	{
 		return getConjugated() / getDotProduct(*this);
 	}
@@ -461,6 +454,9 @@ namespace Injector
 		w *= value;
 		return *this;
 	}
+
+	const Quaternion Quaternion::zero =
+		Quaternion(Vector3::zero);
 
 	bool Quaternion::less(
 		const Quaternion& a,

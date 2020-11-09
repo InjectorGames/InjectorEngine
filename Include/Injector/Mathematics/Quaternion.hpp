@@ -9,20 +9,30 @@ namespace Injector
 	{
 		float x, y, z, w;
 
-		Quaternion() noexcept;
-		Quaternion(float x, float y, float z, float w) noexcept;
-		Quaternion(float angle, const Vector3& axis) noexcept;
-		explicit Quaternion(const Vector3& eulerAngles) noexcept;
-		Quaternion(const Vector3& a, const Vector3& b) noexcept;
-		explicit Quaternion(const Matrix3& matrix) noexcept;
-		explicit Quaternion(const Matrix4& matrix) noexcept;
+		explicit Quaternion(
+			const Vector3& eulerAngles = Vector3::zero) noexcept;
+		Quaternion(
+			float x,
+			float y,
+			float z,
+			float w) noexcept;
+		Quaternion(
+			float angle,
+			const Vector3& axis) noexcept;
+		Quaternion(
+			const Vector3& a,
+			const Vector3& b) noexcept;
+		explicit Quaternion(
+			const Matrix3& matrix) noexcept;
+		explicit Quaternion(
+			const Matrix4& matrix) noexcept;
 
 		float getDotProduct(const Quaternion& quaternion) const noexcept;
 		Quaternion getCrossProduct(const Quaternion& quaternion) const noexcept;
 		float getLength() const noexcept;
 		Quaternion getNormalized() const noexcept;
 		Quaternion getConjugated() const noexcept;
-		Quaternion getInversed() const noexcept;
+		Quaternion getInverted() const noexcept;
 		Quaternion getLookedAt(const Vector3& direction, const Vector3& up) const noexcept;
 
 		float getAngle() const noexcept;
@@ -63,6 +73,9 @@ namespace Injector
 		Quaternion& operator+=(float value) noexcept;
 		Quaternion& operator/=(float value) noexcept;
 		Quaternion& operator*=(float value) noexcept;
+
+		// Euler Angles (0.0f, 0.0f, 0.0f)
+		static const Quaternion zero;
 
 		static bool less(
 			const Quaternion& a,
