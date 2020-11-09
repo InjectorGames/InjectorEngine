@@ -200,6 +200,7 @@ add_library(InjectorEngine STATIC
 
     Source/Mathematics/Color.cpp
     Source/Mathematics/BoundingBox.cpp
+    Source/Mathematics/BoundingSphere.cpp
     Source/Mathematics/Angle.cpp
     Source/Mathematics/Quaternion.cpp
     Source/Mathematics/RotateEcsComponent.cpp
