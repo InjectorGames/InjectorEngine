@@ -77,6 +77,10 @@ namespace Injector
 		static const Vector3 minusOne;
 		// (1.0f, 1.0f, 1.0f)
 		static const Vector3 one;
+		// (-0.5f, -0.5f, -0.5f)
+		static const Vector3 minusHalf;
+		// (0.5f, 0.5f, 0.5f)
+		static const Vector3 half;
 		// (-1.0f, 0.0f, 0.0f)
 		static const Vector3 left;
 		// (1.0f, 0.0f, 0.0f)

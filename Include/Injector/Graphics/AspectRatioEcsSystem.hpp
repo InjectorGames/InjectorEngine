@@ -10,17 +10,21 @@ namespace Injector
 	class AspectRatioEcsSystem : public EcsSystem
 	{
 	 protected:
-		// System window value
+		// Window value
 		std::shared_ptr<GpuWindow> window;
-		// System update camera container
+		// Update camera container
 		std::set<std::shared_ptr<EcsEntity>> cameras;
 	 public:
 		// Creates a new camera aspect ratio ECS system
 		explicit AspectRatioEcsSystem(
 			const std::shared_ptr<GpuWindow>& window);
 
-		// Returns update camera count
-		size_t getCameraCount() const noexcept;
+		// Returns window value
+		const std::shared_ptr<GpuWindow>&
+			getWindow() const noexcept;
+		// Returns update camera container
+		const std::set<std::shared_ptr<EcsEntity>>&
+			getCameras() const noexcept;
 
 		// Updates camera aspect ratio value
 		void update() override;

@@ -17,7 +17,7 @@ namespace Injector
 		Matrix4 matrix;
 		std::shared_ptr<EcsEntity> parent;
 
-		TransformEcsComponent(
+		explicit TransformEcsComponent(
 			const Vector3& position = Vector3::zero,
 			const Quaternion& rotation = Quaternion::zero,
 			const Vector3& scale = Vector3::one,

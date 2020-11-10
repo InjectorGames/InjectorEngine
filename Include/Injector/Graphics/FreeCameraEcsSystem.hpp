@@ -29,6 +29,10 @@ namespace Injector
 		explicit FreeCameraEcsSystem(
 			const std::shared_ptr<GpuWindow>& window);
 
+		// Returns system window value
+		const std::shared_ptr<GpuWindow>&
+			getWindow() const noexcept;
+
 		// Updates camera translation and rotation
 		void update() override;
 	};

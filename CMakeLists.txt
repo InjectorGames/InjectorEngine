@@ -128,11 +128,6 @@ add_library(InjectorEngine STATIC
     Source/Exception/NullException.cpp
     Source/Exception/OutOfRangeException.cpp
 
-    Source/Graphics/GUI/DragGuiHandler.cpp
-    Source/Graphics/GUI/EditorGuiHandler.cpp
-    Source/Graphics/GUI/GuiEcsComponent.cpp
-    Source/Graphics/GUI/GuiEcsSystem.cpp
-
     Source/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlDiffuseGpuPipeline.cpp
@@ -184,6 +179,11 @@ add_library(InjectorEngine STATIC
     Source/Graphics/SimSkyEcsSystem.cpp
     Source/Graphics/VirtualRealityEcsSystem.cpp
 
+    Source/Mathematics/Bounding/BoundingBox2.cpp
+    Source/Mathematics/Bounding/BoundingBox3.cpp
+    Source/Mathematics/Bounding/BoundingSphere2.cpp
+    Source/Mathematics/Bounding/BoundingSphere3.cpp
+
     Source/Mathematics/Vector/IntVector2.cpp
     Source/Mathematics/Vector/IntVector3.cpp
     Source/Mathematics/Vector/IntVector4.cpp
@@ -199,8 +199,6 @@ add_library(InjectorEngine STATIC
     Source/Mathematics/Matrix/Matrix4.cpp
 
     Source/Mathematics/Color.cpp
-    Source/Mathematics/BoundingBox.cpp
-    Source/Mathematics/BoundingSphere.cpp
     Source/Mathematics/Angle.cpp
     Source/Mathematics/Quaternion.cpp
     Source/Mathematics/RotateEcsComponent.cpp

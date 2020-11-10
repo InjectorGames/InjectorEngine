@@ -23,3 +23,6 @@
 [submodule "Libraries/freetype2"]
 	path = Libraries/freetype2
 	url = https://github.com/InjectorGames/freetype2
+[submodule "Libraries/imgui"]
+	path = Libraries/imgui
+	url = https://github.com/InjectorGames/imgui

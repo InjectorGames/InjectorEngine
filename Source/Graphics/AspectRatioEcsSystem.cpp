@@ -16,9 +16,15 @@ namespace Injector
 		}
 	}
 
-	size_t AspectRatioEcsSystem::getCameraCount() const noexcept
+	const std::shared_ptr<GpuWindow>&
+	    AspectRatioEcsSystem::getWindow() const noexcept
 	{
-		return cameras.size();
+		return window;
+	}
+	const std::set<std::shared_ptr<EcsEntity>>&
+		AspectRatioEcsSystem::getCameras() const noexcept
+	{
+		return cameras;
 	}
 
 	void AspectRatioEcsSystem::update()

@@ -481,6 +481,8 @@ namespace Injector
 	const Vector4 Vector4::zero = Vector4(0.0f);
 	const Vector4 Vector4::minusOne = Vector4(-1.0f);
 	const Vector4 Vector4::one = Vector4(1.0f);
+	const Vector4 Vector4::minusHalf = Vector4(-0.5f);
+	const Vector4 Vector4::half = Vector4(0.5f);
 
 	bool Vector4::less(
 		const Vector4& a,

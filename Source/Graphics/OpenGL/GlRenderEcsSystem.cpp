@@ -20,6 +20,12 @@ namespace Injector
 		}
 	}
 
+	const std::shared_ptr<GlGpuWindow>&
+	    GlRenderEcsSystem::getWindow() const noexcept
+	{
+		return window;
+	}
+
 	void GlRenderEcsSystem::update()
 	{
 		if (window->isMinimized())
@@ -30,7 +36,6 @@ namespace Injector
 			CameraEcsComponent* camera;
 			TransformEcsComponent* transform;
 		};
-
 		struct RenderData
 		{
 			std::shared_ptr<GlGpuPipeline> pipeline;
@@ -49,7 +54,9 @@ namespace Injector
 				!cameraData.camera->render)
 				continue;
 
-			cameraPairs.emplace(cameraData.camera->renderQueue, cameraData);
+			cameraPairs.emplace(
+				cameraData.camera->renderQueue,
+				cameraData);
 		}
 
 		window->makeCurrent();
@@ -81,7 +88,7 @@ namespace Injector
 					auto parent = renderData.transform->parent;
 					TransformEcsComponent* parentTransformComponent;
 
-					auto render = true;
+					auto shouldRender = true;
 					auto cycleCount = 0;
 
 					while (parent)
@@ -96,7 +103,7 @@ namespace Injector
 
 						if(!parentRenderComponent->render)
 						{
-							render = false;
+							shouldRender = false;
 							break;
 						}
 
@@ -113,7 +120,7 @@ namespace Injector
 						}
 					}
 
-					if(!render)
+					if(!shouldRender)
 						continue;
 				}
 

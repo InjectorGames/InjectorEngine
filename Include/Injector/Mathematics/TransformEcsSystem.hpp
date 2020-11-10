@@ -17,11 +17,14 @@ namespace Injector
 	 public:
 		TransformEcsSystem() noexcept;
 
-		void update() override;
+		const std::set<std::shared_ptr<EcsEntity>>&
+			getTransforms() const noexcept;
+		const std::set<std::shared_ptr<EcsEntity>>&
+			getTranslates() const noexcept;
+		const std::set<std::shared_ptr<EcsEntity>>&
+			getRotates() const noexcept;
 
-		size_t getTransformCount() const noexcept;
-		size_t getTranslateCount() const noexcept;
-		size_t getRotateCount() const noexcept;
+		void update() override;
 
 		bool addTransform(
 			const std::shared_ptr<EcsEntity>& entity) noexcept;

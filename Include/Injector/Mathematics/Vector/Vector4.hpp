@@ -82,6 +82,10 @@ namespace Injector
 		static const Vector4 minusOne;
 		// (1.0f, 1.0f, 1.0f, 1.0f)
 		static const Vector4 one;
+		// (-0.5f, -0.5f, -0.5f, -0.5f)
+		static const Vector4 minusHalf;
+		// (0.5f, 0.5f, 0.5f, 0.5f)
+		static const Vector4 half;
 
 		static bool less(
 			const Vector4& a,

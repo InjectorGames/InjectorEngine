@@ -8,7 +8,7 @@ namespace Injector
 	{
 		Quaternion rotation;
 
-		RotateEcsComponent(
+		explicit RotateEcsComponent(
 			const Quaternion& rotation = Quaternion::zero) noexcept;
 	};
 }

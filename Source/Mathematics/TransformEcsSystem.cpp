@@ -11,6 +11,22 @@ namespace Injector
 	{
 	}
 
+	const std::set<std::shared_ptr<EcsEntity>>&
+		TransformEcsSystem::getTransforms() const noexcept
+	{
+		return transforms;
+	}
+	const std::set<std::shared_ptr<EcsEntity>>&
+		TransformEcsSystem::getTranslates() const noexcept
+	{
+		return translates;
+	}
+	const std::set<std::shared_ptr<EcsEntity>>&
+		TransformEcsSystem::getRotates() const noexcept
+	{
+		return rotates;
+	}
+
 	void TransformEcsSystem::update()
 	{
 		auto deltaTime = static_cast<float>(Engine::getUpdateDeltaTime());
@@ -108,19 +124,6 @@ namespace Injector
 				transformComponent->matrix = matrix;
 			}
 		}
-	}
-
-	size_t TransformEcsSystem::getTransformCount() const noexcept
-	{
-		return transforms.size();
-	}
-	size_t TransformEcsSystem::getTranslateCount() const noexcept
-	{
-		return translates.size();
-	}
-	size_t TransformEcsSystem::getRotateCount() const noexcept
-	{
-		return rotates.size();
 	}
 
 	bool TransformEcsSystem::addTransform(

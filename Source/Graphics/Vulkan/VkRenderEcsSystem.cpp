@@ -20,6 +20,12 @@ namespace Injector
 		}
 	}
 
+	const std::shared_ptr<VkGpuWindow>&
+	    VkRenderEcsSystem::getWindow() const noexcept
+	{
+		return window;
+	}
+
 	void VkRenderEcsSystem::update()
 	{
 		if (window->isMinimized())
@@ -49,7 +55,9 @@ namespace Injector
 				!cameraData.camera->render)
 				continue;
 
-			cameraPairs.emplace(cameraData.camera->renderQueue, cameraData);
+			cameraPairs.emplace(
+				cameraData.camera->renderQueue,
+				cameraData);
 		}
 
 		auto imageIndex = window->beginImage();
@@ -78,7 +86,7 @@ namespace Injector
 					auto parent = renderData.transform->parent;
 					TransformEcsComponent* parentTransformComponent;
 
-					auto render = true;
+					auto shouldRender = true;
 					auto cycleCount = 0;
 
 					while (parent)
@@ -93,7 +101,7 @@ namespace Injector
 
 						if(!parentRenderComponent->render)
 						{
-							render = false;
+							shouldRender = false;
 							break;
 						}
 
@@ -110,7 +118,7 @@ namespace Injector
 						}
 					}
 
-					if(!render)
+					if(!shouldRender)
 						continue;
 				}
 

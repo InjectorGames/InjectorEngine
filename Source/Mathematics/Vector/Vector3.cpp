@@ -389,6 +389,8 @@ namespace Injector
 	const Vector3 Vector3::zero = Vector3(0.0f);
 	const Vector3 Vector3::minusOne = Vector3(-1.0f);
 	const Vector3 Vector3::one = Vector3(1.0f);
+	const Vector3 Vector3::minusHalf = Vector3(-0.5f);
+	const Vector3 Vector3::half = Vector3(0.5f);
 	const Vector3 Vector3::left = Vector3(-1.0f, 0.0f, 0.0f);
 	const Vector3 Vector3::right = Vector3(1.0f, 0.0f, 0.0f);
 	const Vector3 Vector3::down = Vector3(0.0f, -1.0f, 0.0f);

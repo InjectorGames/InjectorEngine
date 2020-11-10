@@ -8,8 +8,7 @@ namespace Injector
 	{
 		Vector3 translation;
 
-		TranslateEcsComponent(
-			const Vector3& translation =
-				Vector3::one) noexcept;
+		explicit TranslateEcsComponent(
+			const Vector3& translation = Vector3::one) noexcept;
 	};
 }

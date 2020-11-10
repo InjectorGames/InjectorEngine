@@ -12,6 +12,9 @@ namespace Injector
 		explicit VkRenderEcsSystem(
 			const std::shared_ptr<VkGpuWindow>& window);
 
+		const std::shared_ptr<VkGpuWindow>&
+			getWindow() const noexcept;
+
 		void update() override;
 	};
 }

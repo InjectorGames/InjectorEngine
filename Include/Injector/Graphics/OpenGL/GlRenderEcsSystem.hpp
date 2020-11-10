@@ -12,6 +12,9 @@ namespace Injector
 		explicit GlRenderEcsSystem(
 			const std::shared_ptr<GlGpuWindow>& window);
 
+		const std::shared_ptr<GlGpuWindow>&
+			getWindow() const noexcept;
+
 		void update() override;
 	};
 }

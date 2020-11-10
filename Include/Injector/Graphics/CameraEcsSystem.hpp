@@ -17,8 +17,9 @@ namespace Injector
 		// Creates a new camera ECS system
 		CameraEcsSystem() noexcept;
 
-		// Returns update camera count
-		size_t getCameraCount() const noexcept;
+		// Returns camera container
+		const std::set<std::shared_ptr<EcsEntity>>&
+			getCameras() const noexcept;
 
 		// Returns true if camera was added
 		bool addCamera(

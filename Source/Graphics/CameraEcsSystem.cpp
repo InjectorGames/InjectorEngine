@@ -7,9 +7,10 @@ namespace Injector
 	{
 	}
 
-	size_t CameraEcsSystem::getCameraCount() const noexcept
+	const std::set<std::shared_ptr<EcsEntity>>&
+		CameraEcsSystem::getCameras() const noexcept
 	{
-		return cameras.size();
+		return cameras;
 	}
 
 	bool CameraEcsSystem::addCamera(

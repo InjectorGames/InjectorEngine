@@ -24,6 +24,12 @@ namespace Injector
 		}
 	}
 
+	const std::shared_ptr<GpuWindow>&
+	    FreeCameraEcsSystem::getWindow() const noexcept
+	{
+		return window;
+	}
+
 	void FreeCameraEcsSystem::update()
 	{
 		TransformEcsComponent* transformComponent;
