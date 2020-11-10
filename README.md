@@ -14,8 +14,10 @@
 
 ## Third-Party
 * [assimp](https://github.com/assimp/assimp) (Custom License)
+* [freetype2](https://www.freetype.org) (Custom License)
 * [glew](https://github.com/nigels-com/glew) (Custom License)
 * [glfw](https://github.com/glfw/glfw) (zlib License)
+* [imgui](https://github.com/ocornut/imgui) (MIT License)
 * [lz4](https://github.com/lz4/lz4) (Custom License)
 * [openvr](https://github.com/ValveSoftware/openvr) (BDS-3-Clause License)
 * [stb](https://github.com/nothings/stb) (MIT License)
