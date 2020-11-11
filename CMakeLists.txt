@@ -76,6 +76,7 @@ find_package(OpenSSL REQUIRED)
 
 include(CMake/stb.cmake)
 include(CMake/VulkanMemoryAllocator.cmake)
+set(IMGUI_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/Libraries/imgui)
 
 add_subdirectory(Libraries/glew/build/cmake)
 set(GLEW_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/Libraries/glew/include)
@@ -120,6 +121,13 @@ if (INJECTOR_SUPPORT_VIRTUAL_REALITY)
 endif ()
 
 add_library(InjectorEngine STATIC
+    Libraries/imgui/imgui_demo.cpp
+    Libraries/imgui/imgui_draw.cpp
+    Libraries/imgui/imgui_widgets.cpp
+    Libraries/imgui/imgui.cpp
+    Libraries/imgui/examples/imgui_impl_glfw.cpp
+    Libraries/imgui/examples/imgui_impl_opengl3.cpp
+
     Source/ECS/EcsEntity.cpp
     Source/ECS/EcsManager.cpp
 
@@ -234,6 +242,7 @@ target_include_directories(InjectorEngine PUBLIC
     ${PROJECT_BINARY_DIR}
     ${PROJECT_SOURCE_DIR}/Include
     ${GLEW_INCLUDE_DIRS}
+    ${IMGUI_INCLUDE_DIRS}
     ${LZ4_INCLUDE_DIRS}
     ${OPENVR_INCLUDE_DIRS}
     ${Vulkan_INCLUDE_DIRS})

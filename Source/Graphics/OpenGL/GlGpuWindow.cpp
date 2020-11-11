@@ -10,6 +10,9 @@
 #include "Injector/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.hpp"
 
+#include "examples/imgui_impl_glfw.h"
+#include "examples/imgui_impl_opengl3.h"
+
 namespace Injector
 {
 	GLFWwindow* GlGpuWindow::createWindow(
@@ -73,7 +76,16 @@ namespace Injector
 				"Failed to initialize GLEW");
 		}
 
-		glfwSwapInterval(0);
+		ImGui_ImplGlfw_InitForOpenGL(
+			window,
+			false);
+		ImGui_ImplOpenGL3_Init(
+			"#version 330");
+	}
+	GlGpuWindow::~GlGpuWindow()
+	{
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
 	}
 
 	bool GlGpuWindow::isGLES() const noexcept
@@ -88,6 +100,17 @@ namespace Injector
 	void GlGpuWindow::swapBuffers() noexcept
 	{
 		glfwSwapBuffers(window);
+	}
+
+	void GlGpuWindow::update()
+	{
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		ImGui::ShowDemoWindow();
+
+		GpuWindow::update();
 	}
 
 	void GlGpuWindow::onFramebufferResize(const IntVector2& size)

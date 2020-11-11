@@ -31,6 +31,7 @@
 
 ## OpenSSL
 * Linux: sudo apt-get install libssl-dev
+* MacOS: [brew](https://brew.sh) install openssl
 * Windows: [choco](https://chocolatey.org) install openssl
 
 ## X11 (Linux only)

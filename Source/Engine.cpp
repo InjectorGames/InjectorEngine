@@ -4,7 +4,7 @@
 #include "Injector/Graphics/Vulkan/VkGpuWindow.hpp"
 
 #if INJECTOR_SYSTEM_LINUX || INJECTOR_SYSTEM_MACOS
-#include <signal.h>
+#include <csignal>
 #elif INJECTOR_SYSTEM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
@@ -17,6 +17,7 @@
 #include "openvr.h"
 #endif
 
+#include "imgui.h"
 #include "openssl/ssl.h"
 #include "openssl/err.h"
 
@@ -275,6 +276,9 @@ namespace Injector
 				"Vulkan is not supported");
 		}
 
+		ImGui::CreateContext();
+		ImGui::StyleColorsDark();
+
 		graphicsAPI = _graphicsAPI;
 		graphicsInitialized = true;
 
@@ -295,6 +299,7 @@ namespace Injector
 				"Graphics is already terminated");
 		}
 
+		ImGui::DestroyContext();
 		glfwTerminate();
 
 		graphicsAPI = GraphicsAPI::Unknown;

@@ -3,6 +3,9 @@
 #include "Injector/Exception/OutOfRangeException.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuMesh.hpp"
 
+#include "examples/imgui_impl_glfw.h"
+#include "examples/imgui_impl_opengl3.h"
+
 #include <map>
 #include <iostream>
 
@@ -28,9 +31,6 @@ namespace Injector
 
 	void GlRenderEcsSystem::update()
 	{
-		if (window->isMinimized())
-			return;
-
 		struct CameraData
 		{
 			CameraEcsComponent* camera;
@@ -60,6 +60,7 @@ namespace Injector
 		}
 
 		window->makeCurrent();
+		ImGui::Render();
 
 		glClear(
 			GL_COLOR_BUFFER_BIT |
@@ -202,6 +203,9 @@ namespace Injector
 			}
 		}
 #endif
+
+		ImGui_ImplOpenGL3_RenderDrawData(
+			ImGui::GetDrawData());
 
 		window->swapBuffers();
 	}

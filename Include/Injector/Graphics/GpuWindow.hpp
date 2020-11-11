@@ -31,10 +31,24 @@ namespace Injector
 		Vector2 deltaScroll;
 		bool isResized;
 
+		static void mouseButtonCallback(
+			GLFWwindow* window,
+			int button,
+			int action,
+			int mods);
 		static void scrollCallback(
 			GLFWwindow* window,
-			double x,
-			double y);
+			double xOffset,
+			double yOffset);
+		static void keyCallback(
+			GLFWwindow* window,
+			int key,
+			int scancode,
+			int action,
+			int mods);
+		static void charCallback(
+			GLFWwindow* window,
+			unsigned int charValue);
 		static void framebufferSizeCallback(
 			GLFWwindow* window,
 			int width,
@@ -45,7 +59,7 @@ namespace Injector
 
 		explicit GpuWindow(
 			GLFWwindow* window);
-		virtual ~GpuWindow();
+		~GpuWindow() override;
 
 		const Vector2& getDeltaScroll() const noexcept;
 

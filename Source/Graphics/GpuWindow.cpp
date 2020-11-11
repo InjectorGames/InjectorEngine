@@ -5,6 +5,8 @@
 #include "Injector/Graphics/OpenGL/GlGpuWindow.hpp"
 #include "Injector/Exception/NullException.hpp"
 
+#include "examples/imgui_impl_glfw.h"
+
 namespace Injector
 {
 	const std::string GpuWindow::defaultTitle =
@@ -12,15 +14,55 @@ namespace Injector
 	const IntVector2 GpuWindow::defaultSize =
 		IntVector2(800, 600);
 
+	void GpuWindow::mouseButtonCallback(
+		GLFWwindow* window,
+		int button,
+		int action,
+		int mods)
+	{
+		ImGui_ImplGlfw_MouseButtonCallback(
+			window,
+			button,
+			action,
+			mods);
+	}
 	void GpuWindow::scrollCallback(
 		GLFWwindow* window,
-		double x,
-		double y)
+		double xOffset,
+		double yOffset)
 	{
 		auto instance = static_cast<GpuWindow*>(
 			glfwGetWindowUserPointer(window));
-		instance->deltaScroll +=
-			Vector2(static_cast<float>(x), static_cast<float>(y));
+		instance->deltaScroll += Vector2(
+			static_cast<float>(xOffset),
+			static_cast<float>(yOffset));
+
+		ImGui_ImplGlfw_ScrollCallback(
+			window,
+			xOffset,
+			yOffset);
+	}
+	void GpuWindow::keyCallback(
+		GLFWwindow* window,
+		int key,
+		int scancode,
+		int action,
+		int mods)
+	{
+		ImGui_ImplGlfw_KeyCallback(
+			window,
+			key,
+			scancode,
+			action,
+			mods);
+	}
+	void GpuWindow::charCallback(
+		GLFWwindow* window,
+		unsigned int charValue)
+	{
+		ImGui_ImplGlfw_CharCallback(
+			window,
+			charValue);
 	}
 	void GpuWindow::framebufferSizeCallback(
 		GLFWwindow* window,
@@ -54,6 +96,9 @@ namespace Injector
 			1,
 			GLFW_DONT_CARE,
 			GLFW_DONT_CARE);
+		glfwSetMouseButtonCallback(
+			window,
+			mouseButtonCallback);
 		glfwSetScrollCallback(
 			window,
 			scrollCallback);
@@ -85,7 +130,7 @@ namespace Injector
 
 	void GpuWindow::update()
 	{
-		if (!glfwWindowShouldClose(window))
+		if(!glfwWindowShouldClose(window))
 		{
 			if (isResized)
 			{
@@ -99,8 +144,8 @@ namespace Injector
 
 			EcsManager::update();
 
-			deltaScroll = {};
 			active = true;
+			deltaScroll = Vector2::zero;
 		}
 		else
 		{

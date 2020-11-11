@@ -20,13 +20,17 @@ namespace Injector
 			bool gles = false,
 			const std::string& title = defaultTitle,
 			const IntVector2& size = defaultSize);
+		~GlGpuWindow() override;
 
 		bool isGLES() const noexcept;
 
 		void makeCurrent() noexcept;
 		void swapBuffers() noexcept;
 
-		void onFramebufferResize(const IntVector2& size) override;
+		void update() override;
+
+		void onFramebufferResize(
+			const IntVector2& size) override;
 
 		std::shared_ptr<CameraEcsSystem> createCameraSystem() override;
 		std::shared_ptr<RenderEcsSystem> createRenderSystem(
