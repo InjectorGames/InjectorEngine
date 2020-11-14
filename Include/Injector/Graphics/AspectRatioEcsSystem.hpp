@@ -27,7 +27,7 @@ namespace Injector
 			getCameras() const noexcept;
 
 		// Updates camera aspect ratio value
-		void update() override;
+		void onUpdate() override;
 
 		// Returns true if camera was added
 		bool addCamera(

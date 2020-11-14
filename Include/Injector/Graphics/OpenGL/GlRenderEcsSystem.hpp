@@ -15,6 +15,6 @@ namespace Injector
 		const std::shared_ptr<GlGpuWindow>&
 			getWindow() const noexcept;
 
-		void update() override;
+		void onUpdate() override;
 	};
 }

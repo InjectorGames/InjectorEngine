@@ -12,6 +12,6 @@ namespace Injector
 		virtual ~EcsSystem() = default;
 
 		// Executes on each update cycle
-		virtual void update() = 0;
+		virtual void onUpdate() = 0;
 	};
 }

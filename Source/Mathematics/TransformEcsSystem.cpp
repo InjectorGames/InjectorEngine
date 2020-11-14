@@ -27,7 +27,7 @@ namespace Injector
 		return rotates;
 	}
 
-	void TransformEcsSystem::update()
+	void TransformEcsSystem::onUpdate()
 	{
 		auto deltaTime = static_cast<float>(Engine::getUpdateDeltaTime());
 

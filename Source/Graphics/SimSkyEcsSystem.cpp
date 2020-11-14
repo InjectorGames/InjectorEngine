@@ -15,7 +15,7 @@ namespace Injector
 		}
 	}
 
-	void SimSkyEcsSystem::update()
+	void SimSkyEcsSystem::onUpdate()
 	{
 
 	}

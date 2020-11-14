@@ -2,7 +2,7 @@
 
 namespace Injector
 {
-	void GlCameraEcsSystem::update()
+	void GlCameraEcsSystem::onUpdate()
 	{
 		for (auto& camera : cameras)
 		{

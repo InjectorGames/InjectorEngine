@@ -18,6 +18,7 @@
 #endif
 
 #include "imgui.h"
+
 #include "openssl/ssl.h"
 #include "openssl/err.h"
 
@@ -279,6 +280,24 @@ namespace Injector
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
 
+		auto& style = ImGui::GetStyle();
+		style.WindowTitleAlign = ImVec2(
+			0.5f, 0.5f);
+		style.TabRounding = 4.0f;
+		style.WindowRounding = 4.0f;
+		style.FrameRounding = 4.0f;
+		style.GrabRounding = 4.0f;
+		style.ChildRounding = 4.0f;
+		style.PopupRounding = 4.0f;
+		style.ScrollbarRounding = 4.0f;
+
+		auto io = ImGui::GetIO();
+
+		auto fonts = io.Fonts->AddFontFromFileTTF(
+			"Resources/Fonts/JetBrainsMonoRegular.ttf",
+			22.0f);
+		fonts->Scale = 0.75;
+
 		graphicsAPI = _graphicsAPI;
 		graphicsInitialized = true;
 
@@ -403,7 +422,7 @@ namespace Injector
 				std::chrono::duration<double>>(tick.time_since_epoch()).count();
 
 			for (auto& manager : managers)
-				manager->update();
+				manager->onUpdate();
 
 			bool existActive = false;
 

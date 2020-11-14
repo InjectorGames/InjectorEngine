@@ -26,7 +26,7 @@ namespace Injector
 		return window;
 	}
 
-	void VkRenderEcsSystem::update()
+	void VkRenderEcsSystem::onUpdate()
 	{
 		if (window->isMinimized())
 			return;

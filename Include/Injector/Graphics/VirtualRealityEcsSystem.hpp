@@ -12,6 +12,6 @@ namespace Injector
 	public:
 		std::shared_ptr<EcsEntity> hmd;
 		
-		void update() override;
+		void onUpdate() override;
 	};
 }

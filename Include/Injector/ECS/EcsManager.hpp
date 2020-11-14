@@ -27,7 +27,7 @@ namespace Injector
 		virtual ~EcsManager() = default;
 
 		// Executes on each update cycle
-		virtual void update();
+		virtual void onUpdate();
 
 		// Returns true if manager is still active
 		bool isActive() const noexcept;

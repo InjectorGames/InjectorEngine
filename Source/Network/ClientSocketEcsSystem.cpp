@@ -49,7 +49,7 @@ namespace Injector
 		maxDatagramBufferSize = size;
 	}
 
-	void ClientSocketEcsSystem::update()
+	void ClientSocketEcsSystem::onUpdate()
 	{
 		datagramBufferMutex.lock();
 

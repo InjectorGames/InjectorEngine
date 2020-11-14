@@ -136,6 +136,8 @@ add_library(InjectorEngine STATIC
     Source/Exception/NullException.cpp
     Source/Exception/OutOfRangeException.cpp
 
+    Source/Graphics/GUI/EditorGuiHandler.cpp
+
     Source/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlDiffuseGpuPipeline.cpp
@@ -179,6 +181,7 @@ add_library(InjectorEngine STATIC
     Source/Graphics/GpuPipeline.cpp
     Source/Graphics/GpuShader.cpp
     Source/Graphics/GpuWindow.cpp
+    Source/Graphics/GuiEcsComponent.cpp
     Source/Graphics/ImageData.cpp
     Source/Graphics/ModelData.cpp
     Source/Graphics/RenderEcsComponent.cpp
@@ -258,6 +261,15 @@ if (INJECTOR_BUILD_EDITOR)
 endif ()
 
 set(INJECTOR_RESOURCES
+    Fonts/JetBrainsMonoBold.ttf
+    Fonts/JetBrainsMonoBoldItalic.ttf
+    Fonts/JetBrainsMonoItalic.ttf
+    Fonts/JetBrainsMonoRegular.ttf
+    Fonts/RobotoBold.ttf
+    Fonts/RobotoBoldItalic.ttf
+    Fonts/RobotoItalic.ttf
+    Fonts/RobotoRegular.ttf
+
     Images/GrayBox.png
     Images/Logo16.png
     Images/Logo32.png

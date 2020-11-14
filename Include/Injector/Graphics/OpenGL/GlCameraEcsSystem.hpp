@@ -9,6 +9,6 @@ namespace Injector
 	{
 	 public:
 		// Updates OpenGL camera view and projection matrices
-		void update() override;
+		void onUpdate() override;
 	};
 }

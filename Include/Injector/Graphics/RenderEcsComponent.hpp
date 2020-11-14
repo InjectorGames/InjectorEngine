@@ -19,6 +19,6 @@ namespace Injector
 			const BoundingBox3& bounds = BoundingBox3::one,
 			const std::shared_ptr<GpuPipeline>& pipeline = nullptr,
 			const std::shared_ptr<GpuMesh>& mesh = nullptr,
-			bool render = true);
+			bool render = true) noexcept;
 	};
 }

@@ -27,7 +27,7 @@ namespace Injector
 		return cameras;
 	}
 
-	void AspectRatioEcsSystem::update()
+	void AspectRatioEcsSystem::onUpdate()
 	{
 		auto windowSize = window->getSize();
 		auto aspectRatio = windowSize.x / float(windowSize.y);

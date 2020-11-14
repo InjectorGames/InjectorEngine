@@ -102,6 +102,12 @@ namespace Injector
 		glfwSetScrollCallback(
 			window,
 			scrollCallback);
+		glfwSetKeyCallback(
+			window,
+			keyCallback);
+		glfwSetCharCallback(
+			window,
+			charCallback);
 		glfwSetFramebufferSizeCallback(
 			window,
 			framebufferSizeCallback);
@@ -123,12 +129,21 @@ namespace Injector
 		glfwDestroyWindow(window);
 	}
 
+	GLFWwindow* GpuWindow::getWindow() noexcept
+	{
+		return window;
+	}
+	const GLFWwindow* GpuWindow::getWindow() const noexcept
+	{
+		return window;
+	}
+
 	const Vector2& GpuWindow::getDeltaScroll() const noexcept
 	{
 		return deltaScroll;
 	}
 
-	void GpuWindow::update()
+	void GpuWindow::onUpdate()
 	{
 		if(!glfwWindowShouldClose(window))
 		{
@@ -142,7 +157,7 @@ namespace Injector
 				isResized = false;
 			}
 
-			EcsManager::update();
+			EcsManager::onUpdate();
 
 			active = true;
 			deltaScroll = Vector2::zero;

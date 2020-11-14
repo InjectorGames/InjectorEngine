@@ -24,7 +24,7 @@ namespace Injector
 		const std::set<std::shared_ptr<EcsEntity>>&
 			getRotates() const noexcept;
 
-		void update() override;
+		void onUpdate() override;
 
 		bool addTransform(
 			const std::shared_ptr<EcsEntity>& entity) noexcept;

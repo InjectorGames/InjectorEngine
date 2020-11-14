@@ -30,7 +30,7 @@ namespace Injector
 		return window;
 	}
 
-	void FreeCameraEcsSystem::update()
+	void FreeCameraEcsSystem::onUpdate()
 	{
 		TransformEcsComponent* transformComponent;
 

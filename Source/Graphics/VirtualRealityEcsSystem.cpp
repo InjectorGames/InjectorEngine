@@ -3,7 +3,7 @@
 
 namespace Injector
 {
-	void VirtualRealityEcsSystem::update()
+	void VirtualRealityEcsSystem::onUpdate()
 	{
 		CameraEcsComponent* cameraComponent;
 

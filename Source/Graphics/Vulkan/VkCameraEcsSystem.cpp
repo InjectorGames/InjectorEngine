@@ -2,7 +2,7 @@
 
 namespace Injector
 {
-	void VkCameraEcsSystem::update()
+	void VkCameraEcsSystem::onUpdate()
 	{
 		for (auto& camera : cameras)
 		{

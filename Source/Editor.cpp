@@ -1,5 +1,5 @@
 #include "Injector/Engine.hpp"
-#include "Injector/Graphics/VirtualRealityEcsSystem.hpp"
+#include "Injector/Graphics/GUI/EditorGuiHandler.hpp"
 #include "Injector/Graphics/AspectRatioEcsSystem.hpp"
 #include "Injector/Mathematics/TransformEcsSystem.hpp"
 
@@ -20,6 +20,11 @@ void initialize()
 	auto transformSystem = window->createSystem<TransformEcsSystem>();
 	auto cameraSystem = window->createCameraSystem();
 	auto renderSystem = window->createRenderSystem(window);
+
+	auto editor = window->createEntity();
+	editor->createComponent<GuiEcsComponent>(
+		std::make_shared<EditorGuiHandler>());
+	renderSystem->addGui(editor);
 }
 
 int main()
@@ -27,7 +32,7 @@ int main()
 	try
 	{
 		Engine::initializeGraphics(
-		 	GraphicsAPI::OpenGL);
+		 	GraphicsAPI::Vulkan);
 		//Engine::initializeVirtualReality();
 		Engine::setTargetUpdateRate(60);
 		Engine::initializeEngine();

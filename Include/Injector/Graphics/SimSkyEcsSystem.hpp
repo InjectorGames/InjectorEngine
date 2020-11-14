@@ -13,6 +13,6 @@ namespace Injector
 		explicit SimSkyEcsSystem(
 			const std::shared_ptr<GpuWindow>& window);
 
-		void update() override;
+		void onUpdate() override;
 	};
 }

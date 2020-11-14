@@ -2,8 +2,6 @@
 #include "Injector/Graphics/GpuWindow.hpp"
 #include "Injector/GlfwDefines.hpp"
 
-#include "GLFW/glfw3.h"
-
 namespace Injector
 {
 	class GlGpuWindow : public GpuWindow
@@ -26,8 +24,6 @@ namespace Injector
 
 		void makeCurrent() noexcept;
 		void swapBuffers() noexcept;
-
-		void update() override;
 
 		void onFramebufferResize(
 			const IntVector2& size) override;

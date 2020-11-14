@@ -44,6 +44,6 @@ namespace Injector
 		void setMaxDatagramBufferSize(size_t size) noexcept;
 
 		// Processes received datagrams
-		void update() override;
+		void onUpdate() override;
 	};
 }

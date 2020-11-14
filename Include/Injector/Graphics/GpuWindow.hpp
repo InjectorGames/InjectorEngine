@@ -1,22 +1,22 @@
 #pragma once
 #include "Injector/ECS/EcsManager.hpp"
+#include "Injector/Input/MouseIcon.hpp"
+#include "Injector/Input/MouseMode.hpp"
+#include "Injector/Input/MouseButton.hpp"
+#include "Injector/Input/ButtonState.hpp"
+#include "Injector/Input/KeyboardButton.hpp"
 #include "Injector/Graphics/GpuMesh.hpp"
 #include "Injector/Graphics/GpuImage.hpp"
 #include "Injector/Graphics/GpuShader.hpp"
 #include "Injector/Graphics/ImageData.hpp"
 #include "Injector/Graphics/ModelData.hpp"
-#include "Injector/Input/MouseIcon.hpp"
-#include "Injector/Input/MouseMode.hpp"
 #include "Injector/Graphics/ShaderData.hpp"
-#include "Injector/Input/MouseButton.hpp"
 #include "Injector/Graphics/GpuPipeline.hpp"
-#include "Injector/Input/ButtonState.hpp"
-#include "Injector/Graphics/RenderEcsSystem.hpp"
-#include "Injector/Graphics/CameraEcsSystem.hpp"
+#include "Injector/Graphics/GpuFramebuffer.hpp"
 #include "Injector/Graphics/GpuImageWrap.hpp"
 #include "Injector/Graphics/GpuImageFilter.hpp"
-#include "Injector/Input/KeyboardButton.hpp"
-#include "Injector/Graphics/GpuFramebuffer.hpp"
+#include "Injector/Graphics/RenderEcsSystem.hpp"
+#include "Injector/Graphics/CameraEcsSystem.hpp"
 
 #include <string>
 #include <cstdint>
@@ -61,9 +61,12 @@ namespace Injector
 			GLFWwindow* window);
 		~GpuWindow() override;
 
+		GLFWwindow* getWindow() noexcept;
+		const GLFWwindow* getWindow() const noexcept;
+
 		const Vector2& getDeltaScroll() const noexcept;
 
-		void update() override;
+		void onUpdate() override;
 
 		virtual void onFramebufferResize(
 			const IntVector2& size) = 0;

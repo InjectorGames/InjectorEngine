@@ -29,7 +29,7 @@ namespace Injector
 		return window;
 	}
 
-	void GlRenderEcsSystem::update()
+	void GlRenderEcsSystem::onUpdate()
 	{
 		struct CameraData
 		{
@@ -42,6 +42,29 @@ namespace Injector
 			std::shared_ptr<GlGpuMesh> mesh;
 			TransformEcsComponent* transform;
 		};
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		for (auto& gui : guis)
+		{
+			GuiEcsComponent* guiComponent;
+
+			if(!gui->getComponent(guiComponent))
+				continue;
+
+			if(guiComponent->handler)
+				guiComponent->handler->onUpdate();
+		}
+
+		window->makeCurrent();
+		ImGui::Render();
+
+		glClear(
+			GL_COLOR_BUFFER_BIT |
+			GL_DEPTH_BUFFER_BIT |
+			GL_STENCIL_BUFFER_BIT);
 
 		auto cameraPairs = std::multimap<int, CameraData>();
 
@@ -58,14 +81,6 @@ namespace Injector
 				cameraData.camera->renderQueue,
 				cameraData);
 		}
-
-		window->makeCurrent();
-		ImGui::Render();
-
-		glClear(
-			GL_COLOR_BUFFER_BIT |
-			GL_DEPTH_BUFFER_BIT |
-			GL_STENCIL_BUFFER_BIT);
 
 		for (auto& cameraPair : cameraPairs)
 		{
@@ -169,6 +184,9 @@ namespace Injector
 			}
 		}
 
+		ImGui_ImplOpenGL3_RenderDrawData(
+			ImGui::GetDrawData());
+
 #ifndef NDEBUG
 		GLenum error;
 
@@ -203,9 +221,6 @@ namespace Injector
 			}
 		}
 #endif
-
-		ImGui_ImplOpenGL3_RenderDrawData(
-			ImGui::GetDrawData());
 
 		window->swapBuffers();
 	}

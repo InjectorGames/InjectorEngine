@@ -10,6 +10,9 @@
 #include "Injector/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.hpp"
 #include "Injector/Graphics/Vulkan/Pipeline/VkImageDiffuseGpuPipeline.hpp"
 
+#include "examples/imgui_impl_glfw.h"
+#include "examples/imgui_impl_vulkan.h"
+
 #include <map>
 #include <vector>
 #include <iostream>
@@ -619,6 +622,26 @@ namespace Injector
 				graphicsCommandPool,
 				presentCommandPool,
 				size);
+
+			ImGui_ImplGlfw_InitForVulkan(
+				window,
+				false);
+
+			ImGui_ImplVulkan_Init
+
+			ImGui_ImplVulkan_InitInfo init_info = {};
+			init_info.Instance = g_Instance;
+			init_info.PhysicalDevice = g_PhysicalDevice;
+			init_info.Device = g_Device;
+			init_info.QueueFamily = g_QueueFamily;
+			init_info.Queue = g_Queue;
+			init_info.PipelineCache = g_PipelineCache;
+			init_info.DescriptorPool = g_DescriptorPool;
+			init_info.Allocator = g_Allocator;
+			init_info.MinImageCount = g_MinImageCount;
+			init_info.ImageCount = wd->ImageCount;
+			init_info.CheckVkResultFn = check_vk_result;
+			ImGui_ImplVulkan_Init(&init_info, wd->RenderPass);
 
 			frameIndex = 0;
 		}

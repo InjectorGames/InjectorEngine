@@ -10,10 +10,10 @@ namespace Injector
 	{
 	}
 
-	void EcsManager::update()
+	void EcsManager::onUpdate()
 	{
 		for (auto system : systems)
-			system->update();
+			system->onUpdate();
 	}
 
 	bool EcsManager::isActive() const noexcept

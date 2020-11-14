@@ -34,6 +34,6 @@ namespace Injector
 			getWindow() const noexcept;
 
 		// Updates camera translation and rotation
-		void update() override;
+		void onUpdate() override;
 	};
 }

@@ -1,11 +1,11 @@
 #include "Injector/Graphics/OpenGL/GlGpuWindow.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuMesh.hpp"
 #include "Injector/Storage/FileStream.hpp"
-#include "Injector/Graphics/OpenGL/GlGpuShader.hpp"
 #include "Injector/Exception/CastException.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuShader.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuFramebuffer.hpp"
 #include "Injector/Graphics/OpenGL/GlCameraEcsSystem.hpp"
 #include "Injector/Graphics/OpenGL/GlRenderEcsSystem.hpp"
-#include "Injector/Graphics/OpenGL/GlGpuFramebuffer.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.hpp"
@@ -79,11 +79,21 @@ namespace Injector
 		ImGui_ImplGlfw_InitForOpenGL(
 			window,
 			false);
-		ImGui_ImplOpenGL3_Init(
-			"#version 330");
+
+		if(_gles)
+		{
+			ImGui_ImplOpenGL3_Init(
+				"#version 300 es");
+		}
+		else
+		{
+			ImGui_ImplOpenGL3_Init(
+				"#version 330 core");
+		}
 	}
 	GlGpuWindow::~GlGpuWindow()
 	{
+		glfwMakeContextCurrent(window);
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 	}
@@ -100,17 +110,6 @@ namespace Injector
 	void GlGpuWindow::swapBuffers() noexcept
 	{
 		glfwSwapBuffers(window);
-	}
-
-	void GlGpuWindow::update()
-	{
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		ImGui::ShowDemoWindow();
-
-		GpuWindow::update();
 	}
 
 	void GlGpuWindow::onFramebufferResize(const IntVector2& size)
