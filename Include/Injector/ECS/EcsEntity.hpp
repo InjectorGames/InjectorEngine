@@ -11,7 +11,7 @@ namespace Injector
 	struct EcsEntity final
 	{
 	 private:
-		// Component map
+		// Component container
 		std::map<std::type_index, EcsComponent*> components;
 	 public:
 		// Creates a new ECS entity
@@ -19,10 +19,12 @@ namespace Injector
 		// Destroys ECS entity and all components
 		~EcsEntity();
 
+		// Returns entity component container
+		const std::map<std::type_index, EcsComponent*>&
+		    getComponents() const noexcept;
+
 		// Destroys all ECS entity components
 		void destroyComponents() noexcept;
-		// Returns ECS entity component count
-		size_t getComponentCount() const noexcept;
 
 		// Returns a new created and added to the entity component
 		// with specified arguments
@@ -115,5 +117,8 @@ namespace Injector
 			component = static_cast<const T*>(iterator->second);
 			return true;
 		}
+
+		// Returns a new created entity
+		static std::shared_ptr<EcsEntity> create() noexcept;
 	};
 }

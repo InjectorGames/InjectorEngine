@@ -16,7 +16,7 @@ namespace Injector
 		std::shared_ptr<VkGpuShader> vertexShader;
 		std::shared_ptr<VkGpuShader> fragmentShader;
 
-		Vector4 color;
+		FloatVector4 color;
 
 		static vk::PipelineLayout createPipelineLayout(
 			vk::Device device);
@@ -37,11 +37,11 @@ namespace Injector
 			GpuDrawMode drawMode,
 			const std::shared_ptr<VkGpuShader>& vertexShader,
 			const std::shared_ptr<VkGpuShader>& fragmentShader,
-			const Vector4& color);
+			const FloatVector4& color);
 		~VkColorGpuPipeline() override;
 
-		const Vector4& getColor() const override;
-		void setColor(const Vector4& color) override;
+		const FloatVector4& getColor() const override;
+		void setColor(const FloatVector4& color) override;
 
 		void recreate(
 			VmaAllocator allocator,
@@ -54,10 +54,10 @@ namespace Injector
 			vk::CommandBuffer commandBuffer,
 			size_t imageIndex) override;
 		void setUniforms(
-			const Matrix4& model,
-			const Matrix4& view,
-			const Matrix4& proj,
-			const Matrix4& viewProj,
-			const Matrix4& mvp) override;
+			const FloatMatrix4& model,
+			const FloatMatrix4& view,
+			const FloatMatrix4& proj,
+			const FloatMatrix4& viewProj,
+			const FloatMatrix4& mvp) override;
 	};
 }

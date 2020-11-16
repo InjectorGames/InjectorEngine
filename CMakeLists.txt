@@ -126,7 +126,6 @@ add_library(InjectorEngine STATIC
     Libraries/imgui/imgui_widgets.cpp
     Libraries/imgui/imgui.cpp
     Libraries/imgui/examples/imgui_impl_glfw.cpp
-    Libraries/imgui/examples/imgui_impl_opengl3.cpp
 
     Source/ECS/EcsEntity.cpp
     Source/ECS/EcsManager.cpp
@@ -182,6 +181,7 @@ add_library(InjectorEngine STATIC
     Source/Graphics/GpuShader.cpp
     Source/Graphics/GpuWindow.cpp
     Source/Graphics/GuiEcsComponent.cpp
+    Source/Graphics/GuiEcsSystem.cpp
     Source/Graphics/ImageData.cpp
     Source/Graphics/ModelData.cpp
     Source/Graphics/RenderEcsComponent.cpp
@@ -190,27 +190,12 @@ add_library(InjectorEngine STATIC
     Source/Graphics/SimSkyEcsSystem.cpp
     Source/Graphics/VirtualRealityEcsSystem.cpp
 
-    Source/Mathematics/Bounding/BoundingBox2.cpp
-    Source/Mathematics/Bounding/BoundingBox3.cpp
-    Source/Mathematics/Bounding/BoundingSphere2.cpp
-    Source/Mathematics/Bounding/BoundingSphere3.cpp
-
-    Source/Mathematics/Vector/IntVector2.cpp
-    Source/Mathematics/Vector/IntVector3.cpp
-    Source/Mathematics/Vector/IntVector4.cpp
-    Source/Mathematics/Vector/SizeVector2.cpp
-    Source/Mathematics/Vector/SizeVector3.cpp
-    Source/Mathematics/Vector/SizeVector4.cpp
-    Source/Mathematics/Vector/Vector2.cpp
-    Source/Mathematics/Vector/Vector3.cpp
-    Source/Mathematics/Vector/Vector4.cpp
-
-    Source/Mathematics/Matrix/Matrix2.cpp
-    Source/Mathematics/Matrix/Matrix3.cpp
-    Source/Mathematics/Matrix/Matrix4.cpp
-
-    Source/Mathematics/Color.cpp
     Source/Mathematics/Angle.cpp
+    Source/Mathematics/BoundingBox2.cpp
+    Source/Mathematics/BoundingBox3.cpp
+    Source/Mathematics/BoundingSphere2.cpp
+    Source/Mathematics/BoundingSphere3.cpp
+    Source/Mathematics/Color.cpp
     Source/Mathematics/Quaternion.cpp
     Source/Mathematics/RotateEcsComponent.cpp
     Source/Mathematics/TransformEcsComponent.cpp
@@ -285,6 +270,8 @@ set(INJECTOR_RESOURCES
     Shaders/SimulatedSky.frag
     Shaders/Diffuse.frag
     Shaders/Diffuse.vert
+    Shaders/Gui.vert
+    Shaders/Gui.frag
     Shaders/ImageDiffuse.frag
     Shaders/ImageDiffuse.vert
 

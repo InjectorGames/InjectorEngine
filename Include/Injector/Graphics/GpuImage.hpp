@@ -1,7 +1,7 @@
 #pragma once
 #include "Injector/Graphics/GpuImageType.hpp"
 #include "Injector/Graphics/GpuImageFormat.hpp"
-#include "Injector/Mathematics/Vector/IntVector3.hpp"
+#include "Injector/Mathematics/Vector3.hpp"
 
 namespace Injector
 {

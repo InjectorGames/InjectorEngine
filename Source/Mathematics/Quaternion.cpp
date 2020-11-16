@@ -7,7 +7,7 @@
 namespace Injector
 {
 	Quaternion::Quaternion(
-		const Vector3& eulerAngles) noexcept
+		const FloatVector3& eulerAngles) noexcept
 	{
 		auto s = eulerAngles * 0.5f;
 		s = s.getSine();
@@ -33,7 +33,7 @@ namespace Injector
 	}
 	Quaternion::Quaternion(
 		float angle,
-		const Vector3& axis) noexcept
+		const FloatVector3& axis) noexcept
 	{
 		auto v = axis * sin(angle * 0.5f);
 		x = v.x;
@@ -42,8 +42,8 @@ namespace Injector
 		w = cos(angle * 0.5f);
 	}
 	Quaternion::Quaternion(
-		const Vector3& a,
-		const Vector3& b) noexcept
+		const FloatVector3& a,
+		const FloatVector3& b) noexcept
 	{
 		auto norm = sqrt(a.getDotProduct(a) * b.getDotProduct(b));
 		auto real = norm + a.getDotProduct(b);
@@ -68,7 +68,7 @@ namespace Injector
 		*this = Quaternion(t.x, t.y, t.z, real).getNormalized();
 	}
 	Quaternion::Quaternion(
-		const Matrix3& matrix) noexcept
+		const FloatMatrix3& matrix) noexcept
 	{
 		auto fourXSquaredMinus1 = matrix.m00 - matrix.m11 - matrix.m22;
 		auto fourYSquaredMinus1 = matrix.m11 - matrix.m00 - matrix.m22;
@@ -124,7 +124,7 @@ namespace Injector
 		}
 	}
 	Quaternion::Quaternion(
-		const Matrix4& matrix) noexcept
+		const FloatMatrix4& matrix) noexcept
 	{
 		auto fourXSquaredMinus1 = matrix.m00 - matrix.m11 - matrix.m22;
 		auto fourYSquaredMinus1 = matrix.m11 - matrix.m00 - matrix.m22;
@@ -212,10 +212,11 @@ namespace Injector
 		return getConjugated() / getDotProduct(*this);
 	}
 	Quaternion Quaternion::getLookedAt(
-		const Vector3& direction, const Vector3& up) const noexcept
+		const FloatVector3& direction,
+		const FloatVector3& up) const noexcept
 	{
-		auto c0 = up.getCrossProduct(direction) *
-				  (1.0f / sqrt(fmaxf(0.00001f, direction.getDotProduct(direction))));
+		auto c0 = up.getCrossProduct(direction) * (1.0f /
+			sqrt(fmaxf(0.00001f, direction.getDotProduct(direction))));
 		return Quaternion(Matrix3(c0, direction.getCrossProduct(c0), direction));
 	}
 
@@ -244,22 +245,34 @@ namespace Injector
 	{
 		return asin(fminf(fmaxf(-2.0f * (x * z - w * y), -1.0f), 1.0f));
 	}
-	Vector3 Quaternion::getAxis() const noexcept
+	FloatVector3 Quaternion::getAxis() const noexcept
 	{
 		auto tmp = 1.0f - w * w;
 
 		if (tmp <= 0.0f)
-			return Vector3(0.0f, 0.0f, 1.0f);
+		{
+			return FloatVector3(
+				0.0f,
+				0.0f,
+				1.0f);
+		}
 
 		tmp = 1.0f / sqrt(tmp);
-		return Vector3(x * tmp, y * tmp, z * tmp);
+
+		return FloatVector3(
+			x * tmp,
+			y * tmp,
+			z * tmp);
 	}
-	Vector3 Quaternion::getEulerAngles() const noexcept
+	FloatVector3 Quaternion::getEulerAngles() const noexcept
 	{
-		return Vector3(getPitch(), getYaw(), getRoll());
+		return FloatVector3(
+			getPitch(),
+			getYaw(),
+			getRoll());
 	}
 
-	Matrix3 Quaternion::getMatrix3() const noexcept
+	FloatMatrix3 Quaternion::getMatrix3() const noexcept
 	{
 		auto xx = x * x;
 		auto yy = y * y;
@@ -271,12 +284,12 @@ namespace Injector
 		auto wy = w * y;
 		auto wz = w * z;
 
-		return Matrix3(
+		return FloatMatrix3(
 			1.0f - 2.0f * (yy + zz), 2.0f * (xy - wz), 2.0f * (xz + wy),
 			2.0f * (xy + wz), 1.0f - 2.0f * (xx + zz), 2.0f * (yz - wx),
 			2.0f * (xz - wy), 2.0f * (yz + wx), 1.0f - 2.0f * (xx + yy));
 	}
-	Matrix4 Quaternion::getMatrix4() const noexcept
+	FloatMatrix4 Quaternion::getMatrix4() const noexcept
 	{
 		auto xx = x * x;
 		auto yy = y * y;
@@ -288,7 +301,7 @@ namespace Injector
 		auto wy = w * y;
 		auto wz = w * z;
 
-		return Matrix4(
+		return FloatMatrix4(
 			1.0f - 2.0f * (yy + zz), 2.0f * (xy - wz), 2.0f * (xz + wy), 0.0f,
 			2.0f * (xy + wz), 1.0f - 2.0f * (xx + zz), 2.0f * (yz - wx), 0.0f,
 			2.0f * (xz - wy), 2.0f * (yz + wx), 1.0f - 2.0f * (xx + yy), 0.0f,
@@ -367,17 +380,17 @@ namespace Injector
 			w * quaternion.z + z * quaternion.w + x * quaternion.y - y * quaternion.x,
 			w * quaternion.w - x * quaternion.x - y * quaternion.y - z * quaternion.z);
 	}
-	Vector3 Quaternion::operator*(const Vector3& vector) const noexcept
+	FloatVector3 Quaternion::operator*(const FloatVector3& vector) const noexcept
 	{
-		auto qv = Vector3(x, y, z);
+		auto qv = FloatVector3(x, y, z);
 		auto uv = qv.getCrossProduct(vector);
 		auto uuv = qv.getCrossProduct(uv);
 		return vector + ((uv * w) + uuv) * 2.0f;
 	}
-	Vector4 Quaternion::operator*(const Vector4& vector) const noexcept
+	FloatVector4 Quaternion::operator*(const FloatVector4& vector) const noexcept
 	{
-		auto v = vector.getVector3();
-		return Vector4(*this * v, vector.w);
+		auto v = FloatVector3(vector.x, vector.y, vector.z);
+		return FloatVector4(*this * v, vector.w);
 	}
 	Quaternion& Quaternion::operator-=(const Quaternion& quaternion) noexcept
 	{
@@ -454,9 +467,6 @@ namespace Injector
 		w *= value;
 		return *this;
 	}
-
-	const Quaternion Quaternion::zero =
-		Quaternion(Vector3::zero);
 
 	bool Quaternion::less(
 		const Quaternion& a,

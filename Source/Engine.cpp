@@ -70,11 +70,11 @@ namespace Injector
 	double Engine::updateDeltaTime = 0.0;
 
 	GraphicsAPI Engine::graphicsAPI = GraphicsAPI::Unknown;
-	Matrix4 Engine::hmdModelMatrix = Matrix4::identity;
-	Matrix4 Engine::leftEyeModelMatrix = Matrix4::identity;
-	Matrix4 Engine::rightEyeModelMatrix = Matrix4::identity;
-	Matrix4 Engine::leftEyeProjMatrix = Matrix4::identity;
-	Matrix4 Engine::rightEyeProjMatrix = Matrix4::identity;
+	FloatMatrix4 Engine::hmdModelMatrix = FloatMatrix4();
+	FloatMatrix4 Engine::leftEyeModelMatrix = FloatMatrix4();
+	FloatMatrix4 Engine::rightEyeModelMatrix = FloatMatrix4();
+	FloatMatrix4 Engine::leftEyeProjMatrix = FloatMatrix4();
+	FloatMatrix4 Engine::rightEyeProjMatrix = FloatMatrix4();
 
 	std::vector<std::shared_ptr<EcsManager>> Engine::managers = {};
 
@@ -530,23 +530,23 @@ namespace Injector
 	{
 		return graphicsAPI;
 	}
-	const Matrix4& Engine::getHmdModelMatrix() noexcept
+	const FloatMatrix4& Engine::getHmdModelMatrix() noexcept
 	{
 		return hmdModelMatrix;
 	}
-	const Matrix4& Engine::getLeftEyeModelMatrix() noexcept
+	const FloatMatrix4& Engine::getLeftEyeModelMatrix() noexcept
 	{
 		return leftEyeModelMatrix;
 	}
-	const Matrix4& Engine::getRightEyeModelMatrix() noexcept
+	const FloatMatrix4& Engine::getRightEyeModelMatrix() noexcept
 	{
 		return rightEyeModelMatrix;
 	}
-	const Matrix4& Engine::getLeftEyeProjMatrix() noexcept
+	const FloatMatrix4& Engine::getLeftEyeProjMatrix() noexcept
 	{
 		return leftEyeProjMatrix;
 	}
-	const Matrix4& Engine::getRightEyeProjMatrix() noexcept
+	const FloatMatrix4& Engine::getRightEyeProjMatrix() noexcept
 	{
 		return rightEyeProjMatrix;
 	}

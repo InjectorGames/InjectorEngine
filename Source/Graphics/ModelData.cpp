@@ -19,12 +19,12 @@ namespace Injector
 	}
 	ModelData::ModelData(
 		const std::vector<uint32_t>& _indices,
-		const std::vector<Vector3>& _vertices,
-		const std::vector<Vector4>& _colors,
-		const std::vector<Vector2>& _texCoords,
-		const std::vector<Vector3>& _normals,
-		const std::vector<Vector3>& _tangents,
-		const std::vector<Vector3>& _bitangents) :
+		const std::vector<FloatVector3>& _vertices,
+		const std::vector<FloatVector4>& _colors,
+		const std::vector<FloatVector2>& _texCoords,
+		const std::vector<FloatVector3>& _normals,
+		const std::vector<FloatVector3>& _tangents,
+		const std::vector<FloatVector3>& _bitangents) :
 		indices(_indices),
 		vertices(_vertices),
 		colors(_colors),
@@ -43,7 +43,7 @@ namespace Injector
 		memcpy(
 			vertexData.data(),
 			vertices.data(),
-			vertices.size() * sizeof(Vector3));
+			vertices.size() * sizeof(FloatVector3));
 
 		return std::move(vertexData);
 	}
@@ -64,11 +64,11 @@ namespace Injector
 			memcpy(
 				&vertexData[j],
 				&vertices[i],
-				sizeof(Vector3));
+				sizeof(FloatVector3));
 			memcpy(
 				&vertexData[j + 3],
 				&colors[i],
-				sizeof(Vector4));
+				sizeof(FloatVector4));
 		}
 
 		return std::move(vertexData);
@@ -90,11 +90,11 @@ namespace Injector
 			memcpy(
 				&vertexData[j],
 				&vertices[i],
-				sizeof(Vector3));
+				sizeof(FloatVector3));
 			memcpy(
 				&vertexData[j + 3],
 				&texCoords[i],
-				sizeof(Vector2));
+				sizeof(FloatVector2));
 		}
 
 		return std::move(vertexData);
@@ -116,11 +116,11 @@ namespace Injector
 			memcpy(
 				&vertexData[j],
 				&vertices[i],
-				sizeof(Vector3));
+				sizeof(FloatVector3));
 			memcpy(
 				&vertexData[j + 3],
 				&normals[i],
-				sizeof(Vector3));
+				sizeof(FloatVector3));
 		}
 
 		return std::move(vertexData);
@@ -143,15 +143,15 @@ namespace Injector
 			memcpy(
 				&vertexData[j],
 				&vertices[i],
-				sizeof(Vector3));
+				sizeof(FloatVector3));
 			memcpy(
 				&vertexData[j + 3],
 				&normals[i],
-				sizeof(Vector3));
+				sizeof(FloatVector3));
 			memcpy(
 				&vertexData[j + 6],
 				&texCoords[i],
-				sizeof(Vector2));
+				sizeof(FloatVector2));
 		}
 
 		return std::move(vertexData);
@@ -195,7 +195,7 @@ namespace Injector
 		memcpy(
 			modelData->vertices.data(),
 			mesh->mVertices,
-			vertexCount * sizeof(Vector3));
+			vertexCount * sizeof(FloatVector3));
 
 		if (mesh->HasFaces())
 		{
@@ -217,7 +217,7 @@ namespace Injector
 			memcpy(
 				modelData->colors.data(),
 				mesh->mColors[0],
-				vertexCount * sizeof(Vector4));
+				vertexCount * sizeof(FloatVector4));
 		}
 
 		if (mesh->HasTextureCoords(0))
@@ -231,7 +231,7 @@ namespace Injector
 				memcpy(
 					&texCoords[i],
 					&textureCoords[i],
-					sizeof(Vector2));
+					sizeof(FloatVector2));
 			}
 		}
 
@@ -242,7 +242,7 @@ namespace Injector
 			memcpy(
 				modelData->normals.data(),
 				mesh->mNormals,
-				vertexCount * sizeof(Vector3));
+				vertexCount * sizeof(FloatVector3));
 		}
 
 		if(mesh->HasTangentsAndBitangents())
@@ -253,11 +253,11 @@ namespace Injector
 			memcpy(
 				modelData->tangents.data(),
 				mesh->mTangents,
-				vertexCount * sizeof(Vector3));
+				vertexCount * sizeof(FloatVector3));
 			memcpy(
 				modelData->bitangents.data(),
 				mesh->mBitangents,
-				vertexCount * sizeof(Vector3));
+				vertexCount * sizeof(FloatVector3));
 		}
 
 		return modelData;
@@ -266,25 +266,25 @@ namespace Injector
 	const std::vector<uint32_t> ModelData::squareIndices = {
 		0, 1, 2, 0, 2, 3,
 	};
-	const std::vector<Vector3> ModelData::squareVertices = {
+	const std::vector<FloatVector3> ModelData::squareVertices = {
 		Vector3(-0.5f, -0.5f, 0.0f),
 		Vector3(-0.5f, 0.5f, 0.0f),
 		Vector3(0.5f, 0.5f, 0.0f),
 		Vector3(0.5f, -0.5f, 0.0f),
 	};
-	const std::vector<Vector4> ModelData::squareColors = {
+	const std::vector<FloatVector4> ModelData::squareColors = {
 		Vector4(1.0f, 0.0f, 0.0f, 1.0f),
 		Vector4(0.0f, 1.0f, 0.0f, 1.0f),
 		Vector4(0.0f, 0.0f, 1.0f, 1.0f),
 		Vector4(1.0f, 0.0f, 1.0f, 1.0f),
 	};
-	const std::vector<Vector2> ModelData::squareTexCoords = {
+	const std::vector<FloatVector2> ModelData::squareTexCoords = {
 		Vector2(0.0f, 0.0f),
 		Vector2(0.0f, 1.0f),
 		Vector2(1.0f, 1.0f),
 		Vector2(1.0f, 0.0f),
 	};
-	const std::vector<Vector3> ModelData::squareNormals = {
+	const std::vector<FloatVector3> ModelData::squareNormals = {
 		Vector3(0.0f, 0.0f, -1.0f),
 		Vector3(0.0f, 0.0f, -1.0f),
 		Vector3(0.0f, 0.0f, -1.0f),
@@ -299,7 +299,7 @@ namespace Injector
 		16, 17, 18, 16, 18, 19,
 		20, 21, 22, 20, 22, 23,
 	};
-	const std::vector<Vector3> ModelData::cubeVertices = {
+	const std::vector<FloatVector3> ModelData::cubeVertices = {
 		Vector3(-0.5f, -0.5f, 0.5f),
 		Vector3(-0.5f, 0.5f, 0.5f),
 		Vector3(-0.5f, 0.5f, -0.5f),
@@ -330,7 +330,7 @@ namespace Injector
 		Vector3(-0.5f, 0.5f, 0.5f),
 		Vector3(-0.5f, -0.5f, 0.5f),
 	};
-	const std::vector<Vector4> ModelData::cubeColors = {
+	const std::vector<FloatVector4> ModelData::cubeColors = {
 		Vector4(1.0f, 0.0f, 0.0f, 1.0f),
 		Vector4(0.0f, 1.0f, 0.0f, 1.0f),
 		Vector4(0.0f, 0.0f, 1.0f, 1.0f),
@@ -361,7 +361,7 @@ namespace Injector
 		Vector4(0.0f, 0.0f, 1.0f, 1.0f),
 		Vector4(1.0f, 0.0f, 1.0f, 1.0f),
 	};
-	const std::vector<Vector2> ModelData::cubeTexCoords = {
+	const std::vector<FloatVector2> ModelData::cubeTexCoords = {
 		Vector2(0.0f, 0.0f),
 		Vector2(0.0f, 1.0f),
 		Vector2(1.0f, 1.0f),
@@ -392,7 +392,7 @@ namespace Injector
 		Vector2(1.0f, 1.0f),
 		Vector2(1.0f, 0.0f),
 	};
-	const std::vector<Vector3> ModelData::cubeNormals = {
+	const std::vector<FloatVector3> ModelData::cubeNormals = {
 		Vector3(-1.0f, 0.0f, 0.0f),
 		Vector3(-1.0f, 0.0f, 0.0f),
 		Vector3(-1.0f, 0.0f, 0.0f),
@@ -427,25 +427,25 @@ namespace Injector
 	const std::vector<uint32_t> ModelData::frameIndices = {
 		0, 1, 2, 0, 2, 3,
 	};
-	const std::vector<Vector3> ModelData::frameVertices = {
+	const std::vector<FloatVector3> ModelData::frameVertices = {
 		Vector3(-1.0f, -1.0f, 0.0f),
 		Vector3(-1.0f, 1.0f, 0.0f),
 		Vector3(1.0f, 1.0f, 0.0f),
 		Vector3(1.0f, -1.0f, 0.0f),
 	};
-	const std::vector<Vector4> ModelData::frameColors = {
+	const std::vector<FloatVector4> ModelData::frameColors = {
 		Vector4(1.0f, 0.0f, 0.0f, 1.0f),
 		Vector4(0.0f, 1.0f, 0.0f, 1.0f),
 		Vector4(0.0f, 0.0f, 1.0f, 1.0f),
 		Vector4(1.0f, 0.0f, 1.0f, 1.0f),
 	};
-	const std::vector<Vector2> ModelData::frameTexCoords = {
+	const std::vector<FloatVector2> ModelData::frameTexCoords = {
 		Vector2(0.0f, 0.0f),
 		Vector2(0.0f, 1.0f),
 		Vector2(1.0f, 1.0f),
 		Vector2(1.0f, 0.0f),
 	};
-	const std::vector<Vector3> ModelData::frameNormals = {
+	const std::vector<FloatVector3> ModelData::frameNormals = {
 		Vector3(0.0f, 0.0f, -1.0f),
 		Vector3(0.0f, 0.0f, -1.0f),
 		Vector3(0.0f, 0.0f, -1.0f),
@@ -455,7 +455,7 @@ namespace Injector
 	const std::vector<uint32_t> ModelData::axisIndices = {
 		0, 1, 2, 3, 4, 5,
 	};
-	const std::vector<Vector3> ModelData::axisVertices = {
+	const std::vector<FloatVector3> ModelData::axisVertices = {
 		Vector3(0.0f, 0.0f, 0.0f),
 		Vector3(1.0f, 0.0f, 0.0f),
 		Vector3(0.0f, 0.0f, 0.0f),
@@ -463,7 +463,7 @@ namespace Injector
 		Vector3(0.0f, 0.0f, 0.0f),
 		Vector3(0.0f, 0.0f, 1.0f),
 	};
-	const std::vector<Vector4> ModelData::axisColors = {
+	const std::vector<FloatVector4> ModelData::axisColors = {
 		Vector4(1.0f, 0.0f, 0.0f, 1.0f),
 		Vector4(1.0f, 0.0f, 0.0f, 1.0f),
 		Vector4(0.0f, 1.0f, 0.0f, 1.0f),

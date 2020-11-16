@@ -13,9 +13,9 @@ namespace Injector
 		// TODO: remove mouse capture
 		bool rotating;
 		// Camera euler angles value
-		Vector3 eulerAngles;
+		FloatVector3 eulerAngles;
 		// Camera last mouse position value
-		Vector2 lastMousePosition;
+		FloatVector2 lastMousePosition;
 	 public:
 		// Update camera value
 		std::shared_ptr<EcsEntity> camera;

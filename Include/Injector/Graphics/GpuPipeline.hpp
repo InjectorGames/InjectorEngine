@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/Mathematics/Matrix/Matrix4.hpp"
+#include "Injector/Mathematics/Matrix4.hpp"
 #include "Injector/Graphics/GpuDrawMode.hpp"
 
 namespace Injector
@@ -20,10 +20,10 @@ namespace Injector
 		GpuDrawMode getDrawMode() const noexcept;
 
 		virtual void setUniforms(
-			const Matrix4& model,
-			const Matrix4& view,
-			const Matrix4& proj,
-			const Matrix4& viewProj,
-			const Matrix4& mvp) = 0;
+			const FloatMatrix4& model,
+			const FloatMatrix4& view,
+			const FloatMatrix4& proj,
+			const FloatMatrix4& viewProj,
+			const FloatMatrix4& mvp) = 0;
 	};
 }

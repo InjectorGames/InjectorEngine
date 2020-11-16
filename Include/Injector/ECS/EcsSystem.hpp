@@ -1,4 +1,5 @@
 #pragma once
+#include "Injector/ECS/EcsEntity.hpp"
 
 namespace Injector
 {

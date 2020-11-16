@@ -5,7 +5,6 @@ namespace Injector
 {
 	EcsManager::EcsManager(bool _active) noexcept :
 		active(_active),
-		entities(),
 		systems()
 	{
 	}
@@ -20,43 +19,13 @@ namespace Injector
 	{
 		return active;
 	}
-	size_t EcsManager::getEntityCount() const noexcept
+
+	const std::vector<std::shared_ptr<EcsSystem>>&
+		EcsManager::getSystems() const noexcept
 	{
-		return entities.size();
-	}
-	size_t EcsManager::getSystemCount() const noexcept
-	{
-		return systems.size();
+		return systems;
 	}
 
-	std::shared_ptr<EcsEntity> EcsManager::createEntity()
-	{
-		auto entity = std::make_shared<EcsEntity>();
-
-		if (!entities.emplace(entity).second)
-		{
-			throw Exception(
-				THIS_FUNCTION_NAME,
-				"Failed to create entity");
-		}
-
-		return entity;
-	}
-
-	bool EcsManager::removeEntity(
-		const std::shared_ptr<EcsEntity>& entity) noexcept
-	{
-		if (!entity)
-			return false;
-
-		auto iterator = entities.find(entity);
-
-		if (iterator == entities.end())
-			return false;
-
-		entities.erase(iterator);
-		return true;
-	}
 	bool EcsManager::removeSystem(
 		const std::shared_ptr<EcsSystem>& system) noexcept
 	{
@@ -74,15 +43,6 @@ namespace Injector
 
 		return false;
 	}
-
-	bool EcsManager::containsEntity(
-		const std::shared_ptr<EcsEntity>& entity) const noexcept
-	{
-		if (!entity)
-			return false;
-
-		return entities.find(entity) != entities.end();
-	}
 	bool EcsManager::containsSystem(
 		const std::shared_ptr<EcsSystem>& system) const noexcept
 	{
@@ -96,11 +56,6 @@ namespace Injector
 		}
 
 		return false;
-	}
-
-	void EcsManager::removeEntities() noexcept
-	{
-		entities.clear();
 	}
 	void EcsManager::removeSystems() noexcept
 	{

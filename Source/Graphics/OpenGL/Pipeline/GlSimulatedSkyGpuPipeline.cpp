@@ -79,6 +79,7 @@ namespace Injector
 		GlGpuPipeline::bind();
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_SCISSOR_TEST);
 		glDisable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
 		glCullFace(GL_BACK);
@@ -104,16 +105,16 @@ namespace Injector
 			3,
 			GL_FLOAT,
 			GL_FALSE,
-			sizeof(Vector3),
+			sizeof(FloatVector3),
 			0);
 	}
 
 	void GlSimulatedSkyGpuPipeline::setUniforms(
-		const Matrix4& model,
-		const Matrix4& view,
-		const Matrix4& proj,
-		const Matrix4& viewProj,
-		const Matrix4& mvp)
+		const FloatMatrix4& model,
+		const FloatMatrix4& view,
+		const FloatMatrix4& proj,
+		const FloatMatrix4& viewProj,
+		const FloatMatrix4& mvp)
 	{
 	}
 }

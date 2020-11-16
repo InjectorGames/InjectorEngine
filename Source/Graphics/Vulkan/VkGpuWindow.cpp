@@ -623,25 +623,10 @@ namespace Injector
 				presentCommandPool,
 				size);
 
-			ImGui_ImplGlfw_InitForVulkan(
-				window,
-				false);
-
-			ImGui_ImplVulkan_Init
-
-			ImGui_ImplVulkan_InitInfo init_info = {};
-			init_info.Instance = g_Instance;
-			init_info.PhysicalDevice = g_PhysicalDevice;
-			init_info.Device = g_Device;
-			init_info.QueueFamily = g_QueueFamily;
-			init_info.Queue = g_Queue;
-			init_info.PipelineCache = g_PipelineCache;
-			init_info.DescriptorPool = g_DescriptorPool;
-			init_info.Allocator = g_Allocator;
-			init_info.MinImageCount = g_MinImageCount;
-			init_info.ImageCount = wd->ImageCount;
-			init_info.CheckVkResultFn = check_vk_result;
-			ImGui_ImplVulkan_Init(&init_info, wd->RenderPass);
+			// TODO:
+			//ImGui_ImplGlfw_InitForVulkan(
+			//	window,
+			//	false);
 
 			frameIndex = 0;
 		}
@@ -661,8 +646,6 @@ namespace Injector
 	VkGpuWindow::~VkGpuWindow()
 	{
 		device.waitIdle();
-
-		entities.clear();
 		systems.clear();
 
 		swapchain = VkGpuSwapchain();
@@ -1452,7 +1435,7 @@ namespace Injector
 		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
-		const Vector4& color)
+		const FloatVector4& color)
 	{
 		auto vkVertexShader = std::dynamic_pointer_cast<VkGpuShader>(vertexShader);
 		auto vkFragmentShader = std::dynamic_pointer_cast<VkGpuShader>(fragmentShader);
@@ -1479,7 +1462,7 @@ namespace Injector
 		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
-		const Vector4& color)
+		const FloatVector4& color)
 	{
 		// TODO:
 		return nullptr;
@@ -1488,10 +1471,10 @@ namespace Injector
 		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
-		const Vector4& objectColor,
-		const Vector4& ambientColor,
-		const Vector4& lightColor,
-		const Vector3& lightDirection)
+		const FloatVector4& objectColor,
+		const FloatVector4& ambientColor,
+		const FloatVector4& lightColor,
+		const FloatVector3& lightDirection)
 	{
 		auto vkVertexShader = std::dynamic_pointer_cast<VkGpuShader>(vertexShader);
 		auto vkFragmentShader = std::dynamic_pointer_cast<VkGpuShader>(fragmentShader);
@@ -1531,12 +1514,12 @@ namespace Injector
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
 		const std::shared_ptr<GpuImage>& image,
-		const Vector4& objectColor,
-		const Vector4& ambientColor,
-		const Vector4& lightColor,
-		const Vector3& lightDirection,
-		const Vector2& imageScale,
-		const Vector2& imageOffset)
+		const FloatVector4& objectColor,
+		const FloatVector4& ambientColor,
+		const FloatVector4& lightColor,
+		const FloatVector3& lightDirection,
+		const FloatVector2& imageScale,
+		const FloatVector2& imageOffset)
 	{
 		auto vkVertexShader = std::dynamic_pointer_cast<VkGpuShader>(vertexShader);
 		auto vkFragmentShader = std::dynamic_pointer_cast<VkGpuShader>(fragmentShader);
@@ -1574,6 +1557,13 @@ namespace Injector
 		}
 
 		return pipeline;
+	}
+	std::shared_ptr<GpuPipeline> VkGpuWindow::createGuiPipeline(
+		GpuDrawMode drawMode,
+		const std::shared_ptr<GpuImage>& image)
+	{
+		// TODO:
+		return nullptr;
 	}
 	std::shared_ptr<GpuPipeline> VkGpuWindow::createSkyPipeline(
 		GpuDrawMode drawMode,

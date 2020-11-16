@@ -1,7 +1,7 @@
 #pragma once
 #include "Injector/Defines.hpp"
 #include "Injector/ECS/EcsManager.hpp"
-#include "Injector/Mathematics/Matrix/Matrix4.hpp"
+#include "Injector/Mathematics/Matrix4.hpp"
 #include "Injector/Graphics/GraphicsAPI.hpp"
 
 #include <chrono>
@@ -26,11 +26,11 @@ namespace Injector
 		static double updateDeltaTime;
 
 		static GraphicsAPI graphicsAPI;
-		static Matrix4 hmdModelMatrix;
-		static Matrix4 leftEyeModelMatrix;
-		static Matrix4 rightEyeModelMatrix;
-		static Matrix4 leftEyeProjMatrix;
-		static Matrix4 rightEyeProjMatrix;
+		static FloatMatrix4 hmdModelMatrix;
+		static FloatMatrix4 leftEyeModelMatrix;
+		static FloatMatrix4 rightEyeModelMatrix;
+		static FloatMatrix4 leftEyeProjMatrix;
+		static FloatMatrix4 rightEyeProjMatrix;
 
 		static std::vector<std::shared_ptr<EcsManager>> managers;
 	 public:
@@ -77,11 +77,11 @@ namespace Injector
 		static double getTimeNow() noexcept;
 
 		static GraphicsAPI getGraphicsAPI() noexcept;
-		static const Matrix4& getHmdModelMatrix() noexcept;
-		static const Matrix4& getLeftEyeModelMatrix() noexcept;
-		static const Matrix4& getRightEyeModelMatrix() noexcept;
-		static const Matrix4& getLeftEyeProjMatrix() noexcept;
-		static const Matrix4& getRightEyeProjMatrix() noexcept;
+		static const FloatMatrix4& getHmdModelMatrix() noexcept;
+		static const FloatMatrix4& getLeftEyeModelMatrix() noexcept;
+		static const FloatMatrix4& getRightEyeModelMatrix() noexcept;
+		static const FloatMatrix4& getLeftEyeProjMatrix() noexcept;
+		static const FloatMatrix4& getRightEyeProjMatrix() noexcept;
 
 		static bool addManager(
 			const std::shared_ptr<EcsManager>& manager) noexcept;

@@ -1,5 +1,5 @@
 #pragma once
-#include "Injector/Mathematics/Vector/IntVector2.hpp"
+#include "Injector/Mathematics/Vector2.hpp"
 
 #include <vector>
 #include <string>

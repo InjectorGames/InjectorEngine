@@ -1,9 +1,9 @@
-#include "Injector/Mathematics/Bounding/BoundingSphere2.hpp"
+#include "Injector/Mathematics/BoundingSphere2.hpp"
 
 namespace Injector
 {
 	BoundingSphere2::BoundingSphere2(
-		Vector2 _center,
+		FloatVector2 _center,
 		float _radius) noexcept :
 		center(_center),
 		radius(_radius)
@@ -11,7 +11,7 @@ namespace Injector
 	}
 
 	bool BoundingSphere2::isColliding(
-		const Vector2& point) const noexcept
+		const FloatVector2& point) const noexcept
 	{
 		return center.getDotProduct(center - point) <= radius * radius;
 	}

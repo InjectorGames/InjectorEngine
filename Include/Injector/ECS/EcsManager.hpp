@@ -15,9 +15,7 @@ namespace Injector
 		// Is manager still active
 		bool active;
 
-		// Entity set
-		std::set<std::shared_ptr<EcsEntity>> entities;
-		// System vector
+		// System container
 		std::vector<std::shared_ptr<EcsSystem>> systems;
 	 public:
 		// Creates a new ECS manager
@@ -31,13 +29,10 @@ namespace Injector
 
 		// Returns true if manager is still active
 		bool isActive() const noexcept;
-		// Returns manager entity count
-		size_t getEntityCount() const noexcept;
-		// Returns manager system count
-		size_t getSystemCount() const noexcept;
 
-		// Returns a new created and added to the manager entity
-		std::shared_ptr<EcsEntity> createEntity();
+		// Returns manager system container
+		const std::vector<std::shared_ptr<EcsSystem>>&
+			getSystems() const noexcept;
 
 		// Returns a new created and added to the manager system
 		template<class T, class ...Args>
@@ -48,22 +43,12 @@ namespace Injector
 			return system;
 		}
 
-		// Returns true if specified entity has been removed from system
-		bool removeEntity(
-			const std::shared_ptr<EcsEntity>& entity) noexcept;
 		// Returns true if specified system has been removed from system
 		bool removeSystem(
 			const std::shared_ptr<EcsSystem>& system) noexcept;
-
-		// Returns true if manager contains specified entity
-		bool containsEntity(
-			const std::shared_ptr<EcsEntity>& entity) const noexcept;
 		// Returns true if manager contains specified system
 		bool containsSystem(
 			const std::shared_ptr<EcsSystem>& system) const noexcept;
-
-		// Removes all manager entities
-		void removeEntities() noexcept;
 		// Removes all manager systems
 		void removeSystems() noexcept;
 	};

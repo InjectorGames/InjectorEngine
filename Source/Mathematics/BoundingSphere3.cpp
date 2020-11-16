@@ -1,9 +1,9 @@
-#include "Injector/Mathematics/Bounding/BoundingSphere3.hpp"
+#include "Injector/Mathematics/BoundingSphere3.hpp"
 
 namespace Injector
 {
 	BoundingSphere3::BoundingSphere3(
-		Vector3 _center,
+		FloatVector3 _center,
 		float _radius) noexcept :
 		center(_center),
 		radius(_radius)
@@ -11,7 +11,7 @@ namespace Injector
 	}
 
 	bool BoundingSphere3::isColliding(
-		const Vector3& point) const noexcept
+		const FloatVector3& point) const noexcept
 	{
 		return center.getDotProduct(center - point) <= radius * radius;
 	}

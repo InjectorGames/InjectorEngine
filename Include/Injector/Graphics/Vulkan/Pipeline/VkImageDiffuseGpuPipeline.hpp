@@ -17,21 +17,21 @@ namespace Injector
 	 public:
 		struct UniformBufferObject
 		{
-			Vector4 objectColor;
-			Vector4 ambientColor;
-			Vector4 lightColor;
-			Vector3 lightDirection;
+			FloatVector4 objectColor;
+			FloatVector4 ambientColor;
+			FloatVector4 lightColor;
+			FloatVector3 lightDirection;
 			float alignment;
-			Vector2 imageScale;
-			Vector2 imageOffset;
+			FloatVector2 imageScale;
+			FloatVector2 imageOffset;
 
 			explicit UniformBufferObject(
-				const Vector4& _objectColor,
-				const Vector4& _ambientColor,
-				const Vector4& _lightColor,
-				const Vector3& _lightDirection,
-				const Vector2& _imageScale,
-				const Vector2& _imageOffset) :
+				const FloatVector4& _objectColor,
+				const FloatVector4& _ambientColor,
+				const FloatVector4& _lightColor,
+				const FloatVector3& _lightDirection,
+				const FloatVector2& _imageScale,
+				const FloatVector2& _imageOffset) :
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
@@ -135,23 +135,23 @@ namespace Injector
 
 		std::shared_ptr<GpuImage> getImage() const override;
 
-		const Vector4& getObjectColor() const override;
-		void setObjectColor(const Vector4& color) override;
+		const FloatVector4& getObjectColor() const override;
+		void setObjectColor(const FloatVector4& color) override;
 
-		const Vector4& getAmbientColor() const override;
-		void setAmbientColor(const Vector4& color) override;
+		const FloatVector4& getAmbientColor() const override;
+		void setAmbientColor(const FloatVector4& color) override;
 
-		const Vector4& getLightColor() const override;
-		void setLightColor(const Vector4& color) override;
+		const FloatVector4& getLightColor() const override;
+		void setLightColor(const FloatVector4& color) override;
 
-		const Vector3& getLightDirection() const override;
-		void setLightDirection(const Vector3& direction) override;
+		const FloatVector3& getLightDirection() const override;
+		void setLightDirection(const FloatVector3& direction) override;
 
-		const Vector2& getImageScale() const override;
-		void setImageScale(const Vector2& scale) override;
+		const FloatVector2& getImageScale() const override;
+		void setImageScale(const FloatVector2& scale) override;
 
-		const Vector2& getImageOffset() const override;
-		void setImageOffset(const Vector2& offset) override;
+		const FloatVector2& getImageOffset() const override;
+		void setImageOffset(const FloatVector2& offset) override;
 
 		void recreate(
 			VmaAllocator allocator,
@@ -164,10 +164,10 @@ namespace Injector
 			vk::CommandBuffer commandBuffer,
 			size_t imageIndex) override;
 		void setUniforms(
-			const Matrix4& model,
-			const Matrix4& view,
-			const Matrix4& proj,
-			const Matrix4& viewProj,
-			const Matrix4& mvp) override;
+			const FloatMatrix4& model,
+			const FloatMatrix4& view,
+			const FloatMatrix4& proj,
+			const FloatMatrix4& viewProj,
+			const FloatMatrix4& mvp) override;
 	};
 }

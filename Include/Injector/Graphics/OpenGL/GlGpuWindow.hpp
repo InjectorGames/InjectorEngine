@@ -22,8 +22,7 @@ namespace Injector
 
 		bool isGLES() const noexcept;
 
-		void makeCurrent() noexcept;
-		void swapBuffers() noexcept;
+		void onUpdate() override;
 
 		void onFramebufferResize(
 			const IntVector2& size) override;
@@ -61,20 +60,20 @@ namespace Injector
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const Vector4& color) override;
+			const FloatVector4& color) override;
 		std::shared_ptr<GpuPipeline> createColorColorPipeline(
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const Vector4& color) override;
+			const FloatVector4& color) override;
 		std::shared_ptr<GpuPipeline> createDiffusePipeline(
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const Vector4& objectColor,
-			const Vector4& ambientColor,
-			const Vector4& lightColor,
-			const Vector3& lightDirection) override;
+			const FloatVector4& objectColor,
+			const FloatVector4& ambientColor,
+			const FloatVector4& lightColor,
+			const FloatVector3& lightDirection) override;
 		std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
 			GpuDrawMode drawMode,
 			GpuImageFilter imageMinFilter,
@@ -86,12 +85,15 @@ namespace Injector
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
 			const std::shared_ptr<GpuImage>& image,
-			const Vector4& objectColor,
-			const Vector4& ambientColor,
-			const Vector4& lightColor,
-			const Vector3& lightDirection,
-			const Vector2& imageScale,
-			const Vector2& imageOffset) override;
+			const FloatVector4& objectColor,
+			const FloatVector4& ambientColor,
+			const FloatVector4& lightColor,
+			const FloatVector3& lightDirection,
+			const FloatVector2& imageScale,
+			const FloatVector2& imageOffset) override;
+		std::shared_ptr<GpuPipeline> createGuiPipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuImage>& image) override;
 		std::shared_ptr<GpuPipeline> createSkyPipeline(
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,

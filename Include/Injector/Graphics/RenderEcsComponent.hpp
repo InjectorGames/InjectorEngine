@@ -2,7 +2,7 @@
 #include "Injector/ECS/EcsComponent.hpp"
 #include "Injector/Graphics/GpuMesh.hpp"
 #include "Injector/Graphics/GpuPipeline.hpp"
-#include "Injector/Mathematics/Bounding/BoundingBox3.hpp"
+#include "Injector/Mathematics/BoundingBox3.hpp"
 
 #include <memory>
 

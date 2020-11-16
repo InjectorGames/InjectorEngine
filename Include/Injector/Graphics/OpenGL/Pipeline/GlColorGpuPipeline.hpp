@@ -17,19 +17,19 @@ namespace Injector
 		GLint colorLocation;
 
 		// Color value
-		Vector4 color;
+		FloatVector4 color;
 	 public:
 		// Creates a new color pipeline
 		GlColorGpuPipeline(
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
-			const Vector4& color);
+			const FloatVector4& color);
 
 		// Returns color value
-		const Vector4& getColor() const override;
+		const FloatVector4& getColor() const override;
 		// Sets color value
-		void setColor(const Vector4& color) override;
+		void setColor(const FloatVector4& color) override;
 
 
 		void bind() override;
@@ -37,10 +37,10 @@ namespace Injector
 		void setAttributes() override;
 
 		void setUniforms(
-			const Matrix4& model,
-			const Matrix4& view,
-			const Matrix4& proj,
-			const Matrix4& viewProj,
-			const Matrix4& mvp) override;
+			const FloatMatrix4& model,
+			const FloatMatrix4& view,
+			const FloatMatrix4& proj,
+			const FloatMatrix4& viewProj,
+			const FloatMatrix4& mvp) override;
 	};
 }

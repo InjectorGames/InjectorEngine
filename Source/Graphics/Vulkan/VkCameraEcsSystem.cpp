@@ -13,7 +13,7 @@ namespace Injector
 
 			if (cameraComponent->type == CameraType::Perspective)
 			{
-				cameraComponent->matrix = Matrix4::createPerspectiveVk(
+				cameraComponent->matrix = vkCreatePerspectiveMatrix(
 					cameraComponent->fieldOfView,
 					cameraComponent->aspectRatio,
 					cameraComponent->clipPlane.x,
@@ -21,7 +21,7 @@ namespace Injector
 			}
 			else if(cameraComponent->type == CameraType::Orthographic)
 			{
-				cameraComponent->matrix = Matrix4::createOrthographicVk(
+				cameraComponent->matrix = vkCreateOrthographicMatrix(
 					cameraComponent->frustum.x * cameraComponent->aspectRatio,
 					cameraComponent->frustum.y * cameraComponent->aspectRatio,
 					cameraComponent->frustum.z,

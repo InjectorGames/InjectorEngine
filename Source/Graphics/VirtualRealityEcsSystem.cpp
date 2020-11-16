@@ -15,6 +15,6 @@ namespace Injector
 			Engine::getLeftEyeModelMatrix() *
 			Engine::getHmdModelMatrix() *
 			// TMP:
-			Matrix4::identity.getTranslated(Vector3(4.0f, 0.0f, 4.0f));
+			FloatMatrix4().getTranslated(Vector3(4.0f, 0.0f, 4.0f));
 	}
 }

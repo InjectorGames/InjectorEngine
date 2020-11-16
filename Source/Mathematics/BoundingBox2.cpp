@@ -1,40 +1,40 @@
-#include "Injector/Mathematics/Bounding/BoundingBox2.hpp"
+#include "Injector/Mathematics/BoundingBox2.hpp"
 
 namespace Injector
 {
 	BoundingBox2::BoundingBox2(
-		const Vector2& _minimum,
-		const Vector2& _maximum) noexcept :
+		const FloatVector2& _minimum,
+		const FloatVector2& _maximum) noexcept :
 		minimum(_minimum),
 		maximum(_maximum)
 	{
 	}
 
 	void BoundingBox2::setCenterAndSize(
-		const Vector2& center,
-		const Vector2& size) noexcept
+		const FloatVector2& center,
+		const FloatVector2& size) noexcept
 	{
 		auto half = size / 2.0f;
 		minimum = center - half;
 		maximum = center + half;
 	}
 	void BoundingBox2::setCenterAndExtent(
-		const Vector2& center,
-		const Vector2& extent) noexcept
+		const FloatVector2& center,
+		const FloatVector2& extent) noexcept
 	{
 		minimum = center - extent;
 		maximum = center + extent;
 	}
 
 	void BoundingBox2::resize(
-		const Vector2& offset) noexcept
+		const FloatVector2& offset) noexcept
 	{
 		minimum -= offset;
 		maximum += offset;
 	}
 
 	bool BoundingBox2::isColliding(
-		const Vector2& point) const noexcept
+		const FloatVector2& point) const noexcept
 	{
 		return
 			minimum.x <= point.x && maximum.x >= point.x &&
@@ -49,8 +49,8 @@ namespace Injector
 	}
 
 	BoundingBox2 BoundingBox2::createCenterAndSize(
-		const Vector2& center,
-		const Vector2& size) noexcept
+		const FloatVector2& center,
+		const FloatVector2& size) noexcept
 	{
 		auto half = size / 2.0f;
 
@@ -59,8 +59,8 @@ namespace Injector
 			center + half);
 	}
 	BoundingBox2 BoundingBox2::createCenterAndExtent(
-		const Vector2& center,
-		const Vector2& extent) noexcept
+		const FloatVector2& center,
+		const FloatVector2& extent) noexcept
 	{
 		return BoundingBox2(
 			center - extent,
@@ -68,5 +68,6 @@ namespace Injector
 	}
 
 	const BoundingBox2 BoundingBox2::one = BoundingBox2(
-		-Vector2::half, Vector2::half);
+		Vector2(-0.5f),
+		Vector2(0.5f));
 }

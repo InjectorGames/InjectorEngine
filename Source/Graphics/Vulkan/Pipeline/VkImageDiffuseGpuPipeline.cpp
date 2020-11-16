@@ -55,7 +55,7 @@ namespace Injector
 		auto pushConstantRange = vk::PushConstantRange(
 			vk::ShaderStageFlagBits::eVertex,
 			0,
-			sizeof(Matrix4) * 2);
+			sizeof(FloatMatrix4) * 2);
 
 		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo(
 			vk::PipelineLayoutCreateFlags(),
@@ -106,7 +106,7 @@ namespace Injector
 
 		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
 			0,
-			sizeof(Vector3) * 2 + sizeof(Vector2),
+			sizeof(FloatVector3) * 2 + sizeof(FloatVector2),
 			vk::VertexInputRate::eVertex);
 
 		vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[3] =
@@ -120,12 +120,12 @@ namespace Injector
 				1,
 				0,
 				vk::Format::eR32G32B32Sfloat,
-				sizeof(Vector3)),
+				sizeof(FloatVector3)),
 			vk::VertexInputAttributeDescription(
 				2,
 				0,
 				vk::Format::eR32G32Sfloat,
-				sizeof(Vector3) * 2),
+				sizeof(FloatVector3) * 2),
 		};
 
 		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo(
@@ -594,56 +594,56 @@ namespace Injector
 		return image;
 	}
 
-	const Vector4& VkImageDiffuseGpuPipeline::getObjectColor() const
+	const FloatVector4& VkImageDiffuseGpuPipeline::getObjectColor() const
 	{
 		return ubo.objectColor;
 	}
-	void VkImageDiffuseGpuPipeline::setObjectColor(const Vector4& color)
+	void VkImageDiffuseGpuPipeline::setObjectColor(const FloatVector4& color)
 	{
 		ubo.objectColor = Vector4(color);
 	}
 
-	const Vector4& VkImageDiffuseGpuPipeline::getAmbientColor() const
+	const FloatVector4& VkImageDiffuseGpuPipeline::getAmbientColor() const
 	{
 		return ubo.ambientColor;
 	}
-	void VkImageDiffuseGpuPipeline::setAmbientColor(const Vector4& color)
+	void VkImageDiffuseGpuPipeline::setAmbientColor(const FloatVector4& color)
 	{
 		ubo.ambientColor = Vector4(color);
 	}
 
-	const Vector4& VkImageDiffuseGpuPipeline::getLightColor() const
+	const FloatVector4& VkImageDiffuseGpuPipeline::getLightColor() const
 	{
 		return ubo.lightColor;
 	}
-	void VkImageDiffuseGpuPipeline::setLightColor(const Vector4& color)
+	void VkImageDiffuseGpuPipeline::setLightColor(const FloatVector4& color)
 	{
 		ubo.lightColor = Vector4(color);
 	}
 
-	const Vector3& VkImageDiffuseGpuPipeline::getLightDirection() const
+	const FloatVector3& VkImageDiffuseGpuPipeline::getLightDirection() const
 	{
 		return ubo.lightDirection;
 	}
-	void VkImageDiffuseGpuPipeline::setLightDirection(const Vector3& direction)
+	void VkImageDiffuseGpuPipeline::setLightDirection(const FloatVector3& direction)
 	{
 		ubo.lightDirection = Vector3(direction.getNormalized());
 	}
 
-	const Vector2& VkImageDiffuseGpuPipeline::getImageScale() const
+	const FloatVector2& VkImageDiffuseGpuPipeline::getImageScale() const
 	{
 		return ubo.imageScale;
 	}
-	void VkImageDiffuseGpuPipeline::setImageScale(const Vector2& scale)
+	void VkImageDiffuseGpuPipeline::setImageScale(const FloatVector2& scale)
 	{
 		ubo.imageScale = Vector2(scale);
 	}
 
-	const Vector2& VkImageDiffuseGpuPipeline::getImageOffset() const
+	const FloatVector2& VkImageDiffuseGpuPipeline::getImageOffset() const
 	{
 		return ubo.imageOffset;
 	}
-	void VkImageDiffuseGpuPipeline::setImageOffset(const Vector2& offset)
+	void VkImageDiffuseGpuPipeline::setImageOffset(const FloatVector2& offset)
 	{
 		ubo.imageOffset = Vector2(offset);
 	}
@@ -727,11 +727,11 @@ namespace Injector
 	}
 
 	void VkImageDiffuseGpuPipeline::setUniforms(
-		const Matrix4& model,
-		const Matrix4& view,
-		const Matrix4& proj,
-		const Matrix4& viewProj,
-		const Matrix4& mvp)
+		const FloatMatrix4& model,
+		const FloatMatrix4& view,
+		const FloatMatrix4& proj,
+		const FloatMatrix4& viewProj,
+		const FloatMatrix4& mvp)
 	{
 		auto normal = model.getInverted().getTransposed();
 
@@ -739,13 +739,13 @@ namespace Injector
 			pipelineLayout,
 			vk::ShaderStageFlagBits::eVertex,
 			0,
-			sizeof(Matrix4),
+			sizeof(FloatMatrix4),
 			&mvp);
 		bindedCommandBuffer.pushConstants(
 			pipelineLayout,
 			vk::ShaderStageFlagBits::eVertex,
-			sizeof(Matrix4),
-			sizeof(Matrix4),
+			sizeof(FloatMatrix4),
+			sizeof(FloatMatrix4),
 			&normal);
 	}
 }

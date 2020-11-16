@@ -3,9 +3,6 @@
 #include "Injector/Exception/OutOfRangeException.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuMesh.hpp"
 
-#include "examples/imgui_impl_glfw.h"
-#include "examples/imgui_impl_opengl3.h"
-
 #include <map>
 #include <iostream>
 
@@ -42,24 +39,6 @@ namespace Injector
 			std::shared_ptr<GlGpuMesh> mesh;
 			TransformEcsComponent* transform;
 		};
-
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		for (auto& gui : guis)
-		{
-			GuiEcsComponent* guiComponent;
-
-			if(!gui->getComponent(guiComponent))
-				continue;
-
-			if(guiComponent->handler)
-				guiComponent->handler->onUpdate();
-		}
-
-		window->makeCurrent();
-		ImGui::Render();
 
 		glClear(
 			GL_COLOR_BUFFER_BIT |
@@ -184,9 +163,6 @@ namespace Injector
 			}
 		}
 
-		ImGui_ImplOpenGL3_RenderDrawData(
-			ImGui::GetDrawData());
-
 #ifndef NDEBUG
 		GLenum error;
 
@@ -221,7 +197,5 @@ namespace Injector
 			}
 		}
 #endif
-
-		window->swapBuffers();
 	}
 }

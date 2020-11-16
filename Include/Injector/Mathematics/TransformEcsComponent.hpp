@@ -10,19 +10,19 @@ namespace Injector
 {
 	struct TransformEcsComponent final : public EcsComponent
 	{
-		Vector3 position;
+		FloatVector3 position;
 		Quaternion rotation;
-		Vector3 scale;
+		FloatVector3 scale;
 		RotationOrigin origin;
-		Matrix4 matrix;
+		FloatMatrix4 matrix;
 		std::shared_ptr<EcsEntity> parent;
 
 		explicit TransformEcsComponent(
-			const Vector3& position = Vector3::zero,
-			const Quaternion& rotation = Quaternion::zero,
-			const Vector3& scale = Vector3::one,
+			const FloatVector3& position = FloatVector3(),
+			const Quaternion& rotation = Quaternion(),
+			const FloatVector3& scale = FloatVector3(),
 			RotationOrigin origin = RotationOrigin::Spin,
-			const Matrix4& matrix = Matrix4::identity,
+			const FloatMatrix4& matrix = FloatMatrix4(),
 			const std::shared_ptr<EcsEntity>& parent = nullptr) noexcept;
 	};
 }

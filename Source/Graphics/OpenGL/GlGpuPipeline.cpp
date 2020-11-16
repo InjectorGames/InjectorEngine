@@ -92,78 +92,84 @@ namespace Injector
 	}
 
 	void GlGpuPipeline::setUniform(
-		GLint location, int32_t value) noexcept
+		GLint location,
+		int32_t value) noexcept
 	{
 		glUniform1iv(location, 1, &value);
 	}
 	void GlGpuPipeline::setUniform(
-		GLint location, uint32_t value) noexcept
+		GLint location,
+		uint32_t value) noexcept
 	{
 		glUniform1uiv(location, 1, &value);
 	}
 	void GlGpuPipeline::setUniform(
-		GLint location, float value) noexcept
+		GLint location,
+		float value) noexcept
 	{
 		glUniform1fv(location, 1, &value);
 	}
 	void GlGpuPipeline::setUniform(
-		GLint location, const IntVector2& value) noexcept
+		GLint location,
+		const IntVector2& value) noexcept
 	{
 		glUniform2iv(location, 1,
 			reinterpret_cast<const GLint*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
-		GLint location, const IntVector3& value) noexcept
+		GLint location,
+		const IntVector3& value) noexcept
 	{
 		glUniform3iv(location, 1,
 			reinterpret_cast<const GLint*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
-		GLint location, const IntVector4& value) noexcept
+		GLint location,
+		const IntVector4& value) noexcept
 	{
 		glUniform4iv(location, 1,
 			reinterpret_cast<const GLint*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
-		GLint location, const Vector2& value) noexcept
+		GLint location,
+		const FloatVector2& value) noexcept
 	{
 		glUniform2fv(location, 1,
 			reinterpret_cast<const GLfloat*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
-		GLint location, const Vector3& value) noexcept
+		GLint location,
+		const FloatVector3& value) noexcept
 	{
 		glUniform3fv(location, 1,
 			reinterpret_cast<const GLfloat*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
-		GLint location, const Vector4& value) noexcept
+		GLint location,
+		const FloatVector4& value) noexcept
 	{
 		glUniform4fv(location, 1,
 			reinterpret_cast<const GLfloat*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
 		GLint location,
-		const Matrix2& value,
-		GLboolean transpose) noexcept
+		const FloatMatrix2& value) noexcept
 	{
-		glUniformMatrix2fv(location, 1, transpose,
+		glUniformMatrix2fv(location, 1, GL_FALSE,
 			reinterpret_cast<const GLfloat*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
 		GLint location,
-		const Matrix3& value,
-		GLboolean transpose) noexcept
+		const FloatMatrix3& value) noexcept
 	{
-		glUniformMatrix3fv(location, 1, transpose,
+		glUniformMatrix3fv(location, 1, GL_FALSE,
 			reinterpret_cast<const GLfloat*>(&value));
 	}
 	void GlGpuPipeline::setUniform(
 		GLint location,
-		const Matrix4& value,
-		GLboolean transpose) noexcept
+		const FloatMatrix4& value) noexcept
 	{
-		glUniformMatrix4fv(location, 1, transpose,
+		glUniformMatrix4fv(location, 1, GL_FALSE,
 			reinterpret_cast<const GLfloat*>(&value));
 	}
 

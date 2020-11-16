@@ -1,7 +1,7 @@
 #pragma once
 #include "Injector/Graphics/GpuPipeline.hpp"
 #include "Injector/GlfwDefines.hpp"
-#include "Injector/Mathematics/Vector/Vector4.hpp"
+#include "Injector/Mathematics/Vector4.hpp"
 
 #include <string>
 #include <vector>
@@ -47,23 +47,20 @@ namespace Injector
 		static void setUniform(
 			GLint location, const IntVector4& value) noexcept;
 		static void setUniform(
-			GLint location, const Vector2& value) noexcept;
+			GLint location, const FloatVector2& value) noexcept;
 		static void setUniform(
-			GLint location, const Vector3& value) noexcept;
+			GLint location, const FloatVector3& value) noexcept;
 		static void setUniform(
-			GLint location, const Vector4& value) noexcept;
-		static void setUniform(
-			GLint location,
-			const Matrix2& value,
-			GLboolean transpose = GL_FALSE) noexcept;
+			GLint location, const FloatVector4& value) noexcept;
 		static void setUniform(
 			GLint location,
-			const Matrix3& value,
-			GLboolean transpose = GL_FALSE) noexcept;
+			const FloatMatrix2& value) noexcept;
 		static void setUniform(
 			GLint location,
-			const Matrix4& value,
-			GLboolean transpose = GL_FALSE) noexcept;
+			const FloatMatrix3& value) noexcept;
+		static void setUniform(
+			GLint location,
+			const FloatMatrix4& value) noexcept;
 	 public:
 		explicit GlGpuPipeline(
 			GpuDrawMode drawMode) noexcept;

@@ -138,7 +138,7 @@ namespace Injector
 		return window;
 	}
 
-	const Vector2& GpuWindow::getDeltaScroll() const noexcept
+	const FloatVector2& GpuWindow::getDeltaScroll() const noexcept
 	{
 		return deltaScroll;
 	}
@@ -160,7 +160,7 @@ namespace Injector
 			EcsManager::onUpdate();
 
 			active = true;
-			deltaScroll = Vector2::zero;
+			deltaScroll = Vector2();
 		}
 		else
 		{
@@ -186,11 +186,14 @@ namespace Injector
 		glfwGetWindowPos(window, &size.x, &size.y);
 		return size;
 	}
-	Vector2 GpuWindow::getMousePosition() const noexcept
+	FloatVector2 GpuWindow::getMousePosition() const noexcept
 	{
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
-		return Vector2(static_cast<float>(x), static_cast<float>(y));
+
+		return FloatVector2(
+			static_cast<float>(x),
+			static_cast<float>(y));
 	}
 	ButtonState GpuWindow::getMouseButton(MouseButton button) const noexcept
 	{
@@ -407,7 +410,7 @@ namespace Injector
 			drawMode,
 			vertexShader,
 			fragmentShader,
-			Vector4::one);
+			Vector4(1.0f));
 	}
 	std::shared_ptr<GpuPipeline> GpuWindow::createColorColorPipeline(
 		GpuDrawMode drawMode,
@@ -418,7 +421,7 @@ namespace Injector
 			drawMode,
 			vertexShader,
 			fragmentShader,
-			Vector4::one);
+			Vector4(1.0f));
 	}
 	std::shared_ptr<GpuPipeline> GpuWindow::createDiffusePipeline(
 		GpuDrawMode drawMode,
@@ -429,9 +432,9 @@ namespace Injector
 			drawMode,
 			vertexShader,
 			fragmentShader,
-			Vector4::one,
-			Vector4::one / 2.0f,
-			Vector4::one,
+			Vector4(1.0f),
+			Vector4(0.5f),
+			Vector4(1.0f),
 			Vector3(1.0f, 2.0f, 3.0f).getNormalized());
 	}
 	std::shared_ptr<GpuPipeline> GpuWindow::createImageDiffusePipeline(
@@ -457,12 +460,12 @@ namespace Injector
 			vertexShader,
 			fragmentShader,
 			image,
-			Vector4::one,
-			Vector4::one / 2.0f,
-			Vector4::one,
+			Vector4(1.0f),
+			Vector4(0.5f),
+			Vector4(1.0f),
 			Vector3(1.0f, 2.0f, 3.0f).getNormalized(),
-			Vector2::one,
-			Vector2::zero);
+			Vector2(1.0f),
+			Vector2());
 	}
 
 	std::shared_ptr<GpuWindow> GpuWindow::create(

@@ -13,11 +13,11 @@ namespace Injector
 			vk::PushConstantRange(
 				vk::ShaderStageFlagBits::eVertex,
 				0,
-				sizeof(Matrix4)),
+				sizeof(FloatMatrix4)),
 			vk::PushConstantRange(
 				vk::ShaderStageFlagBits::eFragment,
-				sizeof(Matrix4),
-				sizeof(Vector4)),
+				sizeof(FloatMatrix4),
+				sizeof(FloatVector4)),
 		};
 
 		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo(
@@ -69,7 +69,7 @@ namespace Injector
 
 		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
 			0,
-			sizeof(Vector3),
+			sizeof(FloatVector3),
 			vk::VertexInputRate::eVertex);
 		auto vertexInputAttributeDescription = vk::VertexInputAttributeDescription(
 			0,
@@ -200,7 +200,7 @@ namespace Injector
 		GpuDrawMode drawMode,
 		const std::shared_ptr<VkGpuShader>& _vertexShader,
 		const std::shared_ptr<VkGpuShader>& _fragmentShader,
-		const Vector4& _color) :
+		const FloatVector4& _color) :
 		VkGpuPipeline(device, drawMode),
 		vertexShader(_vertexShader),
 		fragmentShader(_fragmentShader),
@@ -245,11 +245,11 @@ namespace Injector
 			pipelineLayout);
 	}
 
-	const Vector4& VkColorGpuPipeline::getColor() const
+	const FloatVector4& VkColorGpuPipeline::getColor() const
 	{
 		return color;
 	}
-	void VkColorGpuPipeline::setColor(const Vector4& _color)
+	void VkColorGpuPipeline::setColor(const FloatVector4& _color)
 	{
 		color = Vector4(_color);
 	}
@@ -302,23 +302,23 @@ namespace Injector
 			pipeline);
 	}
 	void VkColorGpuPipeline::setUniforms(
-		const Matrix4& model,
-		const Matrix4& view,
-		const Matrix4& proj,
-		const Matrix4& viewProj,
-		const Matrix4& mvp)
+		const FloatMatrix4& model,
+		const FloatMatrix4& view,
+		const FloatMatrix4& proj,
+		const FloatMatrix4& viewProj,
+		const FloatMatrix4& mvp)
 	{
 		bindedCommandBuffer.pushConstants(
 			pipelineLayout,
 			vk::ShaderStageFlagBits::eVertex,
 			0,
-			sizeof(Matrix4),
+			sizeof(FloatMatrix4),
 			&mvp);
 		bindedCommandBuffer.pushConstants(
 			pipelineLayout,
 			vk::ShaderStageFlagBits::eFragment,
-			sizeof(Matrix4),
-			sizeof(Vector4),
+			sizeof(FloatMatrix4),
+			sizeof(FloatVector4),
 			&color);
 	}
 }

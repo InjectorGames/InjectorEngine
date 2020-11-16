@@ -6,7 +6,7 @@ namespace Injector
 		GpuDrawMode drawMode,
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
-		const Vector4& color) :
+		const FloatVector4& color) :
 		GlColorGpuPipeline(
 			drawMode,
 			vertexShader,
@@ -25,14 +25,14 @@ namespace Injector
 			3,
 			GL_FLOAT,
 			GL_FALSE,
-			sizeof(Vector3) + sizeof(Vector4),
+			sizeof(FloatVector3) + sizeof(FloatVector4),
 			0);
 		setVertexAttributePointer(
 			1,
 			4,
 			GL_FLOAT,
 			GL_FALSE,
-			sizeof(Vector3) + sizeof(Vector4),
-			sizeof(Vector3));
+			sizeof(FloatVector3) + sizeof(FloatVector4),
+			sizeof(FloatVector3));
 	}
 }

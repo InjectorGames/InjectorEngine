@@ -1,7 +1,8 @@
 #include "Injector/Engine.hpp"
-#include "Injector/Graphics/GUI/EditorGuiHandler.hpp"
+#include "Injector/Graphics/GuiEcsSystem.hpp"
 #include "Injector/Graphics/AspectRatioEcsSystem.hpp"
 #include "Injector/Mathematics/TransformEcsSystem.hpp"
+#include "Injector/Graphics/GUI/EditorGuiHandler.hpp"
 
 #include <iostream>
 
@@ -17,14 +18,15 @@ void initialize()
 		ImageData::readFromFile("Resources/Images/Logo16.png", 4, false), });
 
 	auto aspectRatioSystem = window->createSystem<AspectRatioEcsSystem>(window);
+	auto guiSystem = window->createSystem<GuiEcsSystem>();
 	auto transformSystem = window->createSystem<TransformEcsSystem>();
 	auto cameraSystem = window->createCameraSystem();
 	auto renderSystem = window->createRenderSystem(window);
 
-	auto editor = window->createEntity();
+	auto editor = EcsEntity::create();
 	editor->createComponent<GuiEcsComponent>(
 		std::make_shared<EditorGuiHandler>());
-	renderSystem->addGui(editor);
+	guiSystem->addGui(editor);
 }
 
 int main()

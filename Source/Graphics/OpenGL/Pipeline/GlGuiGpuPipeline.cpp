@@ -1,15 +1,14 @@
-#include "Injector/Graphics/OpenGL/Pipeline/GlColorGpuPipeline.hpp"
+#include "Injector/Graphics/OpenGL/Pipeline/GlGuiGpuPipeline.hpp"
 #include "Injector/Exception/NullException.hpp"
 
 namespace Injector
 {
-	GlColorGpuPipeline::GlColorGpuPipeline(
+	GlGuiGpuPipeline::GlGuiGpuPipeline(
 		GpuDrawMode drawMode,
 		const std::shared_ptr<GlGpuShader>& vertexShader,
 		const std::shared_ptr<GlGpuShader>& fragmentShader,
-		const FloatVector4& _color) :
-		GlGpuPipeline(drawMode),
-		color(_color)
+		const std::shared_ptr<GlGpuImage>& _image,) :
+		GlGpuPipeline(drawMode)
 	{
 		if (!vertexShader)
 		{
@@ -50,61 +49,66 @@ namespace Injector
 				"Failed to link program, " + log);
 		}
 
-		mvpLocation = getUniformLocation(
+		projLocation = getUniformLocation(
 			program,
-			"u_MVP");
-		colorLocation = getUniformLocation(
-			program,
-			"u_Color");
+			"u_Proj");
 	}
 
-	const FloatVector4& GlColorGpuPipeline::getColor() const
-	{
-		return color;
-	}
-	void GlColorGpuPipeline::setColor(const FloatVector4& _color)
-	{
-		color = Vector4(_color);
-	}
-
-	void GlColorGpuPipeline::bind()
+	void GlGuiGpuPipeline::bind()
 	{
 		GlGpuPipeline::bind();
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
 		glDisable(GL_SCISSOR_TEST);
 		glDisable(GL_STENCIL_TEST);
-		glDisable(GL_BLEND);
-		glCullFace(GL_BACK);
-		glFrontFace(GL_CW);
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(
+			GL_SRC_ALPHA,
+			GL_ONE_MINUS_SRC_ALPHA);
 	}
-	void GlColorGpuPipeline::flush()
+	void GlGuiGpuPipeline::flush()
 	{
-		GlGpuPipeline::bind();
-		setUniform(colorLocation, color);
 	}
-	void GlColorGpuPipeline::setAttributes()
+	void GlGuiGpuPipeline::setAttributes()
 	{
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
 
 		setVertexAttributePointer(
 			0,
-			3,
+			2,
 			GL_FLOAT,
 			GL_FALSE,
-			sizeof(FloatVector3),
+			sizeof(Vector2),
 			0);
+		setVertexAttributePointer(
+			1,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vector2) * 2,
+			sizeof(Vector2));
+		setVertexAttributePointer(
+			2,
+			4,
+			GL_UNSIGNED_BYTE,
+			GL_TRUE,
+			sizeof(Vector2) * 2 + sizeof(Vector4),
+			sizeof(Vector4));
+		// TODO: replace Vector4 with ByteVector
 	}
 
-	void GlColorGpuPipeline::setUniforms(
-		const FloatMatrix4& model,
-		const FloatMatrix4& view,
-		const FloatMatrix4& proj,
-		const FloatMatrix4& viewProj,
-		const FloatMatrix4& mvp)
+	void GlGuiGpuPipeline::setUniforms(
+		const Matrix4& model,
+		const Matrix4& view,
+		const Matrix4& proj,
+		const Matrix4& viewProj,
+		const Matrix4& mvp)
 	{
 		setUniform(
-			mvpLocation,
-			mvp);
+			projLocation,
+			proj);
 	}
 }

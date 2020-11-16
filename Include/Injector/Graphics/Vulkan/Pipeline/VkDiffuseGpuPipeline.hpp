@@ -16,17 +16,17 @@ namespace Injector
 	 public:
 		struct UniformBufferObject
 		{
-			Vector4 objectColor;
-			Vector4 ambientColor;
-			Vector4 lightColor;
-			Vector3 lightDirection;
+			FloatVector4 objectColor;
+			FloatVector4 ambientColor;
+			FloatVector4 lightColor;
+			FloatVector3 lightDirection;
 			float alignment;
 
 			explicit UniformBufferObject(
-				const Vector4& _objectColor,
-				const Vector4& _ambientColor,
-				const Vector4& _lightColor,
-				const Vector3& _lightDirection) :
+				const FloatVector4& _objectColor,
+				const FloatVector4& _ambientColor,
+				const FloatVector4& _lightColor,
+				const FloatVector3& _lightDirection) :
 				objectColor(_objectColor),
 				ambientColor(_ambientColor),
 				lightColor(_lightColor),
@@ -88,17 +88,17 @@ namespace Injector
 			const UniformBufferObject& ubo);
 		~VkDiffuseGpuPipeline() override;
 
-		const Vector4& getObjectColor() const override;
-		void setObjectColor(const Vector4& color) override;
+		const FloatVector4& getObjectColor() const override;
+		void setObjectColor(const FloatVector4& color) override;
 
-		const Vector4& getAmbientColor() const override;
-		void setAmbientColor(const Vector4& color) override;
+		const FloatVector4& getAmbientColor() const override;
+		void setAmbientColor(const FloatVector4& color) override;
 
-		const Vector4& getLightColor() const override;
-		void setLightColor(const Vector4& color) override;
+		const FloatVector4& getLightColor() const override;
+		void setLightColor(const FloatVector4& color) override;
 
-		const Vector3& getLightDirection() const override;
-		void setLightDirection(const Vector3& direction) override;
+		const FloatVector3& getLightDirection() const override;
+		void setLightDirection(const FloatVector3& direction) override;
 
 		void recreate(
 			VmaAllocator allocator,
@@ -111,10 +111,10 @@ namespace Injector
 			vk::CommandBuffer commandBuffer,
 			size_t imageIndex) override;
 		void setUniforms(
-			const Matrix4& model,
-			const Matrix4& view,
-			const Matrix4& proj,
-			const Matrix4& viewProj,
-			const Matrix4& mvp) override;
+			const FloatMatrix4& model,
+			const FloatMatrix4& view,
+			const FloatMatrix4& proj,
+			const FloatMatrix4& viewProj,
+			const FloatMatrix4& mvp) override;
 	};
 }

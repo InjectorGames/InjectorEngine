@@ -3,11 +3,11 @@
 namespace Injector
 {
 	TransformEcsComponent::TransformEcsComponent(
-		const Vector3& _position,
+		const FloatVector3& _position,
 		const Quaternion& _rotation,
-		const Vector3& _scale,
+		const FloatVector3& _scale,
 		RotationOrigin _origin,
-		const Matrix4& _matrix,
+		const FloatMatrix4& _matrix,
 		const std::shared_ptr<EcsEntity>& _parent) noexcept :
 		position(_position),
 		rotation(_rotation),

@@ -12,7 +12,7 @@ namespace Injector
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GlGpuShader>& vertexShader,
 			const std::shared_ptr<GlGpuShader>& fragmentShader,
-			const Vector4& color);
+			const FloatVector4& color);
 
 		// Sets vertex attributes
 		void setAttributes() override;

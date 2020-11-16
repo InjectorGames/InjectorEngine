@@ -43,7 +43,7 @@ namespace Injector
 		auto pushConstantRange = vk::PushConstantRange(
 			vk::ShaderStageFlagBits::eVertex,
 			0,
-			sizeof(Matrix4) * 2);
+			sizeof(FloatMatrix4) * 2);
 
 		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo(
 			vk::PipelineLayoutCreateFlags(),
@@ -94,7 +94,7 @@ namespace Injector
 
 		auto vertexInputBindingDescription = vk::VertexInputBindingDescription(
 			0,
-			sizeof(Vector3) * 2,
+			sizeof(FloatVector3) * 2,
 			vk::VertexInputRate::eVertex);
 
 		vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[2] =
@@ -108,7 +108,7 @@ namespace Injector
 				1,
 				0,
 				vk::Format::eR32G32B32Sfloat,
-				sizeof(Vector3)),
+				sizeof(FloatVector3)),
 		};
 
 		auto pipelineVertexInputStateCreateInfo = vk::PipelineVertexInputStateCreateInfo(
@@ -406,38 +406,38 @@ namespace Injector
 			descriptorSetLayout);
 	}
 
-	const Vector4& VkDiffuseGpuPipeline::getObjectColor() const
+	const FloatVector4& VkDiffuseGpuPipeline::getObjectColor() const
 	{
 		return ubo.objectColor;
 	}
-	void VkDiffuseGpuPipeline::setObjectColor(const Vector4& color)
+	void VkDiffuseGpuPipeline::setObjectColor(const FloatVector4& color)
 	{
 		ubo.objectColor = Vector4(color);
 	}
 
-	const Vector4& VkDiffuseGpuPipeline::getAmbientColor() const
+	const FloatVector4& VkDiffuseGpuPipeline::getAmbientColor() const
 	{
 		return ubo.ambientColor;
 	}
-	void VkDiffuseGpuPipeline::setAmbientColor(const Vector4& color)
+	void VkDiffuseGpuPipeline::setAmbientColor(const FloatVector4& color)
 	{
 		ubo.ambientColor = Vector4(color);
 	}
 
-	const Vector4& VkDiffuseGpuPipeline::getLightColor() const
+	const FloatVector4& VkDiffuseGpuPipeline::getLightColor() const
 	{
 		return ubo.lightColor;
 	}
-	void VkDiffuseGpuPipeline::setLightColor(const Vector4& color)
+	void VkDiffuseGpuPipeline::setLightColor(const FloatVector4& color)
 	{
 		ubo.lightColor = Vector4(color);
 	}
 
-	const Vector3& VkDiffuseGpuPipeline::getLightDirection() const
+	const FloatVector3& VkDiffuseGpuPipeline::getLightDirection() const
 	{
 		return ubo.lightDirection;
 	}
-	void VkDiffuseGpuPipeline::setLightDirection(const Vector3& direction)
+	void VkDiffuseGpuPipeline::setLightDirection(const FloatVector3& direction)
 	{
 		ubo.lightDirection = Vector3(direction.getNormalized());
 	}
@@ -516,11 +516,11 @@ namespace Injector
 	}
 
 	void VkDiffuseGpuPipeline::setUniforms(
-		const Matrix4& model,
-		const Matrix4& view,
-		const Matrix4& proj,
-		const Matrix4& viewProj,
-		const Matrix4& mvp)
+		const FloatMatrix4& model,
+		const FloatMatrix4& view,
+		const FloatMatrix4& proj,
+		const FloatMatrix4& viewProj,
+		const FloatMatrix4& mvp)
 	{
 		auto normal = model.getInverted().getTransposed();
 
@@ -528,13 +528,13 @@ namespace Injector
 			pipelineLayout,
 			vk::ShaderStageFlagBits::eVertex,
 			0,
-			sizeof(Matrix4),
+			sizeof(FloatMatrix4),
 			&mvp);
 		bindedCommandBuffer.pushConstants(
 			pipelineLayout,
 			vk::ShaderStageFlagBits::eVertex,
-			sizeof(Matrix4),
-			sizeof(Matrix4),
+			sizeof(FloatMatrix4),
+			sizeof(FloatMatrix4),
 			&normal);
 	}
 }

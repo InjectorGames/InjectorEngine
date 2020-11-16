@@ -145,56 +145,56 @@ namespace Injector
 		return image;
 	}
 
-	const Vector4& GlImageDiffuseGpuPipeline::getObjectColor() const
+	const FloatVector4& GlImageDiffuseGpuPipeline::getObjectColor() const
 	{
 		return ubo.objectColor;
 	}
-	void GlImageDiffuseGpuPipeline::setObjectColor(const Vector4& color)
+	void GlImageDiffuseGpuPipeline::setObjectColor(const FloatVector4& color)
 	{
 		ubo.objectColor = Vector4(color);
 	}
 
-	const Vector4& GlImageDiffuseGpuPipeline::getAmbientColor() const
+	const FloatVector4& GlImageDiffuseGpuPipeline::getAmbientColor() const
 	{
 		return ubo.ambientColor;
 	}
-	void GlImageDiffuseGpuPipeline::setAmbientColor(const Vector4& color)
+	void GlImageDiffuseGpuPipeline::setAmbientColor(const FloatVector4& color)
 	{
 		ubo.ambientColor = Vector4(color);
 	}
 
-	const Vector4& GlImageDiffuseGpuPipeline::getLightColor() const
+	const FloatVector4& GlImageDiffuseGpuPipeline::getLightColor() const
 	{
 		return ubo.lightColor;
 	}
-	void GlImageDiffuseGpuPipeline::setLightColor(const Vector4& color)
+	void GlImageDiffuseGpuPipeline::setLightColor(const FloatVector4& color)
 	{
 		ubo.lightColor = Vector4(color);
 	}
 
-	const Vector3& GlImageDiffuseGpuPipeline::getLightDirection() const
+	const FloatVector3& GlImageDiffuseGpuPipeline::getLightDirection() const
 	{
 		return ubo.lightDirection;
 	}
-	void GlImageDiffuseGpuPipeline::setLightDirection(const Vector3& direction)
+	void GlImageDiffuseGpuPipeline::setLightDirection(const FloatVector3& direction)
 	{
 		ubo.lightDirection = direction.getNormalized();
 	}
 
-	const Vector2& GlImageDiffuseGpuPipeline::getImageScale() const
+	const FloatVector2& GlImageDiffuseGpuPipeline::getImageScale() const
 	{
 		return ubo.imageScale;
 	}
-	void GlImageDiffuseGpuPipeline::setImageScale(const Vector2& scale)
+	void GlImageDiffuseGpuPipeline::setImageScale(const FloatVector2& scale)
 	{
 		ubo.imageScale = Vector2(scale);
 	}
 
-	const Vector2& GlImageDiffuseGpuPipeline::getImageOffset() const
+	const FloatVector2& GlImageDiffuseGpuPipeline::getImageOffset() const
 	{
 		return ubo.imageOffset;
 	}
-	void GlImageDiffuseGpuPipeline::setImageOffset(const Vector2& offset)
+	void GlImageDiffuseGpuPipeline::setImageOffset(const FloatVector2& offset)
 	{
 		ubo.imageOffset = Vector2(offset);
 	}
@@ -204,6 +204,7 @@ namespace Injector
 		GlGpuPipeline::bind();
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+		glDisable(GL_SCISSOR_TEST);
 		glDisable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
 		glCullFace(GL_BACK);
@@ -258,29 +259,29 @@ namespace Injector
 			3,
 			GL_FLOAT,
 			GL_FALSE,
-			sizeof(Vector3) * 2 + sizeof(Vector2),
+			sizeof(FloatVector3) * 2 + sizeof(FloatVector2),
 			0);
 		setVertexAttributePointer(
 			1,
 			3,
 			GL_FLOAT,
 			GL_FALSE,
-			sizeof(Vector3) * 2 + sizeof(Vector2),
-			sizeof(Vector3));
+			sizeof(FloatVector3) * 2 + sizeof(FloatVector2),
+			sizeof(FloatVector3));
 		setVertexAttributePointer(
 			2, 2,
 			GL_FLOAT,
 			GL_FALSE,
-			sizeof(Vector3) * 2 + sizeof(Vector2),
-			sizeof(Vector3) * 2);
+			sizeof(FloatVector3) * 2 + sizeof(FloatVector2),
+			sizeof(FloatVector3) * 2);
 	}
 
 	void GlImageDiffuseGpuPipeline::setUniforms(
-		const Matrix4& model,
-		const Matrix4& view,
-		const Matrix4& proj,
-		const Matrix4& viewProj,
-		const Matrix4& mvp)
+		const FloatMatrix4& model,
+		const FloatMatrix4& view,
+		const FloatMatrix4& proj,
+		const FloatMatrix4& viewProj,
+		const FloatMatrix4& mvp)
 	{
 		auto normal = model.getInverted().getTransposed();
 

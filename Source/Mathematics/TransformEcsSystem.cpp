@@ -67,19 +67,19 @@ namespace Injector
 			auto rotation = transformComponent->rotation.getNormalized();
 			transformComponent->rotation = rotation;
 
-			Matrix4 matrix;
+			FloatMatrix4 matrix;
 
 			if (transformComponent->origin == RotationOrigin::Spin)
 			{
-				matrix = Matrix4::identity.getTranslated(transformComponent->position);
+				matrix = FloatMatrix4().getTranslated(transformComponent->position);
 				matrix *= rotation.getMatrix4();
-				matrix *= Matrix4::identity.getScaled(transformComponent->scale);
+				matrix *= FloatMatrix4().getScaled(transformComponent->scale);
 			}
 			else
 			{
 				matrix = rotation.getMatrix4();
-				matrix *= Matrix4::identity.getTranslated(transformComponent->position);
-				matrix *= Matrix4::identity.getScaled(transformComponent->scale);
+				matrix *= FloatMatrix4().getTranslated(transformComponent->position);
+				matrix *= FloatMatrix4().getScaled(transformComponent->scale);
 			}
 
 			transformComponent->matrix = matrix;

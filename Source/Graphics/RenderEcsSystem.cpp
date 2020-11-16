@@ -6,8 +6,7 @@
 namespace Injector
 {
 	RenderEcsSystem::RenderEcsSystem() noexcept :
-		cameras(),
-		guis()
+		cameras()
 	{
 	}
 
@@ -15,11 +14,6 @@ namespace Injector
 		RenderEcsSystem::getCameras() const noexcept
 	{
 		return cameras;
-	}
-	const std::set<std::shared_ptr<EcsEntity>>&
-	RenderEcsSystem::getGuis() const noexcept
-	{
-		return guis;
 	}
 
 	bool RenderEcsSystem::addCamera(
@@ -45,35 +39,8 @@ namespace Injector
 		return true;
 	}
 
-	bool RenderEcsSystem::addGui(
-		const std::shared_ptr<EcsEntity>& entity) noexcept
-	{
-		if (entity == nullptr)
-			return false;
-
-		return guis.emplace(entity).second;
-	}
-	bool RenderEcsSystem::removeGui(
-		const std::shared_ptr<EcsEntity>& entity) noexcept
-	{
-		if (entity == nullptr)
-			return false;
-
-		auto iterator = guis.find(entity);
-
-		if (iterator == guis.end())
-			return false;
-
-		guis.erase(iterator);
-		return true;
-	}
-
 	void RenderEcsSystem::removeCameras() noexcept
 	{
 		cameras.clear();
-	}
-	void RenderEcsSystem::removeGuis() noexcept
-	{
-		guis.clear();
 	}
 }

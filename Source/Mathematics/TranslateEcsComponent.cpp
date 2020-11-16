@@ -3,7 +3,7 @@
 namespace Injector
 {
 	TranslateEcsComponent::TranslateEcsComponent(
-		const Vector3& _translation) noexcept :
+		const FloatVector3& _translation) noexcept :
 		translation(_translation)
 	{
 	}

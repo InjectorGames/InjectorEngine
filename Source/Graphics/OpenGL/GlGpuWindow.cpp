@@ -11,7 +11,6 @@
 #include "Injector/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.hpp"
 
 #include "examples/imgui_impl_glfw.h"
-#include "examples/imgui_impl_opengl3.h"
 
 namespace Injector
 {
@@ -79,22 +78,9 @@ namespace Injector
 		ImGui_ImplGlfw_InitForOpenGL(
 			window,
 			false);
-
-		if(_gles)
-		{
-			ImGui_ImplOpenGL3_Init(
-				"#version 300 es");
-		}
-		else
-		{
-			ImGui_ImplOpenGL3_Init(
-				"#version 330 core");
-		}
 	}
 	GlGpuWindow::~GlGpuWindow()
 	{
-		glfwMakeContextCurrent(window);
-		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 	}
 
@@ -103,12 +89,10 @@ namespace Injector
 		return gles;
 	}
 
-	void GlGpuWindow::makeCurrent() noexcept
+	void GlGpuWindow::onUpdate()
 	{
 		glfwMakeContextCurrent(window);
-	}
-	void GlGpuWindow::swapBuffers() noexcept
-	{
+		GpuWindow::onUpdate();
 		glfwSwapBuffers(window);
 	}
 
@@ -231,7 +215,7 @@ namespace Injector
 		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
-		const Vector4& color)
+		const FloatVector4& color)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
@@ -246,7 +230,7 @@ namespace Injector
 		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
-		const Vector4& color)
+		const FloatVector4& color)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
@@ -261,10 +245,10 @@ namespace Injector
 		GpuDrawMode drawMode,
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
-		const Vector4& objectColor,
-		const Vector4& ambientColor,
-		const Vector4& lightColor,
-		const Vector3& lightDirection)
+		const FloatVector4& objectColor,
+		const FloatVector4& ambientColor,
+		const FloatVector4& lightColor,
+		const FloatVector3& lightDirection)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
@@ -290,12 +274,12 @@ namespace Injector
 		const std::shared_ptr<GpuShader>& vertexShader,
 		const std::shared_ptr<GpuShader>& fragmentShader,
 		const std::shared_ptr<GpuImage>& image,
-		const Vector4& objectColor,
-		const Vector4& ambientColor,
-		const Vector4& lightColor,
-		const Vector3& lightDirection,
-		const Vector2& imageScale,
-		const Vector2& imageOffset)
+		const FloatVector4& objectColor,
+		const FloatVector4& ambientColor,
+		const FloatVector4& lightColor,
+		const FloatVector3& lightDirection,
+		const FloatVector2& imageScale,
+		const FloatVector2& imageOffset)
 	{
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
@@ -319,6 +303,16 @@ namespace Injector
 				lightDirection,
 				imageScale,
 				imageOffset));
+	}
+	std::shared_ptr<GpuPipeline> GlGpuWindow::createGuiPipeline(
+		GpuDrawMode drawMode,
+		const std::shared_ptr<GpuImage>& image)
+	{
+		auto glImage = std::dynamic_pointer_cast<GlGpuImage>(image);
+
+		// TODO:
+		// 1. Create texture handler in pipeline
+		// 2. bind texture in pipeline
 	}
 	std::shared_ptr<GpuPipeline> GlGpuWindow::createSkyPipeline(
 		GpuDrawMode drawMode,

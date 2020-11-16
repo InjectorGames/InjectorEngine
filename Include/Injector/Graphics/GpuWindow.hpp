@@ -28,7 +28,7 @@ namespace Injector
 	 protected:
 		GLFWwindow* window;
 		GLFWcursor* cursor;
-		Vector2 deltaScroll;
+		FloatVector2 deltaScroll;
 		bool isResized;
 
 		static void mouseButtonCallback(
@@ -64,7 +64,7 @@ namespace Injector
 		GLFWwindow* getWindow() noexcept;
 		const GLFWwindow* getWindow() const noexcept;
 
-		const Vector2& getDeltaScroll() const noexcept;
+		const FloatVector2& getDeltaScroll() const noexcept;
 
 		void onUpdate() override;
 
@@ -74,7 +74,7 @@ namespace Injector
 		IntVector2 getSize() const noexcept;
 		IntVector2 getFramebufferSize() const noexcept;
 		IntVector2 getPosition() const noexcept;
-		Vector2 getMousePosition() const noexcept;
+		FloatVector2 getMousePosition() const noexcept;
 		ButtonState getMouseButton(
 			MouseButton button) const noexcept;
 		ButtonState getKeyboardButton(
@@ -139,20 +139,20 @@ namespace Injector
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const Vector4& color) = 0;
+			const FloatVector4& color) = 0;
 		virtual std::shared_ptr<GpuPipeline> createColorColorPipeline(
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const Vector4& color) = 0;
+			const FloatVector4& color) = 0;
 		virtual std::shared_ptr<GpuPipeline> createDiffusePipeline(
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
-			const Vector4& objectColor,
-			const Vector4& ambientColor,
-			const Vector4& lightColor,
-			const Vector3& lightDirection) = 0;
+			const FloatVector4& objectColor,
+			const FloatVector4& ambientColor,
+			const FloatVector4& lightColor,
+			const FloatVector3& lightDirection) = 0;
 		virtual std::shared_ptr<GpuPipeline> createImageDiffusePipeline(
 			GpuDrawMode drawMode,
 			GpuImageFilter imageMinFilter,
@@ -164,12 +164,15 @@ namespace Injector
 			const std::shared_ptr<GpuShader>& vertexShader,
 			const std::shared_ptr<GpuShader>& fragmentShader,
 			const std::shared_ptr<GpuImage>& image,
-			const Vector4& objectColor,
-			const Vector4& ambientColor,
-			const Vector4& lightColor,
-			const Vector3& lightDirection,
-			const Vector2& imageScale,
-			const Vector2& imageOffset) = 0;
+			const FloatVector4& objectColor,
+			const FloatVector4& ambientColor,
+			const FloatVector4& lightColor,
+			const FloatVector3& lightDirection,
+			const FloatVector2& imageScale,
+			const FloatVector2& imageOffset) = 0;
+		virtual std::shared_ptr<GpuPipeline> createGuiPipeline(
+			GpuDrawMode drawMode,
+			const std::shared_ptr<GpuImage>& image) = 0;
 		virtual std::shared_ptr<GpuPipeline> createSkyPipeline(
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
