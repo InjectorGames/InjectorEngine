@@ -43,6 +43,12 @@ namespace Injector
 		}
 	}
 
+	bool AspectRatioEcsSystem::removeEntity(
+		const std::shared_ptr<EcsEntity>& entity)
+	{
+		return removeCamera(entity);
+	}
+
 	bool AspectRatioEcsSystem::addCamera(
 		const std::shared_ptr<EcsEntity>& entity) noexcept
 	{

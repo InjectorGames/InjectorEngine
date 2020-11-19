@@ -14,7 +14,7 @@ namespace Injector
 		GlGpuImage(
 			GpuImageType type,
 			GpuImageFormat format,
-			const IntVector3& size,
+			const SizeVector3& size,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data = nullptr);
 		~GlGpuImage() override;

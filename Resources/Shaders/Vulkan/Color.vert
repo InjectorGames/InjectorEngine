@@ -2,7 +2,7 @@
 
 layout(push_constant) uniform VertexPushConstant
 {
-	mat4 mvp;
+    layout(offset = 0) mat4 mvp;
 } vpc;
 
 layout(location = 0) in vec3 v_Position;

@@ -5,7 +5,7 @@ namespace Injector
 	GpuImage::GpuImage(
 		GpuImageType _type,
 		GpuImageFormat _format,
-		const IntVector3& _size,
+		const SizeVector3& _size,
 		bool _useMipmap) :
 		type(_type),
 		format(_format),
@@ -22,7 +22,7 @@ namespace Injector
 	{
 		return format;
 	}
-	const IntVector3& GpuImage::getSize() const noexcept
+	const SizeVector3& GpuImage::getSize() const noexcept
 	{
 		return size;
 	}

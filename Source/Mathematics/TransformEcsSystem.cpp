@@ -126,6 +126,15 @@ namespace Injector
 		}
 	}
 
+	bool TransformEcsSystem::removeEntity(
+		const std::shared_ptr<EcsEntity>& entity)
+	{
+		return
+			removeTransform(entity) ||
+			removeTranslate(entity) ||
+			removeRotate(entity);
+	}
+
 	bool TransformEcsSystem::addTransform(
 		const std::shared_ptr<EcsEntity>& entity) noexcept
 	{

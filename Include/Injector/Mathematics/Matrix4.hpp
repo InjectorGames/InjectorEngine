@@ -733,4 +733,5 @@ namespace Injector
 	using UintMatrix4 = Matrix4<uint32_t>;
 	using LongMatrix4 = Matrix4<int64_t>;
 	using UlongMatrix4 = Matrix4<uint64_t>;
+	using SizeMatrix4 = Matrix4<size_t>;
 }

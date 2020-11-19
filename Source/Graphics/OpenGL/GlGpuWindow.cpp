@@ -6,9 +6,10 @@
 #include "Injector/Graphics/OpenGL/GlGpuFramebuffer.hpp"
 #include "Injector/Graphics/OpenGL/GlCameraEcsSystem.hpp"
 #include "Injector/Graphics/OpenGL/GlRenderEcsSystem.hpp"
-#include "Injector/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.hpp"
+#include "Injector/Graphics/OpenGL/Pipeline/GlGuiGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.hpp"
+#include "Injector/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.hpp"
 
 #include "examples/imgui_impl_glfw.h"
 
@@ -185,7 +186,7 @@ namespace Injector
 	std::shared_ptr<GpuImage> GlGpuWindow::createImage(
 		GpuImageType type,
 		GpuImageFormat format,
-		const IntVector3& size,
+		const SizeVector3& size,
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
@@ -306,13 +307,35 @@ namespace Injector
 	}
 	std::shared_ptr<GpuPipeline> GlGpuWindow::createGuiPipeline(
 		GpuDrawMode drawMode,
-		const std::shared_ptr<GpuImage>& image)
+		GpuImageFilter imageMinFilter,
+		GpuImageFilter imageMagFilter,
+		GpuImageFilter mipmapFilter,
+		GpuImageWrap imageWrapU,
+		GpuImageWrap imageWrapV,
+		GpuImageWrap imageWrapW,
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const std::shared_ptr<GpuImage>& image,
+		const FloatVector2& imageScale,
+		const FloatVector2& imageOffset)
 	{
+		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
+		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 		auto glImage = std::dynamic_pointer_cast<GlGpuImage>(image);
 
-		// TODO:
-		// 1. Create texture handler in pipeline
-		// 2. bind texture in pipeline
+		return std::make_shared<GlGuiGpuPipeline>(
+			drawMode,
+			imageMinFilter,
+			imageMagFilter,
+			mipmapFilter,
+			imageWrapU,
+			imageWrapV,
+			imageWrapW,
+			glVertexShader,
+			glFragmentShader,
+			glImage,
+			imageScale,
+			imageOffset);
 	}
 	std::shared_ptr<GpuPipeline> GlGpuWindow::createSkyPipeline(
 		GpuDrawMode drawMode,

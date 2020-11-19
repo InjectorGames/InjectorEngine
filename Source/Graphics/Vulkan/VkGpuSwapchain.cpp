@@ -446,7 +446,10 @@ namespace Injector
 			vk::ImageUsageFlagBits::eDepthStencilAttachment,
 			GpuImageType::Image2D,
 			depthFormat,
-			IntVector3(extent.width, extent.height, 1));
+			SizeVector3(
+				extent.width,
+				extent.height,
+				1));
 		depthImageView = createDepthImageView(
 			_device,
 			depthImage->getImage(),
@@ -595,7 +598,10 @@ namespace Injector
 			vk::ImageUsageFlagBits::eDepthStencilAttachment,
 			GpuImageType::Image2D,
 			depthFormat,
-			IntVector3(size.x, size.y, 1));
+			SizeVector3(
+				size.x,
+				size.y,
+				1));
 		depthImageView = createDepthImageView(
 			device,
 			depthImage->getImage(),

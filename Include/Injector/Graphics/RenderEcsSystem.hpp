@@ -18,6 +18,9 @@ namespace Injector
 		const std::set<std::shared_ptr<EcsEntity>>&
 			getCameras() const noexcept;
 
+		bool removeEntity(
+			const std::shared_ptr<EcsEntity>& entity) override;
+
 		bool addCamera(
 			const std::shared_ptr<EcsEntity>& entity) noexcept;
 		bool removeCamera(

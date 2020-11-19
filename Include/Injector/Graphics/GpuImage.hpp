@@ -10,14 +10,14 @@ namespace Injector
 	 protected:
 		GpuImageType type;
 		GpuImageFormat format;
-		IntVector3 size;
+		SizeVector3 size;
 
 		bool useMipmap;
 	 public:
 		GpuImage(
 			GpuImageType type,
 			GpuImageFormat format,
-			const IntVector3& size,
+			const SizeVector3& size,
 			bool useMipmap);
 		GpuImage(GpuImage&& image) = delete;
 		GpuImage(const GpuImage& image) = delete;
@@ -25,7 +25,7 @@ namespace Injector
 
 		GpuImageType getType() const noexcept;
 		GpuImageFormat getFormat() const noexcept;
-		const IntVector3& getSize() const noexcept;
+		const SizeVector3& getSize() const noexcept;
 
 		bool isUseMipmap() const noexcept;
 	};

@@ -127,7 +127,7 @@ namespace Injector
 		virtual std::shared_ptr<GpuImage> createImage(
 			GpuImageType type,
 			GpuImageFormat format,
-			const IntVector3& size,
+			const SizeVector3& size,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data) = 0;
 		virtual std::shared_ptr<GpuFramebuffer> createFramebuffer(
@@ -172,7 +172,17 @@ namespace Injector
 			const FloatVector2& imageOffset) = 0;
 		virtual std::shared_ptr<GpuPipeline> createGuiPipeline(
 			GpuDrawMode drawMode,
-			const std::shared_ptr<GpuImage>& image) = 0;
+			GpuImageFilter imageMinFilter,
+			GpuImageFilter imageMagFilter,
+			GpuImageFilter mipmapFilter,
+			GpuImageWrap imageWrapU,
+			GpuImageWrap imageWrapV,
+			GpuImageWrap imageWrapW,
+			const std::shared_ptr<GpuShader>& vertexShader,
+			const std::shared_ptr<GpuShader>& fragmentShader,
+			const std::shared_ptr<GpuImage>& image,
+			const FloatVector2& imageScale,
+			const FloatVector2& imageOffset) = 0;
 		virtual std::shared_ptr<GpuPipeline> createSkyPipeline(
 			GpuDrawMode drawMode,
 			const std::shared_ptr<GpuShader>& vertexShader,
@@ -191,12 +201,12 @@ namespace Injector
 			const std::shared_ptr<ImageData>& data = nullptr);
 		std::shared_ptr<GpuImage> createImage(
 			GpuImageFormat format,
-			const IntVector2& size,
+			const SizeVector2& size,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data = nullptr);
 		std::shared_ptr<GpuImage> createImage(
 			GpuImageFormat format,
-			const IntVector3& size,
+			const SizeVector3& size,
 			bool useMipmap,
 			const std::shared_ptr<ImageData>& data = nullptr);
 

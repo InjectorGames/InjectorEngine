@@ -1196,7 +1196,7 @@ namespace Injector
 	std::shared_ptr<GpuImage> VkGpuWindow::createImage(
 		GpuImageType type,
 		GpuImageFormat format,
-		const IntVector3& size,
+		const SizeVector3& size,
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
@@ -1282,9 +1282,9 @@ namespace Injector
 					0,
 					0),
 				vk::Extent3D(
-					size.x,
-					size.y,
-					size.z));
+					static_cast<uint32_t>(size.x),
+					static_cast<uint32_t>(size.y),
+					static_cast<uint32_t>(size.z)));
 			commandBuffer.copyBufferToImage(
 				stagingBuffer.getBuffer(),
 				image->getImage(),
@@ -1560,7 +1560,17 @@ namespace Injector
 	}
 	std::shared_ptr<GpuPipeline> VkGpuWindow::createGuiPipeline(
 		GpuDrawMode drawMode,
-		const std::shared_ptr<GpuImage>& image)
+		GpuImageFilter imageMinFilter,
+		GpuImageFilter imageMagFilter,
+		GpuImageFilter mipmapFilter,
+		GpuImageWrap imageWrapU,
+		GpuImageWrap imageWrapV,
+		GpuImageWrap imageWrapW,
+		const std::shared_ptr<GpuShader>& vertexShader,
+		const std::shared_ptr<GpuShader>& fragmentShader,
+		const std::shared_ptr<GpuImage>& image,
+		const FloatVector2& imageScale,
+		const FloatVector2& imageOffset)
 	{
 		// TODO:
 		return nullptr;

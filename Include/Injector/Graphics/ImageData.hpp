@@ -1,23 +1,22 @@
 #pragma once
-#include "Injector/Mathematics/Vector2.hpp"
+#include "Injector/Mathematics/Vector3.hpp"
 
 #include <vector>
 #include <string>
-#include <cstdint>
 #include <memory>
 
 namespace Injector
 {
 	struct ImageData
 	{
-		IntVector2 size;
+		SizeVector3 size;
 		int componentCount;
 		bool component16;
 		std::vector<uint8_t> pixels;
 
 		ImageData();
 		ImageData(
-			const IntVector2& size,
+			const SizeVector3& size,
 			int componentCount,
 			bool component16,
 			const std::vector<uint8_t>& pixels);

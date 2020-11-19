@@ -140,6 +140,7 @@ add_library(InjectorEngine STATIC
     Source/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlColorGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlDiffuseGpuPipeline.cpp
+    Source/Graphics/OpenGL/Pipeline/GlGuiGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.cpp
 

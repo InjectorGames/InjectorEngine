@@ -20,7 +20,7 @@ namespace Injector
 		explicit TransformEcsComponent(
 			const FloatVector3& position = FloatVector3(),
 			const Quaternion& rotation = Quaternion(),
-			const FloatVector3& scale = FloatVector3(),
+			const FloatVector3& scale = FloatVector3(1.0f),
 			RotationOrigin origin = RotationOrigin::Spin,
 			const FloatMatrix4& matrix = FloatMatrix4(),
 			const std::shared_ptr<EcsEntity>& parent = nullptr) noexcept;

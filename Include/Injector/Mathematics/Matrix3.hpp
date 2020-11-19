@@ -400,6 +400,7 @@ namespace Injector
 	using UintMatrix3 = Matrix3<uint32_t>;
 	using LongMatrix3 = Matrix3<int64_t>;
 	using UlongMatrix3 = Matrix3<uint64_t>;
+	using SizeMatrix3 = Matrix3<size_t>;
 }
 
 

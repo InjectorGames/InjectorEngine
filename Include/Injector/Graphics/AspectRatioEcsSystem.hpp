@@ -29,6 +29,10 @@ namespace Injector
 		// Updates camera aspect ratio value
 		void onUpdate() override;
 
+		// Returns true if entity removed from the system
+		bool removeEntity(
+			const std::shared_ptr<EcsEntity>& entity) override;
+
 		// Returns true if camera was added
 		bool addCamera(
 			const std::shared_ptr<EcsEntity>& entity) noexcept;

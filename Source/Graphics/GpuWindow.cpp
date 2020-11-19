@@ -370,26 +370,26 @@ namespace Injector
 		return createImage(
 			GpuImageType::Image1D,
 			format,
-			IntVector3(size, 1, 1),
+			SizeVector3(size, 1, 1),
 			useMipmap,
 			data);
 	}
 	std::shared_ptr<GpuImage> GpuWindow::createImage(
 		GpuImageFormat format,
-		const IntVector2& size,
+		const SizeVector2& size,
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{
 		return createImage(
 			GpuImageType::Image2D,
 			format,
-			IntVector3(size, 1),
+			SizeVector3(size, 1),
 			useMipmap,
 			data);
 	}
 	std::shared_ptr<GpuImage> GpuWindow::createImage(
 		GpuImageFormat format,
-		const IntVector3& size,
+		const SizeVector3& size,
 		bool useMipmap,
 		const std::shared_ptr<ImageData>& data)
 	{

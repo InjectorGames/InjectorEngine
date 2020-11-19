@@ -325,4 +325,5 @@ namespace Injector
 	using UintMatrix2 = Matrix2<uint32_t>;
 	using LongMatrix2 = Matrix2<int64_t>;
 	using UlongMatrix2 = Matrix2<uint64_t>;
+	using SizeMatrix2 = Matrix2<size_t>;
 }

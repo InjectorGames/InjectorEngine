@@ -49,9 +49,9 @@ namespace Injector
 		if (system == nullptr)
 			return false;
 
-		for (auto i = systems.begin(); i != systems.end(); i++)
+		for (auto& i : systems)
 		{
-			if (system == *i)
+			if (system == i)
 				return true;
 		}
 
@@ -60,5 +60,19 @@ namespace Injector
 	void EcsManager::removeSystems() noexcept
 	{
 		systems.clear();
+	}
+
+	bool EcsManager::removeEntity(
+		const std::shared_ptr<EcsEntity>& entity) noexcept
+	{
+		bool anyRemove = false;
+
+		for (auto& i : systems)
+		{
+			if(i->removeEntity(entity))
+				anyRemove = true;
+		}
+
+		return anyRemove;
 	}
 }

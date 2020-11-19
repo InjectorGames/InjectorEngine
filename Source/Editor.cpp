@@ -18,10 +18,15 @@ void initialize()
 		ImageData::readFromFile("Resources/Images/Logo16.png", 4, false), });
 
 	auto aspectRatioSystem = window->createSystem<AspectRatioEcsSystem>(window);
-	auto guiSystem = window->createSystem<GuiEcsSystem>();
+	auto guiSystem = window->createSystem<GuiEcsSystem>(window);
 	auto transformSystem = window->createSystem<TransformEcsSystem>();
 	auto cameraSystem = window->createCameraSystem();
 	auto renderSystem = window->createRenderSystem(window);
+
+	guiSystem->initialize(
+		transformSystem,
+		cameraSystem,
+		renderSystem);
 
 	auto editor = EcsEntity::create();
 	editor->createComponent<GuiEcsComponent>(
@@ -34,7 +39,7 @@ int main()
 	try
 	{
 		Engine::initializeGraphics(
-		 	GraphicsAPI::Vulkan);
+		 	GraphicsAPI::OpenGL);
 		//Engine::initializeVirtualReality();
 		Engine::setTargetUpdateRate(60);
 		Engine::initializeEngine();

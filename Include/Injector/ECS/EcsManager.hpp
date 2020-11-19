@@ -51,5 +51,9 @@ namespace Injector
 			const std::shared_ptr<EcsSystem>& system) const noexcept;
 		// Removes all manager systems
 		void removeSystems() noexcept;
+
+		// Returns true if entity has been removed from any system
+		bool removeEntity(
+			const std::shared_ptr<EcsEntity>& entity) noexcept;
 	};
 }

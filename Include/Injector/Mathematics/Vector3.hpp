@@ -222,6 +222,46 @@ namespace Injector
 				y * vector.y,
 				z * vector.z);
 		}
+		Vector3<T> operator|(
+			const Vector3<T>& vector) const noexcept
+		{
+			return Vector3<T>(
+				x | vector.x,
+				y | vector.y,
+				z | vector.z);
+		}
+		Vector3<T> operator&(
+			const Vector3<T>& vector) const noexcept
+		{
+			return Vector3<T>(
+				x & vector.x,
+				y & vector.y,
+				z & vector.z);
+		}
+		Vector3<T> operator^(
+			const Vector3<T>& vector) const noexcept
+		{
+			return Vector3<T>(
+				x ^ vector.x,
+				y ^ vector.y,
+				z ^ vector.z);
+		}
+		Vector3<T> operator<<(
+			const Vector3<T>& vector) const noexcept
+		{
+			return Vector3<T>(
+				x << vector.x,
+				y << vector.y,
+				z << vector.z);
+		}
+		Vector3<T> operator>>(
+			const Vector3<T>& vector) const noexcept
+		{
+			return Vector3<T>(
+				x >> vector.x,
+				y >> vector.y,
+				z >> vector.z);
+		}
 		Vector3<T>& operator-=(
 			const Vector3<T>& vector) noexcept
 		{
@@ -252,6 +292,46 @@ namespace Injector
 			x *= vector.x;
 			y *= vector.y;
 			z *= vector.z;
+			return *this;
+		}
+		Vector3<T>& operator|=(
+			const Vector3<T>& vector) noexcept
+		{
+			x |= vector.x;
+			y |= vector.y;
+			z |= vector.z;
+			return *this;
+		}
+		Vector3<T>& operator&=(
+			const Vector3<T>& vector) noexcept
+		{
+			x &= vector.x;
+			y &= vector.y;
+			z &= vector.z;
+			return *this;
+		}
+		Vector3<T>& operator^=(
+			const Vector3<T>& vector) noexcept
+		{
+			x ^= vector.x;
+			y ^= vector.y;
+			z ^= vector.z;
+			return *this;
+		}
+		Vector3<T>& operator<<=(
+			const Vector3<T>& vector) noexcept
+		{
+			x <<= vector.x;
+			y <<= vector.y;
+			z <<= vector.z;
+			return *this;
+		}
+		Vector3<T>& operator>>=(
+			const Vector3<T>& vector) noexcept
+		{
+			x >>= vector.x;
+			y >>= vector.y;
+			z >>= vector.z;
 			return *this;
 		}
 
@@ -287,6 +367,46 @@ namespace Injector
 				y * value,
 				z * value);
 		}
+		Vector3<T> operator|(
+			T value) const noexcept
+		{
+			return Vector3<T>(
+				x | value,
+				y | value,
+				z | value);
+		}
+		Vector3<T> operator&(
+			T value) const noexcept
+		{
+			return Vector3<T>(
+				x & value,
+				y & value,
+				z & value);
+		}
+		Vector3<T> operator^(
+			T value) const noexcept
+		{
+			return Vector3<T>(
+				x ^ value,
+				y ^ value,
+				z ^ value);
+		}
+		Vector3<T> operator<<(
+			T value) const noexcept
+		{
+			return Vector3<T>(
+				x << value,
+				y << value,
+				z << value);
+		}
+		Vector3<T> operator>>(
+			T value) const noexcept
+		{
+			return Vector3<T>(
+				x >> value,
+				y >> value,
+				z >> value);
+		}
 		Vector3<T>& operator-=(
 			T value) noexcept
 		{
@@ -319,6 +439,46 @@ namespace Injector
 			z *= value;
 			return *this;
 		}
+		Vector3<T>& operator|=(
+			T value) noexcept
+		{
+			x |= value;
+			y |= value;
+			z |= value;
+			return *this;
+		}
+		Vector3<T>& operator&=(
+			T value) noexcept
+		{
+			x &= value;
+			y &= value;
+			z &= value;
+			return *this;
+		}
+		Vector3<T>& operator^=(
+			T value) noexcept
+		{
+			x ^= value;
+			y ^= value;
+			z ^= value;
+			return *this;
+		}
+		Vector3<T>& operator<<=(
+			T value) noexcept
+		{
+			x <<= value;
+			y <<= value;
+			z <<= value;
+			return *this;
+		}
+		Vector3<T>& operator>>=(
+			T value) noexcept
+		{
+			x >>= value;
+			y >>= value;
+			z >>= value;
+			return *this;
+		}
 
 		struct Less
 		{
@@ -343,4 +503,5 @@ namespace Injector
 	using UintVector3 = Vector3<uint32_t>;
 	using LongVector3 = Vector3<int64_t>;
 	using UlongVector3 = Vector3<uint64_t>;
+	using SizeVector3 = Vector3<size_t>;
 }

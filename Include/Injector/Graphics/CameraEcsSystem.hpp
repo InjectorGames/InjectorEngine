@@ -20,6 +20,10 @@ namespace Injector
 		const std::set<std::shared_ptr<EcsEntity>>&
 			getCameras() const noexcept;
 
+		// Returns true if entity removed from the system
+		bool removeEntity(
+			const std::shared_ptr<EcsEntity>& entity) override;
+
 		// Returns true if camera was added
 		bool addCamera(
 			const std::shared_ptr<EcsEntity>& entity) noexcept;

@@ -10,7 +10,7 @@ namespace Injector
 		vk::ImageUsageFlags usageFlags,
 		GpuImageType type,
 		GpuImageFormat format,
-		const IntVector3& size) :
+		const SizeVector3& size) :
 		GpuImage(
 			type,
 			format,

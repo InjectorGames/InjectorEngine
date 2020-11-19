@@ -14,7 +14,7 @@ namespace Injector
 	{
 	}
 	ImageData::ImageData(
-		const IntVector2& _size,
+		const SizeVector3& _size,
 		int _componentCount,
 		bool _component16,
 		const std::vector<uint8_t>& _pixels) :
@@ -42,14 +42,14 @@ namespace Injector
 		bool component16)
 	{
 		void* data;
-		IntVector2 size;
+		int width, height;
 
 		if (component16)
 		{
 			data = stbi_load_16(
 				filePath.c_str(),
-				&size.x,
-				&size.y,
+				&width,
+				&height,
 				&componentCount,
 				componentCount);
 		}
@@ -57,12 +57,13 @@ namespace Injector
 		{
 			data = stbi_load(
 				filePath.c_str(),
-				&size.x, &size.y,
+				&width,
+				&height,
 				&componentCount,
 				componentCount);
 		}
 
-		if (!data)
+		if (!data || width < 1 || height < 1)
 		{
 			throw Exception(
 				THIS_FUNCTION_NAME,
@@ -71,14 +72,17 @@ namespace Injector
 		}
 
 		auto imageData = std::make_shared<ImageData>(
-			size,
+			SizeVector3(
+				width,
+				height,
+				1),
 			componentCount,
 			component16,
 			std::vector<uint8_t>());
 
 		auto binarySize = component16 ?
-			size.x * size.y * componentCount * 2 :
-			size.x * size.y * componentCount;
+			width * height * componentCount * 2 :
+			width * height * componentCount;
 		imageData->pixels = std::vector<uint8_t>(binarySize);
 
 		memcpy(

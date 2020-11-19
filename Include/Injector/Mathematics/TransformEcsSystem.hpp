@@ -26,6 +26,9 @@ namespace Injector
 
 		void onUpdate() override;
 
+		bool removeEntity(
+			const std::shared_ptr<EcsEntity>& entity) override;
+
 		bool addTransform(
 			const std::shared_ptr<EcsEntity>& entity) noexcept;
 		bool addTranslate(

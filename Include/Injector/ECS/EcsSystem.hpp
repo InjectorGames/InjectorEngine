@@ -14,5 +14,9 @@ namespace Injector
 
 		// Executes on each update cycle
 		virtual void onUpdate() = 0;
+
+		// Returns true if entity removed from the system
+		virtual bool removeEntity(
+			const std::shared_ptr<EcsEntity>& entity) = 0;
 	};
 }

@@ -60,20 +60,20 @@ namespace Injector
 		glStage = toGlGpuShaderStage(stage);
 		shader = glCreateShader(glStage);
 
-		auto sources = std::vector<const char*>();
+		const char* sources[2];
 
 		if (_gles)
-			sources.push_back(glesHeader.c_str());
+			sources[0] = glesHeader.c_str();
 		else
-			sources.push_back(glHeader.c_str());
+			sources[0] = glHeader.c_str();
 
-		sources.push_back(reinterpret_cast<const char*>(
-			data->code.data()));
+		sources[1] = reinterpret_cast<const char*>(
+			data->code.data());
 
 		glShaderSource(
 			shader,
-			static_cast<GLsizei>(sources.size()),
-			static_cast<const GLchar* const*>(sources.data()),
+			2,
+			sources,
 			nullptr);
 
 		glCompileShader(shader);

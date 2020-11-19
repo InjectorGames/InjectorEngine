@@ -1,6 +1,6 @@
-(location = 0) in highp vec2 v_Position;
-(location = 1) in highp vec2 v_TexCoord;
-(location = 2) in highp vec4 v_Color;
+layout(location = 0) in highp vec2 v_Position;
+layout(location = 1) in highp vec2 v_TexCoord;
+layout(location = 2) in highp vec4 v_Color;
 
 out highp vec2 f_TexCoord;
 out highp vec4 f_Color;

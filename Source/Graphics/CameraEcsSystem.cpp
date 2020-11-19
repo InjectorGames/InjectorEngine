@@ -13,6 +13,12 @@ namespace Injector
 		return cameras;
 	}
 
+	bool CameraEcsSystem::removeEntity(
+		const std::shared_ptr<EcsEntity>& entity)
+	{
+		return removeCamera(entity);
+	}
+
 	bool CameraEcsSystem::addCamera(
 		const std::shared_ptr<EcsEntity>& entity) noexcept
 	{
