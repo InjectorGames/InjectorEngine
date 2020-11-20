@@ -50,7 +50,7 @@ namespace Injector
 			GpuImageFormat format,
 			const SizeVector3& size,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data) override;
+			const void* data) override;
 		std::shared_ptr<GpuFramebuffer> createFramebuffer(
 			const std::shared_ptr<GpuImage>& colorImage,
 			const std::shared_ptr<GpuImage>& depthImage,

@@ -51,37 +51,21 @@ namespace Injector
 			&width,
 			&height);
 
-		auto pixelDataSize =
-			sizeof(unsigned char) * width * height * 4;
-		auto pixelData = std::vector<uint8_t>(
-			pixelDataSize);
-
-		memcpy(
-			pixelData.data(),
-			pixels,
-			pixelDataSize);
-
-		auto imageData = std::make_shared<ImageData>(
-			SizeVector3(
-				width,
-				height,
-				1),
-				4,
-				false,
-			pixelData);
 		auto image = window->createImage(
-			GpuImageFormat::RGBA8,
+			GpuImageFormat::R8G8B8A8UNORM,
 			SizeVector2(
 				width,
 				height),
 			false,
-			imageData);
+			pixels);
 		auto vertexShader = window->createShader(
 			GpuShaderStage::Vertex,
-			window->readShaderData("Resources/Shaders/Gui.vert"));
+			window->readShaderData(
+				"Resources/Shaders/Gui.vert"));
 		auto fragmentShader = window->createShader(
 			GpuShaderStage::Fragment,
-			window->readShaderData("Resources/Shaders/Gui.frag"));
+			window->readShaderData(
+				"Resources/Shaders/Gui.frag"));
 		auto pipeline = window->createGuiPipeline(
 			GpuDrawMode::TriangleList,
 			GpuImageFilter::Linear,
@@ -95,11 +79,6 @@ namespace Injector
 			image,
 			FloatVector2(1.0f),
 			FloatVector2(0.0f));
-		auto mesh = window->createMesh(
-			std::vector<float>(),
-			true,
-			std::vector<uint32_t>(),
-			true);
 
 		cameraEntity = EcsEntity::create();
 		auto cameraComponent = cameraEntity->createComponent<CameraEcsComponent>(
@@ -113,7 +92,7 @@ namespace Injector
 		guiEntity->createComponent<RenderEcsComponent>(
 			BoundingBox3::one,
 			pipeline,
-			mesh);
+			nullptr);
 		guiEntity->createComponent<TransformEcsComponent>();
 		cameraComponent->renders.emplace(guiEntity);
 		_transformSystem->addTransform(guiEntity);
@@ -121,7 +100,10 @@ namespace Injector
 
 	void GuiEcsSystem::onUpdate()
 	{
-		if(!cameraEntity || !guiEntity)
+		RenderEcsComponent* renderComponent;
+
+		if(!cameraEntity || !guiEntity ||
+			!guiEntity->getComponent(renderComponent))
 		{
 			throw Exception(
 				THIS_FUNCTION_NAME,
@@ -146,7 +128,11 @@ namespace Injector
 
 		// TODO: fill buffers
 
-
+		renderComponent->mesh = window->createMesh(
+			std::vector<float>(),
+			true,
+			std::vector<uint32_t>(),
+			true);
 	}
 
 	bool GuiEcsSystem::removeEntity(

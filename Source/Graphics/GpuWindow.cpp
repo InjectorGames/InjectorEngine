@@ -365,7 +365,7 @@ namespace Injector
 		GpuImageFormat format,
 		int size,
 		bool useMipmap,
-		const std::shared_ptr<ImageData>& data)
+		const void* data)
 	{
 		return createImage(
 			GpuImageType::Image1D,
@@ -378,7 +378,7 @@ namespace Injector
 		GpuImageFormat format,
 		const SizeVector2& size,
 		bool useMipmap,
-		const std::shared_ptr<ImageData>& data)
+		const void* data)
 	{
 		return createImage(
 			GpuImageType::Image2D,
@@ -391,7 +391,7 @@ namespace Injector
 		GpuImageFormat format,
 		const SizeVector3& size,
 		bool useMipmap,
-		const std::shared_ptr<ImageData>& data)
+		const void* data)
 	{
 		return createImage(
 			GpuImageType::Image3D,

@@ -129,7 +129,7 @@ namespace Injector
 			GpuImageFormat format,
 			const SizeVector3& size,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data) = 0;
+			const void* data) = 0;
 		virtual std::shared_ptr<GpuFramebuffer> createFramebuffer(
 			const std::shared_ptr<GpuImage>& colorImage,
 			const std::shared_ptr<GpuImage>& depthImage,
@@ -198,17 +198,17 @@ namespace Injector
 			GpuImageFormat format,
 			int size,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data = nullptr);
+			const void* data = nullptr);
 		std::shared_ptr<GpuImage> createImage(
 			GpuImageFormat format,
 			const SizeVector2& size,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data = nullptr);
+			const void* data = nullptr);
 		std::shared_ptr<GpuImage> createImage(
 			GpuImageFormat format,
 			const SizeVector3& size,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data = nullptr);
+			const void* = nullptr);
 
 		std::shared_ptr<GpuPipeline> createColorPipeline(
 			GpuDrawMode drawMode,

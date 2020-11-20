@@ -188,7 +188,7 @@ namespace Injector
 		GpuImageFormat format,
 		const SizeVector3& size,
 		bool useMipmap,
-		const std::shared_ptr<ImageData>& data)
+		const void* data)
 	{
 		return std::make_shared<GlGpuImage>(
 			type,

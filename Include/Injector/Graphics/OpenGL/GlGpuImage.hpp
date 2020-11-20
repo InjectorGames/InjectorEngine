@@ -16,7 +16,7 @@ namespace Injector
 			GpuImageFormat format,
 			const SizeVector3& size,
 			bool useMipmap,
-			const std::shared_ptr<ImageData>& data = nullptr);
+			const void* data = nullptr);
 		~GlGpuImage() override;
 
 		GLuint getTexture() const noexcept;

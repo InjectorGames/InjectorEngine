@@ -11,101 +11,133 @@ namespace Injector
 	{
 		switch (format)
 		{
-		case GpuImageFormat::R8:
+		case GpuImageFormat::R8SRGB:
 			return vk::Format::eR8Srgb;
-		case GpuImageFormat::R8U:
+		case GpuImageFormat::R8UNORM:
+			return vk::Format::eR8Unorm;
+		case GpuImageFormat::R8SNORM:
+			return vk::Format::eR8Snorm;
+		case GpuImageFormat::R8UINT:
 			return vk::Format::eR8Uint;
-		case GpuImageFormat::R8I:
+		case GpuImageFormat::R8SINT:
 			return vk::Format::eR8Sint;
-		case GpuImageFormat::RG8:
+		case GpuImageFormat::R8G8SRGB:
 			return vk::Format::eR8G8Srgb;
-		case GpuImageFormat::RG8U:
+		case GpuImageFormat::R8G8UNORM:
+			return vk::Format::eR8G8Unorm;
+		case GpuImageFormat::R8G8SNORM:
+			return vk::Format::eR8G8Snorm;
+		case GpuImageFormat::R8G8UINT:
 			return vk::Format::eR8G8Uint;
-		case GpuImageFormat::RG8I:
+		case GpuImageFormat::R8G8SINT:
 			return vk::Format::eR8G8Sint;
-		case GpuImageFormat::RGB8:
+		case GpuImageFormat::R8G8B8SRGB:
 			return vk::Format::eR8G8B8Srgb;
-		case GpuImageFormat::RGB8U:
+		case GpuImageFormat::R8G8B8UNORM:
+			return vk::Format::eR8G8B8Unorm;
+		case GpuImageFormat::R8G8B8SNORM:
+			return vk::Format::eR8G8B8Snorm;
+		case GpuImageFormat::R8G8B8UINT:
 			return vk::Format::eR8G8B8Uint;
-		case GpuImageFormat::RGB8I:
+		case GpuImageFormat::R8G8B8SINT:
 			return vk::Format::eR8G8B8Sint;
-		case GpuImageFormat::RGBA8:
+		case GpuImageFormat::R8G8B8A8SRGB:
 			return vk::Format::eR8G8B8A8Srgb;
-		case GpuImageFormat::RGBA8U:
+		case GpuImageFormat::R8G8B8A8UNORM:
+			return vk::Format::eR8G8B8A8Unorm;
+		case GpuImageFormat::R8G8B8A8SNORM:
+			return vk::Format::eR8G8B8A8Snorm;
+		case GpuImageFormat::R8G8B8A8UINT:
 			return vk::Format::eR8G8B8A8Uint;
-		case GpuImageFormat::RGBA8I:
+		case GpuImageFormat::R8G8B8A8SINT:
 			return vk::Format::eR8G8B8A8Sint;
-		case GpuImageFormat::R16F:
+		case GpuImageFormat::R16SFLOAT:
 			return vk::Format::eR16Sfloat;
-		case GpuImageFormat::R16U:
+		case GpuImageFormat::R16UNORM:
+			return vk::Format::eR16Unorm;
+		case GpuImageFormat::R16SNORM:
+			return vk::Format::eR16Snorm;
+		case GpuImageFormat::R16UINT:
 			return vk::Format::eR16Uint;
-		case GpuImageFormat::R16I:
+		case GpuImageFormat::R16SINT:
 			return vk::Format::eR16Sint;
-		case GpuImageFormat::RG16F:
+		case GpuImageFormat::R16G16SFLOAT:
 			return vk::Format::eR16G16Sfloat;
-		case GpuImageFormat::RG16U:
+		case GpuImageFormat::R16G16UNORM:
+			return vk::Format::eR16G16Unorm;
+		case GpuImageFormat::R16G16SNORM:
+			return vk::Format::eR16G16Snorm;
+		case GpuImageFormat::R16G16UINT:
 			return vk::Format::eR16G16Uint;
-		case GpuImageFormat::RG16I:
+		case GpuImageFormat::R16G16SINT:
 			return vk::Format::eR16G16Sint;
-		case GpuImageFormat::RGB16F:
+		case GpuImageFormat::R16G16B16SFLOAT:
 			return vk::Format::eR16G16B16Sfloat;
-		case GpuImageFormat::RGB16U:
+		case GpuImageFormat::R16G16B16UNORM:
+			return vk::Format::eR16G16B16Unorm;
+		case GpuImageFormat::R16G16B16SNORM:
+			return vk::Format::eR16G16B16Snorm;
+		case GpuImageFormat::R16G16B16UINT:
 			return vk::Format::eR16G16B16Uint;
-		case GpuImageFormat::RGB16I:
+		case GpuImageFormat::R16G16B16SINT:
 			return vk::Format::eR16G16B16Sint;
-		case GpuImageFormat::RGBA16F:
+		case GpuImageFormat::R16G16B16A16SFLOAT:
 			return vk::Format::eR16G16B16A16Sfloat;
-		case GpuImageFormat::RGBA16U:
+		case GpuImageFormat::R16G16B16A16UNORM:
+			return vk::Format::eR16G16B16A16Unorm;
+		case GpuImageFormat::R16G16B16A16SNORM:
+			return vk::Format::eR16G16B16A16Snorm;
+		case GpuImageFormat::R16G16B16A16UINT:
 			return vk::Format::eR16G16B16A16Uint;
-		case GpuImageFormat::RGBA16I:
+		case GpuImageFormat::R16G16B16A16SINT:
 			return vk::Format::eR16G16B16A16Sint;
-		case GpuImageFormat::R32F:
+		case GpuImageFormat::R32SFLOAT:
 			return vk::Format::eR32Sfloat;
-		case GpuImageFormat::R32U:
+		case GpuImageFormat::R32UINT:
 			return vk::Format::eR32Uint;
-		case GpuImageFormat::R32I:
+		case GpuImageFormat::R32SINT:
 			return vk::Format::eR32Sint;
-		case GpuImageFormat::RG32F:
+		case GpuImageFormat::R32G32SFLOAT:
 			return vk::Format::eR32G32Sfloat;
-		case GpuImageFormat::RG32U:
+		case GpuImageFormat::R32G32UINT:
 			return vk::Format::eR32G32Uint;
-		case GpuImageFormat::RG32I:
+		case GpuImageFormat::R32G32SINT:
 			return vk::Format::eR32G32Sint;
-		case GpuImageFormat::RGB32F:
+		case GpuImageFormat::R32G32B32SFLOAT:
 			return vk::Format::eR32G32B32Sfloat;
-		case GpuImageFormat::RGB32U:
+		case GpuImageFormat::R32G32B32UINT:
 			return vk::Format::eR32G32B32Uint;
-		case GpuImageFormat::RGB32I:
+		case GpuImageFormat::R32G32B32SINT:
 			return vk::Format::eR32G32B32Sint;
-		case GpuImageFormat::RGBA32F:
+		case GpuImageFormat::R32G32B32A32SFLOAT:
 			return vk::Format::eR32G32B32A32Sfloat;
-		case GpuImageFormat::RGBA32U:
+		case GpuImageFormat::R32G32B32A32UINT:
 			return vk::Format::eR32G32B32A32Uint;
-		case GpuImageFormat::RGBA32I:
+		case GpuImageFormat::R32G32B32A32SINT:
 			return vk::Format::eR32G32B32A32Sint;
-		case GpuImageFormat::R64F:
+		case GpuImageFormat::R64SFLOAT:
 			return vk::Format::eR64Sfloat;
-		case GpuImageFormat::R64U:
+		case GpuImageFormat::R64UINT:
 			return vk::Format::eR64Uint;
-		case GpuImageFormat::R64I:
+		case GpuImageFormat::R64SINT:
 			return vk::Format::eR64Sint;
-		case GpuImageFormat::RG64F:
+		case GpuImageFormat::R64G64SFLOAT:
 			return vk::Format::eR64G64Sfloat;
-		case GpuImageFormat::RG64U:
+		case GpuImageFormat::R64G64UINT:
 			return vk::Format::eR64G64Uint;
-		case GpuImageFormat::RG64I:
+		case GpuImageFormat::R64G64SINT:
 			return vk::Format::eR64G64Sint;
-		case GpuImageFormat::RGB64F:
+		case GpuImageFormat::R64G64B64SFLOAT:
 			return vk::Format::eR64G64B64Sfloat;
-		case GpuImageFormat::RGB64U:
+		case GpuImageFormat::R64G64B64UINT:
 			return vk::Format::eR64G64B64Uint;
-		case GpuImageFormat::RGB64I:
+		case GpuImageFormat::R64G64B64SINT:
 			return vk::Format::eR64G64B64Sint;
-		case GpuImageFormat::RGBA64F:
+		case GpuImageFormat::R64G64B64A64SFLOAT:
 			return vk::Format::eR64G64B64A64Sfloat;
-		case GpuImageFormat::RGBA64U:
+		case GpuImageFormat::R64G64B64A64UINT:
 			return vk::Format::eR64G64B64A64Uint;
-		case GpuImageFormat::RGBA64I:
+		case GpuImageFormat::R64G64B64A64SINT:
 			return vk::Format::eR64G64B64A64Sint;
 		case GpuImageFormat::D16:
 			return vk::Format::eD16Unorm;

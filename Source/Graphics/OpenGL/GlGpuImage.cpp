@@ -10,7 +10,7 @@ namespace Injector
 		GpuImageFormat format,
 		const SizeVector3& size,
 		bool useMipmap,
-		const std::shared_ptr<ImageData>& imageData) :
+		const void* data) :
 		GpuImage(
 			type,
 			format,
@@ -25,78 +25,202 @@ namespace Injector
 				"Size x/y/z is less than one");
 		}
 
-		glGenTextures(GL_ONE, &texture);
-		glBindTexture(glType, texture);
+		glGenTextures(
+			GL_ONE,
+			&texture);
+
+		glBindTexture(
+			glType,
+			texture);
 
 		GLenum dataFormat;
 		GLenum dataType;
-		void* data;
 
-		if(imageData)
+		switch (format)
 		{
-			if (imageData->componentCount == 1)
-			{
-				dataFormat = GL_RED;
-			}
-			else if (imageData->componentCount == 2)
-			{
-				dataFormat = GL_RG;
-			}
-			else if (imageData->componentCount == 3)
-			{
-				dataFormat = GL_RGB;
-			}
-			else if (imageData->componentCount == 4)
-			{
-				dataFormat = GL_RGBA;
-			}
-			else
-			{
-				throw Exception(
-					THIS_FUNCTION_NAME,
-					"Unsupported image format");
-			}
-
-			if (imageData->component16)
-				dataType = GL_UNSIGNED_SHORT;
-			else
-				dataType = GL_UNSIGNED_BYTE;
-
-			data = imageData->pixels.data();
-		}
-		else
-		{
-			// TODO: better look
-			switch (format)
-			{
-			case GpuImageFormat::R8:
-				dataFormat = GL_RED;
-				dataType = GL_UNSIGNED_BYTE;
-				break;
-			case GpuImageFormat::RG8:
-				dataFormat = GL_RG;
-				dataType = GL_UNSIGNED_BYTE;
-				break;
-			case GpuImageFormat::RGB8:
-				dataFormat = GL_RGB;
-				dataType = GL_UNSIGNED_BYTE;
-				break;
-			case GpuImageFormat::RGBA8:
-				dataFormat = GL_RGBA;
-				dataType = GL_UNSIGNED_BYTE;
-				break;
-			case GpuImageFormat::D24S8:
-				dataFormat = GL_DEPTH_STENCIL;
-				dataType = GL_UNSIGNED_INT_24_8;
-				break;
-			default:
-				throw Exception(
-					THIS_FUNCTION_NAME,
-					"Unsupported null image format");
-			};
-
-			data = nullptr;
-		}
+		case GpuImageFormat::R8UNORM:
+			dataFormat = GL_RED;
+			dataType = GL_UNSIGNED_BYTE;
+			break;
+		case GpuImageFormat::R8SNORM:
+			dataFormat = GL_RED;
+			dataType = GL_BYTE;
+			break;
+		case GpuImageFormat::R8UINT:
+			dataFormat = GL_RED_INTEGER;
+			dataType = GL_UNSIGNED_BYTE;
+			break;
+		case GpuImageFormat::R8SINT:
+			dataFormat = GL_RED_INTEGER;
+			dataType = GL_BYTE;
+			break;
+		case GpuImageFormat::R8G8UNORM:
+			dataFormat = GL_RG;
+			dataType = GL_UNSIGNED_BYTE;
+			break;
+		case GpuImageFormat::R8G8SNORM:
+			dataFormat = GL_RG;
+			dataType = GL_BYTE;
+			break;
+		case GpuImageFormat::R8G8UINT:
+			dataFormat = GL_RG_INTEGER;
+			dataType = GL_UNSIGNED_BYTE;
+			break;
+		case GpuImageFormat::R8G8SINT:
+			dataFormat = GL_RG_INTEGER;
+			dataType = GL_BYTE;
+			break;
+		case GpuImageFormat::R8G8B8SRGB:
+		case GpuImageFormat::R8G8B8UNORM:
+			dataFormat = GL_RGB;
+			dataType = GL_UNSIGNED_BYTE;
+			break;
+		case GpuImageFormat::R8G8B8SNORM:
+			dataFormat = GL_RGB;
+			dataType = GL_BYTE;
+			break;
+		case GpuImageFormat::R8G8B8UINT:
+			dataFormat = GL_RGB_INTEGER;
+			dataType = GL_UNSIGNED_BYTE;
+			break;
+		case GpuImageFormat::R8G8B8SINT:
+			dataFormat = GL_RGB_INTEGER;
+			dataType = GL_BYTE;
+			break;
+		case GpuImageFormat::R8G8B8A8SRGB:
+		case GpuImageFormat::R8G8B8A8UNORM:
+			dataFormat = GL_RGBA;
+			dataType = GL_UNSIGNED_BYTE;
+			break;
+		case GpuImageFormat::R8G8B8A8SNORM:
+			dataFormat = GL_RGBA;
+			dataType = GL_BYTE;
+			break;
+		case GpuImageFormat::R8G8B8A8UINT:
+			dataFormat = GL_RGBA_INTEGER;
+			dataType = GL_UNSIGNED_BYTE;
+			break;
+		case GpuImageFormat::R8G8B8A8SINT:
+			dataFormat = GL_RGBA_INTEGER;
+			dataType = GL_BYTE;
+			break;
+		case GpuImageFormat::R16SFLOAT:
+			dataFormat = GL_RED;
+			dataType = GL_HALF_FLOAT;
+			break;
+		case GpuImageFormat::R16UINT:
+			dataFormat = GL_RED_INTEGER;
+			dataType = GL_UNSIGNED_SHORT;
+			break;
+		case GpuImageFormat::R16SINT:
+			dataFormat = GL_RED_INTEGER;
+			dataType = GL_SHORT;
+			break;
+		case GpuImageFormat::R16G16SFLOAT:
+			dataFormat = GL_RG;
+			dataType = GL_HALF_FLOAT;
+			break;
+		case GpuImageFormat::R16G16UINT:
+			dataFormat = GL_RG_INTEGER;
+			dataType = GL_UNSIGNED_SHORT;
+			break;
+		case GpuImageFormat::R16G16SINT:
+			dataFormat = GL_RG_INTEGER;
+			dataType = GL_SHORT;
+			break;
+		case GpuImageFormat::R16G16B16SFLOAT:
+			dataFormat = GL_RGB;
+			dataType = GL_HALF_FLOAT;
+			break;
+		case GpuImageFormat::R16G16B16UINT:
+			dataFormat = GL_RGB_INTEGER;
+			dataType = GL_UNSIGNED_SHORT;
+			break;
+		case GpuImageFormat::R16G16B16SINT:
+			dataFormat = GL_RGB_INTEGER;
+			dataType = GL_SHORT;
+			break;
+		case GpuImageFormat::R16G16B16A16SFLOAT:
+			dataFormat = GL_RGBA;
+			dataType = GL_HALF_FLOAT;
+			break;
+		case GpuImageFormat::R16G16B16A16UINT:
+			dataFormat = GL_RGBA_INTEGER;
+			dataType = GL_UNSIGNED_SHORT;
+			break;
+		case GpuImageFormat::R16G16B16A16SINT:
+			dataFormat = GL_RGBA_INTEGER;
+			dataType = GL_SHORT;
+			break;
+		case GpuImageFormat::R32SFLOAT:
+			dataFormat = GL_RED;
+			dataType = GL_FLOAT;
+			break;
+		case GpuImageFormat::R32UINT:
+			dataFormat = GL_RED_INTEGER;
+			dataType = GL_UNSIGNED_INT;
+			break;
+		case GpuImageFormat::R32SINT:
+			dataFormat = GL_RED_INTEGER;
+			dataType = GL_INT;
+			break;
+		case GpuImageFormat::R32G32SFLOAT:
+			dataFormat = GL_RG;
+			dataType = GL_FLOAT;
+			break;
+		case GpuImageFormat::R32G32UINT:
+			dataFormat = GL_RG_INTEGER;
+			dataType = GL_UNSIGNED_INT;
+			break;
+		case GpuImageFormat::R32G32SINT:
+			dataFormat = GL_RG_INTEGER;
+			dataType = GL_INT;
+			break;
+		case GpuImageFormat::R32G32B32SFLOAT:
+			dataFormat = GL_RGB;
+			dataType = GL_FLOAT;
+			break;
+		case GpuImageFormat::R32G32B32UINT:
+			dataFormat = GL_RGB_INTEGER;
+			dataType = GL_UNSIGNED_INT;
+			break;
+		case GpuImageFormat::R32G32B32SINT:
+			dataFormat = GL_RGB_INTEGER;
+			dataType = GL_INT;
+			break;
+		case GpuImageFormat::R32G32B32A32SFLOAT:
+			dataFormat = GL_RGBA;
+			dataType = GL_FLOAT;
+			break;
+		case GpuImageFormat::R32G32B32A32UINT:
+			dataFormat = GL_RGBA_INTEGER;
+			dataType = GL_UNSIGNED_INT;
+			break;
+		case GpuImageFormat::R32G32B32A32SINT:
+			dataFormat = GL_RGBA_INTEGER;
+			dataType = GL_INT;
+			break;
+		case GpuImageFormat::D16:
+			dataFormat = GL_DEPTH_COMPONENT;
+			dataType = GL_UNSIGNED_SHORT;
+			break;
+		case GpuImageFormat::D32:
+			dataFormat = GL_DEPTH_COMPONENT;
+			dataType = GL_FLOAT;
+			break;
+		case GpuImageFormat::D24S8:
+			dataFormat = GL_DEPTH_STENCIL;
+			dataType = GL_UNSIGNED_SHORT;
+			break;
+		case GpuImageFormat::D32S8:
+			dataFormat = GL_DEPTH_STENCIL;
+			dataType = GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
+			break;
+		default:
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Unsupported null image format");
+		};
 
 		if (type == GpuImageType::Image1D)
 		{
@@ -146,10 +270,16 @@ namespace Injector
 
 		if (useMipmap)
 			glGenerateMipmap(glType);
+
+		glBindTexture(
+			glType,
+			GL_ZERO);
 	}
 	GlGpuImage::~GlGpuImage()
 	{
-		glDeleteTextures(GL_ONE, &texture);
+		glDeleteTextures(
+			GL_ONE,
+			&texture);
 	}
 
 	GLuint GlGpuImage::getTexture() const noexcept
@@ -163,10 +293,14 @@ namespace Injector
 
 	void GlGpuImage::bind() noexcept
 	{
-		glBindTexture(glType, texture);
+		glBindTexture(
+			glType,
+			texture);
 	}
 	void GlGpuImage::unbind() noexcept
 	{
-		glBindTexture(glType, GL_ZERO);
+		glBindTexture(
+			glType,
+			GL_ZERO);
 	}
 }

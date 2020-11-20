@@ -279,7 +279,10 @@ namespace Injector
 				"Failed to map buffer");
 		}
 
-		memcpy(mappedData, data, _size);
+		memcpy(
+			mappedData,
+			data,
+			_size);
 
 		flush(_size, 0);
 		vmaUnmapMemory(allocator, allocation);

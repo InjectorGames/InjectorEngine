@@ -24,14 +24,27 @@ namespace Injector
 		GpuBuffer(type, size, isGlMappable(usage)),
 		glType(toGlGpuBufferType(type))
 	{
-		glGenBuffers(GL_ONE, &buffer);
-		glBindBuffer(glType, buffer);
-		glBufferData(glType, static_cast<GLsizeiptr>(size), data, usage);
-		glBindBuffer(glType, GL_ZERO);
+		glGenBuffers(
+			GL_ONE,
+			&buffer);
+
+		glBindBuffer(
+			glType,
+			buffer);
+		glBufferData(
+			glType,
+			static_cast<GLsizeiptr>(size),
+			data,
+			usage);
+		glBindBuffer(
+			glType,
+			GL_ZERO);
 	}
 	GlGpuBuffer::~GlGpuBuffer()
 	{
-		glDeleteBuffers(GL_ONE, &buffer);
+		glDeleteBuffers(
+			GL_ONE,
+			&buffer);
 	}
 
 	GLuint GlGpuBuffer::getBuffer() const noexcept
@@ -45,11 +58,15 @@ namespace Injector
 
 	void GlGpuBuffer::bind() noexcept
 	{
-		glBindBuffer(glType, buffer);
+		glBindBuffer(
+			glType,
+			buffer);
 	}
 	void GlGpuBuffer::unbind() noexcept
 	{
-		glBindBuffer(glType, GL_ZERO);
+		glBindBuffer(
+			glType,
+			GL_ZERO);
 	}
 
 	void* GlGpuBuffer::map(
@@ -68,7 +85,9 @@ namespace Injector
 				"Buffer is already mapped");
 		}
 
-		glBindBuffer(glType, buffer);
+		glBindBuffer(
+			glType,
+			buffer);
 
 		auto mappedData = glMapBufferRange(
 			glType,
@@ -83,7 +102,9 @@ namespace Injector
 				"Failed to map buffer");
 		}
 
-		glBindBuffer(glType, GL_ZERO);
+		glBindBuffer(
+			glType,
+			GL_ZERO);
 
 		mapped = true;
 		mapAccess = access;
@@ -116,7 +137,9 @@ namespace Injector
 				static_cast<uint64_t>(size));
 		}
 
-		glBindBuffer(glType, buffer);
+		glBindBuffer(
+			glType,
+			buffer);
 
 		auto mappedData = glMapBufferRange(
 			glType,
@@ -131,7 +154,9 @@ namespace Injector
 				"Failed to map buffer");
 		}
 
-		glBindBuffer(glType, GL_ZERO);
+		glBindBuffer(
+			glType,
+			GL_ZERO);
 
 		mapped = true;
 		mapAccess = access;
@@ -148,7 +173,9 @@ namespace Injector
 				"Buffer is not mapped");
 		}
 
-		glBindBuffer(glType, buffer);
+		glBindBuffer(
+			glType,
+			buffer);
 
 		if (mapAccess == GpuBufferAccess::WriteOnly ||
 			mapAccess == GpuBufferAccess::ReadWrite)
@@ -166,7 +193,9 @@ namespace Injector
 				"Failed to unmap buffer");
 		}
 
-		glBindBuffer(glType, GL_ZERO);
+		glBindBuffer(
+			glType,
+			GL_ZERO);
 		mapped = false;
 	}
 
@@ -200,7 +229,9 @@ namespace Injector
 				static_cast<uint64_t>(size));
 		}
 
-		glBindBuffer(glType, buffer);
+		glBindBuffer(
+			glType,
+			buffer);
 
 		glBufferSubData(
 			glType,
@@ -208,7 +239,9 @@ namespace Injector
 			static_cast<GLsizeiptr>(_size),
 			data);
 
-		glBindBuffer(glType, GL_ZERO);
+		glBindBuffer(
+			glType,
+			GL_ZERO);
 	}
 	void GlGpuBuffer::setData(
 		const void* data,
@@ -241,7 +274,9 @@ namespace Injector
 				static_cast<uint64_t>(size));
 		}
 
-		glBindBuffer(glType, buffer);
+		glBindBuffer(
+			glType,
+			buffer);
 
 		glBufferSubData(
 			glType,
@@ -249,6 +284,8 @@ namespace Injector
 			static_cast<GLsizeiptr>(_size),
 			data);
 
-		glBindBuffer(glType, GL_ZERO);
+		glBindBuffer(
+			glType,
+			GL_ZERO);
 	}
 }

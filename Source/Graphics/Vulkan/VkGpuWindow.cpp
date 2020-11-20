@@ -516,7 +516,7 @@ namespace Injector
 		graphicsQueueFamilyIndex(UINT32_MAX),
 		presentQueueFamilyIndex(UINT32_MAX)
 	{
-		if(size.x < 1 || size.y < 1)
+		if (size.x < 1 || size.y < 1)
 		{
 			throw Exception(
 				THIS_FUNCTION_NAME,
@@ -526,122 +526,106 @@ namespace Injector
 		instance = createInstance(
 			title,
 			1);
+		dispatchDynamic = vk::DispatchLoaderDynamic(
+			static_cast<VkInstance>(instance),
+			vkGetInstanceProcAddr);
+		debugMessenger = createDebugMessenger(
+			instance,
+			dispatchDynamic);
 
-		try
+		physicalDevice = getBestPhysicalDevice(
+			instance);
+		surface = createSurface(
+			instance,
+			window);
+
+		getQueueFamilyIndices(
+			physicalDevice,
+			surface,
+			graphicsQueueFamilyIndex,
+			presentQueueFamilyIndex);
+
+		device = createDevice(
+			physicalDevice,
+			graphicsQueueFamilyIndex,
+			presentQueueFamilyIndex);
+		memoryAllocator = createMemoryAllocator(
+			instance,
+			physicalDevice,
+			device);
+
+		graphicsQueue = getQueue(
+			device,
+			graphicsQueueFamilyIndex,
+			0);
+		presentQueue = getQueue(
+			device,
+			presentQueueFamilyIndex,
+			0);
+
+		if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
 		{
-			dispatchDynamic = vk::DispatchLoaderDynamic(
-				static_cast<VkInstance>(instance),
-				vkGetInstanceProcAddr);
-			debugMessenger = createDebugMessenger(
-				instance,
-				dispatchDynamic);
-
-			physicalDevice = getBestPhysicalDevice(
-				instance);
-			surface = createSurface(
-				instance,
-				window);
-
-			getQueueFamilyIndices(
-				physicalDevice,
-				surface,
-				graphicsQueueFamilyIndex,
-				presentQueueFamilyIndex);
-
-			device = createDevice(
-				physicalDevice,
-				graphicsQueueFamilyIndex,
-				presentQueueFamilyIndex);
-			memoryAllocator = createMemoryAllocator(
-				instance,
-				physicalDevice,
-				device);
-
-			graphicsQueue = getQueue(
+			graphicsCommandPool = createCommandPool(
 				device,
-				graphicsQueueFamilyIndex,
-				0);
-			presentQueue = getQueue(
-				device,
-				presentQueueFamilyIndex,
-				0);
-
-			if (graphicsQueueFamilyIndex != presentQueueFamilyIndex)
-			{
-				graphicsCommandPool = createCommandPool(
-					device,
-					vk::CommandPoolCreateFlagBits::eTransient |
-					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
-					graphicsQueueFamilyIndex);
-				presentCommandPool = createCommandPool(
-					device,
-					vk::CommandPoolCreateFlagBits::eTransient |
-					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
-					presentQueueFamilyIndex);
-			}
-			else
-			{
-				graphicsCommandPool = presentCommandPool = createCommandPool(
-					device,
-					vk::CommandPoolCreateFlagBits::eTransient |
-					vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
-					graphicsQueueFamilyIndex);
-			}
-
-			transferCommandPool = createCommandPool(
-				device,
-				vk::CommandPoolCreateFlagBits::eTransient,
+				vk::CommandPoolCreateFlagBits::eTransient |
+				vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
 				graphicsQueueFamilyIndex);
-
-			fences = std::vector<vk::Fence>(VK_FRAME_LAG);
-			imageAcquiredSemaphores = std::vector<vk::Semaphore>(VK_FRAME_LAG);
-			drawCompleteSemaphores = std::vector<vk::Semaphore>(VK_FRAME_LAG);
-			imageOwnershipSemaphores = std::vector<vk::Semaphore>(VK_FRAME_LAG);
-
-			for (size_t i = 0; i < VK_FRAME_LAG; i++)
-			{
-				fences[i] = createFence(
-					device,
-					vk::FenceCreateFlagBits::eSignaled);
-				imageAcquiredSemaphores[i] = createSemaphore(
-					device,
-					vk::SemaphoreCreateFlags());
-				drawCompleteSemaphores[i] = createSemaphore(
-					device,
-					vk::SemaphoreCreateFlags());
-				imageOwnershipSemaphores[i] = createSemaphore(
-					device,
-					vk::SemaphoreCreateFlags());
-			}
-
-			swapchain = VkGpuSwapchain(
-				memoryAllocator,
+			presentCommandPool = createCommandPool(
 				device,
-				physicalDevice,
-				surface,
-				graphicsCommandPool,
-				presentCommandPool,
-				size);
-
-			// TODO:
-			//ImGui_ImplGlfw_InitForVulkan(
-			//	window,
-			//	false);
-
-			frameIndex = 0;
+				vk::CommandPoolCreateFlagBits::eTransient |
+				vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
+				presentQueueFamilyIndex);
 		}
-		catch (const std::exception& exception)
+		else
 		{
-#ifndef NDEBUG
-			instance.destroy(
-				debugMessenger,
-				nullptr,
-				dispatchDynamic);
-#else
-			instance.destroy();
-#endif
-			throw exception;
+			graphicsCommandPool = presentCommandPool = createCommandPool(
+				device,
+				vk::CommandPoolCreateFlagBits::eTransient |
+				vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
+				graphicsQueueFamilyIndex);
 		}
+
+		transferCommandPool = createCommandPool(
+			device,
+			vk::CommandPoolCreateFlagBits::eTransient,
+			graphicsQueueFamilyIndex);
+
+		fences = std::vector<vk::Fence>(VK_FRAME_LAG);
+		imageAcquiredSemaphores = std::vector<vk::Semaphore>(VK_FRAME_LAG);
+		drawCompleteSemaphores = std::vector<vk::Semaphore>(VK_FRAME_LAG);
+		imageOwnershipSemaphores = std::vector<vk::Semaphore>(VK_FRAME_LAG);
+
+		for (size_t i = 0; i < VK_FRAME_LAG; i++)
+		{
+			fences[i] = createFence(
+				device,
+				vk::FenceCreateFlagBits::eSignaled);
+			imageAcquiredSemaphores[i] = createSemaphore(
+				device,
+				vk::SemaphoreCreateFlags());
+			drawCompleteSemaphores[i] = createSemaphore(
+				device,
+				vk::SemaphoreCreateFlags());
+			imageOwnershipSemaphores[i] = createSemaphore(
+				device,
+				vk::SemaphoreCreateFlags());
+		}
+
+		swapchain = VkGpuSwapchain(
+			memoryAllocator,
+			device,
+			physicalDevice,
+			surface,
+			graphicsCommandPool,
+			presentCommandPool,
+			size);
+
+		// TODO:
+		//ImGui_ImplGlfw_InitForVulkan(
+		//	window,
+		//	false);
+
+		frameIndex = 0;
 	}
 	VkGpuWindow::~VkGpuWindow()
 	{
@@ -1066,9 +1050,13 @@ namespace Injector
 				VMA_MEMORY_USAGE_CPU_TO_GPU,
 				type,
 				size);
-			buffer->setData(
-				data,
-				size);
+
+			if(data)
+			{
+				buffer->setData(
+					data,
+					size);
+			}
 		}
 		else
 		{
@@ -1079,73 +1067,76 @@ namespace Injector
 				type,
 				size);
 
-			auto stagingBuffer = VkGpuBuffer(
-				memoryAllocator,
-				static_cast<vk::BufferUsageFlags>(0),
-				VMA_MEMORY_USAGE_CPU_ONLY,
-				GpuBufferType::TransferSource,
-				size);
-			stagingBuffer.setData(
-				data,
-				size);
-
-			vk::CommandBuffer commandBuffer;
-
-			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo(
-				transferCommandPool,
-				vk::CommandBufferLevel::ePrimary,
-				1);
-			auto result = device.allocateCommandBuffers(
-				&commandBufferAllocateInfo,
-				&commandBuffer);
-
-			if (result != vk::Result::eSuccess)
+			if(data)
 			{
-				throw Exception(
-					THIS_FUNCTION_NAME,
-					"Failed to allocate command buffer");
+				auto stagingBuffer = VkGpuBuffer(
+					memoryAllocator,
+					static_cast<vk::BufferUsageFlags>(0),
+					VMA_MEMORY_USAGE_CPU_ONLY,
+					GpuBufferType::TransferSource,
+					size);
+				stagingBuffer.setData(
+					data,
+					size);
+
+				vk::CommandBuffer commandBuffer;
+
+				auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo(
+					transferCommandPool,
+					vk::CommandBufferLevel::ePrimary,
+					1);
+				auto result = device.allocateCommandBuffers(
+					&commandBufferAllocateInfo,
+					&commandBuffer);
+
+				if (result != vk::Result::eSuccess)
+				{
+					throw Exception(
+						THIS_FUNCTION_NAME,
+						"Failed to allocate command buffer");
+				}
+
+				auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
+					vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+				commandBuffer.begin(commandBufferBeginInfo);
+
+				auto bufferCopy = vk::BufferCopy(
+					0,
+					0,
+					size);
+				commandBuffer.copyBuffer(
+					stagingBuffer.getBuffer(),
+					buffer->getBuffer(),
+					1,
+					&bufferCopy);
+
+				commandBuffer.end();
+
+				auto submitInfo = vk::SubmitInfo(
+					0,
+					nullptr,
+					nullptr,
+					1,
+					&commandBuffer);
+				result = graphicsQueue.submit(
+					1,
+					&submitInfo,
+					nullptr);
+
+				if (result != vk::Result::eSuccess)
+				{
+					throw Exception(
+						THIS_FUNCTION_NAME,
+						"Failed to submit graphics queue");
+				}
+
+				graphicsQueue.waitIdle();
+
+				device.freeCommandBuffers(
+					transferCommandPool,
+					1,
+					&commandBuffer);
 			}
-
-			auto commandBufferBeginInfo = vk::CommandBufferBeginInfo(
-				vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
-			commandBuffer.begin(commandBufferBeginInfo);
-
-			auto bufferCopy = vk::BufferCopy(
-				0,
-				0,
-				size);
-			commandBuffer.copyBuffer(
-				stagingBuffer.getBuffer(),
-				buffer->getBuffer(),
-				1,
-				&bufferCopy);
-
-			commandBuffer.end();
-
-			auto submitInfo = vk::SubmitInfo(
-				0,
-				nullptr,
-				nullptr,
-				1,
-				&commandBuffer);
-			result = graphicsQueue.submit(
-				1,
-				&submitInfo,
-				nullptr);
-
-			if(result != vk::Result::eSuccess)
-			{
-				throw Exception(
-					THIS_FUNCTION_NAME,
-					"Failed to submit graphics queue");
-			}
-
-			graphicsQueue.waitIdle();
-
-			device.freeCommandBuffers(
-				transferCommandPool,
-				1,
-				&commandBuffer);
 		}
 
 		return buffer;
@@ -1198,7 +1189,7 @@ namespace Injector
 		GpuImageFormat format,
 		const SizeVector3& size,
 		bool useMipmap,
-		const std::shared_ptr<ImageData>& data)
+		const void* data)
 	{
 		auto image = std::make_shared<VkGpuImage>(
 			memoryAllocator,
@@ -1210,8 +1201,9 @@ namespace Injector
 
 		if(data)
 		{
-			auto stagingBufferSize =
-				data->size.x * data->size.y * data->componentCount;
+			auto stagingBufferSize = size.x * size.y *
+				getImageFormatComponentCount(format) *
+				getImageFormatComponentSize(format);
 			auto stagingBuffer = VkGpuBuffer(
 				memoryAllocator,
 				static_cast<vk::BufferUsageFlags>(0),
@@ -1219,7 +1211,7 @@ namespace Injector
 				GpuBufferType::TransferSource,
 				stagingBufferSize);
 			stagingBuffer.setData(
-				data->pixels.data(),
+				data,
 				stagingBufferSize);
 
 			vk::CommandBuffer commandBuffer;
