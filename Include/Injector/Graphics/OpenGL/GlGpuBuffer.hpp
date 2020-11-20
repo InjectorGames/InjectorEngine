@@ -6,7 +6,6 @@
 
 namespace Injector
 {
-	//
 	class GlGpuBuffer : public GpuBuffer
 	{
 	 protected:
@@ -30,8 +29,7 @@ namespace Injector
 		void unbind() noexcept;
 
 		void* map(
-			GpuBufferAccess access =
-				GpuBufferAccess::ReadWrite) override;
+			GpuBufferAccess access) override;
 		void* map(
 			GpuBufferAccess access,
 			size_t size,

@@ -2,6 +2,7 @@
 #include "Injector/Defines.hpp"
 #include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/Exception.hpp"
+#include "Injector/Graphics/ImguiDefines.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuMesh.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuImage.hpp"
 #include "Injector/Graphics/Vulkan/VkCameraEcsSystem.hpp"
@@ -9,9 +10,6 @@
 #include "Injector/Graphics/Vulkan/Pipeline/VkColorGpuPipeline.hpp"
 #include "Injector/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.hpp"
 #include "Injector/Graphics/Vulkan/Pipeline/VkImageDiffuseGpuPipeline.hpp"
-
-#include "examples/imgui_impl_glfw.h"
-#include "examples/imgui_impl_vulkan.h"
 
 #include <map>
 #include <vector>

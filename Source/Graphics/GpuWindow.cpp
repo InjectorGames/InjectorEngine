@@ -1,11 +1,10 @@
 #include "Injector/Graphics/GpuWindow.hpp"
 #include "Injector/Engine.hpp"
 #include "Injector/Defines.hpp"
+#include "Injector/Exception/NullException.hpp"
+#include "Injector/Graphics/ImguiDefines.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuWindow.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuWindow.hpp"
-#include "Injector/Exception/NullException.hpp"
-
-#include "examples/imgui_impl_glfw.h"
 
 namespace Injector
 {

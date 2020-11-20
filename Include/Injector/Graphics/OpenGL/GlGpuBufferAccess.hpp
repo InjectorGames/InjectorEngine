@@ -14,7 +14,6 @@ namespace Injector
 		}
 		else if (access == GpuBufferAccess::WriteOnly)
 		{
-			//TODO: Check if this correct
 			return GL_MAP_WRITE_BIT |
 				   GL_MAP_FLUSH_EXPLICIT_BIT |
 				   GL_MAP_INVALIDATE_RANGE_BIT;

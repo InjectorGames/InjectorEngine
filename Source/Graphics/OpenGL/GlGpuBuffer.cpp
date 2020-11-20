@@ -89,11 +89,30 @@ namespace Injector
 			glType,
 			buffer);
 
-		auto mappedData = glMapBufferRange(
+		GLenum bufferAccess;
+
+		if(access == GpuBufferAccess::ReadOnly)
+		{
+			bufferAccess = GL_READ_ONLY;
+		}
+		else if(access == GpuBufferAccess::WriteOnly)
+		{
+			bufferAccess = GL_WRITE_ONLY;
+		}
+		else if(access == GpuBufferAccess::ReadWrite)
+		{
+			bufferAccess = GL_READ_WRITE;
+		}
+		else
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Unknown buffer access");
+		}
+
+		auto mappedData = glMapBuffer(
 			glType,
-			0,
-			static_cast<GLsizeiptr>(size),
-			toGlGpuBufferAccess(access));
+			bufferAccess);
 
 		if (!mappedData)
 		{
@@ -177,8 +196,9 @@ namespace Injector
 			glType,
 			buffer);
 
-		if (mapAccess == GpuBufferAccess::WriteOnly ||
-			mapAccess == GpuBufferAccess::ReadWrite)
+		if (mapSize < size &&
+			(mapAccess == GpuBufferAccess::WriteOnly ||
+			mapAccess == GpuBufferAccess::ReadWrite))
 		{
 			glFlushMappedBufferRange(
 				glType,

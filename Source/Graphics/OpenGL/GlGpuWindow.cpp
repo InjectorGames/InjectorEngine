@@ -2,6 +2,7 @@
 #include "Injector/Graphics/OpenGL/GlGpuMesh.hpp"
 #include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/CastException.hpp"
+#include "Injector/Graphics/ImguiDefines.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuShader.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuFramebuffer.hpp"
 #include "Injector/Graphics/OpenGL/GlCameraEcsSystem.hpp"
@@ -10,8 +11,6 @@
 #include "Injector/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.hpp"
-
-#include "examples/imgui_impl_glfw.h"
 
 namespace Injector
 {

@@ -36,8 +36,7 @@ namespace Injector
 			size_t offset);
 
 		void* map(
-			GpuBufferAccess access =
-				GpuBufferAccess::ReadWrite) override;
+			GpuBufferAccess access) override;
 		void* map(
 			GpuBufferAccess access,
 			size_t size,

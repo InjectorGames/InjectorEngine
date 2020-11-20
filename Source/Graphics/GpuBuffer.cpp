@@ -1,4 +1,5 @@
 #include "Injector/Graphics/GpuBuffer.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
@@ -14,6 +15,12 @@ namespace Injector
 		mapSize(),
 		mapOffset()
 	{
+		if(_size == 0)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Size has zero value");
+		}
 	}
 
 	GpuBufferType GpuBuffer::getType() const noexcept

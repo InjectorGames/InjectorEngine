@@ -1,4 +1,5 @@
 #include "Injector/Graphics/GpuImage.hpp"
+#include "Injector/Exception/Exception.hpp"
 
 namespace Injector
 {
@@ -12,6 +13,12 @@ namespace Injector
 		size(_size),
 		useMipmap(_useMipmap)
 	{
+		if(size.x == 0 || size.y == 0 || size.z == 0)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Size x|y|z has zero value");
+		}
 	}
 
 	GpuImageType GpuImage::getType() const noexcept

@@ -18,12 +18,6 @@ namespace Injector
 			false),
 		allocator(_allocator)
 	{
-		if(size.x < 1 || size.y < 1 || size.z < 1)
-		{
-			throw Exception(
-				THIS_FUNCTION_NAME,
-				"Size x/y/z is less than one");
-		}
 		if(!_allocator)
 		{
 			throw NullException(

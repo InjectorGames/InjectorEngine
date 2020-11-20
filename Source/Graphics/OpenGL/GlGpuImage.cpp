@@ -18,13 +18,6 @@ namespace Injector
 			useMipmap),
 		glType(toGlGpuImageType(type))
 	{
-		if(size.x < 1 || size.y < 1 || size.z < 1)
-		{
-			throw Exception(
-				THIS_FUNCTION_NAME,
-				"Size x/y/z is less than one");
-		}
-
 		glGenTextures(
 			GL_ONE,
 			&texture);

@@ -1,7 +1,6 @@
 #include "Injector/Graphics/GuiEcsSystem.hpp"
 #include "Injector/Exception/NullException.hpp"
-
-#include "examples/imgui_impl_glfw.h"
+#include "Injector/Graphics/ImguiDefines.hpp"
 
 namespace Injector
 {
@@ -79,6 +78,10 @@ namespace Injector
 			image,
 			FloatVector2(1.0f),
 			FloatVector2(0.0f));
+		auto mesh = window->createMesh(
+			0,
+			nullptr,
+			nullptr);
 
 		cameraEntity = EcsEntity::create();
 		auto cameraComponent = cameraEntity->createComponent<CameraEcsComponent>(
@@ -92,7 +95,7 @@ namespace Injector
 		guiEntity->createComponent<RenderEcsComponent>(
 			BoundingBox3::one,
 			pipeline,
-			nullptr);
+			mesh);
 		guiEntity->createComponent<TransformEcsComponent>();
 		cameraComponent->renders.emplace(guiEntity);
 		_transformSystem->addTransform(guiEntity);
@@ -100,10 +103,7 @@ namespace Injector
 
 	void GuiEcsSystem::onUpdate()
 	{
-		RenderEcsComponent* renderComponent;
-
-		if(!cameraEntity || !guiEntity ||
-			!guiEntity->getComponent(renderComponent))
+		if(!cameraEntity || !guiEntity)
 		{
 			throw Exception(
 				THIS_FUNCTION_NAME,
@@ -126,13 +126,79 @@ namespace Injector
 
 		ImGui::Render();
 
-		// TODO: fill buffers
+		auto drawData = ImGui::GetDrawData();
+		CameraEcsComponent* cameraComponent;
+		RenderEcsComponent* renderComponent;
 
-		renderComponent->mesh = window->createMesh(
-			std::vector<float>(),
+		if(drawData->CmdListsCount == 0 ||
+			!cameraEntity->getComponent(cameraComponent) ||
+			!guiEntity->getComponent(renderComponent) ||
+			!renderComponent->mesh)
+		{
+			return;
+		}
+
+		cameraComponent->frustum = FloatVector4(
+			drawData->DisplayPos.x,
+			drawData->DisplayPos.x + drawData->DisplaySize.x,
+			drawData->DisplayPos.y + drawData->DisplaySize.y,
+			drawData->DisplayPos.y);
+		cameraComponent->clipPlane = FloatVector2(
+			1.0f,
+			-1.0f);
+
+		auto vertexBuffer = window->createBuffer(
+			drawData->TotalVtxCount * sizeof(ImDrawVert),
+			GpuBufferType::Vertex,
 			true,
-			std::vector<uint32_t>(),
-			true);
+			nullptr);
+		auto vertexBufferMap = reinterpret_cast<ImDrawVert*>(
+			vertexBuffer->map(GpuBufferAccess::WriteOnly));
+		auto vertexMapIndex = 0;
+
+		auto drawCommands = drawData->CmdLists;
+
+		for (int i = 0; i < drawData->CmdListsCount; i++)
+		{
+			auto drawCommand = drawCommands[i];
+			memcpy(
+				vertexBufferMap + vertexMapIndex,
+				drawCommand->VtxBuffer.Data,
+				drawCommand->VtxBuffer.Size * sizeof(ImDrawVert));
+			vertexMapIndex += drawCommand->VtxBuffer.Size;
+		}
+
+		vertexBuffer->unmap();
+
+		auto indexBuffer = window->createBuffer(
+			drawData->TotalIdxCount * sizeof(ImDrawIdx),
+			GpuBufferType::Index,
+			true,
+			nullptr);
+		auto indexBufferMap = reinterpret_cast<ImDrawIdx*>(
+			indexBuffer->map(GpuBufferAccess::WriteOnly));
+		auto indexMapIndex = 0;
+
+		for (int i = 0; i < drawData->CmdListsCount; i++)
+		{
+			auto drawCommand = drawCommands[i];
+			memcpy(
+				indexBufferMap + indexMapIndex,
+				drawCommand->IdxBuffer.Data,
+				drawCommand->IdxBuffer.Size * sizeof(ImDrawIdx));
+			indexMapIndex += drawCommand->IdxBuffer.Size;
+		}
+
+		indexBuffer->unmap();
+
+		auto mesh = renderComponent->mesh;
+		mesh->indexCount = drawData->TotalIdxCount;
+		mesh->setVertexBuffer(vertexBuffer);
+		mesh->setIndexBuffer(indexBuffer);
+
+		// TODO: fill buffers
+		// implement vma defragmentation
+		// vma autoselect best memoty allocation way in the buffer and image
 	}
 
 	bool GuiEcsSystem::removeEntity(
