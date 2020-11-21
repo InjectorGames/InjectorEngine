@@ -237,8 +237,8 @@ namespace Injector
 		{
 			auto& icon = icons[i];
 			auto& image = images[i];
-			image.width = icon->size.x;
-			image.height = icon->size.y;
+			image.width = static_cast<int>(icon->size.x);
+			image.height = static_cast<int>(icon->size.y);
 			image.pixels = icon->pixels.data();
 		}
 		
@@ -269,8 +269,8 @@ namespace Injector
 		glfwDestroyCursor(cursor);
 
 		auto image = GLFWimage();
-		image.width = icon->size.x;
-		image.height = icon->size.y;
+		image.width = static_cast<int>(icon->size.x);
+		image.height = static_cast<int>(icon->size.y);
 		image.pixels = icon->pixels.data();
 
 		cursor = glfwCreateCursor(&image, hotspot.x, hotspot.y);

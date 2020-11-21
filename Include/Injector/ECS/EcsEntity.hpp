@@ -3,6 +3,7 @@
 #include "Injector/Exception/Exception.hpp"
 
 #include <map>
+#include <memory>
 #include <typeindex>
 
 namespace Injector

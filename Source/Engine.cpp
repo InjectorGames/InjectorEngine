@@ -1,5 +1,6 @@
 #include "Injector/Engine.hpp"
 #include "Injector/Exception/Exception.hpp"
+#include "Injector/Graphics/ImguiDefines.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuWindow.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuWindow.hpp"
 
@@ -17,8 +18,6 @@
 #include "openvr.h"
 #endif
 
-#include "imgui.h"
-
 #include "openssl/ssl.h"
 #include "openssl/err.h"
 
@@ -31,9 +30,9 @@ namespace Injector
 	static vr::TrackedDevicePose_t* renderPoses =
 		new vr::TrackedDevicePose_t[vr::k_unMaxTrackedDeviceCount];
 
-	static Matrix4 toMatrix(const vr::HmdMatrix34_t& matrix) noexcept
+	static FloatMatrix4 toMatrix(const vr::HmdMatrix34_t& matrix) noexcept
 	{
-		auto result = Matrix4(
+		auto result = FloatMatrix4(
 			matrix.m[0][0], matrix.m[1][0], -matrix.m[2][0], 0.0f,
 			matrix.m[0][1], matrix.m[1][1], -matrix.m[2][1], 0.0f,
 				matrix.m[0][2], matrix.m[1][2], -matrix.m[2][2], 0.0f,
@@ -45,9 +44,9 @@ namespace Injector
 		result.m32 = -result.m32;
 		return result;
 	}
-	static Matrix4 toMatrix(const vr::HmdMatrix44_t& matrix) noexcept
+	static FloatMatrix4 toMatrix(const vr::HmdMatrix44_t& matrix) noexcept
 	{
-		return Matrix4(
+		return FloatMatrix4(
 			matrix.m[0][0], matrix.m[1][0], matrix.m[2][0], matrix.m[3][0],
 			matrix.m[0][1], matrix.m[1][1], matrix.m[2][1], matrix.m[3][1],
 			-matrix.m[0][2], -matrix.m[1][2], -matrix.m[2][2], -matrix.m[3][2],

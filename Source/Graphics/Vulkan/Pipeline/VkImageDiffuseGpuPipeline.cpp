@@ -600,7 +600,7 @@ namespace Injector
 	}
 	void VkImageDiffuseGpuPipeline::setObjectColor(const FloatVector4& color)
 	{
-		ubo.objectColor = Vector4(color);
+		ubo.objectColor = FloatVector4(color);
 	}
 
 	const FloatVector4& VkImageDiffuseGpuPipeline::getAmbientColor() const
@@ -609,7 +609,7 @@ namespace Injector
 	}
 	void VkImageDiffuseGpuPipeline::setAmbientColor(const FloatVector4& color)
 	{
-		ubo.ambientColor = Vector4(color);
+		ubo.ambientColor = FloatVector4(color);
 	}
 
 	const FloatVector4& VkImageDiffuseGpuPipeline::getLightColor() const
@@ -618,7 +618,7 @@ namespace Injector
 	}
 	void VkImageDiffuseGpuPipeline::setLightColor(const FloatVector4& color)
 	{
-		ubo.lightColor = Vector4(color);
+		ubo.lightColor = FloatVector4(color);
 	}
 
 	const FloatVector3& VkImageDiffuseGpuPipeline::getLightDirection() const
@@ -627,7 +627,7 @@ namespace Injector
 	}
 	void VkImageDiffuseGpuPipeline::setLightDirection(const FloatVector3& direction)
 	{
-		ubo.lightDirection = Vector3(direction.getNormalized());
+		ubo.lightDirection = FloatVector3(direction.getNormalized());
 	}
 
 	const FloatVector2& VkImageDiffuseGpuPipeline::getImageScale() const
@@ -636,7 +636,7 @@ namespace Injector
 	}
 	void VkImageDiffuseGpuPipeline::setImageScale(const FloatVector2& scale)
 	{
-		ubo.imageScale = Vector2(scale);
+		ubo.imageScale = FloatVector2(scale);
 	}
 
 	const FloatVector2& VkImageDiffuseGpuPipeline::getImageOffset() const
@@ -645,7 +645,7 @@ namespace Injector
 	}
 	void VkImageDiffuseGpuPipeline::setImageOffset(const FloatVector2& offset)
 	{
-		ubo.imageOffset = Vector2(offset);
+		ubo.imageOffset = FloatVector2(offset);
 	}
 
 	void VkImageDiffuseGpuPipeline::recreate(

@@ -64,7 +64,7 @@ namespace Injector
 	}
 	void GlColorGpuPipeline::setColor(const FloatVector4& _color)
 	{
-		color = Vector4(_color);
+		color = FloatVector4(_color);
 	}
 
 	void GlColorGpuPipeline::bind()

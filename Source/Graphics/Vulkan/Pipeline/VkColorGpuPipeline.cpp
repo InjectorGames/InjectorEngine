@@ -251,7 +251,7 @@ namespace Injector
 	}
 	void VkColorGpuPipeline::setColor(const FloatVector4& _color)
 	{
-		color = Vector4(_color);
+		color = FloatVector4(_color);
 	}
 
 	void VkColorGpuPipeline::recreate(

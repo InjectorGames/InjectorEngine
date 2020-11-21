@@ -36,19 +36,26 @@ namespace Injector
 		}
 		else if (imageFilter == GpuImageFilter::Linear)
 		{
-			if(mipmapFilter == GpuImageFilter::Nearest)
+			if (useMipmap)
 			{
-				return GL_LINEAR_MIPMAP_NEAREST;
+				if (mipmapFilter == GpuImageFilter::Nearest)
+				{
+					return GL_LINEAR_MIPMAP_NEAREST;
+				}
+				else if (mipmapFilter == GpuImageFilter::Linear)
+				{
+					return GL_LINEAR_MIPMAP_LINEAR;
+				}
+				else
+				{
+					throw Exception(
+						THIS_FUNCTION_NAME,
+						"Unsupported mipmap filter");
+				}
 			}
-			else if(mipmapFilter == GpuImageFilter::Linear)
+			else 
 			{
-				return GL_LINEAR_MIPMAP_LINEAR;
-			}
-			else
-			{
-				throw Exception(
-					THIS_FUNCTION_NAME,
-					"Unsupported mipmap filter");
+				return GL_LINEAR;
 			}
 		}
 		else

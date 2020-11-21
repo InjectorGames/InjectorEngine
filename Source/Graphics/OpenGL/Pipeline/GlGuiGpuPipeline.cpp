@@ -1,5 +1,6 @@
 #include "Injector/Graphics/OpenGL/Pipeline/GlGuiGpuPipeline.hpp"
 #include "Injector/Exception/NullException.hpp"
+#include "Injector/Graphics/ImguiDefines.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuImageWrap.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuImageFilter.hpp"
 
@@ -136,7 +137,7 @@ namespace Injector
 	}
 	void GlGuiGpuPipeline::setImageScale(const FloatVector2& scale)
 	{
-		imageScale = Vector2(scale);
+		imageScale = FloatVector2(scale);
 	}
 
 	const FloatVector2& GlGuiGpuPipeline::getImageOffset() const
@@ -145,7 +146,7 @@ namespace Injector
 	}
 	void GlGuiGpuPipeline::setImageOffset(const FloatVector2& offset)
 	{
-		imageOffset = Vector2(offset);
+		imageOffset = FloatVector2(offset);
 	}
 
 	std::shared_ptr<GpuImage> GlGuiGpuPipeline::getImage() const
@@ -160,11 +161,14 @@ namespace Injector
 		glDisable(GL_CULL_FACE);
 		glDisable(GL_SCISSOR_TEST);
 		glDisable(GL_STENCIL_TEST);
-		glEnable(GL_BLEND);
+
+		// TODO: fix no rendering with blending
+		/*glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(
 			GL_SRC_ALPHA,
-			GL_ONE_MINUS_SRC_ALPHA);
+			GL_ONE_MINUS_SRC_ALPHA);*/
+
 
 		glActiveTexture(GL_TEXTURE0);
 		image->bind();
@@ -215,22 +219,22 @@ namespace Injector
 			2,
 			GL_FLOAT,
 			GL_FALSE,
-			sizeof(FloatVector2) * 2 + sizeof(FloatVector4),
-			0);
+			sizeof(ImDrawVert),
+			IM_OFFSETOF(ImDrawVert, pos));
 		setVertexAttributePointer(
 			1,
 			2,
 			GL_FLOAT,
 			GL_FALSE,
-			sizeof(FloatVector2) * 2 + sizeof(FloatVector4),
-			sizeof(FloatVector2));
+			sizeof(ImDrawVert),
+			IM_OFFSETOF(ImDrawVert, uv));
 		setVertexAttributePointer(
 			2,
 			4,
 			GL_UNSIGNED_BYTE,
 			GL_TRUE,
-			sizeof(FloatVector2) * 2 + sizeof(FloatVector4),
-			sizeof(ByteVector4));
+			sizeof(ImDrawVert),
+			IM_OFFSETOF(ImDrawVert, col));
 	}
 
 	void GlGuiGpuPipeline::setUniforms(

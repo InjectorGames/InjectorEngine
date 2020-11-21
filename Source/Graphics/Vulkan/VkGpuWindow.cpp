@@ -918,7 +918,7 @@ namespace Injector
 				1.0f, })),
 			vk::ClearValue(vk::ClearDepthStencilValue(
 				1.0f,
-				0.0f)),
+				0)),
 		};
 
 		auto renderPassBeginInfo = vk::RenderPassBeginInfo(
@@ -1167,12 +1167,13 @@ namespace Injector
 					std::string(filePath) + "'");
 		}
 
+		auto shaderDataSize = fileStream.getSize();
 		auto shaderData = std::make_shared<ShaderData>();
-		shaderData->code = std::vector<uint8_t>(fileStream.getSize());
+		shaderData->code = std::vector<uint8_t>(shaderDataSize);
 
 		fileStream.read(
 			shaderData->code.data(),
-			fileStream.getSize());
+			shaderDataSize);
 
 		return shaderData;
 	}
@@ -1473,7 +1474,8 @@ namespace Injector
 			device,
 			memoryAllocator,
 			swapchain.getRenderPass(),
-			swapchain.getDatas().size(),
+			static_cast<uint32_t>(
+				swapchain.getDatas().size()),
 			swapchain.getExtent(),
 			drawMode,
 			vkVertexShader,
@@ -1519,7 +1521,8 @@ namespace Injector
 			device,
 			memoryAllocator,
 			swapchain.getRenderPass(),
-			swapchain.getDatas().size(),
+			static_cast<uint32_t>(
+				swapchain.getDatas().size()),
 			swapchain.getExtent(),
 			drawMode,
 			imageMinFilter,

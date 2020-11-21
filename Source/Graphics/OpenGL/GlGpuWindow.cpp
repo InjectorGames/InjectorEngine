@@ -166,14 +166,15 @@ namespace Injector
 					std::string(filePath) + "'");
 		}
 
+		auto shaderDataSize = fileStream.getSize();
 		auto shaderData = std::make_shared<ShaderData>();
-		shaderData->code = std::vector<uint8_t>(fileStream.getSize() + 1);
+		shaderData->code = std::vector<uint8_t>(shaderDataSize + 1);
 
 		fileStream.read(
 			shaderData->code.data(),
-			fileStream.getSize());
+			shaderDataSize);
 
-		shaderData->code[fileStream.getSize() - 1] = 0;
+		shaderData->code[shaderDataSize] = 0;
 		return shaderData;
 	}
 	std::shared_ptr<GpuShader> GlGpuWindow::createShader(

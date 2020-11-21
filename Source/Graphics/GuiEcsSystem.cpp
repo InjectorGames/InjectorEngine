@@ -90,6 +90,7 @@ namespace Injector
 		cameraEntity->createComponent<TransformEcsComponent>();
 		_cameraSystem->addCamera(cameraEntity);
 		_transformSystem->addTransform(cameraEntity);
+		_renderSystem->addCamera(cameraEntity);
 
 		guiEntity = EcsEntity::create();
 		guiEntity->createComponent<RenderEcsComponent>(
@@ -158,7 +159,7 @@ namespace Injector
 
 		auto drawCommands = drawData->CmdLists;
 
-		for (int i = 0; i < drawData->CmdListsCount; i++)
+		for (size_t i = 0; i < drawData->CmdListsCount; i++)
 		{
 			auto drawCommand = drawCommands[i];
 			memcpy(
@@ -179,8 +180,10 @@ namespace Injector
 			indexBuffer->map(GpuBufferAccess::WriteOnly));
 		auto indexMapIndex = 0;
 
-		for (int i = 0; i < drawData->CmdListsCount; i++)
+		for (size_t i = 0; i < drawData->CmdListsCount; i++)
 		{
+			// TODO:
+			// investigate strange bad access
 			auto drawCommand = drawCommands[i];
 			memcpy(
 				indexBufferMap + indexMapIndex,

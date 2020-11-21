@@ -78,7 +78,7 @@ namespace Injector
 	}
 	void GlDiffuseGpuPipeline::setObjectColor(const FloatVector4& color)
 	{
-		ubo.objectColor = Vector4(color);
+		ubo.objectColor = FloatVector4(color);
 	}
 
 	const FloatVector4& GlDiffuseGpuPipeline::getAmbientColor() const
@@ -87,7 +87,7 @@ namespace Injector
 	}
 	void GlDiffuseGpuPipeline::setAmbientColor(const FloatVector4& color)
 	{
-		ubo.ambientColor = Vector4(color);
+		ubo.ambientColor = FloatVector4(color);
 	}
 
 	const FloatVector4& GlDiffuseGpuPipeline::getLightColor() const
@@ -96,7 +96,7 @@ namespace Injector
 	}
 	void GlDiffuseGpuPipeline::setLightColor(const FloatVector4& color)
 	{
-		ubo.lightColor = Vector4(color);
+		ubo.lightColor = FloatVector4(color);
 	}
 
 	const FloatVector3& GlDiffuseGpuPipeline::getLightDirection() const
