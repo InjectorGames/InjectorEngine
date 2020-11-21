@@ -10,5 +10,5 @@ uniform highp sampler2D u_Image;
 void main()
 {
     o_Color = f_Color * texture(u_Image,
-        (f_TexCoord.st + u_ImageScale) * u_ImageOffset);
+        (f_TexCoord.st + u_ImageOffset) * u_ImageScale);
 }

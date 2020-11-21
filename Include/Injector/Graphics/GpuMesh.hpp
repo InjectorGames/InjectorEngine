@@ -11,6 +11,8 @@ namespace Injector
 	{
 	 public:
 		size_t indexCount;
+		// TODO:
+		//BoundingBox3 bounds;
 
 		explicit GpuMesh(size_t indexCount);
 		GpuMesh(GpuMesh&& mesh) = delete;

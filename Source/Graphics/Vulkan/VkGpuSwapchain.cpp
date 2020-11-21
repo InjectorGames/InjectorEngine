@@ -55,7 +55,7 @@ namespace Injector
 	}
 	vk::Extent2D VkGpuSwapchain::getBestExtent(
 		const vk::SurfaceCapabilitiesKHR& surfaceCapabilities,
-		const IntVector2& size)
+		const SizeVector2& size)
 	{
 		if (surfaceCapabilities.currentExtent.width == UINT32_MAX)
 		{
@@ -369,7 +369,7 @@ namespace Injector
 		vk::SurfaceKHR surface,
 		vk::CommandPool graphicsCommandPool,
 		vk::CommandPool presentCommandPool,
-		const IntVector2& size) :
+		const SizeVector2& size) :
 		device(_device),
 		physicalDevice(_physicalDevice)
 	{
@@ -526,7 +526,7 @@ namespace Injector
 		vk::SurfaceKHR surface,
 		vk::CommandPool graphicsCommandPool,
 		vk::CommandPool presentCommandPool,
-		const IntVector2& size)
+		const SizeVector2& size)
 	{
 		if(!device)
 		{

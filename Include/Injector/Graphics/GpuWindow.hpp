@@ -15,7 +15,6 @@
 #include "Injector/Graphics/GpuFramebuffer.hpp"
 #include "Injector/Graphics/GpuImageWrap.hpp"
 #include "Injector/Graphics/GpuImageFilter.hpp"
-#include "Injector/Graphics/RenderEcsSystem.hpp"
 #include "Injector/Graphics/CameraEcsSystem.hpp"
 
 #include <string>
@@ -29,7 +28,6 @@ namespace Injector
 		GLFWwindow* window;
 		GLFWcursor* cursor;
 		FloatVector2 deltaScroll;
-		bool isResized;
 
 		static void mouseButtonCallback(
 			GLFWwindow* window,
@@ -49,13 +47,9 @@ namespace Injector
 		static void charCallback(
 			GLFWwindow* window,
 			unsigned int charValue);
-		static void framebufferSizeCallback(
-			GLFWwindow* window,
-			int width,
-			int height);
 	 public:
 		static const std::string defaultTitle;
-		static const IntVector2 defaultSize;
+		static const SizeVector2 defaultSize;
 
 		explicit GpuWindow(
 			GLFWwindow* window);
@@ -66,13 +60,8 @@ namespace Injector
 
 		const FloatVector2& getDeltaScroll() const noexcept;
 
-		void onUpdate() override;
-
-		virtual void onFramebufferResize(
-			const IntVector2& size) = 0;
-
-		IntVector2 getSize() const noexcept;
-		IntVector2 getFramebufferSize() const noexcept;
+		SizeVector2 getSize() const noexcept;
+		SizeVector2 getFramebufferSize() const noexcept;
 		IntVector2 getPosition() const noexcept;
 		FloatVector2 getMousePosition() const noexcept;
 		ButtonState getMouseButton(
@@ -80,8 +69,8 @@ namespace Injector
 		ButtonState getKeyboardButton(
 			KeyboardButton button) const noexcept;
 
-		void setSize(const IntVector2& size);
-		void setSizeLimits(const IntVector2& min, const IntVector2& max);
+		void setSize(const SizeVector2& size);
+		void setSizeLimits(const SizeVector2& min, const SizeVector2& max);
 		void setPosition(const IntVector2& position);
 		void setTitle(const std::string& title);
 		void setIcons(const std::vector<std::shared_ptr<ImageData>>& icons);
@@ -106,9 +95,12 @@ namespace Injector
 		void focus() noexcept;
 		void requestAttention() noexcept;
 
-		virtual std::shared_ptr<CameraEcsSystem> createCameraSystem() = 0;
-		virtual std::shared_ptr<RenderEcsSystem> createRenderSystem(
-			const std::shared_ptr<GpuWindow>& window) = 0;
+		void onUpdate() override;
+
+		virtual bool addPipeline(
+			const std::shared_ptr<GpuPipeline>& pipeline) = 0;
+		virtual bool removePipeline(
+			const std::shared_ptr<GpuPipeline>& pipeline) = 0;
 
 		virtual std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,
@@ -236,6 +228,6 @@ namespace Injector
 
 		static std::shared_ptr<GpuWindow> create(
 			const std::string& title = defaultTitle,
-			const IntVector2& size = defaultSize);
+			const SizeVector2& size = defaultSize);
 	};
 }

@@ -7,8 +7,6 @@ namespace Injector
 	class EcsSystem
 	{
 	 public:
-		// Creates a new ECS system
-		EcsSystem() = default;
 		// Destroys ECS system
 		virtual ~EcsSystem() = default;
 

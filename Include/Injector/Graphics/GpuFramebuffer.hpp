@@ -7,6 +7,7 @@ namespace Injector
 	class GpuFramebuffer
 	{
 	protected:
+		// TODO: set images like in the mesh
 		std::shared_ptr<GpuImage> colorImage;
 		std::shared_ptr<GpuImage> depthImage;
 		std::shared_ptr<GpuImage> stencilImage;

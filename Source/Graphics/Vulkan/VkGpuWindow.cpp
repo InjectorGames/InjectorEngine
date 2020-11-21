@@ -3,6 +3,7 @@
 #include "Injector/Storage/FileStream.hpp"
 #include "Injector/Exception/Exception.hpp"
 #include "Injector/Graphics/ImguiDefines.hpp"
+#include "Injector/Graphics/GraphicsEcsSystem.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuMesh.hpp"
 #include "Injector/Graphics/Vulkan/VkGpuImage.hpp"
 #include "Injector/Graphics/Vulkan/VkCameraEcsSystem.hpp"
@@ -39,14 +40,21 @@ namespace Injector
 
 	GLFWwindow* VkGpuWindow::createWindow(
 		const std::string& title,
-		const IntVector2& size)
+		const SizeVector2& size)
 	{
+		if (size.x < 1 || size.y < 1)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Incorrect size");
+		}
+
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		return glfwCreateWindow(
-			size.x,
-			size.y,
+			static_cast<int>(size.x),
+			static_cast<int>(size.y),
 			title.c_str(),
 			nullptr,
 			nullptr);
@@ -509,18 +517,12 @@ namespace Injector
 
 	VkGpuWindow::VkGpuWindow(
 		const std::string& title,
-		const IntVector2& size) :
+		const SizeVector2& size) :
 		GpuWindow(createWindow(title, size)),
 		graphicsQueueFamilyIndex(UINT32_MAX),
-		presentQueueFamilyIndex(UINT32_MAX)
+		presentQueueFamilyIndex(UINT32_MAX),
+		lastFramebufferSize()
 	{
-		if (size.x < 1 || size.y < 1)
-		{
-			throw Exception(
-				THIS_FUNCTION_NAME,
-				"Incorrect size");
-		}
-
 		instance = createInstance(
 			title,
 			1);
@@ -678,16 +680,16 @@ namespace Injector
 #endif
 	}
 
-	void VkGpuWindow::onFramebufferResize(
-		const IntVector2& size)
+	vk::CommandBuffer VkGpuWindow::getGraphicsCommandBuffer(
+		uint32_t imageIndex) const
 	{
-		if (size.x < 1 || size.y < 1)
-		{
-			throw Exception(
-				THIS_FUNCTION_NAME,
-				"Size x/y is less than one");
-		}
+		auto& swapchainData = swapchain.getDatas();
+		return swapchainData.at(imageIndex)->graphicsCommandBuffer;
+	}
 
+	void VkGpuWindow::resizeFramebuffer(
+		const SizeVector2& size)
+	{
 		device.waitIdle();
 
 		swapchain.resize(
@@ -728,13 +730,6 @@ namespace Injector
 		frameIndex = 0;
 	}
 
-	vk::CommandBuffer VkGpuWindow::getGraphicsCommandBuffer(
-		uint32_t imageIndex) const
-	{
-		auto& swapchainData = swapchain.getDatas();
-		return swapchainData.at(imageIndex)->graphicsCommandBuffer;
-	}
-
 	uint32_t VkGpuWindow::beginImage()
 	{
 		auto result = device.waitForFences(
@@ -767,7 +762,7 @@ namespace Injector
 			if (result == vk::Result::eErrorOutOfDateKHR)
 			{
 				auto size = getFramebufferSize();
-				onFramebufferResize(size);
+				resizeFramebuffer(size);
 
 				std::cout << "Engine Vulkan: Recreated outdated swapchain";
 			}
@@ -780,7 +775,7 @@ namespace Injector
 					window);
 
 				auto size = getFramebufferSize();
-				onFramebufferResize(size);
+				resizeFramebuffer(size);
 
 				std::cout << "Engine Vulkan: Recreated lost surface and swapchain";
 			}
@@ -870,7 +865,7 @@ namespace Injector
 		if (result == vk::Result::eErrorOutOfDateKHR)
 		{
 			auto size = getFramebufferSize();
-			onFramebufferResize(size);
+			resizeFramebuffer(size);
 		}
 		else if (result == vk::Result::eErrorSurfaceLostKHR)
 		{
@@ -878,7 +873,7 @@ namespace Injector
 			surface = createSurface(instance, window);
 
 			auto size = getFramebufferSize();
-			onFramebufferResize(size);
+			resizeFramebuffer(size);
 		}
 		else if (result != vk::Result::eSuccess &&
 			result != vk::Result::eSuboptimalKHR)
@@ -1017,19 +1012,30 @@ namespace Injector
 		}
 	}
 
-	std::shared_ptr<CameraEcsSystem> VkGpuWindow::createCameraSystem()
+	void VkGpuWindow::onUpdate()
 	{
-		auto system = std::make_shared<VkCameraEcsSystem>();
-		systems.push_back(system);
-		return system;
-	}
-	std::shared_ptr<RenderEcsSystem> VkGpuWindow::createRenderSystem(
-		const std::shared_ptr<GpuWindow>& window)
-	{
-		auto vkWindow = std::dynamic_pointer_cast<VkGpuWindow>(window);
-		auto system = std::make_shared<VkRenderEcsSystem>(vkWindow);
-		systems.push_back(system);
-		return system;
+		GpuWindow::onUpdate();
+
+		auto newFramebufferSize = getFramebufferSize();
+
+		if(newFramebufferSize.x > 0 &&
+		   newFramebufferSize.y > 0)
+		{
+			if (lastFramebufferSize != newFramebufferSize)
+			{
+				resizeFramebuffer(newFramebufferSize);
+				lastFramebufferSize = newFramebufferSize;
+			}
+
+			for (auto& system : systems)
+			{
+				auto graphicsSystem = std::dynamic_pointer_cast<
+					GraphicsEcsSystem>(system);
+
+				if(graphicsSystem)
+					graphicsSystem->onRender();
+			}
+		}
 	}
 
 	std::shared_ptr<GpuBuffer> VkGpuWindow::createBuffer(

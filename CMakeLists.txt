@@ -144,7 +144,6 @@ add_library(InjectorEngine STATIC
     Source/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.cpp
     Source/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.cpp
 
-    Source/Graphics/OpenGL/GlCameraEcsSystem.cpp
     Source/Graphics/OpenGL/GlGpuBuffer.cpp
     Source/Graphics/OpenGL/GlGpuFramebuffer.cpp
     Source/Graphics/OpenGL/GlGpuShader.cpp
@@ -159,7 +158,6 @@ add_library(InjectorEngine STATIC
     Source/Graphics/Vulkan/Pipeline/VkDiffuseGpuPipeline.cpp
     Source/Graphics/Vulkan/Pipeline/VkImageDiffuseGpuPipeline.cpp
 
-    Source/Graphics/Vulkan/VkCameraEcsSystem.cpp
     Source/Graphics/Vulkan/VkGpuBuffer.cpp
     Source/Graphics/Vulkan/VkGpuImage.cpp
     Source/Graphics/Vulkan/VkGpuMesh.cpp

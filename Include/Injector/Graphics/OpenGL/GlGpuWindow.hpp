@@ -1,6 +1,10 @@
 #pragma once
 #include "Injector/Graphics/GpuWindow.hpp"
 #include "Injector/GlfwDefines.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuPipeline.hpp"
+
+
+#include <set>
 
 namespace Injector
 {
@@ -8,28 +12,28 @@ namespace Injector
 	{
 	 protected:
 		bool gles;
+		SizeVector2 lastFramebufferSize;
+		std::set<std::shared_ptr<GlGpuPipeline>> pipelines;
 
 		static GLFWwindow* createWindow(
 			bool gles,
 			const std::string& title,
-			const IntVector2& size);
+			const SizeVector2& size);
 	 public:
 		explicit GlGpuWindow(
 			bool gles = false,
 			const std::string& title = defaultTitle,
-			const IntVector2& size = defaultSize);
+			const SizeVector2& size = defaultSize);
 		~GlGpuWindow() override;
 
 		bool isGLES() const noexcept;
 
 		void onUpdate() override;
 
-		void onFramebufferResize(
-			const IntVector2& size) override;
-
-		std::shared_ptr<CameraEcsSystem> createCameraSystem() override;
-		std::shared_ptr<RenderEcsSystem> createRenderSystem(
-			const std::shared_ptr<GpuWindow>& window) override;
+		bool addPipeline(
+			const std::shared_ptr<GpuPipeline> &pipeline) override;
+		bool removePipeline(
+			const std::shared_ptr<GpuPipeline> &pipeline) override;
 
 		std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,

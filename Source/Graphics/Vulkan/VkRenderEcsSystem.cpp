@@ -169,4 +169,8 @@ namespace Injector
 		window->endRecord(imageIndex);
 		window->endImage(imageIndex);
 	}
+	void VkRenderEcsSystem::onRender()
+	{
+
+	}
 }

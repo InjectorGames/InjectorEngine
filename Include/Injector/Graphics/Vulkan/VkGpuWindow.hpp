@@ -31,6 +31,7 @@ namespace Injector
 		std::vector<vk::Semaphore> imageOwnershipSemaphores;
 		std::set<std::shared_ptr<VkGpuPipeline>> pipelines;
 		uint32_t frameIndex;
+		SizeVector2 lastFramebufferSize;
 
 		static VkBool32 VKAPI_CALL debugMessengerCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -40,7 +41,7 @@ namespace Injector
 
 		static GLFWwindow* createWindow(
 			const std::string& title,
-			const IntVector2& size);
+			const SizeVector2& size);
 		static vk::Instance createInstance(
 			const std::string& appName,
 			uint32_t appVersion);
@@ -82,18 +83,14 @@ namespace Injector
 	 public:
 		explicit VkGpuWindow(
 			const std::string& title = defaultTitle,
-			const IntVector2& size = defaultSize);
+			const SizeVector2& size = defaultSize);
 		~VkGpuWindow() override;
-
-		void onFramebufferResize(
-			const IntVector2& size) override;
 
 		vk::CommandBuffer getGraphicsCommandBuffer(
 			uint32_t imageIndex) const;
 
-		// TODO:
-		// Move these functions to the override update
-		// like in twe OpenGL window
+		void resizeFramebuffer(
+			const SizeVector2& size);
 
 		uint32_t beginImage();
 		void endImage(uint32_t imageIndex);
@@ -101,9 +98,7 @@ namespace Injector
 		void beginRecord(uint32_t imageIndex);
 		void endRecord(uint32_t imageIndex);
 
-		std::shared_ptr<CameraEcsSystem> createCameraSystem() override;
-		std::shared_ptr<RenderEcsSystem> createRenderSystem(
-			const std::shared_ptr<GpuWindow>& window) override;
+		void onUpdate() override;
 
 		std::shared_ptr<GpuBuffer> createBuffer(
 			size_t size,

@@ -477,7 +477,7 @@ namespace Injector
 
 	int Socket::receive(
 		void* buffer,
-		int size) noexcept
+		size_t size) noexcept
 	{
 		return ::recv(
 			handle,
@@ -487,7 +487,7 @@ namespace Injector
 	}
 	int Socket::send(
 		const void* buffer,
-		int size) noexcept
+		size_t size) noexcept
 	{
 		return ::send(
 			handle,
@@ -498,7 +498,7 @@ namespace Injector
 
 	int Socket::receiveFrom(
 		void* buffer,
-		int size,
+		size_t size,
 		Endpoint& endpoint) noexcept
 	{
 		auto address = reinterpret_cast<sockaddr*>(
@@ -521,7 +521,7 @@ namespace Injector
 	}
 	int Socket::sendTo(
 		const void* buffer,
-		int size,
+		size_t size,
 		const Endpoint& endpoint) noexcept
 	{
 		auto address = reinterpret_cast<const sockaddr*>(

@@ -38,11 +38,10 @@ namespace Injector
 
 	std::shared_ptr<ImageData> ImageData::readFromFile(
 		const std::string& filePath,
-		int componentCount,
 		bool component16)
 	{
 		void* data;
-		int width, height;
+		int width, height, componentCount;
 
 		if (component16)
 		{
@@ -51,7 +50,7 @@ namespace Injector
 				&width,
 				&height,
 				&componentCount,
-				componentCount);
+				0);
 		}
 		else
 		{
@@ -60,7 +59,7 @@ namespace Injector
 				&width,
 				&height,
 				&componentCount,
-				componentCount);
+				0);
 		}
 
 		if (!data || width < 1 || height < 1)

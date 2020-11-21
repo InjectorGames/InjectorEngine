@@ -1,10 +1,11 @@
 #pragma once
 #include "Injector/Graphics/GpuPipeline.hpp"
+#include "Injector/Graphics/OpenGL/GlGpuMesh.hpp"
 #include "Injector/GlfwDefines.hpp"
 #include "Injector/Mathematics/Vector4.hpp"
 
+#include <set>
 #include <string>
-#include <vector>
 
 namespace Injector
 {
@@ -13,6 +14,7 @@ namespace Injector
 	 protected:
 		GLuint program;
 		GLenum glDrawMode;
+		std::set<std::shared_ptr<GlGpuMesh>> meshes;
 
 		static bool getLinkStatus(
 			GLuint program) noexcept;
@@ -69,17 +71,11 @@ namespace Injector
 		GLuint getProgram() const noexcept;
 		GLenum getGlDrawMode() const noexcept;
 
-		virtual void bind();
-		virtual void unbind();
+		void onRender() override;
 
-		virtual void flush() = 0;
-		virtual void setAttributes() = 0;
-
-		bool operator==(const GlGpuPipeline& pipeline) const noexcept;
-		bool operator!=(const GlGpuPipeline& pipeline) const noexcept;
-
-		static bool less(
-			const GlGpuPipeline& a,
-			const GlGpuPipeline& b);
+		bool addMesh(
+			const std::shared_ptr<GpuMesh> &mesh) override;
+		bool removeMesh(
+			const std::shared_ptr<GpuMesh> &mesh) override;
 	};
 }

@@ -5,25 +5,26 @@
 #include "Injector/Graphics/ImguiDefines.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuShader.hpp"
 #include "Injector/Graphics/OpenGL/GlGpuFramebuffer.hpp"
-#include "Injector/Graphics/OpenGL/GlCameraEcsSystem.hpp"
 #include "Injector/Graphics/OpenGL/GlRenderEcsSystem.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlGuiGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlColorColorGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlImageDiffuseGpuPipeline.hpp"
 #include "Injector/Graphics/OpenGL/Pipeline/GlSimulatedSkyGpuPipeline.hpp"
 
+#include <iostream>
+
 namespace Injector
 {
 	GLFWwindow* GlGpuWindow::createWindow(
 		bool gles,
 		const std::string& title,
-		const IntVector2& size)
+		const SizeVector2& size)
 	{
 		if(size.x < 1 || size.y < 1)
 		{
 			throw Exception(
 				THIS_FUNCTION_NAME,
-				"Incorrect window x/y size");
+				"Incorrect size");
 		}
 
 		glfwDefaultWindowHints();
@@ -52,8 +53,8 @@ namespace Injector
 		}
 
 		return glfwCreateWindow(
-			size.x,
-			size.y,
+			static_cast<int>(size.x),
+			static_cast<int>(size.y),
 			title.c_str(),
 			nullptr,
 			nullptr);
@@ -62,9 +63,11 @@ namespace Injector
 	GlGpuWindow::GlGpuWindow(
 		bool _gles,
 		const std::string& title,
-		const IntVector2& position) :
-		GpuWindow(createWindow(_gles, title, position)),
-		gles(_gles)
+		const SizeVector2& size) :
+		GpuWindow(createWindow(_gles, title, size)),
+		gles(_gles),
+		lastFramebufferSize(),
+		pipelines()
 	{
 		glfwMakeContextCurrent(window);
 
@@ -91,37 +94,111 @@ namespace Injector
 
 	void GlGpuWindow::onUpdate()
 	{
-		glfwMakeContextCurrent(window);
 		GpuWindow::onUpdate();
-		glfwSwapBuffers(window);
-	}
 
-	void GlGpuWindow::onFramebufferResize(const IntVector2& size)
-	{
-		if (size.x < 1 || size.y < 1)
+		auto newFramebufferSize = getFramebufferSize();
+
+		if (newFramebufferSize.x == 0 ||
+			newFramebufferSize.y == 0)
 		{
-			throw Exception(
-				THIS_FUNCTION_NAME,
-				"Size x/y is less than one");
+			return;
 		}
 
 		glfwMakeContextCurrent(window);
-		glViewport(0, 0, size.x, size.y);
+
+		if (lastFramebufferSize != newFramebufferSize)
+		{
+			glViewport(
+				0,
+				0,
+				newFramebufferSize.x,
+				newFramebufferSize.y);
+		}
+
+		glClearColor(
+			0.0f,
+			0.0f,
+			0.0f,
+			1.0f);
+		glClear(
+			GL_COLOR_BUFFER_BIT |
+			GL_DEPTH_BUFFER_BIT |
+			GL_STENCIL_BUFFER_BIT);
+
+		for (auto& system : systems)
+		{
+			auto graphicsSystem = std::dynamic_pointer_cast<
+				GraphicsEcsSystem>(system);
+
+			if (graphicsSystem)
+				graphicsSystem->onRender();
+		}
+
+#ifndef NDEBUG
+		GLenum error;
+
+		while((error = glGetError()) != GL_NO_ERROR)
+		{
+			switch (error)
+			{
+			case GL_INVALID_ENUM:
+				std::cout << "Engine: OpenGL Error: GL_INVALID_ENUM\n";
+				break;
+			case GL_INVALID_VALUE:
+				std::cout << "Engine: OpenGL Error: GL_INVALID_VALUE\n";
+				break;
+			case GL_INVALID_OPERATION:
+				std::cout << "Engine: OpenGL Error: GL_INVALID_OPERATION\n";
+				break;
+			case GL_INVALID_FRAMEBUFFER_OPERATION:
+				std::cout << "Engine: OpenGL Error: GL_INVALID_FRAMEBUFFER_OPERATION\n";
+				break;
+			case GL_OUT_OF_MEMORY:
+				std::cout << "Engine: OpenGL Error: GL_OUT_OF_MEMORY\n";
+				break;
+			case GL_STACK_UNDERFLOW:
+				std::cout << "Engine: OpenGL Error: GL_STACK_UNDERFLOW\n";
+				break;
+			case GL_STACK_OVERFLOW:
+				std::cout << "Engine: OpenGL Error: GL_STACK_OVERFLOW\n";
+				break;
+			default:
+				std::cout << "Engine: OpenGL Error: Unknown\n";
+				break;
+			}
+		}
+#endif
+
+		glfwSwapBuffers(window);
 	}
 
-	std::shared_ptr<CameraEcsSystem> GlGpuWindow::createCameraSystem()
+	bool GlGpuWindow::addPipeline(
+		const std::shared_ptr<GpuPipeline>& pipeline)
 	{
-		auto system = std::make_shared<GlCameraEcsSystem>();
-		systems.push_back(system);
-		return system;
+		auto glPipeline = std::dynamic_pointer_cast<
+			GlGpuPipeline>(pipeline);
+
+		if (!glPipeline)
+			return false;
+
+		return pipelines.emplace(glPipeline).second;
 	}
-	std::shared_ptr<RenderEcsSystem> GlGpuWindow::createRenderSystem(
-		const std::shared_ptr<GpuWindow>& window)
+	bool GlGpuWindow::removePipeline(
+		const std::shared_ptr<GpuPipeline>& pipeline)
 	{
-		auto glWindow = std::dynamic_pointer_cast<GlGpuWindow>(window);
-		auto system = std::make_shared<GlRenderEcsSystem>(glWindow);
-		systems.push_back(system);
-		return system;
+		auto glPipeline = std::dynamic_pointer_cast<
+			GlGpuPipeline>(pipeline);
+
+		if (!glPipeline)
+			return false;
+
+		auto iterator = pipelines.find(glPipeline);
+
+		if (iterator == pipelines.end())
+			return false;
+
+		pipelines.erase(iterator);
+		return true;
 	}
 
 	std::shared_ptr<GpuBuffer> GlGpuWindow::createBuffer(
@@ -221,11 +298,20 @@ namespace Injector
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
-		return std::make_shared<GlColorGpuPipeline>(
+		auto pipeline = std::make_shared<GlColorGpuPipeline>(
 			drawMode,
 			glVertexShader,
 			glFragmentShader,
 			color);
+
+		if (!pipelines.emplace(pipeline).second)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Failed to emplace");
+		}
+
+		return std::move(pipeline);
 	}
 	std::shared_ptr<GpuPipeline> GlGpuWindow::createColorColorPipeline(
 		GpuDrawMode drawMode,
@@ -236,11 +322,20 @@ namespace Injector
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
-		return std::make_shared<GlColorColorGpuPipeline>(
+		auto pipeline = std::make_shared<GlColorColorGpuPipeline>(
 			drawMode,
 			glVertexShader,
 			glFragmentShader,
 			color);
+
+		if (!pipelines.emplace(pipeline).second)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Failed to emplace");
+		}
+
+		return std::move(pipeline);
 	}
 	std::shared_ptr<GpuPipeline> GlGpuWindow::createDiffusePipeline(
 		GpuDrawMode drawMode,
@@ -254,7 +349,7 @@ namespace Injector
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
-		return std::make_shared<GlDiffuseGpuPipeline>(
+		auto pipeline = std::make_shared<GlDiffuseGpuPipeline>(
 			drawMode,
 			glVertexShader,
 			glFragmentShader,
@@ -263,6 +358,15 @@ namespace Injector
 				ambientColor,
 				lightColor,
 				lightDirection));
+
+		if (!pipelines.emplace(pipeline).second)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Failed to emplace");
+		}
+
+		return std::move(pipeline);
 	}
 	std::shared_ptr<GpuPipeline> GlGpuWindow::createImageDiffusePipeline(
 		GpuDrawMode drawMode,
@@ -286,7 +390,7 @@ namespace Injector
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 		auto glImage = std::dynamic_pointer_cast<GlGpuImage>(image);
 
-		return std::make_shared<GlImageDiffuseGpuPipeline>(
+		auto pipeline = std::make_shared<GlImageDiffuseGpuPipeline>(
 			drawMode,
 			imageMinFilter,
 			imageMagFilter,
@@ -304,6 +408,15 @@ namespace Injector
 				lightDirection,
 				imageScale,
 				imageOffset));
+
+		if (!pipelines.emplace(pipeline).second)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Failed to emplace");
+		}
+
+		return std::move(pipeline);
 	}
 	std::shared_ptr<GpuPipeline> GlGpuWindow::createGuiPipeline(
 		GpuDrawMode drawMode,
@@ -323,7 +436,7 @@ namespace Injector
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 		auto glImage = std::dynamic_pointer_cast<GlGpuImage>(image);
 
-		return std::make_shared<GlGuiGpuPipeline>(
+		auto pipeline = std::make_shared<GlGuiGpuPipeline>(
 			drawMode,
 			imageMinFilter,
 			imageMagFilter,
@@ -336,6 +449,15 @@ namespace Injector
 			glImage,
 			imageScale,
 			imageOffset);
+
+		if (!pipelines.emplace(pipeline).second)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Failed to emplace");
+		}
+
+		return std::move(pipeline);
 	}
 	std::shared_ptr<GpuPipeline> GlGpuWindow::createSkyPipeline(
 		GpuDrawMode drawMode,
@@ -346,10 +468,19 @@ namespace Injector
 		auto glVertexShader = std::dynamic_pointer_cast<GlGpuShader>(vertexShader);
 		auto glFragmentShader = std::dynamic_pointer_cast<GlGpuShader>(fragmentShader);
 
-		return std::make_shared<GlSimulatedSkyGpuPipeline>(
+		auto pipeline = std::make_shared<GlSimulatedSkyGpuPipeline>(
 			drawMode,
 			glVertexShader,
 			glFragmentShader,
 			GlSimulatedSkyGpuPipeline::UniformBufferObject(0.0f));
+
+		if (!pipelines.emplace(pipeline).second)
+		{
+			throw Exception(
+				THIS_FUNCTION_NAME,
+				"Failed to emplace");
+		}
+
+		return std::move(pipeline);
 	}
 }

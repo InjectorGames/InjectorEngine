@@ -163,11 +163,11 @@ namespace Injector
 		glDisable(GL_STENCIL_TEST);
 
 		// TODO: fix no rendering with blending
-		/*glEnable(GL_BLEND);
+		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(
 			GL_SRC_ALPHA,
-			GL_ONE_MINUS_SRC_ALPHA);*/
+			GL_ONE_MINUS_SRC_ALPHA);
 
 
 		glActiveTexture(GL_TEXTURE0);

@@ -176,7 +176,8 @@ namespace Injector
 	GlGpuPipeline::GlGpuPipeline(
 		GpuDrawMode drawMode) noexcept :
 		GpuPipeline(drawMode),
-		glDrawMode(toGlGpuDrawMode(drawMode))
+		glDrawMode(toGlGpuDrawMode(drawMode)),
+		meshes()
 	{
 		program = glCreateProgram();
 	}
@@ -194,30 +195,41 @@ namespace Injector
 		return glDrawMode;
 	}
 
-	void GlGpuPipeline::bind()
+	void GlGpuPipeline::onRender()
 	{
-		glUseProgram(program);
-	}
-	void GlGpuPipeline::unbind()
-	{
-		glUseProgram(GL_ZERO);
+		for (auto& mesh : meshes)
+		{
+
+		}
 	}
 
-	bool GlGpuPipeline::operator==(
-		const GlGpuPipeline& pipeline) const noexcept
+	bool GlGpuPipeline::addMesh(
+		const std::shared_ptr<GpuMesh>& mesh)
 	{
-		return program == pipeline.program;
-	}
-	bool GlGpuPipeline::operator!=(
-		const GlGpuPipeline& pipeline) const noexcept
-	{
-		return program != pipeline.program;
-	}
+		auto glMesh = std::dynamic_pointer_cast<
+		    GlGpuMesh>(mesh);
 
-	bool GlGpuPipeline::less(
-		const GlGpuPipeline& a,
-		const GlGpuPipeline& b)
+		if (!glMesh)
+			return false;
+
+		return meshes.emplace(glMesh).second;
+
+	}
+	bool GlGpuPipeline::removeMesh(
+		const std::shared_ptr<GpuMesh>& mesh)
 	{
-		return a.program < b.program;
+		auto glMesh = std::dynamic_pointer_cast<
+			GlGpuMesh>(mesh);
+
+		if (!glMesh)
+			return false;
+
+		auto iterator = meshes.find(glMesh);
+
+		if (iterator == meshes.end())
+			return false;
+
+		meshes.erase(iterator);
+		return true;
 	}
 }

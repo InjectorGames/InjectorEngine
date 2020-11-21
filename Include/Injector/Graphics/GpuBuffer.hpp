@@ -30,6 +30,8 @@ namespace Injector
 			GpuBufferType type,
 			size_t size,
 			bool mappable);
+		// TODO:
+		// Add 'staging' bool to add GL_STREAM_DRAW support
 		// Deleted GPU buffer copy constructor
 		GpuBuffer(GpuBuffer&& buffer) = delete;
 		// Deleted GPU buffer move constructor

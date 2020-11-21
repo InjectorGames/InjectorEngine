@@ -10,8 +10,8 @@ namespace Injector
 {
 	const std::string GpuWindow::defaultTitle =
 		"Injector Engine";
-	const IntVector2 GpuWindow::defaultSize =
-		IntVector2(800, 600);
+	const SizeVector2 GpuWindow::defaultSize =
+		SizeVector2(800, 600);
 
 	void GpuWindow::mouseButtonCallback(
 		GLFWwindow* window,
@@ -63,21 +63,11 @@ namespace Injector
 			window,
 			charValue);
 	}
-	void GpuWindow::framebufferSizeCallback(
-		GLFWwindow* window,
-		int width,
-		int height)
-	{
-		auto instance = static_cast<GpuWindow*>(
-			glfwGetWindowUserPointer(window));
-		instance->isResized = true;
-	}
 
 	GpuWindow::GpuWindow(
 		GLFWwindow* _window) :
 		window(_window),
-		deltaScroll(),
-		isResized()
+		deltaScroll()
 	{
 		if (!window)
 		{
@@ -107,9 +97,6 @@ namespace Injector
 		glfwSetCharCallback(
 			window,
 			charCallback);
-		glfwSetFramebufferSizeCallback(
-			window,
-			framebufferSizeCallback);
 
 		if (glfwRawMouseMotionSupported() == GLFW_TRUE)
 		{
@@ -142,42 +129,17 @@ namespace Injector
 		return deltaScroll;
 	}
 
-	void GpuWindow::onUpdate()
+	SizeVector2 GpuWindow::getSize() const noexcept
 	{
-		if(!glfwWindowShouldClose(window))
-		{
-			if (isResized)
-			{
-				auto size = getFramebufferSize();
-
-				if (size.x > 0 && size.y > 0)
-					onFramebufferResize(size);
-
-				isResized = false;
-			}
-
-			EcsManager::onUpdate();
-
-			active = true;
-			deltaScroll = Vector2();
-		}
-		else
-		{
-			active = false;
-		}
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+		return SizeVector2(width, height);
 	}
-
-	IntVector2 GpuWindow::getSize() const noexcept
+	SizeVector2 GpuWindow::getFramebufferSize() const noexcept
 	{
-		auto size = IntVector2();
-		glfwGetWindowSize(window, &size.x, &size.y);
-		return size;
-	}
-	IntVector2 GpuWindow::getFramebufferSize() const noexcept
-	{
-		auto size = IntVector2();
-		glfwGetFramebufferSize(window, &size.x, &size.y);
-		return size;
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
+		return SizeVector2(width, height);
 	}
 	IntVector2 GpuWindow::getPosition() const noexcept
 	{
@@ -205,11 +167,14 @@ namespace Injector
 			window, static_cast<int>(button)));
 	}
 
-	void GpuWindow::setSize(const IntVector2& size)
+	void GpuWindow::setSize(const SizeVector2& size)
 	{
-		glfwSetWindowSize(window, size.x, size.y);
+		glfwSetWindowSize(
+			window,
+			static_cast<int>(size.x),
+			static_cast<int>(size.y));
 	}
-	void GpuWindow::setSizeLimits(const IntVector2& min, const IntVector2& max)
+	void GpuWindow::setSizeLimits(const SizeVector2& min, const SizeVector2& max)
 	{
 		if (min.x < 1 || min.y < 1 || max.x < 1 || max.y < 1)
 		{
@@ -218,7 +183,12 @@ namespace Injector
 				"Size can not be less than one");
 		}
 
-		glfwSetWindowSizeLimits(window, min.x, min.y, max.x, max.y);
+		glfwSetWindowSizeLimits(
+			window,
+			static_cast<int>(min.x),
+			static_cast<int>(min.y),
+			static_cast<int>(max.x),
+			static_cast<int>(max.y));
 	}
 	void GpuWindow::setPosition(const IntVector2& position)
 	{
@@ -335,6 +305,13 @@ namespace Injector
 	void GpuWindow::requestAttention() noexcept
 	{
 		glfwRequestWindowAttention(window);
+	}
+
+	void GpuWindow::onUpdate()
+	{
+		EcsManager::onUpdate();
+		active = !glfwWindowShouldClose(window);
+		deltaScroll = Vector2();
 	}
 
 	std::shared_ptr<GpuMesh> GpuWindow::createMesh(
@@ -469,7 +446,7 @@ namespace Injector
 
 	std::shared_ptr<GpuWindow> GpuWindow::create(
 		const std::string& title,
-		const IntVector2& size)
+		const SizeVector2& size)
 	{
 		if(!Engine::isGraphicsInitialized())
 		{

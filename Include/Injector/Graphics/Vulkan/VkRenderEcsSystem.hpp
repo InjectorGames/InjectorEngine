@@ -16,5 +16,6 @@ namespace Injector
 			getWindow() const noexcept;
 
 		void onUpdate() override;
+		void onRender() override;
 	};
 }

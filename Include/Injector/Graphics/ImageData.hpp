@@ -27,7 +27,6 @@ namespace Injector
 
 		static std::shared_ptr<ImageData> readFromFile(
 			const std::string& filePath,
-			int componentCount,
 			bool component16);
 	};
 }

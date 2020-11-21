@@ -13,6 +13,7 @@ namespace Injector
 		GpuShader(GpuShader&& shader) = delete;
 		virtual ~GpuShader() = default;
 
+		// TODO: Make as in the mesh
 		GpuShaderStage getStage() const noexcept;
 	};
 }

@@ -12,13 +12,22 @@ namespace Injector
 	 protected:
 		// Update camera container
 		std::set<std::shared_ptr<EcsEntity>> cameras;
+		// Target graphics API perspective function pointer
+		FloatMatrix4 (*perspectivePointer)(
+			float, float, float, float);
+		// Target graphics API orthographic function pointer
+		FloatMatrix4 (*orthographicPointer)(
+			float, float, float, float, float, float);
 	 public:
 		// Creates a new camera ECS system
-		CameraEcsSystem() noexcept;
+		CameraEcsSystem();
 
 		// Returns camera container
 		const std::set<std::shared_ptr<EcsEntity>>&
 			getCameras() const noexcept;
+
+		// Updates camera matrices
+		void onUpdate() override;
 
 		// Returns true if entity removed from the system
 		bool removeEntity(

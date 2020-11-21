@@ -29,7 +29,7 @@ namespace Injector
 			const vk::SurfaceCapabilitiesKHR& capabilities);
 		static vk::Extent2D getBestExtent(
 			const vk::SurfaceCapabilitiesKHR& capabilities,
-			const IntVector2& size);
+			const SizeVector2& size);
 		static vk::SurfaceTransformFlagBitsKHR getBestTransform(
 			const vk::SurfaceCapabilitiesKHR& capabilities);
 		static vk::CompositeAlphaFlagBitsKHR getBestCompositeAlpha(
@@ -72,7 +72,7 @@ namespace Injector
 			vk::SurfaceKHR surface,
 			vk::CommandPool graphicsCommandPool,
 			vk::CommandPool presentCommandPool,
-			const IntVector2& size);
+			const SizeVector2& size);
 		VkGpuSwapchain(VkGpuSwapchain&& swapchain) noexcept;
 		VkGpuSwapchain(const VkGpuSwapchain& swapchain) = delete;
 		virtual ~VkGpuSwapchain();
@@ -89,7 +89,7 @@ namespace Injector
 			vk::SurfaceKHR surface,
 			vk::CommandPool graphicsCommandPool,
 			vk::CommandPool presentCommandPool,
-			const IntVector2& size);
+			const SizeVector2& size);
 
 		VkGpuSwapchain& operator=(
 			VkGpuSwapchain&& swapchain) noexcept;

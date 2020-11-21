@@ -13,9 +13,9 @@ void initialize()
 	auto window = GpuWindow::create();
 
 	window->setIcons(std::vector<std::shared_ptr<ImageData>>{
-		ImageData::readFromFile("Resources/Images/Logo48.png", 4, false),
-		ImageData::readFromFile("Resources/Images/Logo32.png", 4, false),
-		ImageData::readFromFile("Resources/Images/Logo16.png", 4, false), });
+		ImageData::readFromFile("Resources/Images/Logo48.png",  false),
+		ImageData::readFromFile("Resources/Images/Logo32.png",  false),
+		ImageData::readFromFile("Resources/Images/Logo16.png",  false), });
 
 	auto aspectRatioSystem = window->createSystem<AspectRatioEcsSystem>(window);
 	auto guiSystem = window->createSystem<GuiEcsSystem>(window);

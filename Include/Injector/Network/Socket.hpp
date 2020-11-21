@@ -81,9 +81,9 @@ namespace Injector
 		bool connect(const Endpoint& endpoint) noexcept;
 
 		// Returns receives message byte count
-		int receive(void* buffer, int size) noexcept;
+		int receive(void* buffer, size_t size) noexcept;
 		// Returns sent message byte count
-		int send(const void* buffer, int size) noexcept;
+		int send(const void* buffer, size_t size) noexcept;
 
 		// Returns receives message byte count
 		template<class T = uint8_t>
@@ -105,12 +105,12 @@ namespace Injector
 		// Returns receives message byte count
 		int receiveFrom(
 			void* buffer,
-			int size,
+			size_t size,
 			Endpoint& endpoint) noexcept;
 		// Returns sent message byte count
 		int sendTo(
 			const void* buffer,
-			int size,
+			size_t size,
 			const Endpoint& endpoint) noexcept;
 
 		// Returns receives message byte count

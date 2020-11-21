@@ -1,6 +1,7 @@
 #pragma once
-#include "Injector/Mathematics/Matrix4.hpp"
+#include "Injector/Graphics/GpuMesh.hpp"
 #include "Injector/Graphics/GpuDrawMode.hpp"
+#include "Injector/Mathematics/Matrix4.hpp"
 
 namespace Injector
 {
@@ -19,11 +20,11 @@ namespace Injector
 
 		GpuDrawMode getDrawMode() const noexcept;
 
-		virtual void setUniforms(
-			const FloatMatrix4& model,
-			const FloatMatrix4& view,
-			const FloatMatrix4& proj,
-			const FloatMatrix4& viewProj,
-			const FloatMatrix4& mvp) = 0;
+		virtual void onRender() = 0;
+
+		virtual bool addMesh(
+			const std::shared_ptr<GpuMesh>& mesh) = 0;
+		virtual bool removeMesh(
+			const std::shared_ptr<GpuMesh>& mesh) = 0;
 	};
 }
